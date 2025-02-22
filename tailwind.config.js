@@ -16,6 +16,7 @@ export default {
             },
             colors: {
                 'navy-blue': '#001f54',
+                'golden': '#fbaa0d'
             },
         },
 

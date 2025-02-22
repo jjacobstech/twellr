@@ -15,7 +15,7 @@ new #[Layout('layouts.guest')] class extends Component {
     public string $lastname = '';
     public string $email = '';
     public string $password = '';
-    public string $role = 'user';
+    public string $role = 'admin';
 
     /**
      * Handle an incoming registration request.
@@ -49,7 +49,7 @@ new #[Layout('layouts.guest')] class extends Component {
 
         session()->flash('message', 'Registration successful');
 
-        return redirect(route('email.verification'))->with(['user' => $user, 'secret' => $validated['email']]);
+        return redirect(route('admin.email.verification'))->with(['user' => $user, 'secret' => $validated['email']]);
     }
 }; ?>
 
@@ -74,7 +74,12 @@ new #[Layout('layouts.guest')] class extends Component {
                     class="mb-3 font-semibold text-center md:w-1/2 md:py-3 lg:py-0 md:text-left lg:pr-10 md:text-lg md:font-bold">
                     Sign up to create an account on Twellr
                 </div>
-                <x-selector />
+                <div class="flex gap-2 md:w-1/2 md:font-bold md">
+                    <button
+                        class="block w-full py-2.5 text-center text-lg bg-navy-blue text-white font-extrabold border rounded-lg cursor-default lg:px-3 xl:px-5 border-navy-blue">{{ __('Admin') }}
+
+                    </button>
+                </div>
 
                 <x-input-error :messages="$errors->get('role')" class="z-50 mt-2" />
 

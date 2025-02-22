@@ -8,26 +8,23 @@ use Illuminate\Validation\Rules;
 use Livewire\Attributes\Layout;
 use Livewire\Volt\Component;
 
-new #[Layout('layouts.guest')] class extends Component
-{
-
-
+new #[Layout('layouts.guest')] class extends Component {
     public string $firstname = '';
     public string $lastname = '';
     public string $email = '';
     public string $password = '';
     public string $role = '';
-    public string $google_id='';
-    public string $avatar='';
+    public string $google_id = '';
+    public string $avatar = '';
 
     public function mount()
     {
-     $this->firstname = strval(session('firstname'));
-     $this->lastname = strval(session('lastname'));
-    $this->email = strval(session('email'));
-    $this->google_id = strval(session('google_id'));
-    $this->avatar = strval(session('avatar'));
-    $this->role = 'user';
+        $this->firstname = strval(session('firstname'));
+        $this->lastname = strval(session('lastname'));
+        $this->email = strval(session('email'));
+        $this->google_id = strval(session('google_id'));
+        $this->avatar = strval(session('avatar'));
+        $this->role = 'user';
     }
 
     /**
@@ -35,30 +32,29 @@ new #[Layout('layouts.guest')] class extends Component
      */
     public function register()
     {
-
-
         $validated = $this->validate([
             'firstname' => ['required', 'string', 'max:255'],
             'lastname' => ['required', 'string', 'max:255'],
-            'role' => ['required','string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'role' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'string', Rules\Password::defaults()],
         ]);
 
         $validated['password'] = Hash::make($validated['password']);
 
-
-        event(new Registered($user = User::create(
-            [
-                'name'=>$validated['firstname'].' '.$validated['lastname'],
-                'email' => $validated['email'],
-                'google_id' => $this->google_id,
-                'avatar' => $this->avatar,
-                'password' => $validated['password'],
-                'role' => $validated['role'],
-                'email_verified at' => now()
-            ]
-        )));
+        event(
+            new Registered(
+                ($user = User::create([
+                    'name' => $validated['firstname'] . ' ' . $validated['lastname'],
+                    'email' => $validated['email'],
+                    'google_id' => $this->google_id,
+                    'avatar' => $this->avatar,
+                    'password' => $validated['password'],
+                    'role' => $validated['role'],
+                    'email_verified at' => now(),
+                ])),
+            ),
+        );
 
         Auth::login($user);
 
@@ -73,13 +69,11 @@ new #[Layout('layouts.guest')] class extends Component
     <div>
 
         @if (session()->has('message'))
+            <div class="alert alert-success">
 
-        <div class="alert alert-success">
+                {{ session('message') }}
 
-            {{ session('message') }}
-
-        </div>
-
+            </div>
         @endif
     </div>
     <form wire:submit="register" enctype="multipart/form-data">
@@ -98,8 +92,7 @@ new #[Layout('layouts.guest')] class extends Component
                         <label for="creative"
                             class="block w-full py-1 text-center bg-white border rounded-l-lg cursor-pointer px-9 text-navy-blue border-navy-blue peer-checked:border-navy-blue peer-checked:text-white peer-checked:bg-navy-blue">
 
-                            {{ __('Signup as') }} <br> {{
-                            __('Creative') }}
+                            {{ __('Signup as') }} <br> {{ __('Creative') }}
 
                         </label>
                     </li>
@@ -109,7 +102,7 @@ new #[Layout('layouts.guest')] class extends Component
                         <label for="user"
                             class="block w-full py-1 text-center bg-white border rounded-r-lg cursor-pointer px-9 text-navy-blue border-navy-blue peer-checked:border-navy-blue peer-checked:text-white <x-input-error :messages="
                             $errors->get('role')" class="z-50 mt-2" />peer-checked:bg-navy-blue">
-                            {{ __('Signup as') }} <br> {{__('User') }}
+                            {{ __('Signup as') }} <br> {{ __('User') }}
 
                         </label>
                     </li>
@@ -150,8 +143,8 @@ new #[Layout('layouts.guest')] class extends Component
                     :value="__('Email')" />
 
                 <div class="absolute w-full mt-1">
-                    <x-text-input wire:model="email" id="email" class="block w-full mt-5" type="email" name="email"
-                        required autofocus autocomplete="username" />
+                    <x-text-input wire:model="email" id="email" class="block w-full mt-5" type="email"
+                        name="email" required autofocus autocomplete="username" />
                     <x-input-error :messages="$errors->get('email')" class="mt-2" />
                 </div>
             </div>

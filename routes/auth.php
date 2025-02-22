@@ -7,6 +7,14 @@ use App\Http\Controllers\Auth\UnverifiedController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 
 Route::middleware('guest')->group(function () {
+    Volt::route('admin/register', 'pages.admin.auth.register')
+        ->name('admin.register');
+
+    Volt::route('admin/login', 'pages.admin.auth.login')
+        ->name('admin.login');
+});
+
+Route::middleware('guest')->group(function () {
     Volt::route('register', 'pages.auth.register')
         ->name('register');
 

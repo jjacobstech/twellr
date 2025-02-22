@@ -25,17 +25,17 @@
     </style>
 </head>
 
-<body x-data="" class="font-sans text-gray-900 antialiased">
-    <div class="w-full h-screen lg:flex justify-stretch m-0 border-0 ">
-        @if (request()->routeIs('email.verification'))
-            <div class=" md:w-full lg:w-100 bg-white dark:bg-gray-800  overflow-hidden h-100 px-7 py-7">
+<body x-data="" class="font-sans antialiased text-gray-900">
+    <div class="w-full h-screen m-0 border-0 lg:flex justify-stretch ">
+        @if (request()->routeIs('email.verification') || request()->routeIs('admin.email.verification'))
+            <div class="overflow-hidden bg-white  md:w-full lg:w-100 dark:bg-gray-800 h-100 px-7 py-7">
                 {{ $slot }}
             </div>
         @else
-            <div class=" bg-navy-blue py-32 w-1/2 hidden  shadow-md overflow-hidden  md:h-100 lg:flex justify-center">
-                <img class="h-96 w-96 border-0" src="{{ asset('assets/twellr-logo.png') }}" alt="">
+            <div class="justify-center hidden w-1/2 py-32 overflow-hidden shadow-md  bg-navy-blue md:h-100 lg:flex">
+                <img class="border-0 h-96 w-96" src="{{ asset('assets/twellr-logo.png') }}" alt="">
             </div>
-            <div class=" md:w-full lg:w-1/2 bg-white dark:bg-gray-800  overflow-hidden h-100 px-7 py-7">
+            <div class="overflow-hidden bg-white  md:w-full lg:w-1/2 dark:bg-gray-800 h-100 px-7 py-7">
                 {{ $slot }}
             </div>
         @endif
