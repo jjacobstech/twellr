@@ -23,16 +23,17 @@ new class extends Component {
 ?>
 
 
-<nav x-data="{ open: false }" class="bg-white border-b border-gray-100 dark:bg-gray-800 dark:border-gray-700">
+<nav x-data="{ open: false, more: false }" class="bg-white border-gray-100">
     <!-- Primary Navigation Menu -->
-    <div class="px-2 mx-auto max-w-7xl sm:px-6 lg:px-4">
+    <div class="px-5 mx-auto md:px-2 max-w-7xl sm:px-6 lg:px-4">
         <div class="flex justify-between h-16">
             <div class="flex">
                 <!-- Logo -->
                 <div class="flex items-center shrink-0">
                     <a class="flex" href="{{ route('admin.dashboard') }}" wire:navigate>
-                        <x-application-logo class="block w-auto text-gray-800 fill-current h-9 dark:text-gray-200" />
-                        <img class="h-5 px-3 my-1" src="{{ asset('assets/twellr-text.png') }}" alt="">
+                        <x-application-logo class="block w-auto fill-current h-9" />
+                        <img class="hidden md:h-5 md:px-3 md:my-1 md:block" src="{{ asset('assets/twellr-text.png') }}"
+                            alt="">
                     </a>
                 </div>
 
@@ -40,9 +41,9 @@ new class extends Component {
 
             <div class="w-full sm:-my-px sm:ms-10 sm:flex">
                 {{-- Search Bar --}}
-                <form class="w-[75%] px-10 ">
-                    <div class="flex w-full">
-                        <div class="relative flex w-full my-3">
+                <form class="md:w-[100%] px-5  md:px-10 w-full">
+                    <div class="flex justify-between w-full md:w-full">
+                        <div class="relative flex pb-5 md:pb-0 pt-3 md:pt-0 w-[100%] md:my-3">
                             <input type="search" id="search-dropdown"
                                 class="font-bold block p-2.5 w-full  z-20 text-sm text-gray-900 bg-gray-200 rounded-l-lg border-0 active:border-0 hover:border hover:border-gray-400 focus:border-0 focus:ring-0 border-navy-blue "
                                 placeholder="Search by: Creator, Design, Location, Ratings"
@@ -60,9 +61,8 @@ new class extends Component {
                         </div>
                     </div>
                 </form>
-
                 @if (Auth::user()->role != 'admin')
-                    <div class="justify-center flex w-[10%] mt-5 text-[#b7c1ab]">
+                    <div class="justify-center md:flex  md:w-[10%] mt-5 text-[#b7c1ab] hidden">
                         <span class="w-[20%] mx-1 py-1">
                             <svg viewBox="0 -3.5 29 29" version="1.1" xmlns="http://www.w3.org/2000/svg"
                                 xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -87,7 +87,7 @@ new class extends Component {
                         </span>
                         <span class="capitalize font-bold text-lg text-[#909090]">More</span>
                     </div>
-                    <div class="flex justify-center ">
+                    <div class="justify-center hidden md:flex">
                         <span class="w-[20%] py-3">
                             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
                                 width="40" height="40" viewBox="0 0 132 139">
@@ -97,7 +97,7 @@ new class extends Component {
                             </svg>
                         </span>
                     </div>
-                    <div class="flex justify-center ml-8">
+                    <div class="justify-center hidden ml-8 md:flex">
                         <span class="py-5 mx-4">
                             <svg height="25px" width="25px" version="1.1" id="Layer_1"
                                 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -134,7 +134,6 @@ new class extends Component {
                 @if (Auth::user()->role == 'admin')
                     <div class="py-5 px-2 w-[25%] text-right text-lg font-bold text-black">
                         {{ Auth::user()->name }}
-                        </>
                     </div>
                 @endif
 
@@ -144,7 +143,7 @@ new class extends Component {
             <div class="hidden sm:flex sm:items-center sm:mr-7">
 
                 <x-avatar />
-                <x-dropdown align="right" width="48">
+                <x-dropdown align="right" width="48" class="shadow-2xl shadow-navy-blue ">
                     <x-slot name="trigger">
                         <button
                             class="inline-flex items-center px-1 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out bg-white border border-transparent rounded-md dark:text-gray-400 dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none">
@@ -163,13 +162,215 @@ new class extends Component {
                     </x-slot>
 
                     <x-slot name="content">
-                        <x-dropdown-link :href="route('profile')" wire:navigate>
+                        <div class=" sm:block md:hidden">
+                            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
+                                <span>
+                                    <svg class="inline-block w-6 h-6 fill-current" fill="currentColor"
+                                        viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z">
+                                        </path>
+                                    </svg>
+                                </span>
+                                {{ __('Dashboard') }}
+                            </x-responsive-nav-link>
+                            <x-responsive-nav-link :href="route('profile')" :active="request()->routeIs('profile')" wire:navigate>
+                                <span>
+                                    <svg class='inline-block w-5 h-5 fill-current' fill="#000000" viewBox="0 0 32 32"
+                                        version="1.1" xmlns="http://www.w3.org/2000/svg">
+                                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round">
+                                        </g>
+                                        <g id="SVGRepo_iconCarrier">
+                                            <title>profile</title>
+                                            <path
+                                                d="M28 9h-1.958v-2.938l-4.042-0.062 0.021 3h-12.146l0.083-3-3.958 0.062v3l-2-0.062c-1.104 0-2 0.896-2 2v14c0 1.104 0.896 2 2 2h24c1.104 0 2-0.896 2-2v-14c0-1.104-0.896-2-2-2zM23 7h2v4h-2v-4zM10 13.812c1.208 0 2.188 1.287 2.188 2.875s-0.98 2.875-2.188 2.875-2.188-1.287-2.188-2.875 0.98-2.875 2.188-2.875zM7 7h2v4h-2v-4zM5.667 22.948c0 0 0.237-1.902 0.776-2.261s2.090-0.598 2.090-0.598 1.006 1.075 1.434 1.075c0.427 0 1.433-1.075 1.433-1.075s1.552 0.238 2.091 0.598c0.633 0.422 0.791 2.261 0.791 2.261h-8.615zM26 22h-9v-1h9v1zM26 20h-9v-1h9v1zM26 18h-9v-1h9v1zM26 16h-9v-1h9v1z">
+                                            </path>
+                                        </g>
+                                    </svg>
+                                </span>
+                                {{ __('Profile') }}
+                            </x-responsive-nav-link>
+                            <x-responsive-nav-link wire:navigate>
+                                <span>
+                                    <svg class='inline-block w-5 h-5 fill-current' fill="#000000" viewBox="0 0 32 32"
+                                        version="1.1" xmlns="http://www.w3.org/2000/svg">
+                                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round">
+                                        </g>
+                                        <g id="SVGRepo_iconCarrier">
+                                            <title>profile</title>
+                                            <path
+                                                d="M28 9h-1.958v-2.938l-4.042-0.062 0.021 3h-12.146l0.083-3-3.958 0.062v3l-2-0.062c-1.104 0-2 0.896-2 2v14c0 1.104 0.896 2 2 2h24c1.104 0 2-0.896 2-2v-14c0-1.104-0.896-2-2-2zM23 7h2v4h-2v-4zM10 13.812c1.208 0 2.188 1.287 2.188 2.875s-0.98 2.875-2.188 2.875-2.188-1.287-2.188-2.875 0.98-2.875 2.188-2.875zM7 7h2v4h-2v-4zM5.667 22.948c0 0 0.237-1.902 0.776-2.261s2.090-0.598 2.090-0.598 1.006 1.075 1.434 1.075c0.427 0 1.433-1.075 1.433-1.075s1.552 0.238 2.091 0.598c0.633 0.422 0.791 2.261 0.791 2.261h-8.615zM26 22h-9v-1h9v1zM26 20h-9v-1h9v1zM26 18h-9v-1h9v1zM26 16h-9v-1h9v1z">
+                                            </path>
+                                        </g>
+                                    </svg>
+                                </span>
+                                {{ __('Wallet') }}
+                            </x-responsive-nav-link>
+                            <x-responsive-nav-link wire:navigate>
+                                <span>
+                                    <svg class="inline-block w-5 h-5 fill-current" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round">
+                                        </g>
+                                        <g id="SVGRepo_iconCarrier">
+                                            <path
+                                                d="M19.3399 14.49L18.3399 12.83C18.1299 12.46 17.9399 11.76 17.9399 11.35V8.82C17.9399 6.47 16.5599 4.44 14.5699 3.49C14.0499 2.57 13.0899 2 11.9899 2C10.8999 2 9.91994 2.59 9.39994 3.52C7.44994 4.49 6.09994 6.5 6.09994 8.82V11.35C6.09994 11.76 5.90994 12.46 5.69994 12.82L4.68994 14.49C4.28994 15.16 4.19994 15.9 4.44994 16.58C4.68994 17.25 5.25994 17.77 5.99994 18.02C7.93994 18.68 9.97994 19 12.0199 19C14.0599 19 16.0999 18.68 18.0399 18.03C18.7399 17.8 19.2799 17.27 19.5399 16.58C19.7999 15.89 19.7299 15.13 19.3399 14.49Z"
+                                                fill="#000000"></path>
+                                            <path
+                                                d="M14.8297 20.01C14.4097 21.17 13.2997 22 11.9997 22C11.2097 22 10.4297 21.68 9.87969 21.11C9.55969 20.81 9.31969 20.41 9.17969 20C9.30969 20.02 9.43969 20.03 9.57969 20.05C9.80969 20.08 10.0497 20.11 10.2897 20.13C10.8597 20.18 11.4397 20.21 12.0197 20.21C12.5897 20.21 13.1597 20.18 13.7197 20.13C13.9297 20.11 14.1397 20.1 14.3397 20.07C14.4997 20.05 14.6597 20.03 14.8297 20.01Z"
+                                                fill="#000000"></path>
+                                        </g>
+                                    </svg>
+                                    <span :class="{ 'hidden': true }"
+                                        class="inline-block w-5 h-5 text-sm font-bold text-center text-white rounded-full fill-current bg-navy-blue">1
+                                    </span>
+                                </span>
+                                {{ __('Notification') }}
+
+                            </x-responsive-nav-link>
+                            {{-- <x-responsive-nav-link @click="more = !more">
+
+                                <span>
+                                    <svg class="inline-block w-5 h-5 fill-current" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round">
+                                        </g>
+                                        <g id="SVGRepo_iconCarrier">
+                                            <path
+                                                d="M4 8C5.10457 8 6 7.10457 6 6C6 4.89543 5.10457 4 4 4C2.89543 4 2 4.89543 2 6C2 7.10457 2.89543 8 4 8Z"
+                                                fill="#000000"></path>
+                                            <path
+                                                d="M4 14C5.10457 14 6 13.1046 6 12C6 10.8954 5.10457 10 4 10C2.89543 10 2 10.8954 2 12C2 13.1046 2.89543 14 4 14Z"
+                                                fill="#000000"></path>
+                                            <path
+                                                d="M6 18C6 19.1046 5.10457 20 4 20C2.89543 20 2 19.1046 2 18C2 16.8954 2.89543 16 4 16C5.10457 16 6 16.8954 6 18Z"
+                                                fill="#000000"></path>
+                                            <path
+                                                d="M21 7.5C21.5523 7.5 22 7.05228 22 6.5V5.5C22 4.94772 21.5523 4.5 21 4.5H9C8.44772 4.5 8 4.94772 8 5.5V6.5C8 7.05228 8.44772 7.5 9 7.5H21Z"
+                                                fill="#000000"></path>
+                                            <path
+                                                d="M22 12.5C22 13.0523 21.5523 13.5 21 13.5H9C8.44772 13.5 8 13.0523 8 12.5V11.5C8 10.9477 8.44772 10.5 9 10.5H21C21.5523 10.5 22 10.9477 22 11.5V12.5Z"
+                                                fill="#000000"></path>
+                                            <path
+                                                d="M21 19.5C21.5523 19.5 22 19.0523 22 18.5V17.5C22 16.9477 21.5523 16.5 21 16.5H9C8.44772 16.5 8 16.9477 8 17.5V18.5C8 19.0523 8.44772 19.5 9 19.5H21Z"
+                                                fill="#000000"></path>
+                                        </g>
+                                    </svg>
+                                </span>
+                                {{ __('Mgggore') }}
+                            </x-responsive-nav-link> --}}
+                            {{-- <div class="transition-all duration-500" x-show="more"> --}}
+                            <x-responsive-nav-link wire:navigate>
+                                </span>
+                                {{ __('Opt 1') }}
+                            </x-responsive-nav-link>
+                            <x-responsive-nav-link wire:navigate>
+                                </span>
+                                {{ __('Opt 2') }}
+                            </x-responsive-nav-link>
+                            <x-responsive-nav-link wire:navigate>
+                                </span>
+                                {{ __('Opt 3') }}
+                            </x-responsive-nav-link>
+                            {{-- </div> --}}
+
+                            <!-- Authentication -->
+                            <button wire:click="logout" class="w-full text-start ">
+                                <x-responsive-nav-link>
+
+                                    <span class="">
+                                        <svg class='inline-block w-5 h-5 fill-current' viewBox="0 0 24 24"
+                                            width='10' height='10' fill="none"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round"
+                                                stroke-linejoin="round"></g>
+                                            <g id="SVGRepo_iconCarrier">
+                                                <path
+                                                    d="M17.2929 14.2929C16.9024 14.6834 16.9024 15.3166 17.2929 15.7071C17.6834 16.0976 18.3166 16.0976 18.7071 15.7071L21.6201 12.7941C21.6351 12.7791 21.6497 12.7637 21.6637 12.748C21.87 12.5648 22 12.2976 22 12C22 11.7024 21.87 11.4352 21.6637 11.252C21.6497 11.2363 21.6351 11.2209 21.6201 11.2059L18.7071 8.29289C18.3166 7.90237 17.6834 7.90237 17.2929 8.29289C16.9024 8.68342 16.9024 9.31658 17.2929 9.70711L18.5858 11H13C12.4477 11 12 11.4477 12 12C12 12.5523 12.4477 13 13 13H18.5858L17.2929 14.2929Z"
+                                                    fill="#000000"></path>
+                                                <path
+                                                    d="M5 2C3.34315 2 2 3.34315 2 5V19C2 20.6569 3.34315 22 5 22H14.5C15.8807 22 17 20.8807 17 19.5V16.7326C16.8519 16.647 16.7125 16.5409 16.5858 16.4142C15.9314 15.7598 15.8253 14.7649 16.2674 14H13C11.8954 14 11 13.1046 11 12C11 10.8954 11.8954 10 13 10H16.2674C15.8253 9.23514 15.9314 8.24015 16.5858 7.58579C16.7125 7.4591 16.8519 7.35296 17 7.26738V4.5C17 3.11929 15.8807 2 14.5 2H5Z"
+                                                    fill="#000000"></path>
+                                            </g>
+                                        </svg>
+                                    </span>
+                                    {{ __('Log Out') }}
+                                </x-responsive-nav-link>
+                            </button>
+                        </div>
+                        <x-dropdown-link class='hidden md:block' :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
+                            <span>
+                                <svg class="inline-block w-6 h-6 fill-current" fill="currentColor"
+                                    viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z">
+                                    </path>
+                                </svg>
+                            </span>
+                            {{ __('Dashboard') }}
+                        </x-dropdown-link>
+                        <x-dropdown-link class="hidden text-bold md:block" :href="route('profile')" :active="request()->routeIs('profile')"
+                            wire:navigate>
+                            <span>
+                                <svg class='inline-block w-5 h-5 fill-current text-navy-blue' fill="#000000"
+                                    viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round">
+                                    </g>
+                                    <g id="SVGRepo_iconCarrier">
+                                        <title>profile</title>
+                                        <path
+                                            d="M28 9h-1.958v-2.938l-4.042-0.062 0.021 3h-12.146l0.083-3-3.958 0.062v3l-2-0.062c-1.104 0-2 0.896-2 2v14c0 1.104 0.896 2 2 2h24c1.104 0 2-0.896 2-2v-14c0-1.104-0.896-2-2-2zM23 7h2v4h-2v-4zM10 13.812c1.208 0 2.188 1.287 2.188 2.875s-0.98 2.875-2.188 2.875-2.188-1.287-2.188-2.875 0.98-2.875 2.188-2.875zM7 7h2v4h-2v-4zM5.667 22.948c0 0 0.237-1.902 0.776-2.261s2.090-0.598 2.090-0.598 1.006 1.075 1.434 1.075c0.427 0 1.433-1.075 1.433-1.075s1.552 0.238 2.091 0.598c0.633 0.422 0.791 2.261 0.791 2.261h-8.615zM26 22h-9v-1h9v1zM26 20h-9v-1h9v1zM26 18h-9v-1h9v1zM26 16h-9v-1h9v1z">
+                                        </path>
+                                    </g>
+                                </svg>
+                            </span>
                             {{ __('Profile') }}
+                        </x-dropdown-link>
+                        <x-dropdown-link class="hidden text-bold md:block" :href="route('profile')" :active="request()->routeIs('profile')"
+                            wire:navigate>
+                            <span>
+                                <svg class='inline-block w-5 h-5 fill-current text-navy-blue' fill="#000000"
+                                    viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round">
+                                    </g>
+                                    <g id="SVGRepo_iconCarrier">
+                                        <title>profile</title>
+                                        <path
+                                            d="M28 9h-1.958v-2.938l-4.042-0.062 0.021 3h-12.146l0.083-3-3.958 0.062v3l-2-0.062c-1.104 0-2 0.896-2 2v14c0 1.104 0.896 2 2 2h24c1.104 0 2-0.896 2-2v-14c0-1.104-0.896-2-2-2zM23 7h2v4h-2v-4zM10 13.812c1.208 0 2.188 1.287 2.188 2.875s-0.98 2.875-2.188 2.875-2.188-1.287-2.188-2.875 0.98-2.875 2.188-2.875zM7 7h2v4h-2v-4zM5.667 22.948c0 0 0.237-1.902 0.776-2.261s2.090-0.598 2.090-0.598 1.006 1.075 1.434 1.075c0.427 0 1.433-1.075 1.433-1.075s1.552 0.238 2.091 0.598c0.633 0.422 0.791 2.261 0.791 2.261h-8.615zM26 22h-9v-1h9v1zM26 20h-9v-1h9v1zM26 18h-9v-1h9v1zM26 16h-9v-1h9v1z">
+                                        </path>
+                                    </g>
+                                </svg>
+                            </span>
+                            {{ __('Wallet') }}
                         </x-dropdown-link>
 
                         <!-- Authentication -->
                         <button wire:click="logout" class="w-full text-start">
-                            <x-dropdown-link>
+                            <x-dropdown-link class='hidden md:block'>
+                                <span>
+                                    <svg class='inline-block w-5 h-5 fill-current text-navy-blue' viewBox="0 0 24 24"
+                                        width='10' height='10' fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round">
+                                        </g>
+                                        <g id="SVGRepo_iconCarrier">
+                                            <path
+                                                d="M17.2929 14.2929C16.9024 14.6834 16.9024 15.3166 17.2929 15.7071C17.6834 16.0976 18.3166 16.0976 18.7071 15.7071L21.6201 12.7941C21.6351 12.7791 21.6497 12.7637 21.6637 12.748C21.87 12.5648 22 12.2976 22 12C22 11.7024 21.87 11.4352 21.6637 11.252C21.6497 11.2363 21.6351 11.2209 21.6201 11.2059L18.7071 8.29289C18.3166 7.90237 17.6834 7.90237 17.2929 8.29289C16.9024 8.68342 16.9024 9.31658 17.2929 9.70711L18.5858 11H13C12.4477 11 12 11.4477 12 12C12 12.5523 12.4477 13 13 13H18.5858L17.2929 14.2929Z"
+                                                fill="navy-blue"></path>
+                                            <path
+                                                d="M5 2C3.34315 2 2 3.34315 2 5V19C2 20.6569 3.34315 22 5 22H14.5C15.8807 22 17 20.8807 17 19.5V16.7326C16.8519 16.647 16.7125 16.5409 16.5858 16.4142C15.9314 15.7598 15.8253 14.7649 16.2674 14H13C11.8954 14 11 13.1046 11 12C11 10.8954 11.8954 10 13 10H16.2674C15.8253 9.23514 15.9314 8.24015 16.5858 7.58579C16.7125 7.4591 16.8519 7.35296 17 7.26738V4.5C17 3.11929 15.8807 2 14.5 2H5Z"
+                                                fill="navy-blue"></path>
+                                        </g>
+                                    </svg>
+                                </span>
                                 {{ __('Log Out') }}
                             </x-dropdown-link>
                         </button>
@@ -182,8 +383,8 @@ new class extends Component {
 
             <!-- Hamburger -->
             <div class="flex items-center -me-2 sm:hidden">
-                <button @click="open = ! open"
-                    class="inline-flex items-center justify-center p-2 text-gray-400 transition duration-150 ease-in-out rounded-md dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-900 focus:text-gray-500 dark:focus:text-gray-400">
+                <button @click="open = ! open , more = false"
+                    class="inline-flex items-center justify-center p-2 transition duration-150 ease-in-out rounded-md text-navy-blue dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-900 focus:text-gray-500 dark:focus:text-gray-400">
                     <svg class="w-6 h-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                         <path :class="{ 'hidden': open, 'inline-flex': !open }" class="inline-flex"
                             stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -197,32 +398,134 @@ new class extends Component {
     </div>
 
     <!-- Responsive Navigation Menu -->
-    <div :class="{ 'block': open, 'hidden': !open }" class="hidden sm:hidden">
-        <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
-                {{ __('Dashboard') }}
-            </x-responsive-nav-link>
+
+    <div :class="{ 'block': open, 'hidden': !open }" class="fixed hidden w-screen h-10 sm:hidden">
+        <div class="flex px-2 py-3 border-b-2 border-white bg-navy-blue">
+            <x-avatar />
+            <div class="px-4">
+                <div class="text-base font-medium text-white" x-data="{{ json_encode(['name' => auth()->user()->name]) }}" x-text="name"
+                    x-on:profile-updated.window="name = $event.detail.name"></div>
+                <div class="text-sm font-medium text-gray-200">{{ auth()->user()->email }}</div>
+            </div>
         </div>
 
         <!-- Responsive Settings Options -->
-        <div class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">
-            <div class="flex">
-                <x-avatar />
-                <div class="px-4">
-                    <div class="text-base font-medium text-gray-800 dark:text-gray-200" x-data="{{ json_encode(['name' => auth()->user()->name]) }}"
-                        x-text="name" x-on:profile-updated.window="name = $event.detail.name"></div>
-                    <div class="text-sm font-medium text-gray-500">{{ auth()->user()->email }}</div>
-                </div>
-            </div>
-
-            <div class="mt-3 space-y-1">
-                <x-responsive-nav-link :href="route('profile')" wire:navigate>
+        <div class="fixed w-screen pb-1 bg-white border-t border-gray-200 ">
+            <div>
+                <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
+                    <span>
+                        <svg class="inline-block w-6 h-6 fill-current" fill="currentColor" viewBox="0 0 20 20"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z">
+                            </path>
+                        </svg>
+                    </span>
+                    {{ __('Dashboard') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('profile')" :active="request()->routeIs('profile')" wire:navigate>
+                    <span>
+                        <svg class='inline-block w-5 h-5 fill-current' fill="#000000" viewBox="0 0 32 32"
+                            version="1.1" xmlns="http://www.w3.org/2000/svg">
+                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                            <g id="SVGRepo_iconCarrier">
+                                <title>profile</title>
+                                <path
+                                    d="M28 9h-1.958v-2.938l-4.042-0.062 0.021 3h-12.146l0.083-3-3.958 0.062v3l-2-0.062c-1.104 0-2 0.896-2 2v14c0 1.104 0.896 2 2 2h24c1.104 0 2-0.896 2-2v-14c0-1.104-0.896-2-2-2zM23 7h2v4h-2v-4zM10 13.812c1.208 0 2.188 1.287 2.188 2.875s-0.98 2.875-2.188 2.875-2.188-1.287-2.188-2.875 0.98-2.875 2.188-2.875zM7 7h2v4h-2v-4zM5.667 22.948c0 0 0.237-1.902 0.776-2.261s2.090-0.598 2.090-0.598 1.006 1.075 1.434 1.075c0.427 0 1.433-1.075 1.433-1.075s1.552 0.238 2.091 0.598c0.633 0.422 0.791 2.261 0.791 2.261h-8.615zM26 22h-9v-1h9v1zM26 20h-9v-1h9v1zM26 18h-9v-1h9v1zM26 16h-9v-1h9v1z">
+                                </path>
+                            </g>
+                        </svg>
+                    </span>
                     {{ __('Profile') }}
                 </x-responsive-nav-link>
+                <x-responsive-nav-link wire:navigate>
+                    <span>
+                        <svg class="inline-block w-5 h-5 fill-current" viewBox="0 0 24 24" fill="none"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                            <g id="SVGRepo_iconCarrier">
+                                <path
+                                    d="M19.3399 14.49L18.3399 12.83C18.1299 12.46 17.9399 11.76 17.9399 11.35V8.82C17.9399 6.47 16.5599 4.44 14.5699 3.49C14.0499 2.57 13.0899 2 11.9899 2C10.8999 2 9.91994 2.59 9.39994 3.52C7.44994 4.49 6.09994 6.5 6.09994 8.82V11.35C6.09994 11.76 5.90994 12.46 5.69994 12.82L4.68994 14.49C4.28994 15.16 4.19994 15.9 4.44994 16.58C4.68994 17.25 5.25994 17.77 5.99994 18.02C7.93994 18.68 9.97994 19 12.0199 19C14.0599 19 16.0999 18.68 18.0399 18.03C18.7399 17.8 19.2799 17.27 19.5399 16.58C19.7999 15.89 19.7299 15.13 19.3399 14.49Z"
+                                    fill="#000000"></path>
+                                <path
+                                    d="M14.8297 20.01C14.4097 21.17 13.2997 22 11.9997 22C11.2097 22 10.4297 21.68 9.87969 21.11C9.55969 20.81 9.31969 20.41 9.17969 20C9.30969 20.02 9.43969 20.03 9.57969 20.05C9.80969 20.08 10.0497 20.11 10.2897 20.13C10.8597 20.18 11.4397 20.21 12.0197 20.21C12.5897 20.21 13.1597 20.18 13.7197 20.13C13.9297 20.11 14.1397 20.1 14.3397 20.07C14.4997 20.05 14.6597 20.03 14.8297 20.01Z"
+                                    fill="#000000"></path>
+                            </g>
+                        </svg>
+                        <span :class="{ 'hidden': true }"
+                            class="inline-block w-5 h-5 text-sm font-bold text-center text-white rounded-full fill-current bg-navy-blue">1
+                        </span>
+                    </span>
+                    {{ __('Notification') }}
+
+                </x-responsive-nav-link>
+                <x-responsive-nav-link @click="more = !more" wire:navigate>
+
+                    <span>
+                        <svg class="inline-block w-5 h-5 fill-current" viewBox="0 0 24 24" fill="none"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                            <g id="SVGRepo_iconCarrier">
+                                <path
+                                    d="M4 8C5.10457 8 6 7.10457 6 6C6 4.89543 5.10457 4 4 4C2.89543 4 2 4.89543 2 6C2 7.10457 2.89543 8 4 8Z"
+                                    fill="#000000"></path>
+                                <path
+                                    d="M4 14C5.10457 14 6 13.1046 6 12C6 10.8954 5.10457 10 4 10C2.89543 10 2 10.8954 2 12C2 13.1046 2.89543 14 4 14Z"
+                                    fill="#000000"></path>
+                                <path
+                                    d="M6 18C6 19.1046 5.10457 20 4 20C2.89543 20 2 19.1046 2 18C2 16.8954 2.89543 16 4 16C5.10457 16 6 16.8954 6 18Z"
+                                    fill="#000000"></path>
+                                <path
+                                    d="M21 7.5C21.5523 7.5 22 7.05228 22 6.5V5.5C22 4.94772 21.5523 4.5 21 4.5H9C8.44772 4.5 8 4.94772 8 5.5V6.5C8 7.05228 8.44772 7.5 9 7.5H21Z"
+                                    fill="#000000"></path>
+                                <path
+                                    d="M22 12.5C22 13.0523 21.5523 13.5 21 13.5H9C8.44772 13.5 8 13.0523 8 12.5V11.5C8 10.9477 8.44772 10.5 9 10.5H21C21.5523 10.5 22 10.9477 22 11.5V12.5Z"
+                                    fill="#000000"></path>
+                                <path
+                                    d="M21 19.5C21.5523 19.5 22 19.0523 22 18.5V17.5C22 16.9477 21.5523 16.5 21 16.5H9C8.44772 16.5 8 16.9477 8 17.5V18.5C8 19.0523 8.44772 19.5 9 19.5H21Z"
+                                    fill="#000000"></path>
+                            </g>
+                        </svg>
+                    </span>
+                    {{ __('More') }}
+                </x-responsive-nav-link>
+                <div class="px-5 transition-all duration-500 bg-gray-200" x-show="more">
+                    <x-responsive-nav-link wire:navigate>
+                        </span>
+                        {{ __('Wallet') }}
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link wire:navigate>
+                        </span>
+                        {{ __('Upload') }}
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link wire:navigate>
+                        </span>
+                        {{ __('Explore') }}
+                    </x-responsive-nav-link>
+                </div>
 
                 <!-- Authentication -->
-                <button wire:click="logout" class="w-full text-start">
+                <button wire:click="logout" class="w-full text-start ">
                     <x-responsive-nav-link>
+
+                        <span class="">
+                            <svg class='inline-block w-5 h-5 fill-current' viewBox="0 0 24 24" width='10'
+                                height='10' fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                <g id="SVGRepo_iconCarrier">
+                                    <path
+                                        d="M17.2929 14.2929C16.9024 14.6834 16.9024 15.3166 17.2929 15.7071C17.6834 16.0976 18.3166 16.0976 18.7071 15.7071L21.6201 12.7941C21.6351 12.7791 21.6497 12.7637 21.6637 12.748C21.87 12.5648 22 12.2976 22 12C22 11.7024 21.87 11.4352 21.6637 11.252C21.6497 11.2363 21.6351 11.2209 21.6201 11.2059L18.7071 8.29289C18.3166 7.90237 17.6834 7.90237 17.2929 8.29289C16.9024 8.68342 16.9024 9.31658 17.2929 9.70711L18.5858 11H13C12.4477 11 12 11.4477 12 12C12 12.5523 12.4477 13 13 13H18.5858L17.2929 14.2929Z"
+                                        fill="#000000"></path>
+                                    <path
+                                        d="M5 2C3.34315 2 2 3.34315 2 5V19C2 20.6569 3.34315 22 5 22H14.5C15.8807 22 17 20.8807 17 19.5V16.7326C16.8519 16.647 16.7125 16.5409 16.5858 16.4142C15.9314 15.7598 15.8253 14.7649 16.2674 14H13C11.8954 14 11 13.1046 11 12C11 10.8954 11.8954 10 13 10H16.2674C15.8253 9.23514 15.9314 8.24015 16.5858 7.58579C16.7125 7.4591 16.8519 7.35296 17 7.26738V4.5C17 3.11929 15.8807 2 14.5 2H5Z"
+                                        fill="#000000"></path>
+                                </g>
+                            </svg>
+                        </span>
                         {{ __('Log Out') }}
                     </x-responsive-nav-link>
                 </button>

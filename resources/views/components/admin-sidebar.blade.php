@@ -1,9 +1,6 @@
 <!-- component -->
-
-
 <div id="sidebar"
-    class="h-screen px-3 overflow-x-hidden transition-transform duration-300 ease-in-out shadow-xl bg-navy-blue md:block w-30 md:w-60 lg:w-60"
-    x-show="sidenav">
+    class="h-[90vh] px-3 overflow-x-hidden transition-transform duration-300 ease-in-out shadow-xl bg-navy-blue md:block w-30 md:w-60 lg:w-60">
     <div class="mt-10 space-y-6 md:space-y-10">
         <div id="menu" class="flex flex-col space-y-2">
 

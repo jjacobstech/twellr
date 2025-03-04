@@ -49,7 +49,7 @@ new #[Layout('layouts.guest')] class extends Component {
 
     <x-auth-session-status class="mx-2" :status="session('status')" />
 
-    <h1 class="my-1 mb-5 text-4xl font-extrabold capitalize">Welcome Back! </h1>
+    <h1 class="my-1 text-4xl font-extrabold capitalize">Welcome Back! </h1>
 
     <form wire:submit="login">
 
@@ -103,7 +103,7 @@ new #[Layout('layouts.guest')] class extends Component {
 
                 <p class="w-full my-2 text-center text-black">Or</p>
 
-                <a href="{{ route('auth.google.login') }}">
+                <a href="{{ route('auth.google.login') }}" target="_top">
                     <x-google-auth-actions :value="__('Sign in with Google')" />
                 </a>
             </div>

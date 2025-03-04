@@ -1,6 +1,6 @@
 <x-app-layout>
     <div class="flex mx-auto md:w-full lg:px">
-        <x-sidebar />
+        <x-admin-sidebar />
         <div class="w-full px-2">
             <div class="flex justify-evenly">
                 <div class="flex w-[63%] gap-5">

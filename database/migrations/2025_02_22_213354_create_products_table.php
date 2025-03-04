@@ -19,8 +19,8 @@ return new class extends Migration
             $table->decimal('price', 10);
             $table->unsignedInteger('delivery_time');
             $table->text('description');
-            $table->string(column: 'file');
-            $table->string(column: 'image');
+            $table->string(column: 'designfile');
+            $table->string(column: 'designimage');
             $table->string('mime', 50)->nullable();
             $table->string('extension', 50)->nullable();
             $table->string('size', 50)->nullable();

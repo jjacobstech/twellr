@@ -32,6 +32,9 @@
                 {{ $slot }}
             </div>
         @else
+            {{-- <div class="h-10 w-10">
+                <img src="{{ asset('assets/twellr.svg') }}" alt="">
+            </div> --}}
             <div class="justify-center hidden w-1/2 py-32 overflow-hidden shadow-md  bg-navy-blue md:h-100 lg:flex">
                 <img class="border-0 h-96 w-96" src="{{ asset('assets/twellr-logo.png') }}" alt="">
             </div>
