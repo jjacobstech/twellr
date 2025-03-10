@@ -2,6 +2,6 @@
 
 <textarea @disabled($disabled)
     {{ $attributes->merge([
-        'class' => 'border-gray-500 focus:border-navy-blue
-            focus:ring-navy-blue rounded-md shadow-sm',
+        'class' => 'border-[#bebebe] bg-[#bebebe] focus:border-navy-blue
+                    focus:ring-navy-blue rounded-md shadow-sm',
     ]) }}></textarea>

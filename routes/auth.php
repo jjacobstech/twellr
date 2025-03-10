@@ -8,7 +8,7 @@ use App\Http\Controllers\Auth\VerifyEmailController;
 
 Route::middleware('guest')->group(function () {
     Volt::route('admin/register', 'pages.admin.auth.register')
-        ->name('admin.register');
+        ->name('admin.register')->middleware('AdminExists');
 
     Volt::route('admin/login', 'pages.admin.auth.login')
         ->name('admin.login');

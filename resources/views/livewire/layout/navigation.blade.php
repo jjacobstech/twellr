@@ -99,36 +99,8 @@ new class extends Component {
                     </div>
                     <div class="justify-center hidden ml-8 md:flex">
                         <span class="py-5 mx-4">
-                            <svg height="25px" width="25px" version="1.1" id="Layer_1"
-                                xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                                viewBox="-51.2 -51.2 614.40 614.40" xml:space="preserve" fill="#000000"
-                                transform="rotate(0)">
-                                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                                <g id="SVGRepo_iconCarrier">
-                                    <path style="fill:#fbaa0d;"
-                                        d="M256,100.174c-27.619,0-50.087-22.468-50.087-50.087S228.381,0,256,0s50.087,22.468,50.087,50.087 S283.619,100.174,256,100.174z M256,33.391c-9.196,0-16.696,7.5-16.696,16.696s7.5,16.696,16.696,16.696 c9.196,0,16.696-7.5,16.696-16.696S265.196,33.391,256,33.391z">
-                                    </path>
-                                    <path style="fill:#fbaa0d;"
-                                        d="M256.006,0v33.394c9.194,0.003,16.69,7.5,16.69,16.693s-7.496,16.69-16.69,16.693v33.394 c27.618-0.004,50.081-22.469,50.081-50.087S283.624,0.004,256.006,0z">
-                                    </path>
-                                    <path style="fill:#fbaa0d;"
-                                        d="M256,512c-46.043,0-83.478-37.435-83.478-83.478c0-9.228,7.467-16.696,16.696-16.696h133.565 c9.228,0,16.696,7.467,16.696,16.696C339.478,474.565,302.043,512,256,512z">
-                                    </path>
-                                    <path style="fill:#fbaa0d;"
-                                        d="M322.783,411.826h-66.777V512c46.042-0.004,83.473-37.437,83.473-83.478 C339.478,419.293,332.011,411.826,322.783,411.826z">
-                                    </path>
-                                    <path style="fill:#fbaa0d;"
-                                        d="M439.652,348.113v-97.678C439.642,149,357.435,66.793,256,66.783 C154.565,66.793,72.358,149,72.348,250.435v97.678c-19.41,6.901-33.384,25.233-33.391,47.017 c0.01,27.668,22.419,50.075,50.087,50.085h333.913c27.668-0.01,50.077-22.417,50.087-50.085 C473.036,373.346,459.063,355.014,439.652,348.113z">
-                                    </path>
-                                    <path style="fill:#fbaa0d;"
-                                        d="M439.652,348.113v-97.678C439.642,149,357.435,66.793,256,66.783v378.432h166.957 c27.668-0.01,50.077-22.417,50.087-50.085C473.036,373.346,459.063,355.014,439.652,348.113z">
-                                    </path>
-                                    <path style="fill:#FFF3DB;"
-                                        d="M155.826,267.13c-9.228,0-16.696-7.467-16.696-16.696c0-47.022,28.011-89.283,71.381-107.641 c8.446-3.587,18.294,0.326,21.88,8.836c3.62,8.51-0.358,18.294-8.836,21.88c-31.012,13.142-51.033,43.337-51.033,76.925 C172.522,259.663,165.054,267.13,155.826,267.13z">
-                                    </path>
-                                </g>
-                            </svg></span>
+                            <x-bell />
+                        </span>
                     </div>
                 @endif
                 @if (Auth::user()->role == 'admin')
@@ -151,11 +123,10 @@ new class extends Component {
                             </div>
 
                             <div class="">
-                                <svg class="w-5 h-5 font-bold fill-current " xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd"
-                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                        clip-rule="evenodd" />
+                                <svg class="text-gray-400 w-5 h-5 font-bold fill-current"
+                                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+                                    <path
+                                        d="M137.4 374.6c12.5 12.5 32.8 12.5 45.3 0l128-128c9.2-9.2 11.9-22.9 6.9-34.9s-16.6-19.8-29.6-19.8L32 192c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9l128 128z" />
                                 </svg>
                             </div>
                         </button>
@@ -193,18 +164,12 @@ new class extends Component {
                             </x-responsive-nav-link>
                             <x-responsive-nav-link wire:navigate>
                                 <span>
-                                    <svg class='inline-block w-5 h-5 fill-current' fill="#000000" viewBox="0 0 32 32"
-                                        version="1.1" xmlns="http://www.w3.org/2000/svg">
-                                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round">
-                                        </g>
-                                        <g id="SVGRepo_iconCarrier">
-                                            <title>profile</title>
-                                            <path
-                                                d="M28 9h-1.958v-2.938l-4.042-0.062 0.021 3h-12.146l0.083-3-3.958 0.062v3l-2-0.062c-1.104 0-2 0.896-2 2v14c0 1.104 0.896 2 2 2h24c1.104 0 2-0.896 2-2v-14c0-1.104-0.896-2-2-2zM23 7h2v4h-2v-4zM10 13.812c1.208 0 2.188 1.287 2.188 2.875s-0.98 2.875-2.188 2.875-2.188-1.287-2.188-2.875 0.98-2.875 2.188-2.875zM7 7h2v4h-2v-4zM5.667 22.948c0 0 0.237-1.902 0.776-2.261s2.090-0.598 2.090-0.598 1.006 1.075 1.434 1.075c0.427 0 1.433-1.075 1.433-1.075s1.552 0.238 2.091 0.598c0.633 0.422 0.791 2.261 0.791 2.261h-8.615zM26 22h-9v-1h9v1zM26 20h-9v-1h9v1zM26 18h-9v-1h9v1zM26 16h-9v-1h9v1z">
-                                            </path>
-                                        </g>
+                                    <svg class="inline-block w-5 h-5 fill-current" xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 512 512">
+                                        <path fill="#001f54"
+                                            d="M64 32C28.7 32 0 60.7 0 96L0 416c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-224c0-35.3-28.7-64-64-64L80 128c-8.8 0-16-7.2-16-16s7.2-16 16-16l368 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L64 32zM416 272a32 32 0 1 1 0 64 32 32 0 1 1 0-64z" />
                                     </svg>
+
                                 </span>
                                 {{ __('Wallet') }}
                             </x-responsive-nav-link>
@@ -261,7 +226,7 @@ new class extends Component {
                                         </g>
                                     </svg>
                                 </span>
-                                {{ __('Mgggore') }}
+                                {{ __('More') }}
                             </x-responsive-nav-link> --}}
                             {{-- <div class="transition-all duration-500" x-show="more"> --}}
                             <x-responsive-nav-link wire:navigate>
@@ -335,17 +300,10 @@ new class extends Component {
                         <x-dropdown-link class="hidden text-bold md:block" :href="route('profile')" :active="request()->routeIs('profile')"
                             wire:navigate>
                             <span>
-                                <svg class='inline-block w-5 h-5 fill-current text-navy-blue' fill="#000000"
-                                    viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg">
-                                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round">
-                                    </g>
-                                    <g id="SVGRepo_iconCarrier">
-                                        <title>profile</title>
-                                        <path
-                                            d="M28 9h-1.958v-2.938l-4.042-0.062 0.021 3h-12.146l0.083-3-3.958 0.062v3l-2-0.062c-1.104 0-2 0.896-2 2v14c0 1.104 0.896 2 2 2h24c1.104 0 2-0.896 2-2v-14c0-1.104-0.896-2-2-2zM23 7h2v4h-2v-4zM10 13.812c1.208 0 2.188 1.287 2.188 2.875s-0.98 2.875-2.188 2.875-2.188-1.287-2.188-2.875 0.98-2.875 2.188-2.875zM7 7h2v4h-2v-4zM5.667 22.948c0 0 0.237-1.902 0.776-2.261s2.090-0.598 2.090-0.598 1.006 1.075 1.434 1.075c0.427 0 1.433-1.075 1.433-1.075s1.552 0.238 2.091 0.598c0.633 0.422 0.791 2.261 0.791 2.261h-8.615zM26 22h-9v-1h9v1zM26 20h-9v-1h9v1zM26 18h-9v-1h9v1zM26 16h-9v-1h9v1z">
-                                        </path>
-                                    </g>
+                                <svg class="inline-block w-5 h-5 fill-current" xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 512 512">
+                                    <path fill="#001f54"
+                                        d="M64 32C28.7 32 0 60.7 0 96L0 416c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-224c0-35.3-28.7-64-64-64L80 128c-8.8 0-16-7.2-16-16s7.2-16 16-16l368 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L64 32zM416 272a32 32 0 1 1 0 64 32 32 0 1 1 0-64z" />
                                 </svg>
                             </span>
                             {{ __('Wallet') }}

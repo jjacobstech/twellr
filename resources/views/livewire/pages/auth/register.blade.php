@@ -35,7 +35,8 @@ new #[Layout('layouts.guest')] class extends Component {
         event(
             new Registered(
                 ($user = User::create([
-                    'name' => $validated['firstname'] . ' ' . $validated['lastname'],
+                    'firstname' => $validated['firstname'],
+                    'lastname' => $validated['lastname'],
                     'email' => $validated['email'],
                     'password' => $validated['password'],
                     'role' => $validated['role'],
@@ -48,8 +49,10 @@ new #[Layout('layouts.guest')] class extends Component {
         Mail::to($this->email)->send(new EmailVerification($otp, $user->name));
 
         session()->flash('message', 'Registration successful');
+        session()->reflash();
+        session()->put('user', $user);
 
-        return redirect(route('email.verification'))->with(['user' => $user, 'secret' => $validated['email']]);
+        redirect(route('email.verification'))->with(['user' => $user, 'secret' => $validated['email']]);
     }
 }; ?>
 
@@ -64,8 +67,7 @@ new #[Layout('layouts.guest')] class extends Component {
             </div>
         @endif
     </div>
-    <form wire:submit="register" enctype="multipart/form-data">
-
+    <form wire:submit.prevent="register">
         {{-- role selector button --}}
 
         <div class="">

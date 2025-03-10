@@ -17,14 +17,17 @@ return new class extends Migration
             $table->string('name');
             $table->char('type', 50);
             $table->decimal('price', 10);
-            $table->unsignedInteger('delivery_time');
+            $table->string('category');
             $table->text('description');
-            $table->string(column: 'designfile');
-            $table->string(column: 'designimage');
-            $table->string('mime', 50)->nullable();
-            $table->string('extension', 50)->nullable();
+            $table->string(column: 'print_stack');
+            $table->string('print_stack_mime', 50)->nullable();
+            $table->string('print_stack_extension', 50)->nullable();
+            $table->string('print_stack_size', 50)->nullable();
+            $table->string('design_stack');
+            $table->string('design_stack_mime', 50)->nullable();
+            $table->string('design_stack_extension', 50)->nullable();
             $table->string('size', 50)->nullable();
-            $table->enum('status', ['0', '1'])->default('1');
+            $table->enum('status', ['available', 'unavailable'])->default('available');
             $table->timestamps();
         });
     }

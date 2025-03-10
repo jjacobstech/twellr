@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\User;
+use Livewire\Volt\Volt;
 use Tzsk\Otp\Facades\Otp;
 use Livewire\Volt\Component;
 use App\Mail\EmailVerification;
@@ -61,11 +62,21 @@ new #[Layout('layouts.guest')] class extends Component {
 
             Session::flash('status', 'verification-successful');
 
-            if ($user->role == 'admin') {
-                return redirect(route('admin.dashboard', absolute: false));
-            }
+            switch ($user->role) {
+                case 'admin':
+                    $this->redirect(route('admin.dashboard', absolute: false));
+                    break;
 
-            return redirect(route('dashboard', absolute: false));
+                case 'creative':
+                    session()->reflash();
+                    session()->put('user', $user);
+                    $this->redirect(route('creative.payment.preference', absolute: false));
+                    break;
+
+                case 'user':
+                    $this->redirect(route('dashboard', absolute: false));
+                    break;
+            }
         } else {
             Session::flash('status', 'Invalid OTP');
         }

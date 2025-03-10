@@ -9,11 +9,11 @@ Route::fallback(function () {
 });
 
 Route::view('dashboard', 'dashboard')
-    ->middleware(['auth', 'verified', 'isUser'])
+    ->middleware(['auth', 'verified', 'IsUser', 'IsCreative'])
     ->name('dashboard');
 
 Route::view('profile', 'profile')
-    ->middleware(['auth'])
+    ->middleware(['auth', 'verified'])
     ->name('profile');
 
 Route::view('feed', 'feed')

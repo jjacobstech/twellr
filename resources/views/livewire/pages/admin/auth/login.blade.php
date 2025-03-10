@@ -115,7 +115,7 @@ new #[Layout('layouts.guest')] class extends Component {
             @if (User::where('role', '=', 'admin')->get())
                 <div class="flex mt-4">
                     <a class="w-1/2 text-sm font-bold text-black underline rounded-md hover:text-navy-blue focus:outline-none focus:text-black"
-                        href="{{ route('register') }}">
+                        href="{{ route('admin.register') }}">
                         {{ __("Don't Have Account?") }}
                     </a>
                     @if (Route::has('password.request'))

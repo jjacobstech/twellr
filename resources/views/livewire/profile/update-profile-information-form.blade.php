@@ -7,7 +7,8 @@ use Illuminate\Validation\Rule;
 use Livewire\Volt\Component;
 
 new class extends Component {
-    public string $name = '';
+    public string $firstname = '';
+    public string $lastname = '';
     public string $email = '';
 
     /**
@@ -15,7 +16,8 @@ new class extends Component {
      */
     public function mount(): void
     {
-        $this->name = Auth::user()->name;
+        $this->firstname = Auth::user()->firstname;
+        $this->lastname = Auth::user()->lastname;
         $this->email = Auth::user()->email;
     }
 
@@ -74,36 +76,41 @@ new class extends Component {
 
     <form wire:submit="updateProfileInformation" class="mt-6 space-y-6">
         <div>
-            <x-input-label for="name" :value="__('Name')" />
-            <x-text-input wire:model="name" id="name" name="name" type="text" class="block w-full mt-1" required
-                autofocus autocomplete="name" />
-            <x-input-error class="mt-2" :messages="$errors->get('name')" />
+            <x-input-label for="firstname" :value="__('Firstname')" />
+            <x-text-input wire:model="firstname" id="firstname" name="firstname" type="text" class="block w-full mt-1"
+                required autofocus autocomplete="firstname" />
+            <x-input-error class="mt-2" :messages="$errors->get('firstname')" />
+        </div>
+        <div>
+            <x-input-label for="lastname" :value="__('Lastname')" />
+            <x-text-input wire:model="lastname" id="lastname" name="lastname" type="text" class="block w-full mt-1"
+                required autofocus autocomplete="lastname" />
+            <x-input-error class="mt-2" :messages="$errors->get('lastname')" />
         </div>
 
         <div>
             <x-input-label for="email" :value="__('Email')" />
-            <x-text-input wire:model="email" id="email" name="email" type="email" class="block w-full mt-1" required
-                autocomplete="username" />
+            <x-text-input wire:model="email" id="email" name="email" type="email" class="block w-full mt-1"
+                required autocomplete="username" />
             <x-input-error class="mt-2" :messages="$errors->get('email')" />
 
-            @if (auth()->user() instanceof \Illuminate\Contracts\Auth\MustVerifyEmail &&
-            !auth()->user()->hasVerifiedEmail())
-            <div>
-                <p class="mt-2 text-sm text-gray-800 dark:text-gray-200">
-                    {{ __('Your email address is unverified.') }}
+            @if (auth()->user() instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && !auth()->user()->hasVerifiedEmail())
+                <div>
+                    <p class="mt-2 text-sm text-gray-800 dark:text-gray-200">
+                        {{ __('Your email address is unverified.') }}
 
-                    <button wire:click.prevent="sendVerification"
-                        class="text-sm text-gray-600 underline rounded-md dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">
-                        {{ __('Click here to re-send the verification email.') }}
-                    </button>
-                </p>
+                        <button wire:click.prevent="sendVerification"
+                            class="text-sm text-gray-600 underline rounded-md dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">
+                            {{ __('Click here to re-send the verification email.') }}
+                        </button>
+                    </p>
 
-                @if (session('status') === 'verification-link-sent')
-                <p class="mt-2 text-sm font-medium text-green-600 dark:text-green-400">
-                    {{ __('A new verification link has been sent to your email address.') }}
-                </p>
-                @endif
-            </div>
+                    @if (session('status') === 'verification-link-sent')
+                        <p class="mt-2 text-sm font-medium text-green-600 dark:text-green-400">
+                            {{ __('A new verification link has been sent to your email address.') }}
+                        </p>
+                    @endif
+                </div>
             @endif
         </div>
 

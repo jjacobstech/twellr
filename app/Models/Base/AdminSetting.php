@@ -4,7 +4,7 @@
  * Created by Reliese Model.
  */
 
-namespace App\Models;
+namespace App\Models\Base;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -37,7 +37,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $onesignal_appid
  * @property string $onesignal_restapi
  *
- * @package App\Models
+ * @package App\Models\Base
  */
 class AdminSetting extends Model
 {
@@ -49,32 +49,5 @@ class AdminSetting extends Model
 		'days_process_withdrawals' => 'int',
 		'advertisement_status' => 'bool',
 		'push_notification_status' => 'bool'
-	];
-
-	protected $fillable = [
-		'title',
-		'description',
-		'email_verification',
-		'email_no_reply',
-		'email_admin',
-		'currency_symbol',
-		'currency_code',
-		'fee_commission',
-		'currency_position',
-		'days_process_withdrawals',
-		'google_login',
-		'logo',
-		'logo_2',
-		'text_logo',
-		'favicon',
-		'avatar',
-		'maintenance_mode',
-		'vat',
-		'wallet_format',
-		'advertisement_status',
-		'referral_system',
-		'push_notification_status',
-		'onesignal_appid',
-		'onesignal_restapi'
 	];
 }

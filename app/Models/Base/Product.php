@@ -4,7 +4,7 @@
  * Created by Reliese Model.
  */
 
-namespace App\Models;
+namespace App\Models\Base;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
@@ -31,7 +31,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  *
- * @package App\Models
+ * @package App\Models\Base
  */
 class Product extends Model
 {
@@ -40,23 +40,5 @@ class Product extends Model
 	protected $casts = [
 		'user_id' => 'int',
 		'price' => 'float'
-	];
-
-	protected $fillable = [
-		'user_id',
-		'name',
-		'type',
-		'price',
-		'category',
-		'description',
-		'print_stack',
-		'print_stack_mime',
-		'print_stack_extension',
-		'print_stack_size',
-		'design_stack',
-		'design_stack_mime',
-		'design_stack_extension',
-		'size',
-		'status'
 	];
 }

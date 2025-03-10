@@ -27,7 +27,9 @@
 
 <body x-data="" class="font-sans antialiased text-gray-900">
     <div class="w-full h-screen m-0 border-0 lg:flex justify-stretch ">
-        @if (request()->routeIs('email.verification') || request()->routeIs('admin.email.verification'))
+        @if (request()->routeIs('email.verification') ||
+                request()->routeIs('admin.email.verification') ||
+                request()->routeIs('creative.payment.preference'))
             <div class="overflow-hidden bg-white  md:w-full lg:w-100 dark:bg-gray-800 h-100 px-7 py-7">
                 {{ $slot }}
             </div>

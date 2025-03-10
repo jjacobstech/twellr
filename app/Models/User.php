@@ -2,51 +2,75 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
+use Illuminate\Notifications\Notifiable;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
-
     /**
-     * The attributes that are mass assignable.
+     * Class User
      *
-     * @var list<string>
+     * @property int $id
+     * @property string $firstname
+     * @property string $lastname
+     * @property string|null $avatar
+     * @property string|null $cover
+     * @property string|null $address
+     * @property string|null $phone_no
+     * @property string $email
+     * @property string|null $google_id
+     * @property string $role
+     * @property Carbon|null $email_verified_at
+     * @property string $password
+     * @property float|null $price
+     * @property float|null $wallet_balance
+     * @property string|null $bank_name
+     * @property string|null $account_name
+     * @property string|null $account_no
+     * @property string $notify_purchase
+     * @property string|null $remember_token
+     * @property Carbon|null $created_at
+     * @property Carbon|null $updated_at
+     *
+     * @package App\Models
      */
-    protected $fillable = [
-        'name',
-        'avatar',
-        'role',
-        'email',
-        'google_id',
-        'password',
-        'email_verified_at'
+
+    protected $table = 'users';
+
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'price' => 'float',
+        'wallet_balance' => 'float'
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
     protected $hidden = [
         'password',
-        'remember_token',
+        'remember_token'
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
+    protected $fillable = [
+        'firstname',
+        'lastname',
+        'avatar',
+        'cover',
+        'address',
+        'phone_no',
+        'email',
+        'google_id',
+        'role',
+        'email_verified_at',
+        'password',
+        'price',
+        'wallet_balance',
+        'bank_name',
+        'account_name',
+        'account_no',
+        'notify_purchase',
+        'remember_token'
+    ];
 }

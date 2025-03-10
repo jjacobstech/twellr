@@ -13,6 +13,7 @@
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
     <link rel="shortcut icon" href="{{ asset('assets/twellr.svg') }}" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -20,7 +21,7 @@
 
 @endphp
 
-<body class="font-sans antialiased p-0 border-0 m-0">
+<body class="font-sans antialiased p-0 border-0 m-0 ">
     <div class=" bg-gray-100 border-0 p-0 m-0">
         <livewire:layout.navigation />
 
@@ -34,7 +35,7 @@
         @endif
 
         <!-- Page Content -->
-        <main class="border-0 p-0 my-2">
+        <main class="border-0 p-0 mt-2">
 
             {{ $slot }}
         </main>
