@@ -4,10 +4,7 @@ use Livewire\Volt\Component;
 use Livewire\Attributes\Layout;
 use Illuminate\Support\Facades\Auth;
 
-new #[Layout('layouts.app')] class extends Component {
-    public function uploadDesignStack() {}
-    public function uploadPrintableStack() {}
-}; ?>
+new #[Layout('layouts.app')] class extends Component {}; ?>
 
 <div x-data="{
     form: true,
@@ -16,9 +13,18 @@ new #[Layout('layouts.app')] class extends Component {
 
 }">
     <div class="flex gap-1 w-[100%]">
-        <x-market-place-sidebar class="[20%]" />
-        <div class="bg-white p-4 w-[80%]">
-            <div class="grid h-full w-full gap-10 px-5  grid-col-6 md:grid-cols-4 sm:grid-cols-2 relative ">
+        <x-market-place-sidebar class="" />
+        <div class="relative bg-white p-4 w-screen md:w-[80%] h-screen">
+            <div
+                class="relative grid w-full h-full gap-5 px-10 overflow-y-scroll grid-col-6 md:grid-cols-4 py-8 sm:grid-cols-2 ">
+                <x-product-card wire:navigate />
+                <x-product-card wire:navigate />
+                <x-product-card wire:navigate />
+                <x-product-card wire:navigate />
+                <x-product-card wire:navigate />
+                <x-product-card wire:navigate />
+                <x-product-card wire:navigate />
+                <x-product-card wire:navigate />
                 <x-product-card wire:navigate />
                 <x-product-card wire:navigate />
                 <x-product-card wire:navigate />

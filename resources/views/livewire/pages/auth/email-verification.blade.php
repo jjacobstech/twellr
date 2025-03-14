@@ -96,7 +96,7 @@ new #[Layout('layouts.guest')] class extends Component {
 };
 ?>
 <div class="justify-center px-24 py-16 mt-3 border border-black rounded-3xl">
-    <div class="px-10 text-sm text-center text-black  md:text-xl md:text-bold w-100">
+    <div class="px-10 text-sm text-center text-black md:text-xl md:text-bold w-100">
         {{ __('Check your email for the OTP pin, If it doesn’t reflect in your inbox,') }}<br>{{ __('consider checking Spam mail') }}
     </div>
 

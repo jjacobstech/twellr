@@ -45,10 +45,13 @@ new #[Layout('layouts.guest')] class extends Component {
         event(
             new Registered(
                 ($user = User::create([
-                    'name' => $validated['firstname'] . ' ' . $validated['lastname'],
+                    'firstname' => $validated['firstname'],
+                    'lastname' => $validated['lastname'],
                     'email' => $validated['email'],
                     'google_id' => $this->google_id,
                     'avatar' => $this->avatar,
+                    'referral_link' => $validated['role'] == 'creative' ? config('app.url') . '/' . strtoupper(substr($validated['firstname'], 0, 2) . substr($validated['lastname'], 0, 2) . rand(1000, 9999)) : null,
+                    'notify_purchase' => $validated['role'] == 'creative' ? 'yes' : 'no',
                     'password' => $validated['password'],
                     'role' => $validated['role'],
                     'email_verified at' => now(),
@@ -85,30 +88,11 @@ new #[Layout('layouts.guest')] class extends Component {
                 <div class="w-1/2 pr-10 text-lg font-bold capitalize">
                     sign up to create an account on twellr
                 </div>
-                <ul class="flex w-1/2 font-bold">
-                    <li class="w-1/2 h-5">
-                        <input type="radio" wire:model='role' id="creative" name="role" value="creative"
-                            class="hidden peer" required />
-                        <label for="creative"
-                            class="block w-full py-1 text-center bg-white border rounded-l-lg cursor-pointer px-9 text-navy-blue border-navy-blue peer-checked:border-navy-blue peer-checked:text-white peer-checked:bg-navy-blue">
-
-                            {{ __('Signup as') }} <br> {{ __('Creative') }}
-
-                        </label>
-                    </li>
-                    <li class="w-1/2">
-                        <input type="radio" wire:model='role' id="user" name="role" checked value="user"
-                            class="hidden peer">
-                        <label for="user"
-                            class="block w-full py-1 text-center bg-white border rounded-r-lg cursor-pointer px-9 text-navy-blue border-navy-blue peer-checked:border-navy-blue peer-checked:text-white <x-input-error :messages="
-                            $errors->get('role')" class="z-50 mt-2" />peer-checked:bg-navy-blue">
-                            {{ __('Signup as') }} <br> {{ __('User') }}
-
-                        </label>
-                    </li>
-                </ul>
+                <x-selector />
 
             </div>
+            <x-input-error :messages="$errors->get('role')" class="z-50 mt-2" />
+
 
             {{-- First and Last Name --}}
             <div class="flex w-full justify-evenly">
@@ -169,7 +153,15 @@ new #[Layout('layouts.guest')] class extends Component {
 
 
             </div>
-            <x-input-error :messages="$errors->get('role')" class="z-50 mt-2" />
         </div>
     </form>
+
+    <div class="flex items-center justify-end mt-1 md:mt-4">
+        <a class="text-sm font-bold text-black underline rounded-md hover:text-navy-blue dark:hover:text-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 "
+            href="{{ route('login') }}">
+            {{ __('Already registered?') }}
+        </a>
+
+
+    </div>
 </div>

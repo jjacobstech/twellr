@@ -2,27 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-.dropzone {
-    @apply border-2 border-dashed border-gray-300 rounded-lg p-6 text-center;
-}
-
-.dropzone .dz-preview {
-    @apply inline-block relative m-2;
-}
-
-.dropzone .dz-progress {
-    @apply bg-gray-200 h-2 rounded-full overflow-hidden;
-}
-
-.dropzone .dz-upload {
-    @apply bg-blue-500 h-full block;
-}
-
-.dropzone .dz-success-mark,
-.dropzone .dz-error-mark {
-    @apply absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2;
-}
-/* From Uiverse.io by JohnnyCSilva */
 .card {
     width: 100%;
     height: 265px;

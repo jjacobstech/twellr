@@ -16,13 +16,7 @@
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    <style>
-        #nprogress .bar {
-            height: 8px !important;
-            background-color: white !important;
-            filter: invert(100%);
-        }
-    </style>
+
 </head>
 
 <body x-data="" class="font-sans antialiased text-gray-900">
@@ -30,17 +24,17 @@
         @if (request()->routeIs('email.verification') ||
                 request()->routeIs('admin.email.verification') ||
                 request()->routeIs('creative.payment.preference'))
-            <div class="overflow-hidden bg-white  md:w-full lg:w-100 dark:bg-gray-800 h-100 px-7 py-7">
+            <div class="overflow-hidden bg-white md:w-full lg:w-100 dark:bg-gray-800 h-100 px-7 py-7">
                 {{ $slot }}
             </div>
         @else
-            {{-- <div class="h-10 w-10">
+            {{-- <div class="w-10 h-10">
                 <img src="{{ asset('assets/twellr.svg') }}" alt="">
             </div> --}}
-            <div class="justify-center hidden w-1/2 py-32 overflow-hidden shadow-md  bg-navy-blue md:h-100 lg:flex">
+            <div class="justify-center hidden w-1/2 py-32 overflow-hidden shadow-md bg-navy-blue md:h-100 lg:flex">
                 <img class="border-0 h-96 w-96" src="{{ asset('assets/twellr-logo.png') }}" alt="">
             </div>
-            <div class="overflow-hidden bg-white  md:w-full lg:w-1/2 dark:bg-gray-800 h-100 px-7 py-7">
+            <div class="overflow-hidden bg-white md:w-full lg:w-1/2 dark:bg-gray-800 h-100 px-7 py-7">
                 {{ $slot }}
             </div>
         @endif

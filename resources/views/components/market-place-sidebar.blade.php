@@ -1,10 +1,10 @@
 <!-- component -->
 <div id="sidebar"
     class="relative hidden transition-transform duration-300 ease-in-out bg-white shadow-xl sm:hidden md:h-100 md:block md:w-[20%] ">
-    <div class="flex justify-left px-5  py-3 space-y-6 md:space-y-10 border-b-2 text-golden text-2xl font-bold">
+    <div class="flex px-5 py-3 space-y-6 text-2xl font-bold border-b-2 justify-left md:space-y-10 text-golden">
         All Categories
     </div>
-    <div class="justify-center mt-10 space-y-3 md:space-y-3 px-10 text-gray-500 text-md font-bold ">
+    <div class="justify-center px-10 mt-10 space-y-3 font-bold text-gray-500 md:space-y-3 text-md ">
         <p class="flex gap-2">
             <span>
                 <svg class="w-5 h-5" viewBox="0 -3.5 29 29" version="1.1" xmlns="http://www.w3.org/2000/svg"
@@ -125,10 +125,10 @@
 
     </div>
 
-    <div class="text-gray-500 text-md font-bold  px-10 mt-10">
+    <div class="px-10 mt-10 font-bold text-gray-500 text-md">
         <div class="">
             <p> Select Location:</p>
-            <select class="w-52 rounded-md mt-1 border-gray-500">
+            <select class="mt-1 border-gray-500 rounded-md w-52">
                 <option value="">All Nigerian</option>
                 <option value=""></option>
                 <option value=""></option>
@@ -139,7 +139,7 @@
         </div>
         <div class="mt-4">
             <p> Sort By:</p>
-            <select class="w-52 rounded-md mt-1 border-gray-500">
+            <select class="mt-1 border-gray-500 rounded-md w-52">
                 <option value="">Most Popular</option>
                 <option value=""></option>
                 <option value=""></option>

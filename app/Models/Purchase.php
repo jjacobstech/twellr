@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class Purchase
- * 
+ *
  * @property int $id
  * @property int $transactions_id
  * @property int $user_id
@@ -30,25 +30,25 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Purchase extends Model
 {
-	protected $table = 'purchases';
+    protected $table = 'purchases';
 
-	protected $casts = [
-		'transactions_id' => 'int',
-		'user_id' => 'int',
-		'products_id' => 'int',
-		'expired_at' => 'datetime'
-	];
+    protected $casts = [
+        'transactions_id' => 'int',
+        'user_id' => 'int',
+        'products_id' => 'int',
+        'expired_at' => 'datetime'
+    ];
 
-	protected $fillable = [
-		'transactions_id',
-		'user_id',
-		'products_id',
-		'delivery_status',
-		'description_custom_content',
-		'address',
-		'city',
-		'zip',
-		'phone',
-		'expired_at'
-	];
+    protected $fillable = [
+        'transactions_id',
+        'user_id',
+        'products_id',
+        'delivery_status',
+        'description_custom_content',
+        'address',
+        'city',
+        'zip',
+        'phone',
+        'expired_at'
+    ];
 }

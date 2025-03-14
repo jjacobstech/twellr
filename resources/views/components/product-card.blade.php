@@ -1,6 +1,6 @@
 <a href="#">
-    <div class="card">
-        <div class="img rounded-xl">
+    <div class="card md:my-4 my-4">
+        <div class=" rounded-xl">
             <img class="w-full rounded-xl" src="{{ asset('assets/pexels-solliefoto-298863.jpg') }}" alt="">
         </div>
 

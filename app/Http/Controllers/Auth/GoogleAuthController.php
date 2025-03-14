@@ -26,8 +26,6 @@ class GoogleAuthController extends Controller
     {
         $googleUser = Socialite::driver('google')->user();
 
-        // dd($googleUser->getAvatar());
-
         // User Credentials
         $firstname =  $googleUser->user['given_name'];
         $lastname =  $googleUser->user['family_name'];
@@ -50,7 +48,8 @@ class GoogleAuthController extends Controller
                     'lastname' => $lastname,
                     'avatar' => $avatar,
                     'email' => $email,
-                    'google_id' => $google_id
+                    'google_id' => $google_id,
+
                 ]);
             }
         } catch (\Exception $error) {

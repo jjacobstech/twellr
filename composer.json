@@ -13,6 +13,7 @@
         "laravel/tinker": "^2.9",
         "livewire/livewire": "^3.5",
         "livewire/volt": "^1.6",
+        "mkocansey/bladewind": "^2.9",
         "predis/predis": "^2.3",
         "tzsk/otp": "^8.0"
     },

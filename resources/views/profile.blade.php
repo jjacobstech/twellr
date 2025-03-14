@@ -1,6 +1,6 @@
 <x-app-layout>
-    <div class=" sm:px-6 lg:px-10  py-2 bg-white">
-        <div class="w-full">
+    <div class="py-1 bg-white">
+        <div class="flex w-[100%]  h-screen">
             <livewire:profile.profile-header />
         </div>
         {{-- <div class="p-4 bg-white shadow sm:p-8 dark:bg-gray-800 sm:rounded-lg">

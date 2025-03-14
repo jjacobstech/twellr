@@ -24,8 +24,9 @@ return new class extends Migration
             $table->enum('role', ['user', 'creative', 'admin']);
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->decimal('price', 10)->nullable();
-            $table->decimal('wallet_balance', 10)->nullable();
+            $table->integer('rating')->default(0);
+            $table->string('referral_link')->unique()->nullable();
+            $table->decimal('wallet_balance', 10)->default(0.00)->nullable();
             $table->string('bank_name')->nullable();
             $table->string('account_name')->nullable();
             $table->string('account_no')->nullable();

@@ -35,7 +35,8 @@ new #[Layout('layouts.guest')] class extends Component {
         event(
             new Registered(
                 ($user = User::create([
-                    'name' => $validated['firstname'] . ' ' . $validated['lastname'],
+                    'firstname' => $validated['firstname'],
+                    'lastname' => $validated['lastname'],
                     'email' => $validated['email'],
                     'password' => $validated['password'],
                     'role' => $validated['role'],

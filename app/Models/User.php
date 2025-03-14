@@ -3,8 +3,9 @@
 namespace App\Models;
 
 use Carbon\Carbon;
-use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -67,10 +68,20 @@ class User extends Authenticatable
         'password',
         'price',
         'wallet_balance',
+        'referral_link',
+        'rating',
         'bank_name',
         'account_name',
         'account_no',
         'notify_purchase',
         'remember_token'
     ];
+
+    public function isCreative()
+    {
+        if (Auth::user()->role == 'creative') {
+            return true;
+        }
+        return false;
+    }
 }

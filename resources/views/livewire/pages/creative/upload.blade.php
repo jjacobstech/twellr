@@ -5,8 +5,17 @@ use Livewire\Attributes\Layout;
 use Illuminate\Support\Facades\Auth;
 
 new #[Layout('layouts.app')] class extends Component {
-    public function uploadDesignStack() {}
-    public function uploadPrintableStack() {}
+    public string $name = '';
+    public string $price = '';
+    public string $category = '';
+    public string $description = '';
+    public $design_stack;
+    public $print_stack;
+
+    public function uploadProduct()
+    {
+        $this->validate([]);
+    }
 }; ?>
 
 <div x-data="{
@@ -15,6 +24,9 @@ new #[Layout('layouts.app')] class extends Component {
     backButton: false,
 
 }">
+    <x-bladewind.alert class="absolute z-50 w-[50%]  hidden" align='right' type="success">
+        Product successfully uploaded
+    </x-bladewind.alert>
     <div class="flex gap-1">
         <x-creative-sidebar />
         <div class="text-xl w-[100%] p-4 bg-white h-full ">
@@ -23,7 +35,7 @@ new #[Layout('layouts.app')] class extends Component {
                 {{-- Form Begin --}}
                 <form x-transition:enter.duration.500ms x-cloak="display:none"
                     :class="uploadModal ? 'py-4' : 'w-[100%]  bg-[#dedddb] rounded-[40px] my-6'" action=""
-                    method="post" enctype="multipart/form-data">
+                    wire:submit='uploadProduct' enctype="multipart/form-data">
                     @csrf
                     <div x-show="form" x-transition:enter.duration.500ms>
                         <div class="flex flex-col p-10 py-6">
@@ -31,37 +43,42 @@ new #[Layout('layouts.app')] class extends Component {
                                 <div class="flex-1 w-[60%]">
                                     <x-input-label :value="__('Name')" class="text-gray-500 font-extrabold text-[17px]"
                                         for="name" />
-                                    <x-text-input id="email"
+                                    <x-text-input id="name"
                                         class="inline-block w-100 mt-2 lowercase border-[#bebebe] bg-[#bebebe] border-0 rounded-xl"
-                                        type="text" name="name" required autofocus autocomplete="email" />
-                                    <x-input-error :messages="__('')" class="mt-2" />
+                                        type="text" name="name" wire:model='name' required autofocus
+                                        autocomplete="name" />
+                                    <x-input-error :messages="$errors->get('name')" class="mt-2" />
                                 </div>
 
                                 <div class="flex-1 w-[20%] ml-[20%]">
                                     <x-input-label :value="__('Price')" class="text-gray-500 font-extrabold text-[17px]"
-                                        for="name" />
-                                    <x-text-input id="email"
+                                        for="price" />
+                                    <x-text-input id="price"
                                         class="inline-block w-full mt-2 lowercase border-[#bebebe] bg-[#bebebe] border-0 rounded-xl"
-                                        type="text" name="name" required autofocus autocomplete="email" />
-                                    <x-input-error :messages="__('')" class="mt-2" />
+                                        wire:model='price' type="text" name="price" required autofocus
+                                        autocomplete="price" />
+                                    <x-input-error :messages="$errors->get('price')" class="mt-2" />
                                 </div>
                             </div>
 
                             <div class="mt-4">
                                 <x-input-label :value="__('Category')" class="text-gray-500 font-extrabold text-[17px]"
-                                    for="name" />
-                                <x-text-input id="email"
+                                    for="category" />
+                                <x-text-input id="category" wire:model='category'
                                     class="inline-block w-full mt-2 lowercase border-[#bebebe] bg-[#bebebe] border-0 rounded-xl"
-                                    type="text" name="name" required autofocus autocomplete="email" />
-                                <x-input-error :messages="__('')" class="mt-2" />
+                                    type="text" name="category" required autofocus autocomplete="category" />
+                                <x-input-error :messages="$errors->get('category')" class="mt-2" />
                             </div>
                             <div class="flex mt-4 ">
                                 <div class="w-[50%]">
                                     <x-input-label :value="__('Description')" class="text-gray-500 font-extrabold text-[17px]"
-                                        for="name" />
-                                    <x-textarea-input class="w-full px-2 py-1 mt-2 text-white h-28"
+                                        for="description" />
+                                    <x-textarea-input wire:model='description'
+                                        class="w-full px-2 py-1 mt-2 text-white h-28"
                                         id="description"></x-textarea-input>
+                                    <x-input-error :messages="$errors->get('name')" class="mt-2" />
                                 </div>
+
                                 <div class="w-[30%] ml-[20%]">
                                     <x-input-label :value="__('Uploads')"
                                         class="text-gray-500 font-extrabold text-[17px] ml-[40%]" for="name" />
@@ -77,9 +94,10 @@ new #[Layout('layouts.app')] class extends Component {
                         <p class="border-t-2 border-[#bebebe] m-0 w-100"></p>
 
                         <div class="flex justify-center py-5">
-                            <button
-                                class="bg-[#f7aa10] inline-block mt-0 text-neutral-900 px-6 py-2.5 rounded-xl font-bold uppercase text-[13px]">Monitize
-                                Design </button>
+                            <x-bladewind.button type="bg-golden"
+                                class="bg-[#f7aa10] inline-block mt-0 text-neutral-900 px-6 py-4 rounded-xl font-bold uppercase text-[13px]"
+                                :has_spinner="true" :show_spinner='true'>Monitize Design</x-bladewind.button>
+
                         </div>
                     </div>
                     {{-- Form End --}}
@@ -87,15 +105,15 @@ new #[Layout('layouts.app')] class extends Component {
                     {{-- Upload Buttons --}}
 
                     <div x-show="uploadModal" x-transition:enter.duration.500ms x-cloak="display:none"
-                        class="justify-between py-[102px]">
-                        <div class="flex justify-between w-full md:flex md:space-x-28 md:pt-16">
+                        class="justify-between py-[90.5px]">
+                        <div class="flex justify-between w-full md:flex md:space-x-24 md:pt-16">
 
                             <div class="grid justify-center ">
                                 <p class="text-center md:hidden l">Upload To Design Stack</p>
 
                                 <label for="design_stack">
-                                    <input class="hidden" type="file" accept="image/*" name="design_stack"
-                                        id="design_stack">
+                                    <input class="hidden" type="file" accept="image/*" wire:model='design_stack'
+                                        name="design_stack" id="design_stack">
                                     <div class="relative w-full group">
                                         <div
                                             class="relative z-40 flex items-center justify-center w-40 h-40 mx-auto transition-all duration-500 bg-white cursor-pointer group-hover:translate-x-8 group-hover:shadow-2xl group-hover:-translate-y-8 rounded-xl">
@@ -110,12 +128,12 @@ new #[Layout('layouts.app')] class extends Component {
                                     </div>
                                 </label>
                             </div>
-                            <div class="justify-center ">
+                            <div class="grid justify-center pr-3">
                                 <p class="text-center md:hidden">Upload To Printable Stack</p>
 
-                                <label for="printable_stack">
-                                    <input class="hidden" type="file" accept="*" name="printable_stack"
-                                        id="printable_stack">
+                                <label for="printable_stack" title="Upload Print file(Images and Files allowed)...">
+                                    <input class="hidden" type="file" accept="*" wire:model='print_stack'
+                                        name="printable_stack" id="printable_stack">
 
                                     <div class="relative w-full group">
                                         <div class="relative z-40 flex items-center justify-center w-40 h-40 mx-auto transition-all duration-500 bg-white cursor-pointer group-hover:translate-x-8 group-hover:shadow-2xl group-hover:-translate-y-8 rounded-xl"
@@ -132,11 +150,17 @@ new #[Layout('layouts.app')] class extends Component {
 
                             </div>
                         </div>
-                        <div class="justify-center p-0 my-5 text-sm font-extrabold md:flex gap-52"
+                        <div class="justify-center pl-3 my-5 text-sm font-extrabold md:flex gap-52"
                             x-cloak="display:none">
-                            <p class="text-center ">Upload To Design Stack</p>
+                            <p class="grid justify-center text-center">
+                                <span>Upload Design Stack</span>
+                                <span>jpeg, png, jpg only</span>
+                            </p>
 
-                            <p class="ml-12">Upload To Printable Stack</p>
+                            <p class="grid justify-center text-center ">
+                                <span>Upload Printable Stack</span>
+                                <span>Images and Design files only</span>
+                            </p>
 
                         </div>
                         {{-- Upload Buttons End --}}

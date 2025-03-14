@@ -8,17 +8,15 @@ Route::fallback(function () {
     abort(404);
 });
 
-Route::view('dashboard', 'dashboard')
-    ->middleware(['auth', 'verified', 'IsUser', 'IsCreative'])
-    ->name('dashboard');
+Route::middleware(['IsCreative', 'IsUser'])->group(function () {
+    Route::view('dashboard', 'dashboard')
+        ->middleware(['auth', 'verified',])
+        ->name('dashboard');
 
-Route::view('profile', 'profile')
-    ->middleware(['auth', 'verified'])
-    ->name('profile');
-
-Route::view('feed', 'feed')
-    ->middleware(['auth', 'verified'])
-    ->name('feed');
+    Route::view('profile', 'profile')
+        ->middleware(['auth', 'verified'])
+        ->name('profile');
+});
 
 require __DIR__ . '/auth.php';
 require __DIR__ . '/admin.php';
