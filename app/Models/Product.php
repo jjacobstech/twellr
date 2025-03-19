@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class Product
- * 
+ *
  * @property int $id
  * @property int $user_id
  * @property string $name
@@ -35,28 +35,28 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Product extends Model
 {
-	protected $table = 'products';
+    protected $table = 'products';
 
-	protected $casts = [
-		'user_id' => 'int',
-		'price' => 'float'
-	];
+    protected $casts = [
+        'user_id' => 'int',
+        'price' => 'float'
+    ];
 
-	protected $fillable = [
-		'user_id',
-		'name',
-		'type',
-		'price',
-		'category',
-		'description',
-		'print_stack',
-		'print_stack_mime',
-		'print_stack_extension',
-		'print_stack_size',
-		'design_stack',
-		'design_stack_mime',
-		'design_stack_extension',
-		'size',
-		'status'
-	];
+    protected $fillable = [
+        'user_id',
+        'name',
+        'type',
+        'price',
+        'category',
+        'description',
+        'print_stack',
+        'print_stack_mime',
+        'print_stack_extension',
+        'print_stack_size',
+        'design_stack',
+        'design_stack_mime',
+        'design_stack_extension',
+        'design_stack_size',
+        'status'
+    ];
 }

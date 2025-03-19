@@ -13,16 +13,18 @@
 ])
 @php
     // [type] is replaced with the type of notification in notification.js
-    $css = " p-2 rounded-full bg-[type]-200/80 dark:bg-[type]-600 text-[type]-600 dark:text-[type]-100";
+    $css = ' p-2 rounded-full bg-[type]-200/80 dark:bg-[type]-600 text-[type]-600 dark:text-[type]-100';
     $position = str_replace(' ', '_', $position);
 @endphp
-<div class="fixed flex flex-col-reverse {{ $position_css[str_replace('-', '_', $position)] }} z-50 bw-notification-container w-11/12"></div>
-{{--sm:w-1/4 sm:w-96 md:w-96  w-11/12--}}
+<div
+    class="fixed flex flex-col-reverse {{ $position_css[str_replace('-', '_', $position)] }} z-50 bw-notification-container w-11/12">
+</div>
+{{-- sm:w-1/4 sm:w-96 md:w-96  w-11/12 --}}
 <div class="bw-notification-icons hidden">
-    <x-bladewind::modal-icon class="hidden {{$css}}"/>
-    <x-bladewind::modal-icon class="hidden {{$css}}" type="error"/>
-    <x-bladewind::modal-icon class="hidden {{$css}}" type="warning"/>
-    <x-bladewind::modal-icon class="hidden {{$css}}" type="success"/>
+    <x-bladewind::modal-icon class="hidden {{ $css }}" />
+    <x-bladewind::modal-icon class="hidden {{ $css }}" type="error" />
+    <x-bladewind::modal-icon class="hidden {{ $css }}" type="warning" />
+    <x-bladewind::modal-icon class="hidden {{ $css }}" type="success" />
 </div>
 
 <script>

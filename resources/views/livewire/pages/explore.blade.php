@@ -12,14 +12,14 @@ new #[Layout('layouts.app')] class extends Component {}; ?>
     backButton: false,
 
 }">
-    <div class="flex gap-1 w-[100%]  h-screen">
-        <div class="bg-white px-8 md:px-16 py-8  w-[100%]  pb-20 overflow-y-scroll ">
+    <div class="flex gap-1 w-[100%]  h-screen pb-2">
+        <div class="bg-white px-8 md:px-16 py-8  w-[100%]  pb-20 overflow-y-scroll mb-16">
             <h1 class="text-3xl w-full  font-extrabold text-gray-500 md:hidden">Explore</h1>
             <div class="flex justify-between w-full my-3 text-lg">
                 <p class="font-extrabold text-gray-400 text-[21px]">Latest Designs</p>
 
                 <h1 class="text-3xl font-extrabold text-gray-400 hidden md:block">Explore</h1>
-                <a href="">
+                <a href="marketplace/latest-designs">
                     <p class="flex justify-between font-extrabold text-golden">See all
                         <svg class="w-[14px] h-[14px] my-2 ml-1" xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 448 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
@@ -46,7 +46,7 @@ new #[Layout('layouts.app')] class extends Component {}; ?>
             </div>
             <div class="flex justify-between w-full my-3 text-lg">
                 <p class="font-extrabold text-gray-400 text-[21px]">Picked For You</p>
-                <a href="">
+                <a href="marketplace/picked-for-you">
                     <p class="flex justify-between font-extrabold text-golden">See all
                         <svg class="w-[14px] h-[14px] my-2 ml-1" xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 448 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
@@ -73,7 +73,7 @@ new #[Layout('layouts.app')] class extends Component {}; ?>
             </div>
             <div class="flex justify-between w-full my-3 text-lg">
                 <p class="font-extrabold text-gray-400 text-[21px]">Who Rocked It Best</p>
-                <a href="">
+                <a href="marketplace/who-rocked-it-best">
                     <p class="flex justify-between font-extrabold text-golden">See all
                         <svg class="w-[14px] h-[14px] my-2 ml-1" xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 448 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
@@ -100,7 +100,7 @@ new #[Layout('layouts.app')] class extends Component {}; ?>
             </div>
             <div class="flex justify-between w-full my-3 text-lg">
                 <p class="font-extrabold text-gray-400 text-[23px]">Trending Designs</p>
-                <a href="">
+                <a href="marketplace/trending-designs">
                     <p class="flex justify-between font-extrabold text-golden">See all
                         <svg class="w-[14px] h-[14px] my-2 ml-1" xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 448 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
@@ -127,7 +127,7 @@ new #[Layout('layouts.app')] class extends Component {}; ?>
             </div>
             <div class="flex justify-between w-full my-3 text-lg">
                 <p class="font-extrabold text-gray-400 text-[21px]">Designers Of The Week</p>
-                <a href="">
+                <a href="marketplace/designers-of-the-week">
                     <p class="flex justify-between font-extrabold text-golden">See all
                         <svg class="w-[14px] h-[14px] my-2 ml-1" xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 448 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
@@ -154,7 +154,7 @@ new #[Layout('layouts.app')] class extends Component {}; ?>
             </div>
             <div class="flex justify-between w-full my-3 text-lg">
                 <p class="font-extrabold text-gray-400 text-[21px]">Featured Designs</p>
-                <a href="">
+                <a href="marketplace/featured-designs">
                     <p class="flex justify-between font-extrabold text-golden">See all
                         <svg class="w-[14px] h-[14px] my-2 ml-1" xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 448 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->

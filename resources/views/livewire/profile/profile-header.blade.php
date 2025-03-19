@@ -10,7 +10,7 @@ new class extends Component {
     public string $firstname = '';
     public string $lastname = '';
     public string $email = '';
-    public int $rating = 5;
+    public int $rating;
     public string $referral_link = '';
 
     /**
@@ -22,10 +22,11 @@ new class extends Component {
         $this->lastname = Auth::user()->lastname;
         $this->email = Auth::user()->email;
         $this->referral_link = Auth::user()->referral_link;
+        $this->rating = Auth::user()->rating;
     }
 }; ?>
 
-<div class="w-[100%] overflow-y-scroll px-8 md:px-16 pb-16">
+<div class="w-[100%] overflow-y-scroll px-8 md:px-16 mb-20 ">
     <header class="flex items-center justify-between w-full">
         <h2 class="py-4 text-4xl font-extrabold text-gray-500">
             {{ __('Profile') }}
@@ -39,24 +40,24 @@ new class extends Component {
         </a>
     </header>
     <div class="w-full ">
-        <div
-            style="background-image: url('{{ asset('assets/pexels-solliefoto-298863.jpg') }}')"class="rounded-[14px] bg-no-repeat bg-cover justify-center items-center w-full">
 
+        <div
+            style="background-image: url('@if (empty(Auth::user()->cover)) {{ asset('assets/pexels-solliefoto-298863.jpg') }}@else{{ asset('uploads/cover/' . Auth::user()->cover) }} @endif')"class="rounded-[14px] bg-no-repeat bg-cover justify-center items-center w-full">
             <div class="relative flex justify-center w-full">
                 <img class="w-20 h-20 md:w-40 md:h-40 rounded-full absolute md:mt-28 z-50 mt-14 border-[#bebebe] border-[1px]"
-                    src="@if (empty(Auth::user()->avatar)) {{ asset('assets/pexels-solliefoto-298863.jpg') }}
+                    src="@if (empty(Auth::user()->avatar)) {{ asset('assets/icons-user.png') }}
                         @else
-                        {{ asset('assets/avatar' . Auth::user()->avatar) }} @endif
+                        {{ asset('uploads/avatar/' . Auth::user()->avatar) }} @endif
                     "
                     alt="{{ Auth::user()->name }}" />
             </div>
             <div
                 class="mt-24 md:py-9 w-100 bg-gray-100 rounded-[14px] md:mt-[12rem] text-center items-center justify-center grid">
 
-                <span class="flex items-center mt-12 md:mt-16">
-                    @for ($rate = 0; $rate < $rating; $rate++)
-                        <x-star />
-                    @endfor
+
+                <span class="mt-12 md:mt-16">
+                    <x-bladewind.rating rating="{{ $rating }}" size="medium" class="text-golden"
+                        name="creative-rating" />
                 </span>
                 <h1 class="my-2 text-lg font-bold text-gray-500 md:text-3xl">{{ Auth::user()->firstname }}
                     {{ Auth::user()->lastname }}</h1>
@@ -81,16 +82,16 @@ new class extends Component {
             </div>
         </div>
     </div>
-    <script>
-        let text = document.getElementById('referral_link').value;
-        const copyContent = async () => {
-            try {
-                await navigator.clipboard.writeText(text);
-                console.log('Content copied to clipboard');
-                console.log(text);
-            } catch (err) {
-                console.error('Failed to copy: ', err);
-            }
-        }
-    </script>
 </div>
+<script>
+    let text = document.getElementById('referral_link').value;
+    const copyContent = async () => {
+        try {
+            await navigator.clipboard.writeText(text);
+            console.log('Content copied to clipboard');
+            console.log(text);
+        } catch (err) {
+            console.error('Failed to copy: ', err);
+        }
+    }
+</script>

@@ -30,7 +30,7 @@ new #[Layout('layouts.app')] class extends Component {
     current: true
 }">
     <header class="">
-        <h2 class="pt-2 text-3xl font-extrabold text-gray-500">
+        <h2 class="pt-4 text-3xl font-extrabold text-gray-500">
             {{ __('Wallet') }}
         </h2>
     </header>

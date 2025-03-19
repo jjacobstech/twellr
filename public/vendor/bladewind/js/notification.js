@@ -8,13 +8,13 @@ class BladewindNotification {
     colours;
 
     constructor({
-                    title = "",
-                    message = "",
-                    type = "success",
-                    dismissInSeconds = 15,
-                    size = "regular",
-                    name = null
-                }) {
+        title = "",
+        message = "",
+        type = "success",
+        dismissInSeconds = 15,
+        size = "regular",
+        name = null
+    }) {
         this.title = title;
         this.message = message;
         this.type = type;
@@ -23,10 +23,10 @@ class BladewindNotification {
         this.name = `notification-${this.name}`;
         this.timeoutName = this.name.replace('notification-', 'timeout_');
         this.colours = {
-            "success": {"border": "border-green-500/50", "bg": "bg-green-200/80"},
-            "error": {"border": "border-red-500/50", "bg": "bg-red-200/80"},
-            "warning": {"border": "border-yellow-500/50", "bg": "bg-amber-200/80"},
-            "info": {"border": "border-blue-500/50", "bg": "bg-blue-200/80"},
+            "success": { "border": "border-green-500/50", "bg": "bg-green-200/80" },
+            "error": { "border": "border-red-500/50", "bg": "bg-red-200/80" },
+            "warning": { "border": "border-yellow-500/50", "bg": "bg-amber-200/80" },
+            "info": { "border": "border-blue-500/50", "bg": "bg-blue-200/80" },
         };
         this.size = size;
         this.sizes = {
@@ -141,3 +141,4 @@ var showNotification = (title, message, type = 'success', dismiss_in = 15, size 
         name: name
     }).show();
 }
+

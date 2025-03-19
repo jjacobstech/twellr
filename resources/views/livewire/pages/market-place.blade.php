@@ -1,10 +1,22 @@
 <?php
 
+use App\Models\Product;
 use Livewire\Volt\Component;
 use Livewire\Attributes\Layout;
 use Illuminate\Support\Facades\Auth;
 
-new #[Layout('layouts.app')] class extends Component {}; ?>
+new #[Layout('layouts.app')] class extends Component {
+    public $products;
+    public $productCategory = '';
+    public $productFilter = '';
+
+    public function mount()
+    {
+        $this->productCategory = request()->slug;
+        $this->productFilter = request()->filter;
+        $this->products = Product::all();
+    }
+}; ?>
 
 <div x-data="{
     form: true,
@@ -12,37 +24,16 @@ new #[Layout('layouts.app')] class extends Component {}; ?>
     backButton: false,
 
 }">
+
     <div class="flex gap-1 w-[100%]">
         <x-market-place-sidebar class="" />
-        <div class="relative bg-white p-4 w-screen md:w-[80%] h-screen">
+        <div class="relative bg-white w-screen md:w-[80%] h-screen  pb-20">
             <div
-                class="relative grid w-full h-full gap-5 px-10 overflow-y-scroll grid-col-6 md:grid-cols-4 py-8 sm:grid-cols-2 ">
-                <x-product-card wire:navigate />
-                <x-product-card wire:navigate />
-                <x-product-card wire:navigate />
-                <x-product-card wire:navigate />
-                <x-product-card wire:navigate />
-                <x-product-card wire:navigate />
-                <x-product-card wire:navigate />
-                <x-product-card wire:navigate />
-                <x-product-card wire:navigate />
-                <x-product-card wire:navigate />
-                <x-product-card wire:navigate />
-                <x-product-card wire:navigate />
-                <x-product-card wire:navigate />
-                <x-product-card wire:navigate />
-                <x-product-card wire:navigate />
-                <x-product-card wire:navigate />
+                class="relative grid w-full h-full  gap-5 px-5 overflow-y-scroll grid-col-6 md:grid-cols-4  sm:grid-cols-2 py-5 ">
+                @foreach ($products as $product)
+                    <x-product-card :product="$product" />
+                @endforeach
 
-                {{-- @if ($projects->isEmpty())
-                        <div class="flex justify-center ">
-                            <h1 class='w-full mt-40 ml-10 text-5xl font-bold text-center'>No Project</h1>
-                        </div>
-                    @else
-                        @foreach ($projects as $project)
-                            <x-product-card wire:navigate />
-                        @endforeach
-                    @endif --}}
             </div>
         </div>
 

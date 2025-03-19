@@ -37,7 +37,7 @@ new #[Layout('layouts.guest')] class extends Component {
             'address' => ['required', 'string', 'max:225'],
             'bank_name' => ['required', 'string', 'max:225'],
             'account_name' => ['required', 'string', 'max:225'],
-            'account_number' => ['required', 'string', 'min:10', 'max:10'],
+            'account_no' => ['required', 'string', 'min:10', 'max:10'],
         ]);
 
         $newUser = $this->user->id;

@@ -15,7 +15,6 @@ return new class extends Migration
             $table->bigIncrements('id');
             $table->unsignedInteger('user_id')->index();
             $table->string('name');
-            $table->char('type', 50);
             $table->decimal('price', 10);
             $table->string('category');
             $table->text('description');
@@ -26,7 +25,7 @@ return new class extends Migration
             $table->string('design_stack');
             $table->string('design_stack_mime', 50)->nullable();
             $table->string('design_stack_extension', 50)->nullable();
-            $table->string('size', 50)->nullable();
+            $table->string('design_stack_size', 50)->nullable();
             $table->enum('status', ['available', 'unavailable'])->default('available');
             $table->timestamps();
         });
