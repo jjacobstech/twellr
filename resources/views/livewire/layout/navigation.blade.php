@@ -1,9 +1,30 @@
 <?php
 
-use App\Livewire\Actions\Logout;
+use Carbon\Carbon;
+use App\Models\User;
+use App\Models\Notification;
 use Livewire\Volt\Component;
+use App\Livewire\Actions\Logout;
 
 new class extends Component {
+    public bool $notification = false;
+    public $notifications;
+
+    public function mount()
+    {
+        $notifications = Notification::where('id', '=', auth()->user()->id)->get();
+
+        $this->notification = $notifications ? true : false;
+        $this->notifications = $notifications;
+    }
+
+    public function markAsRead($id)
+    {
+        $notification = Notification::where('id', '=', $id)->first();
+        $notification->fill(['read_at' => now()]);
+        $notification->save();
+    }
+
     /**
      * Log the current user out of the application.
      */
@@ -221,7 +242,45 @@ new class extends Component {
                     </div>
                     <div class="justify-center hidden mx-5 md:flex">
                         <span class="py-5">
-                            <x-bell />
+                            <x-dropdown width='w-[500px]' contentClasses="w-full rounded-md">
+                                <x-slot name="trigger">
+                                    <x-bladewind.bell show_dot="{{ $notification }}" color="red"
+                                        animate_dot="true" />
+                                </x-slot>
+                                <x-slot name="content">
+                                    <x-bladewind.dropmenu-item class="rounded-lg p-0" hover="false" padded="false"
+                                        transparent="false">
+                                        <x-bladewind.list-view class="w-full bg-white py-2" compact="true">
+
+                                            @foreach ($notifications as $notification)
+                                                <x-bladewind.list-item
+                                                    class="w-full hover:bg-gray-100 bg-white flex justify-between">
+                                                    <div class="mx-1 pt-1">
+                                                        <div class="text-sm">
+                                                            <span class="font-medium text-slate-900">
+                                                                {{ $notification->message }}
+
+                                                            </span>
+
+                                                            <div class="text-xs">
+                                                                {{ Carbon::parse($notification->created_at) }}</div>
+                                                        </div>
+                                                    </div>
+                                                    <x-bladewind.button
+                                                        wire:click="markAsRead('{{ $notification->id }}')"
+                                                        class="ml-20" type="bg-golden" button_text_css="text-white"
+                                                        size="small">
+                                                        <span>
+                                                            Mark As Read
+                                                        </span>
+                                                    </x-bladewind.button>
+                                                </x-bladewind.list-item>
+                                            @endforeach
+
+                                        </x-bladewind.list-view>
+                                    </x-bladewind.dropmenu-item>
+                                </x-slot>
+                            </x-dropdown>
                         </span>
                     </div>
                 @endif

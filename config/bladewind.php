@@ -35,7 +35,7 @@ return [
     */
     'avatars' => [
         'size' => 'regular',
-        'show_ring' => true,
+        'show_ring' => false,
         'dot_color' => 'primary',
         'bg_color' => null,
         'dot_position' => 'bottom',
@@ -60,6 +60,7 @@ return [
         'animate_dot' => false,
         'size' => 'small',
         'color' => 'primary',
+        'dot_align' => 'right'
     ],
 
     /*
@@ -226,7 +227,7 @@ return [
     |--------------------------------------------------------------------------
     */
     'icon' => [
-        'type' => 'outline',
+        'type' => 'solid',
         'dir' => '',
     ],
 

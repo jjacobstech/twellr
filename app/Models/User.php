@@ -3,8 +3,9 @@
 namespace App\Models;
 
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth;
+use App\Models\Notification;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -83,5 +84,10 @@ class User extends Authenticatable
             return true;
         }
         return false;
+    }
+
+    public function notifications()
+    {
+        return  $this->hasMany(Notification::class, 'user_id');
     }
 }

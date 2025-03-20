@@ -29,7 +29,7 @@ new #[Layout('layouts.guest')] class extends Component {
 
             $otp = Otp::generate($this->form->email);
 
-            Mail::to($this->form->email)->send(new EmailVerification($otp, $user->name));
+            Mail::to($this->form->email)->send(new EmailVerification($otp, $user->name)) ? '' : session(['otp' => 'There was an error sending the email. We are working on it.']);
 
             return redirect(route('email.verification'))->with(['user' => $user, 'secret' => $this->form->email]);
             ///
@@ -64,6 +64,9 @@ new #[Layout('layouts.guest')] class extends Component {
 
             </div>
             <x-input-error :messages="$errors->get('role')" class="mt-1" />
+            <x-input-error :messages="session('otp')" class="mt-1" />
+            {{ session('otp') }}
+
             <!-- Session Status -->
 
             <!-- Email Address -->
