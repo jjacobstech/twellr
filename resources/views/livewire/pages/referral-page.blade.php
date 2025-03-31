@@ -70,16 +70,7 @@ new class extends Component {
                 <p class="text-xl font-bold text-gray-500 md:text-left w-100">Share your link with friends and earn
                     rewards</p>
             </div>
-            <div class="justify-center gap-3 mt-3 md:mt-0 md:grid md:w-1/2 md:justify-items-start w-100">
-                <p class="mb-2 text-xl font-bold text-gray-500 md:mb-0">Your referral link</p>
-                <div class="flex w-full">
-                    <input class="rounded-l-3xl border-0 px-5 w-[100%] text-gray-500" disabled type="text"
-                        value="{{ $referral_link }}" name="" id="referral_link">
-                    <button
-                        class="px-6 py-3 text-xl font-extrabold bg-golden text-neutral-600 rounded-r-3xl active:bg-navy-blue active:text-white"
-                        type="copy" @click="copyContent()">Copy</button>
-                </div>
-            </div>
+
         </div>
     </div>
 </div>
