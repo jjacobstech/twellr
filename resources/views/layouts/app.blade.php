@@ -21,7 +21,6 @@
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <link rel="stylesheet" href="{{ asset('build/assets/app-CY9V-t46.css') }}">
 </head>
 
 <body class="h-screen p-0 m-0 font-sans antialiased bg-white border-0 md:overflow-hidden">
@@ -47,7 +46,6 @@
         </main>
     </div>
 </body>
-<script src="{{ asset('build/assets/app-Cc28pn9L.js') }}"></script>
 <script src="{{ asset('vendor/bladewind/js/helpers.js') }}"></script>
 
 </html>
