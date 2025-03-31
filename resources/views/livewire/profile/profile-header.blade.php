@@ -11,7 +11,7 @@ new class extends Component {
     public string $lastname = '';
     public string $email = '';
     public int $rating;
-    public string $referral_link = '';
+    public ?string $referral_link = '';
 
     /**
      * Mount the component.
@@ -44,7 +44,7 @@ new class extends Component {
         <div
             style="background-image: url('@if (empty(Auth::user()->cover)) {{ asset('assets/pexels-solliefoto-298863.jpg') }}@else{{ asset('uploads/cover/' . Auth::user()->cover) }} @endif')"class="rounded-[14px] bg-no-repeat bg-cover justify-center items-center w-full">
             <div class="relative flex justify-center w-full">
-                <img class="w-20 h-20 md:w-40 md:h-40 rounded-full absolute md:mt-28 z-50 mt-14 border-[#bebebe] border-[1px]"
+                <img class="w-20 h-20 md:w-40 md:h-40 rounded-full absolute md:mt-28 z-10 mt-14 border-[#bebebe] border-[1px]"
                     src="@if (empty(Auth::user()->avatar)) {{ asset('assets/icons-user.png') }}
                         @else
                         {{ asset('uploads/avatar/' . Auth::user()->avatar) }} @endif

@@ -15,7 +15,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id
  * @property int $user_id
  * @property string $name
- * @property string $type
  * @property float $price
  * @property string $category
  * @property string $description
@@ -48,15 +47,23 @@ class Product extends Model
         'type',
         'price',
         'category',
+        'front_view',
+        'front_view_mime',
+        'front_view_extension',
+        'front_view_size',
+        'back_view',
+        'back_view_mime',
+        'back_view_extension',
+        'back_view_size',
+        'side_view',
+        'side_view_mime',
+        'side_view_extension',
+        'side_view_size',
         'description',
         'print_stack',
         'print_stack_mime',
         'print_stack_extension',
         'print_stack_size',
-        'design_stack',
-        'design_stack_mime',
-        'design_stack_extension',
-        'design_stack_size',
         'status'
     ];
 }

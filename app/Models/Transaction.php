@@ -34,6 +34,7 @@ class Transaction extends Model
 
     protected $fillable = [
         'user_id',
+        "buyer_id",
         'amount',
         'transaction_type',
         'status'

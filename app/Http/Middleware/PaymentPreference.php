@@ -19,7 +19,8 @@ class PaymentPreference
         $user = Auth::user();
         if ($user->role == 'creative') {
             if (!empty($user->bank_name) || !empty($user->phone_no) || !empty($user->address) || !empty($user->account_name) || !empty($user->account_no)) {
-                return redirect(route('dashboard', absolute: false));
+                session()->put('user', $user);
+                return redirect(route('dashboard',  false));
             }
         }
         if ($user->role == 'user') {

@@ -1,6 +1,5 @@
-<!-- component -->
 <div id="sidebar"
-    class="relative hidden transition-transform duration-300 ease-in-out bg-white shadow-xl sm:hidden md:h-full md:block md:w-60 lg:w-44">
+    class="relative hidden transition-transform duration-300 ease-in-out bg-white shadow-xl sm:hidden md:h-full md:block md:w-36 lg:w-44">
     <div class="flex justify-center my-28 p-1 space-y-6 md:space-y-10">
         <div id="menu" class="flex flex-col justify-center space-y-10 ">
 

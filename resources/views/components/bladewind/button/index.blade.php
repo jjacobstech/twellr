@@ -19,6 +19,8 @@
     // for backward compatibility with Laravel 8
     'showSpinner' => false,
 
+    // Custom Prop by Jacobs Engineering to style spinner
+    'customSpinnerCss' => '',
     // will make this <button type="submit">
     'can_submit' => false,
     // for backward compatibility with Laravel 8
@@ -168,6 +170,7 @@
         <x-bladewind::icon :name="$icon" class="stroke-2 {{ $icon_css }}" />
     @endif
     @if ($has_spinner)
-        <x-bladewind::spinner class="{{ $icon_size[$size] }} !-mr-2 rtl:!-ml-2 !ml-2 rtl:!mr-2 {{ $spinner_css }}" />
+        <x-bladewind::spinner
+            class="{{ $icon_size[$size] }} !-mr-2 rtl:!-ml-2 !ml-2 rtl:!mr-2 {{ $spinner_css }} {{ $customSpinnerCss }}" />
     @endif
     </{{ $tag }}>

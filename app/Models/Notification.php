@@ -1,72 +1,49 @@
 <?php
 
+/**
+ * Created by Reliese Model.
+ */
+
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
 
+/**
+ * Class Notification
+ *
+ * @property int $id
+ * @property int $user_id
+ * @property string $title
+ * @property string $message
+ * @property string $type
+ * @property Carbon|null $read_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ *
+ * @property User $user
+ *
+ * @package App\Models
+ */
 class Notification extends Model
 {
-    use HasFactory;
+    protected $table = 'notifications';
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
+    protected $casts = [
+        'user_id' => 'int',
+        'read_at' => 'datetime'
+    ];
+
     protected $fillable = [
         'user_id',
         'title',
         'message',
         'type',
-        'read_at',
+        'read_at'
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'read_at' => 'datetime',
-        'data' => 'array',
-    ];
-
-    /**
-     * Get the user that owns the notification.
-     */
-    public function user(): BelongsTo
+    public function user()
     {
         return $this->belongsTo(User::class);
-    }
-
-    /**
-     * Get the parent notifiable model.
-     */
-    public function notifiable(): MorphTo
-    {
-        return $this->morphTo();
-    }
-
-    /**
-     * Mark the notification as read.
-     *
-     * @return bool
-     */
-    public function markAsRead(): bool
-    {
-        return $this->update(['read_at' => now()]);
-    }
-
-    /**
-     * Determine if the notification has been read.
-     *
-     * @return bool
-     */
-    public function isRead(): bool
-    {
-        return $this->read_at !== null;
     }
 }

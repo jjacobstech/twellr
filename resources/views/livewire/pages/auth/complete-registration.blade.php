@@ -50,7 +50,7 @@ new #[Layout('layouts.guest')] class extends Component {
                     'email' => $validated['email'],
                     'google_id' => $this->google_id,
                     'avatar' => $this->avatar,
-                    'referral_link' => $validated['role'] == 'creative' ? config('app.url') . '/' . strtoupper(substr($validated['firstname'], 0, 2) . substr($validated['lastname'], 0, 2) . rand(1000, 9999)) : null,
+                    'referral_link' => $validated['role'] == 'creative' ? config('app.url') . '/r/' . strtoupper(substr($validated['firstname'], 0, 2) . substr($validated['lastname'], 0, 2) . rand(1000, 9999)) : null,
                     'notify_purchase' => $validated['role'] == 'creative' ? 'yes' : 'no',
                     'password' => $validated['password'],
                     'role' => $validated['role'],
@@ -58,12 +58,19 @@ new #[Layout('layouts.guest')] class extends Component {
                 ])),
             ),
         );
-
         Auth::login($user);
 
-        session()->flash('message', 'Registration successful');
+        switch ($user->role) {
+            case 'creative':
+                session()->reflash();
+                session()->put('user', $user);
+                $this->redirect(route('creative.payment.preference', absolute: false));
+                break;
 
-        $this->redirect(route('dashboard', absolute: false), navigate: true);
+            case 'user':
+                $this->redirect(route('dashboard', absolute: false));
+                break;
+        }
     }
 }; ?>
 

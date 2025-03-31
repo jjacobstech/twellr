@@ -40,7 +40,7 @@ new #[Layout('layouts.guest')] class extends Component {
                     'email' => $validated['email'],
                     'password' => $validated['password'],
                     'role' => $validated['role'],
-                    'referral_link' => $validated['role'] == 'creative' ? config('app.url') . '/' . strtoupper(substr($validated['firstname'], 0, 2) . substr($validated['lastname'], 0, 2) . rand(1000, 9999)) : null,
+                    'referral_link' => $validated['role'] == 'creative' ? config('app.url') . '/r/' . strtoupper(substr($validated['firstname'], 0, 2) . substr($validated['lastname'], 0, 2) . rand(1000, 9999)) : null,
                     'notify_purchase' => $validated['role'] == 'creative' ? 'yes' : 'no',
                 ])),
             ),
@@ -58,7 +58,7 @@ new #[Layout('layouts.guest')] class extends Component {
     }
 }; ?>
 
-<div class="my-5 border-0 md:my-12">
+<div class="my-5 border-0 md:my-12 h-screen">
     <h1 class="w-full my-1 mb-5 text-3xl font-bold text-center md:text-4xl md:text-left ">Create Account</h1>
     <div>
 

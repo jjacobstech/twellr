@@ -23,6 +23,10 @@ return new class extends Migration
             $table->string('google_id')->nullable();
             $table->enum('role', ['user', 'creative', 'admin']);
             $table->timestamp('email_verified_at')->nullable();
+            $table->string('facebook')->nullable();
+            $table->string('x')->nullable();
+            $table->string('instagram')->nullable();
+            $table->string('whatsapp')->nullable();
             $table->string('password');
             $table->integer('rating')->default(0);
             $table->string('referral_link')->unique()->nullable();

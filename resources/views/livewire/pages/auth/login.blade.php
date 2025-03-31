@@ -45,7 +45,7 @@ new #[Layout('layouts.guest')] class extends Component {
     }
 }; ?>
 
-<div class="my-7">
+<div class="my-7 h-screen">
 
     <x-auth-session-status class="mx-2" :status="session('status')" />
 
@@ -57,7 +57,7 @@ new #[Layout('layouts.guest')] class extends Component {
         <div>
             {{-- role selector button --}}
             <div class="w-full justify-evenly md:flex">
-                <div class="w-full md:w-1/2 text-lg font-bold pr-7">
+                <div class="w-full text-lg font-bold md:w-1/2 pr-7">
                     Login to access your Twellr account
                 </div>
                 <x-selector />
@@ -116,7 +116,7 @@ new #[Layout('layouts.guest')] class extends Component {
                     {{ __("Don't Have Account?") }}
                 </a>
                 @if (Route::has('password.request'))
-                    <a class="w-1/2 text-right  text-sm font-bold text-black underline rounded-md hover:text-navy-blue text-nowrap focus:outline-none focus:text-black"
+                    <a class="w-1/2 text-sm font-bold text-right text-black underline rounded-md hover:text-navy-blue text-nowrap focus:outline-none focus:text-black"
                         href="{{ route('password.request') }}">
                         {{ __('Forgot password?') }}
                     </a>

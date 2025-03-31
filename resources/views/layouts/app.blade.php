@@ -22,15 +22,14 @@
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-@php
 
-@endphp
+<body class="p-0 m-0 h-screen md:overflow-hidden font-sans antialiased bg-white border-0">
 
-<body class="p-0 m-0 overflow-hidden font-sans antialiased border-0">
+    <x-mary-spotlight class="bg-black" shortcut="meta.slash" search-text="Find creators, designs, ratings"
+        no-results-text="Ops! Nothing here." />
     <x-bladewind::notification />
     <div class="p-0 m-0 bg-gray-100 border-0 ">
         <livewire:layout.navigation />
-
 
         <!-- Page Heading -->
         @if (isset($header))
@@ -43,12 +42,10 @@
 
         <!-- Page Content -->
         <main class="p-0 mt-2 border-0">
-
             {{ $slot }}
         </main>
     </div>
 </body>
 <script src="{{ asset('vendor/bladewind/js/helpers.js') }}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/turbo/7.3.0/turbo.min.js"></script>
 
 </html>

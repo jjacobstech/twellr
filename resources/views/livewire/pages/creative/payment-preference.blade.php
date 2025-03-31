@@ -17,15 +17,15 @@ new #[Layout('layouts.guest')] class extends Component {
     public string $address = '';
     public string $bank_name = '';
     public string $account_name = '';
-    public string $account_number = '';
+    public string $account_no = '';
 
     public function mount()
     {
-        $this->user = session('user');
+        $this->user = session()->get('user');
         if ($this->user) {
             $this->firstname = $this->user->firstname;
         } else {
-            abort(500, 'User not found in session');
+            abort(400, 'User not found in session');
         }
     }
 
@@ -55,7 +55,7 @@ new #[Layout('layouts.guest')] class extends Component {
                 'address' => $validated['address'],
                 'bank_name' => $validated['bank_name'],
                 'account_name' => $validated['account_name'],
-                'account_number' => $validated['account_number'],
+                'account_no' => $validated['account_no'],
             ]);
 
             //$user->save();
@@ -73,10 +73,10 @@ new #[Layout('layouts.guest')] class extends Component {
     }
 };
 ?>
-<div class="justify-center flex px-24 py-10 mt-3 border border-black rounded-3xl ">
+<div class="flex justify-center px-24 py-10 mt-3 border border-black rounded-3xl ">
+
     <form class="w-[50%]" wire:submit.prevent="storeInfo">
         <div class="relative ">
-
             <div class="flex w-full justify-evenly">
                 <!-- First Name -->
                 <div class="w-1/2 pr-2 ">
@@ -113,7 +113,7 @@ new #[Layout('layouts.guest')] class extends Component {
                 </div>
             </div>
         </div>
-        <div class="relative my-20 w-full text-center flex justify-center text-xl font-bold">
+        <div class="relative flex justify-center w-full my-20 text-xl font-bold text-center">
             <p class="absolute my-10">Set Payment Preference</p>
         </div>
 
@@ -150,15 +150,15 @@ new #[Layout('layouts.guest')] class extends Component {
                     :value="__('Account Number')" />
 
                 <div class="absolute w-full mt-1">
-                    <x-text-input wire:model="account_number" id="account_number" class="block w-full mt-5"
-                        type="text" name="account_number" required autofocus autocomplete="account_number" />
-                    <x-input-error :messages="$errors->get('account_number')" class="mt-2 text-center" />
+                    <x-text-input wire:model="account_no" id="account_number" class="block w-full mt-5" type="text"
+                        name="account_number" required autofocus autocomplete="account_number" />
+                    <x-input-error :messages="$errors->get('account_no')" class="mt-2 text-center" />
                 </div>
             </div>
 
         </div>
 
-        <x-primary-button class="w-full mt-2">
+        <x-primary-button class="w-full mt-5">
             {{ __('Continue') }}
         </x-primary-button>
 

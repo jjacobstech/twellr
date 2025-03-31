@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Created by Reliese Model.
+ */
+
 namespace App\Models;
 
 use Carbon\Carbon;
@@ -46,7 +50,7 @@ class User extends Authenticatable
 
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'price' => 'float',
+        'rating' => 'int',
         'wallet_balance' => 'float'
     ];
 
@@ -66,11 +70,14 @@ class User extends Authenticatable
         'google_id',
         'role',
         'email_verified_at',
+        'facebook',
+        'x',
+        'instagram',
+        'whatsapp',
         'password',
-        'price',
-        'wallet_balance',
-        'referral_link',
         'rating',
+        'referral_link',
+        'wallet_balance',
         'bank_name',
         'account_name',
         'account_no',
@@ -88,6 +95,6 @@ class User extends Authenticatable
 
     public function notifications()
     {
-        return  $this->hasMany(Notification::class, 'user_id');
+        return $this->hasMany(Notification::class);
     }
 }
