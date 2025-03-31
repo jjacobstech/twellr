@@ -23,7 +23,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="p-0 m-0 h-screen md:overflow-hidden font-sans antialiased bg-white border-0">
+<body class="h-screen p-0 m-0 font-sans antialiased bg-white border-0 md:overflow-hidden">
 
     <x-mary-spotlight class="bg-black" shortcut="meta.slash" search-text="Find creators, designs, ratings"
         no-results-text="Ops! Nothing here." />
