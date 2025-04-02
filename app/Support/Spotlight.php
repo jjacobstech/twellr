@@ -14,15 +14,13 @@ class Spotlight
         // Example of security concern
         // Guests can not search
         if (! Auth::user()) {
-            return [];
+            return collect()
+                ->merge($this->actions(search: $request->search))
+                ->merge($this->users($request->search));
         }
 
         if (Auth::user()) {
             return collect()
-                ->merge($this->users($request->search));
-        } else {
-            return collect()
-                ->merge($this->actions(search: $request->search))
                 ->merge($this->users($request->search));
         }
     }
@@ -49,18 +47,15 @@ class Spotlight
     // Static search, but it could come from a database
     public function actions(string $search = '')
     {
-        $icon = Blade::render("<x-mary-icon name='o-bolt' class='w-11 h-11 p-2 bg-yellow-50 rounded-full' />");
+        $icon = Blade::render("<x-mary-icon name='o-user' class='w-11 h-11 p-2 bg-yellow-50 rounded-full' />");
 
         return collect([
             [
                 'name' => 'Register',
-                'description' => 'Create A Twellr Accounr',
+                'description' => 'Create A Twellr Account',
                 'icon' => $icon,
-                'link' => route('register')
+                'link' => route('register'),
             ],
-            [
-                // More ...
-            ]
         ]);
     }
 }

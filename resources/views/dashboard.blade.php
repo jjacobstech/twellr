@@ -10,7 +10,7 @@
             @endif
             @if (route('dashboard') == url()->current())
                 <div
-                    class="grid space-y-5 md:space-y-3 lg:space-y-7 w-screen px-3 md:pt-5 lg:mx-1 pb-5 md:pb-0  bg-white md:flex md:flex-col md:flex-1 md:h-full md:w-72 md:overflow-auto">
+                    class="grid space-y-5 md:space-y-3 lg:space-y-5 w-screen px-3 md:pt-5 lg:mx-1 pb-5 md:pb-0  bg-white md:flex md:flex-col md:flex-1 md:h-full md:w-72 md:overflow-auto">
                     <div class="relative flex">
                         <img class="h-[200] md:h-[254px] w-full rounded-xl" src="{{ asset('assets/sales.png') }}"
                             alt="">

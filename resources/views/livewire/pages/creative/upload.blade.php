@@ -185,8 +185,7 @@ new #[Layout('layouts.app')] class extends Component {
                                 <div class="w-[30%] ml-[20%]">
                                     <x-input-label :value="__('Uploads')"
                                         class="text-gray-500 font-extrabold text-[17px] ml-[40%]" for="name" />
-                                    <img x-show="progress = 0 || progress = 100"
-                                        @click="form=false, uploadModal=true, backButton = true"
+                                    <img @click="form=false, uploadModal=true, backButton = true"
                                         class="{{ $errors->get('designUpload') || $errors->get('printUpload')
                                             ? 'mt-2 h-28 w-28 hover:cursor-pointer border  border-red-600 rounded-2xl'
                                             : 'mt-2 h-28 w-28 hover:cursor-pointer rounded-2xl' }}"

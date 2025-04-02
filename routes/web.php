@@ -1,11 +1,12 @@
 <?php
 
+use Livewire\Volt\Volt;
 use App\Models\Notification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 
-Route::view('/', 'welcome')->name('home');
+Volt::get('/', 'welcome')->name('home');
 Route::middleware('guest')->get('/r/{slug?}', [UserController::class, "referral"]);
 
 Route::get('/test/{slug?}', function () {

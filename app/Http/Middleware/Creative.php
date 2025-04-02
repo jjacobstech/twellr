@@ -27,6 +27,6 @@ class Creative
         if ($user->role == 'user') {
             return $next($request);
         }
-        return redirect(route('creative.payment.preference', absolute: false));
+        return redirect(route('creative.payment.preference'));
     }
 }
