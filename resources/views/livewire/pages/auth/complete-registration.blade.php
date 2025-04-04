@@ -91,9 +91,10 @@ new #[Layout('layouts.guest')] class extends Component {
         {{-- role selector button --}}
 
         <div class="">
-            <div class="flex justify-evenly">
-                <div class="w-1/2 pr-10 text-lg font-bold capitalize">
-                    sign up to create an account on twellr
+            {{-- role selector button --}}
+            <div class="w-full justify-evenly md:flex">
+                <div class="w-full text-lg font-bold md:w-1/2 pr-7">
+                    Complete your registration to access your Twellr account
                 </div>
                 <x-selector />
 

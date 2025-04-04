@@ -47,7 +47,18 @@ new #[Layout('layouts.guest')] class extends Component {
 
 <div class="my-7 h-screen">
 
-    <x-auth-session-status class="mx-2" :status="session('status')" />
+    @session('status')
+        <div class="toast toast-top toast-right" x-transition:leave="500ms" x-data="{ show: true }" x-show="show">
+
+            <div class="alert bg-navy-blue text-white font-extrabold transition-all ease-out">
+                <span>Login successfully. </span>
+                <span @click="show = false">
+                    @svg('eva-close', 'h-6 w-6 text-red-500 cursor-pointer')
+                </span>
+            </div>
+
+        </div>
+    @endsession
 
     <h1 class="my-1 text-4xl font-extrabold capitalize">Welcome Back! </h1>
 
@@ -63,9 +74,10 @@ new #[Layout('layouts.guest')] class extends Component {
                 <x-selector />
 
             </div>
-            <x-input-error :messages="$errors->get('role')" class="mt-1" />
-            <x-input-error :messages="session('otp')" class="mt-1" />
-            {{ session('otp') }}
+            <div class="validator">
+                <x-input-error :messages="$errors->get('role')" class="validator absolute" />
+                <x-input-error :messages="session('otp')" class=" validator" />
+            </div>
 
             <!-- Session Status -->
 
@@ -77,7 +89,7 @@ new #[Layout('layouts.guest')] class extends Component {
                 <div class="absolute w-full mt-4">
                     <x-text-input wire:model="form.email" id="email" class="block w-full mt-5" type="email"
                         name="email" required autofocus autocomplete="email" />
-                    <x-input-error :messages="$errors->get('form.email')" class="mt-2" />
+                    <x-input-error :messages="$errors->get('form.email')" class="mt-2 validator absolute" />
                 </div>
             </div>
 
@@ -89,7 +101,7 @@ new #[Layout('layouts.guest')] class extends Component {
                 <div class="absolute w-full mt-4">
                     <x-text-input wire:model="form.password" id="password" class="block w-full mt-5" type="password"
                         name="password" required autofocus autocomplete="password" />
-                    <x-input-error :messages="$errors->get('form.password')" class="mt-2" />
+                    <x-input-error :messages="$errors->get('form.password')" class="mt-2 validator absolute" />
                 </div>
             </div>
 

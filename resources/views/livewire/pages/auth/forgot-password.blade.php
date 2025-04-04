@@ -34,12 +34,23 @@ new #[Layout('layouts.guest')] class extends Component {
 }; ?>
 
 <div>
-    <div class=" text-sm text-gray-900 font-extrabold">
+    <div class=" text-md text-gray-900 font-extrabold">
         {{ __('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.') }}
     </div>
 
     <!-- Session Status -->
-    <x-auth-session-status class="mb-2" :status="session('status')" />
+    @session('status')
+        <div class="toast toast-top toast-right" x-transition:leave="500ms" x-data="{ show: true }" x-show="show">
+
+            <div class="alert bg-navy-blue text-white font-extrabold transition-all ease-out">
+                <span>Message sent successfully. </span>
+                <span @click="show = false">
+                    @svg('eva-close', 'h-6 w-6 text-red-500 cursor-pointer')
+                </span>
+            </div>
+
+        </div>
+    @endsession
 
     <form wire:submit="sendPasswordResetLink">
         <!-- Email Address -->

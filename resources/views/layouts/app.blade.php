@@ -21,6 +21,8 @@
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @bukStyles(true)
+    @bukScripts(true)
 </head>
 
 <body class="h-screen p-0 m-0 font-sans antialiased bg-white border-0 md:overflow-hidden">

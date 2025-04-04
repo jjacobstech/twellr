@@ -62,12 +62,20 @@ new #[Layout('layouts.guest')] class extends Component {
     <h1 class="w-full my-1 mb-5 text-3xl font-bold text-center md:text-4xl md:text-left ">Create Account</h1>
     <div>
 
-        @if (session()->has('message'))
-            <div class="alert alert-success">
-                {{ session('message') }}
+        @session('message')
+            @session('status')
+                <div class="toast toast-top toast-right" x-transition:leave="500ms" x-data="{ show: true }" x-show="show">
 
-            </div>
-        @endif
+                    <div class="alert bg-navy-blue text-white font-extrabold transition-all ease-out">
+                        <span>Registration successfully. </span>
+                        <span @click="show = false">
+                            @svg('eva-close', 'h-6 w-6 text-red-500 cursor-pointer')
+                        </span>
+                    </div>
+
+                </div>
+            @endsession
+        @endsession
     </div>
     <form wire:submit.prevent="register">
         {{-- role selector button --}}

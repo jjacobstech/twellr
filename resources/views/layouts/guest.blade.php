@@ -15,11 +15,12 @@
     <link rel="shortcut icon" href="{{ asset('assets/twellr.svg') }}" type="image/x-icon">
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-
+    @bukStyles(true)
+    @bukScripts(true)
 
 </head>
 
-<body x-data="" class="font-sans antialiased text-gray-900">
+<body x-data="" class="font-sans antialiased text-gray-900 h-screen bg-white">
     <div class="w-full h-screen m-0 border-0 lg:flex justify-stretch ">
         @if (request()->routeIs('email.verification') ||
                 request()->routeIs('admin.email.verification') ||

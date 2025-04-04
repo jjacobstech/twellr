@@ -23,6 +23,7 @@ new #[Layout('layouts.guest')] class extends Component {
     public bool $status = false;
     public int $timeLeft = 300; // 5 minutes in seconds
     public bool $resent = false;
+    public bool $disabled = false;
     private $timer;
 
     public function mount()
@@ -95,82 +96,81 @@ new #[Layout('layouts.guest')] class extends Component {
     }
 };
 ?>
-<div class="justify-center px-24 py-16 mt-3 border border-black rounded-3xl">
-    <div class="px-10 text-sm text-center text-black md:text-xl md:text-bold w-100">
-        {{ __('Check your email for the OTP pin, If it doesn’t reflect in your inbox,') }}<br>{{ __('consider checking Spam mail') }}
+<div class="px-6 py-16 mx-auto mt-20 border border-black md:mt-10 rounded-3xl">
+    <div class="px-6 text-sm font-semibold text-center text-black md:text-lg lg:text-xl">
+        <p>{{ __('Check your email for the OTP pin, If it doesn’t reflect in your inbox') }}</p>
+        <span> {{ __('consider checking Spam mail') }}</span>
     </div>
 
-    <!-- ====== OTP Start -->
-    <form wire:submit='verify' id="otp-form" class="flex w-100 ">
-        <div class="justify-center w-full py-16 bg-white px-28">
-            <div class="flex justify-evenly">
+    <form wire:submit='verify' id="otp-form" class="w-full">
+        <div class="py-8 bg-white">
+            <div class="flex justify-center space-x-4">
                 <input wire:model='No1' name="No1" type="text" maxlength="1"
-                    class="shadow-xs flex w-[100px] h-[100px] items-center justify-center rounded-lg border border-stroke bg-white p-1 text-center text-2xl font-medium text-gray-5 outline-none sm:text-4xl" />
+                    class="w-10 h-10 p-1 text-2xl font-medium text-center bg-white border rounded-lg shadow-xs outline-none md:w-20 md:h-20 border-stroke text-gray-5 sm:text-4xl" />
                 <input wire:model='No2' name="No2" type="text" maxlength="1"
-                    class="shadow-xs flex w-[100px] h-[100px] items-center justify-center rounded-lg border border-stroke bg-white p-2 text-center text-2xl font-medium text-gray-5 outline-none sm:text-4xl dark:border-dark-3 dark:bg-white/5" />
+                    class="w-10 h-10 p-2 text-2xl font-medium text-center bg-white border rounded-lg shadow-xs outline-none md:w-20 md:h-20 border-stroke text-gray-5 sm:text-4xl dark:border-dark-3 dark:bg-white/5" />
                 <input wire:model='No3' name="No3" type="text" maxlength="1"
-                    class="shadow-xs flex w-[100px] h-[100px] items-center justify-center rounded-lg border border-stroke bg-white p-2 text-center text-2xl font-medium text-gray-5 outline-none sm:text-4xl dark:border-dark-3 dark:bg-white/5" />
+                    class="w-10 h-10 p-2 text-2xl font-medium text-center bg-white border rounded-lg shadow-xs outline-none md:w-20 md:h-20 border-stroke text-gray-5 sm:text-4xl dark:border-dark-3 dark:bg-white/5" />
                 <input wire:model='No4' name="No4" type="text" maxlength="1"
-                    class="shadow-xs flex w-[100px] h-[100px] items-center justify-center rounded-lg border border-stroke bg-white p-2 text-center text-2xl font-medium text-gray-5 outline-none sm:text-4xl dark:border-dark-3 dark:bg-white/5" />
+                    class="w-10 h-10 p-2 text-2xl font-medium text-center bg-white border rounded-lg shadow-xs outline-none md:w-20 md:h-20 border-stroke text-gray-5 sm:text-4xl dark:border-dark-3 dark:bg-white/5" />
                 <input x-on:input="document.getElementById('verify').click()" wire:model='No5' name="No5"
                     type="text" maxlength="1"
-                    class="shadow-xs flex w-[100px] h-[100px] items-center justify-center rounded-lg border border-stroke bg-white p-2 text-center text-2xl font-medium text-gray-5 outline-none sm:text-4xl dark:border-dark-3 dark:bg-white/5" />
-
+                    class="w-10 h-10 p-2 text-2xl font-medium text-center bg-white border rounded-lg shadow-xs outline-none md:w-20 md:h-20 border-stroke text-gray-5 sm:text-4xl dark:border-dark-3 dark:bg-white/5" />
             </div>
         </div>
-        <!-- ====== OTP End -->
-
-
         @if ($errors->all())
-            <p>Incomplete Pin</p>
+            <p class="mt-2 text-center text-red-500" x-cloak="display:hidden">{{ __('Incomplete Pin') }}</p>
         @endif
-
-
 
         <x-primary-button hidden id="verify">
             {{ __('Verify') }}
         </x-primary-button>
 
-
         @if (session('status') == 'verification-link-sent')
-            <div class=" ml-[10%]  mt-[13.5%]  px-28 font-medium text-sm text-green-600   text-center z-50 absolute">
-                Check
-                your
-                email
-                for the OTP
-                pin, If
-                it
-                doesn’t reflect in your inbox, consider checking Spam mail. <br>
+            <div class="absolute left-0 right-0 px-6 mt-4 text-sm font-medium text-center text-green-600"
+                x-cloak="display:hidden">
+                {{ __('Check your email for the OTP pin, If it doesn’t reflect in your inbox, consider checking Spam mail.') }}
+                <br>
                 {{ __('A new verification link has been sent to the email address you provided during registration.') }}
             </div>
         @endif
+
         @if (session('status') == 'verification-successful')
-            <div
-                class=" ml-[28%]  mt-[15%] px-20 font-bold text-green-600 dark:text-green-400  text-center z-50 absolute">
+            <div class="absolute left-0 right-0 mt-4 font-bold text-center text-green-600" x-cloak="display:hidden">
                 {{ __('Verification Successful') }}
             </div>
         @endif
+
         @if (session('status') == 'Invalid OTP')
-            <div class="ml-[31%]  mt-[15%] px-20 font-bold text-md text-red-600 z-50 absolute ">
+            <div class="absolute left-0 right-0 font-bold text-center text-red-600 md:mt-4 text-md"
+                x-cloak="display:hidden">
+                {{ $disabled = false }}
+
                 {{ __('Invalid OTP') }}
             </div>
         @endif
-
-
     </form>
-    <div class="justify-center mt-1 text-center w-100">
-        <div class="h-4 text-2xl "> Time Left: <span id="countdown">{{ config('otp.expiry') }}:00</span>
+
+
+    <div class="mt-6 text-center">
+        <div class="text-xl font-semibold" id="timer">
+            {{ __('Time Left:') }} <span id="countdown">{{ config('otp.expiry') }}:00</span>
         </div>
-        <x-primary-button @click="startTimer()" wire:click="sendVerification">
+        <button
+            class=" mt-14'inline-flex items-center px-3 py-3 bg-navy-blue border border-transparent rounded-md font-semibold text-xl text-white  capitalize tracking-widest hover:bg-white hover:text-navy-blue hover:border-navy-blue border-navy-blue  focus:bg-white  active:bg-navy-blue active:text-white  focus:outline-none focus:ring-2 focus:ring-navy-blue focus:ring-offset-2  transition ease-in-out duration-150"
+            @click="startTimer(),$wire.sendVerification()">
             {{ __('Resend Verification Email') }}
-        </x-primary-button>
+        </button>
+
+
     </div>
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const form = document.getElementById("otp-form");
             const inputs = [...form.querySelectorAll("input[type=text]")];
-            const submit = form.querySelector('button[type=submit]')
+            const submit = form.querySelector('button[type=submit]');
+
 
             const handleKeyDown = (e) => {
                 if (
@@ -200,8 +200,6 @@ new #[Layout('layouts.guest')] class extends Component {
                 if (target.value) {
                     if (index < inputs.length - 1) {
                         inputs[index + 1].focus();
-                    } else {
-                        // submit.focus()
                     }
                 }
             };
@@ -218,7 +216,7 @@ new #[Layout('layouts.guest')] class extends Component {
                 }
                 const digits = text.split("");
                 inputs.forEach((input, index) => (input.value = digits[index]));
-                // submit.focus()
+                // submit.focus() // Consider if you still need this
             };
 
             inputs.forEach((input) => {
@@ -230,26 +228,30 @@ new #[Layout('layouts.guest')] class extends Component {
         });
 
         let countdownDate = new Date().getTime() + ({{ config('otp.expiry') }} * 60 * 1000); // 5 minutes from now
+        let countdownInterval;
 
+        const updateCountdown = () => {
+            const now = new Date().getTime();
+            const distance = countdownDate - now;
 
-        let startTimer = () => {
-            let x = setInterval(function() {
-                let now = new Date().getTime();
-                let distance = countdownDate - now;
+            const minutes = Math.max(0, Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)));
+            const seconds = Math.max(0, Math.floor((distance % (1000 * 60)) / 1000));
 
-                let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                let seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            document.getElementById("countdown").innerHTML =
+                (`${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`);
 
-                document.getElementById("countdown").innerHTML =
-                    ("0" + minutes).slice(-2) + ":" + ("0" + seconds).slice(-2);
+            if (distance < 0) {
+                clearInterval(countdownInterval);
+                document.getElementById("countdown").innerHTML = "00:00";
 
-                if (distance < 0) {
-                    clearInterval(x);
-                    document.getElementById("countdown").innerHTML = "EXPIRED";
-                }
-            }, 1000);
-        }
+            }
+        };
 
-        document.addEventListener("DOMContentLoaded", startTimer());
+        const startTimer = () => {
+            updateCountdown(); // Initial call to avoid a brief flash of the initial time
+            countdownInterval = setInterval(updateCountdown, 1000);
+        };
+
+        document.addEventListener("DOMContentLoaded", startTimer);
     </script>
 </div>
