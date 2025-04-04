@@ -13,6 +13,7 @@ cmds = [
 
 [phases.postbuild]
 cmds = [
+    "php artisan migrate",
     "npm run build",
     "php artisan config:cache",
     "php artisan optimize",
