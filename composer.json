@@ -17,6 +17,7 @@
         "livewire/livewire": "^3.6",
         "livewire/volt": "^1.7",
         "mkocansey/bladewind": "^2.9",
+        "nuxtifyts/dash-stack-theme": "*",
         "predis/predis": "^2.3",
         "robsontenorio/mary": "^1.41",
         "tzsk/otp": "^8.0",

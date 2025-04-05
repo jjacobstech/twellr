@@ -10,86 +10,43 @@
             @endif
             @if (route('dashboard') == url()->current())
                 <div
-                    class="grid space-y-5 md:space-y-3 lg:space-y-5 w-screen px-3 md:pt-5 lg:mx-1 pb-5 md:pb-0  bg-white md:flex md:flex-col md:flex-1 md:h-full md:w-72 md:overflow-auto">
-                    <div class="relative flex">
-                        <img class="h-[200] md:h-[254px] w-full rounded-xl" src="{{ asset('assets/sales.png') }}"
-                            alt="">
+                    class="w-full px-3 pt-0 pb-5 space-y-5 bg-white md:pt-5 md:flex md:flex-col md:flex-1 md:h-full md:w-72 md:overflow-auto lg:mx-1">
+                    <!-- Banner Image -->
+                    <div class="relative">
+                        <img class="w-full rounded-xl h-[200px] md:h-[254px] object-cover"
+                            src="{{ asset('assets/sales.png') }}" alt="Dashboard banner">
                     </div>
 
-                    <div>
+                    <!-- Products Section -->
+                    <div class="w-full">
                         @if (Auth::user()->isCreative())
-                            <div class="relative grid w-full gap-3 lg:hidden md:grid-cols-3 sm:grid-cols-2">
+                            <!-- Mobile/Tablet View for Creative Users -->
+                            <div class="grid w-full gap-3 sm:grid-cols-2 md:grid-cols-3 lg:hidden">
                                 @foreach ($latestProducts as $latestProduct)
-                                    <div>
-                                        <div class=" rounded-xl">
-                                            <img class="w-full h-48 rounded-xl"
-                                                src="{{ asset('uploads/products/design-stack/' . $latestProduct->front_view) }}"
-                                                alt="">
-                                        </div>
-
-                                        <div class="mt-2 text">
-                                            <p class="h3 text-golden"> {{ $latestProduct->price }} </p>
-                                            <p class="font-bold text-gray-500 p"> {{ $latestProduct->category }} </p>
-
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
-                            <div class="relative lg:grid w-full gap-3 hidden lg:grid-cols-5">
-                                @foreach ($latestProducts as $latestProduct)
-                                    <div>
-                                        <div class=" rounded-xl">
-                                            <img class="w-full h-48 rounded-xl"
-                                                src="{{ asset('uploads/products/design-stack/' . $latestProduct->front_view) }}"
-                                                alt="">
-                                        </div>
-
-                                        <div class="mt-2 text">
-                                            <p class="h3 text-golden"> {{ $latestProduct->price }} </p>
-                                            <p class="font-bold text-gray-500 p"> {{ $latestProduct->category }} </p>
-
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
-                        @endif
-
-                        @if (!Auth::user()->isCreative())
-                            <div class="relative grid w-full gap-5  lg:hidden md:grid-cols-6 sm:grid-cols-4 ">
-                                @foreach ($latestProducts as $latestProduct)
-                                    <div>
-                                        <div class=" rounded-xl">
-                                            <img class="w-full h-48 rounded-xl"
-                                                src="{{ asset('uploads/products/design-stack/' . $latestProduct->front_view) }}"
-                                                alt="">
-                                        </div>
-
-                                        <div class="mt-3 text">
-                                            <p class="h3 text-golden"> {{ $latestProduct->price }} </p>
-                                            <p class="font-bold text-gray-500 p"> {{ $latestProduct->category }} </p>
-
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
-                            <div class="relative hidden lg:flex w-full gap-5  lg:grid-col-6">
-                                @foreach ($latestProducts as $latestProduct)
-                                    <div>
-                                        <div class=" rounded-xl">
-                                            <img class="w-full h-48 rounded-xl"
-                                                src="{{ asset('uploads/products/design-stack/' . $latestProduct->front_view) }}"
-                                                alt="">
-                                        </div>
-
-                                        <div class="mt-3 text">
-                                            <p class="h3 text-golden"> {{ $latestProduct->price }} </p>
-                                            <p class="font-bold text-gray-500 p"> {{ $latestProduct->category }} </p>
-
-                                        </div>
-                                    </div>
+                                    <x-dashboard-product-card :product="$latestProduct" />
                                 @endforeach
                             </div>
 
+                            <!-- Desktop View for Creative Users -->
+                            <div class="hidden w-full gap-3 lg:grid lg:grid-cols-5">
+                                @foreach ($latestProducts as $latestProduct)
+                                    <x-dashboard-product-card :product="$latestProduct" />
+                                @endforeach
+                            </div>
+                        @else
+                            <!-- Mobile/Tablet View for Non-Creative Users -->
+                            <div class="grid w-full gap-4 sm:grid-cols-4 md:grid-cols-6 lg:hidden">
+                                @foreach ($latestProducts as $latestProduct)
+                                    <x-dashboard-product-card :product="$latestProduct" />
+                                @endforeach
+                            </div>
+
+                            <!-- Desktop View for Non-Creative Users -->
+                            <div class="hidden w-full gap-4 lg:grid lg:grid-cols-6">
+                                @foreach ($latestProducts as $latestProduct)
+                                    <x-dashboard-product-card :product="$latestProduct" />
+                                @endforeach
+                            </div>
                         @endif
                     </div>
                 </div>

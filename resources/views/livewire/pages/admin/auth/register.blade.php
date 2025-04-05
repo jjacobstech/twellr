@@ -149,7 +149,7 @@ new #[Layout('layouts.guest')] class extends Component {
             </div>
             <div class="flex items-center justify-end mt-1 md:mt-4">
                 <a class="text-sm font-bold text-black underline rounded-md hover:text-navy-blue dark:hover:text-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 "
-                    href="{{ route('login') }}">
+                    href="{{ route('admin.login') }}">
                     {{ __('Already registered?') }}
                 </a>
 

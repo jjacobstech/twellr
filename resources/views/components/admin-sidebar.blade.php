@@ -34,7 +34,6 @@
                     class="left-0 w-full mt-2 origin-top-right rounded-md shadow-lg bg-navy-blue transition-75"
                     style="display: none;">
                     <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                        <?xml version="1.0" encoding="UTF-8"?>
                         <a href="#" class="block px-4 py-2 text-sm text-white hover:bg-white hover:text-navy-blue"
                             role="menuitem">
                             Design Stack
