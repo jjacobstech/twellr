@@ -21,13 +21,15 @@
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @livewireStyles()
+    @livewireScripts()
     @bukStyles(true)
     @bukScripts(true)
 </head>
 
 <body class="h-screen p-0 m-0 font-sans antialiased bg-white border-0 md:overflow-hidden">
 
-    <x-mary-spotlight class="bg-black" shortcut="meta.slash" search-text="Find creators, designs, ratings"
+    <x-mary-spotlight shortcut="meta.slash" search-text="Find creators, designs, ratings"
         no-results-text="Ops! Nothing here." />
     <x-bladewind::notification />
     <div class="p-0 m-0 bg-gray-100 border-0 ">

@@ -33,7 +33,7 @@ new #[Layout('layouts.guest')] class extends Component {
     }
 }; ?>
 
-<div>
+<div class="mt-20 px-10 h-screen">
     <div class=" text-md text-gray-900 font-extrabold">
         {{ __('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.') }}
     </div>
@@ -70,7 +70,7 @@ new #[Layout('layouts.guest')] class extends Component {
             </x-primary-button>
         </div>
     </form>
-    <div class="flex items-center justify-end mt-1 md:mt-4">
+    <div class="flex items-center justify-end mt-1 md:mt-10">
         <a class=" font-bold text-lg text-black underline rounded-md hover:text-navy-blue dark:hover:text-gray-100 focus:outline-none focus:text-black "
             href="{{ route('login') }}">
             {{ __('Back') }}

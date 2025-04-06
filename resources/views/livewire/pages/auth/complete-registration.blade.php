@@ -74,7 +74,7 @@ new #[Layout('layouts.guest')] class extends Component {
     }
 }; ?>
 
-<div class="my-7">
+<div class="my-7 px-10">
     <h1 class="my-1 mb-5 text-4xl font-extrabold">Complete Registration</h1>
     <div>
 
@@ -164,12 +164,5 @@ new #[Layout('layouts.guest')] class extends Component {
         </div>
     </form>
 
-    <div class="flex items-center justify-end mt-1 md:mt-4">
-        <a class="text-sm font-bold text-black underline rounded-md hover:text-navy-blue dark:hover:text-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 "
-            href="{{ route('login') }}">
-            {{ __('Already registered?') }}
-        </a>
 
-
-    </div>
 </div>

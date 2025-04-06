@@ -45,7 +45,7 @@ new #[Layout('layouts.guest')] class extends Component {
     }
 }; ?>
 
-<div class="my-7 h-screen">
+<div class="my-7 px-10 h-screen">
 
     @session('status')
         <div class="toast toast-top toast-right" x-transition:leave="500ms" x-data="{ show: true }" x-show="show">
@@ -122,7 +122,7 @@ new #[Layout('layouts.guest')] class extends Component {
                     <x-google-auth-actions :value="__('Sign in with Google')" />
                 </a>
             </div>
-            <div class="flex mt-4">
+            <div class="flex mt-12">
                 <a class="w-1/2 text-sm font-bold text-black underline rounded-md hover:text-navy-blue focus:outline-none focus:text-black"
                     href="{{ route('register') }}">
                     {{ __("Don't Have Account?") }}

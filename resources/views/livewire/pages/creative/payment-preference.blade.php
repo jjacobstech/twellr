@@ -73,7 +73,7 @@ new #[Layout('layouts.guest')] class extends Component {
     }
 };
 ?>
-<div class="flex justify-center px-24 py-10 mt-3 border border-black rounded-3xl ">
+<div class="flex justify-center px-24 py-10 mt-3 border border-black rounded-3xl md:mx-20">
 
     <form class="w-[50%]" wire:submit.prevent="storeInfo">
         <div class="relative ">

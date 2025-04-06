@@ -58,7 +58,7 @@ new #[Layout('layouts.guest')] class extends Component {
     }
 }; ?>
 
-<div class="my-5 border-0 md:my-12 h-screen">
+<div class="my-5 border-0 md:my-10 h-screen px-10">
     <h1 class="w-full my-1 mb-5 text-3xl font-bold text-center md:text-4xl md:text-left ">Create Account</h1>
     <div>
 
@@ -153,7 +153,7 @@ new #[Layout('layouts.guest')] class extends Component {
 
 
             </div>
-            <div class="flex items-center justify-end mt-1 md:mt-4">
+            <div class="flex items-center justify-end mt-1 md:mt-10">
                 <a class="text-sm font-bold text-black underline rounded-md hover:text-navy-blue dark:hover:text-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 "
                     href="{{ route('login') }}">
                     {{ __('Already registered?') }}

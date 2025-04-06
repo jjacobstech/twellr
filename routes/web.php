@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 
-Volt::route('/', 'welcome')->name('home');
+Route::get('/', fn() => view('welcome'))->name('home');
 Route::middleware('guest')->get('/r/{slug?}', [UserController::class, "referral"]);
 
 Route::get('/test/{slug?}', function () {

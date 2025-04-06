@@ -64,8 +64,7 @@ new class extends Component {
                 <form class="md:w-[100%] px-5  md:px-9 w-full">
                     <div class="flex justify-between w-full md:w-full">
                         <div class="relative flex pb-5 md:pb-0 pt-3 md:pt-0 w-[100%] md:my-3">
-                            <input type="search" id="search-dropdown" wire:model='search'
-                                @click.stop="$dispatch('mary-search-open')"
+                            <input type="search" id="search-dropdown" @click.stop="$dispatch('mary-search-open')"
                                 class="font-bold block p-2.5 w-full  z-20 text-sm text-gray-900 bg-gray-200 rounded-l-lg border-0 active:border-0 hover:border hover:border-gray-400 focus:border-0 focus:ring-0 border-navy-blue "
                                 placeholder="Search by: Creator, Design, Location, Ratings"
                                 alt="Search by: Creator, Design, Location, Ratings"
