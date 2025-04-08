@@ -18,23 +18,21 @@
 
     <link rel="shortcut icon" href="{{ asset('assets/twellr.svg') }}" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" />
-
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @livewireStyles()
+    @livewireScripts()
     @bukStyles(true)
     @bukScripts(true)
 </head>
 
 <body class="h-screen p-0 m-0 font-sans antialiased bg-white border-0 md:overflow-hidden">
 
-    <x-mary-spotlight shortcut="meta.slash" search-text="Find creators, designs, ratings"
-        no-results-text="Ops! Nothing here." />
+    <x-mary-spotlight shortcut="meta.slash" no-results-text="Ops! Nothing here." />
     <x-bladewind::notification />
     <div class="p-0 m-0 bg-gray-100 border-0 ">
         <livewire:layout.navigation />
-
         <!-- Page Heading -->
         @if (isset($header))
             <header class="bg-white shadow">
@@ -45,13 +43,13 @@
         @endif
 
         <!-- Page Content -->
-        <main class="p-0 mt-2 border-0">
+        <main class="p-0  border-0">
             {{ $slot }}
         </main>
     </div>
 </body>
 <script src="{{ asset('vendor/bladewind/js/helpers.js') }}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
+{{-- <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script> --}}
 
 
 </html>

@@ -41,17 +41,17 @@ new class extends Component {
     }
 }; ?>
 <!--Password Form content -->
-<div class="md:col-span-3  lg:col-span-3">
-    <div class="bg-white overflow-hidden rounded-lg shadow-neutral-700 shadow-md">
+<div class="md:col-span-3 lg:col-span-3">
+    <div class="overflow-hidden bg-white rounded-lg shadow-md shadow-neutral-700">
         <div class="px-4 py-4 sm:px-6 bg-navy-blue">
             <h3 class="text-lg font-medium leading-6 text-gray-100">Account Settings</h3>
 
         </div>
-        <div class="border-t border-gray-400 flex justify-evenly">
-            <form wire:submit.prevent="updatePassword" class="px-4 py-5 sm:p-6 space-y-6 bg-gray-200 w-1/2">
+        <div class="flex border-t border-gray-400 justify-evenly">
+            <form wire:submit.prevent="updatePassword" class="w-1/2 px-4 py-5 space-y-6 bg-gray-200 sm:p-6">
                 <div class="grid gap-10">
                     <div class="w-100">
-                        <div class=" grid md:grid-cols-6 gap-y-6 gap-x-4">
+                        <div class="grid md:grid-cols-6 gap-y-6 gap-x-4">
                             <div class="sm:col-span-3">
                                 <label for="current_password" class="block text-sm font-medium text-gray-700">
                                     Current Password
@@ -84,7 +84,7 @@ new class extends Component {
                                     Confirm Password
                                 </label>
                                 <div class="mt-1">
-                                    <input type="password" wire:model="confirm_password" id="confirm_password"
+                                    <input type="password" wire:model="password_confirmation" id="confirm_password"
                                         autocomplete="password"
                                         class="shadow-sm focus:ring-navy-blue focus:border-navy-blue block w-full sm:text-sm  @if ($errors->get('password_confirmation')) border-red-500
                                         @else
@@ -99,12 +99,12 @@ new class extends Component {
 
                     <div class="flex justify-end">
                         <button type="submit"
-                            class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-navy-blue hover:bg-navy-blue focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-navy-blue">
+                            class="inline-flex justify-center px-4 py-2 text-sm font-medium text-white border border-transparent rounded-md shadow-sm bg-navy-blue hover:bg-navy-blue focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-navy-blue">
                             Save
                         </button>
                         @session('profile_updated')
                             <div
-                                class="ml-3 inline-flex items-center px-4 py-2 text-sm font-medium text-green-700 bg-green-100 rounded-md">
+                                class="inline-flex items-center px-4 py-2 ml-3 text-sm font-medium text-green-700 bg-green-100 rounded-md">
                                 Profile updated successfully!
                             </div>
                         @endsession

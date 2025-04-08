@@ -54,7 +54,7 @@ new #[Layout('layouts.guest')] class extends Component {
     }
 }; ?>
 
-<div class="my-5 border-0 md:my-12">
+<div class="my-5 border-0 md:my-12 md:px-10">
     <h1 class="w-full my-1 mb-5 text-3xl font-bold text-center md:text-4xl md:text-left ">Create Account</h1>
     <div>
 

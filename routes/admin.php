@@ -7,7 +7,7 @@ Volt::route('admin/email/verification', 'pages.admin.auth.email-verification')->
 
 Route::middleware(['IsAdmin'])->group(function () {
 
-    Route::view('admin/dashboard', 'livewire.pages.admin.dashboard')
+    Volt::route('admin/dashboard', 'pages.admin.dashboard')
         ->middleware(['auth', 'verified'])
         ->name('admin.dashboard');
 });

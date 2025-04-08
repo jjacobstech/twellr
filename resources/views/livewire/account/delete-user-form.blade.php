@@ -22,7 +22,7 @@ new class extends Component {
     }
 }; ?>
 
-<section class="space-y-6 bg-gray-200 w-1/2 pt-5">
+<section class="w-1/2 pt-5 space-y-6 bg-gray-200">
     <header>
         <h2 class="text-lg font-medium text-gray-900 ">
             {{ __('Delete Account') }}
@@ -50,13 +50,13 @@ new class extends Component {
             <div class="mt-6">
                 <x-input-label for="password" value="{{ __('Password') }}" class="sr-only" />
 
-                <x-text-input wire:model="password" id="password" name="password" type="password"
-                    class="mt-1 block w-3/4" placeholder="{{ __('Password') }}" />
+                <x-text-input wire:model="password" name="password" type="password" class="block w-3/4 mt-1"
+                    placeholder="{{ __('Password') }}" />
 
                 <x-input-error :messages="$errors->get('password')" class="mt-2" />
             </div>
 
-            <div class="mt-6 flex justify-end">
+            <div class="flex justify-end mt-6">
                 <x-secondary-button x-on:click="$dispatch('close')">
                     {{ __('Cancel') }}
                 </x-secondary-button>

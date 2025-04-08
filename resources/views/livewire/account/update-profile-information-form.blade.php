@@ -27,6 +27,37 @@ new class extends Component {
     public ?string $whatsapp;
     public ?string $x;
     public ?string $instagram;
+    public $cropConfig = [
+        'width' => 50,
+        'height' => 50,
+        'aspectRatio' => 1,
+        'minWidth' => 50,
+        'minHeight' => 50,
+        'maxWidth ' => 500,
+        'maxHeight' => 500,
+        'cropWidth' => 50,
+        'cropHeight' => 50,
+        'cropAspectRatio' => 1,
+        'cropMinWidth' => 50,
+        'cropMinHeight' => 50,
+        'cropMaxWidth' => 500,
+        'cropMaxHeight' => 500,
+        'cropPreview' => true,
+        'cropPreviewWidth' => 50,
+        'cropPreviewHeight' => 50,
+        'cropPreviewAspectRatio' => 1,
+        'cropPreviewMinWidth' => 50,
+        'cropPreviewMinHeight' => 50,
+        'cropPreviewMaxWidth' => 500,
+        'cropPreviewMaxHeight' => 500,
+        'cropPreviewBackground' => '#fff',
+        'cropPreviewBorder' => '1px solid #000',
+        'cropPreviewBorderRadius' => '50%',
+        'cropPreviewBoxShadow' => '0 0 5px rgba(0, 0, 0, 0.5)',
+        'cropPreviewOpacity' => 1,
+        'cropPreviewZIndex' => 1,
+        'cropPreviewPosition' => 'absolute',
+    ];
 
     /**
      * Mount the component.
@@ -198,8 +229,8 @@ new class extends Component {
         </div>
         <div class="border-t border-gray-400">
             <form wire:submit.prevent="updateProfileInformation" class="px-4 py-5 space-y-6 bg-gray-100 sm:p-6">
-                <div class="grid md:flex justify-between md:gap-10">
-                    <div class="md:w-1/2 space-y-5">
+                <div class="grid justify-between md:flex md:gap-10">
+                    <div class="space-y-5 md:w-1/2">
                         {{-- Name and Email --}}
                         <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
                             <div class="col-span-12 md:col-span-3">
@@ -365,7 +396,7 @@ new class extends Component {
 
                     </div>
 
-                    <div class="md:w-1/2 mt-5 md:mt-0">
+                    <div class="mt-5 md:w-1/2 md:mt-0">
                         <div class="md:col-span-6">
                             <label for="avatar" class="block text-sm font-medium text-gray-700">
                                 Avatar
@@ -373,17 +404,8 @@ new class extends Component {
                             <div class="flex items-center mt-1">
 
                                 <div class="flex-shrink-0">
-                                    @if ($avatarUpload == null)
-                                        <img src="@if (empty(Auth::user()->avatar)) {{ asset('assets/icons-user.png') }}
-                        @else
-                        {{ asset('uploads/avatar/' . Auth::user()->avatar) }} @endif"
-                                            alt="avatar" class="w-12 h-12 rounded-full">
-                                    @else
-                                        <img src="{{ $avatarUpload->temporaryUrl() }}" alt="avatar"
-                                            class="h-12 w-12 rounded-full @error('avatarUpload')
-                                                            border-1 border-red-500
-                                                        @enderror">
-                                    @endif
+                                    <img src="{{ Auth::user()->avatar ?? asset('assets/icons-user.png') }}"alt="avatar"
+                                        class="w-12 h-12 rounded-full">
                                 </div>
                                 <div class="flex ml-4">
                                     <div
@@ -393,9 +415,9 @@ new class extends Component {
                                             <span>Change</span>
                                             <span class="sr-only">avatar</span>
                                         </label>
-                                        <input id="avatar-upload" wire:model='avatarUpload' name="avatar"
-                                            type="file" change="previewAvatar" accept="image/*"
-                                            class="absolute inset-0 w-full h-full border-gray-300 rounded-md opacity-0 cursor-pointer">
+                                        <x-mary-file id="avatar-upload" wire:model='avatarUpload' name="avatar"
+                                            type="file" crop-after-change accept="image/*"
+                                            class="absolute inset-0 w-full h-full border-gray-300 rounded-md opacity-0 cursor-pointer" />
                                     </div>
                                 </div>
                             </div>

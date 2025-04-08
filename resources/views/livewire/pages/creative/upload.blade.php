@@ -7,7 +7,6 @@ use Livewire\Volt\Component;
 use Livewire\WithFileUploads;
 use Livewire\Attributes\Layout;
 use Illuminate\Support\Facades\Auth;
-use Livewire\Features\SupportFileUploads\FileUploadConfiguration;
 
 new #[Layout('layouts.app')] class extends Component {
     use WithFileUploads;
@@ -224,32 +223,31 @@ new #[Layout('layouts.app')] class extends Component {
                             <div class="flex justify-between w-full md:flex md:space-x-24 md:py-2 md:px-16">
 
                                 <div class="grid justify-center space-y-2">
-                                    {{-- <p class="hidden text-center">Upload To Design Stack</p> --}}
-                                    <label for="front-view"
-                                        title="Upload Design image({{ config('twellr.design_stack_formats') }}) only...">
-                                        <input class="hidden" type="file" accept="image/*" wire:model='frontView'
-                                            name="front-view" id="front-view">
-                                        <div class="relative w-full group">
-                                            <div
-                                                class="relative z-40 grid items-center justify-center w-40 h-40 mx-auto transition-all duration-500 bg-white cursor-pointer group-hover:translate-x-8 group-hover:shadow-2xl group-hover:-translate-y-8 rounded-xl">
+                                    <label for="front-view">
+                                        <x-mary-file change-text="{{ config('twellr.design_stack_formats') }}"
+                                            wire:model="frontView" accept="image/png, image/jpeg, image/jpg">
+                                            <div class="relative w-full group">
+                                                <div
+                                                    class="relative z-40 grid items-center justify-center w-40 h-40 mx-auto transition-all duration-500 bg-white cursor-pointer group-hover:translate-x-8 group-hover:shadow-2xl group-hover:-translate-y-8 rounded-xl">
 
-                                                <img class="w-40 h-40 rounded-xl @error('frontView')
+                                                    <img class="w-40 h-40 rounded-xl @error('frontView')
                                         border-2 border-red-600
                                     @enderror "
-                                                    src="@if ($frontView == null) {{ asset('assets/uploadDesignStack.png') }}@else {{ $frontView->temporaryUrl() }} @endif"
-                                                    id="front-view" alt="">
+                                                        src="{{ asset('assets/uploadDesignStack.png') }}"
+                                                        id="front-view" alt="">
+                                                </div>
+                                                <div
+                                                    class="absolute inset-0 z-30 flex items-center justify-center w-40 h-40 mx-auto transition-all duration-300 bg-transparent border border-gray-200 border-dashed opacity-0 group-hover:opacity-80 rounded-xl">
+                                                </div>
                                             </div>
-                                            <div
-                                                class="absolute inset-0 z-30 flex items-center justify-center w-40 h-40 mx-auto transition-all duration-300 bg-transparent border border-gray-200 border-dashed opacity-0 group-hover:opacity-80 rounded-xl">
-                                            </div>
-                                        </div>
+                                        </x-mary-file>
                                     </label>
 
                                     <p class="grid justify-center text-sm text-center">
                                         <span>Front View</span>
                                         <span>jpeg, png, jpg only</span>
                                         @error('frontView')
-                                            <span class="fixed mx-2 mt-12 text-red-500">Invalid File
+                                            <span class="fixed mx-2 mt-12 text-red-500 ml-7">Invalid File
                                                 Format</span>
                                         @enderror
                                         <span class="fixed mx-2 mt-16 ">
@@ -261,31 +259,30 @@ new #[Layout('layouts.app')] class extends Component {
 
 
                                 <div class="grid justify-center space-y-2">
-                                    {{-- <p class="hidden text-center">Upload To Design Stack</p> --}}
-                                    <label for="back-view"
-                                        title="Upload Design image({{ config('twellr.design_stack_formats') }}) only...">
-                                        <input class="hidden" type="file" accept="image/*" wire:model='backView'
-                                            name="back-view" id="back-view">
-                                        <div class="relative w-full group">
-                                            <div
-                                                class="relative z-40 flex items-center justify-center w-40 h-40 mx-auto transition-all duration-500 bg-white cursor-pointer group-hover:translate-x-8 group-hover:shadow-2xl group-hover:-translate-y-8 rounded-xl">
+                                    <label for="back-view">
+                                        <x-mary-file change-text="{{ config('twellr.design_stack_formats') }}"
+                                            wire:model="frontView" accept="image/png, image/jpeg, image/jpg">
+                                            <div class="relative w-full group">
+                                                <div
+                                                    class="relative z-40 flex items-center justify-center w-40 h-40 mx-auto transition-all duration-500 bg-white cursor-pointer group-hover:translate-x-8 group-hover:shadow-2xl group-hover:-translate-y-8 rounded-xl">
 
-                                                <img class="w-40 h-40 rounded-xl @error('backView')
+                                                    <img class="w-40 h-40 rounded-xl @error('backView')
                                         border-2 border-red-600
                                     @enderror "
-                                                    src="@if ($backView == null) {{ asset('assets/uploadDesignStack.png') }}@else {{ $backView->temporaryUrl() }} @endif"
-                                                    id="back-view" alt="">
+                                                        src="{{ asset('assets/uploadDesignStack.png') }}"
+                                                        id="back-view" alt="">
+                                                </div>
+                                                <div
+                                                    class="absolute inset-0 z-30 flex items-center justify-center w-40 h-40 mx-auto transition-all duration-300 bg-transparent border border-gray-200 border-dashed opacity-0 group-hover:opacity-80 rounded-xl">
+                                                </div>
                                             </div>
-                                            <div
-                                                class="absolute inset-0 z-30 flex items-center justify-center w-40 h-40 mx-auto transition-all duration-300 bg-transparent border border-gray-200 border-dashed opacity-0 group-hover:opacity-80 rounded-xl">
-                                            </div>
-                                        </div>
+                                        </x-mary-file>
                                     </label>
                                     <p class="grid justify-center text-sm text-center">
                                         <span>Back View</span>
                                         <span>jpeg, png, jpg only</span>
                                         @error('backView')
-                                            <span class="fixed mx-2 mt-12 text-red-500">Invalid File
+                                            <span class="fixed mx-2 mt-12 text-red-500 ml-7">Invalid File
                                                 Format</span>
                                         @enderror
                                         <span class="fixed mx-2 mt-16 ">
@@ -297,32 +294,32 @@ new #[Layout('layouts.app')] class extends Component {
 
                                 <div class="grid justify-center space-y-2">
                                     {{-- <p class="hidden text-center">Upload To Design Stack</p> --}}
-                                    <label for="side-view"
-                                        title="Upload Design image({{ config('twellr.design_stack_formats') }}) only...">
-                                        <input class="hidden" type="file" accept="image/*" wire:model='sideView'
-                                            name="side-view" id="side-view">
-                                        <div class="relative w-full group">
-                                            <div
-                                                class="relative z-40 flex items-center justify-center w-40 h-40 mx-auto transition-all duration-500 bg-white cursor-pointer group-hover:translate-x-8 group-hover:shadow-2xl group-hover:-translate-y-8 rounded-xl">
+                                    <label for="side-view">
+                                        <x-mary-file change-text="{{ config('twellr.design_stack_formats') }}"
+                                            wire:model="frontView" accept="image/png, image/jpeg, image/jpg">
+                                            <div class="relative w-full group">
+                                                <div
+                                                    class="relative z-40 flex items-center justify-center w-40 h-40 mx-auto transition-all duration-500 bg-white cursor-pointer group-hover:translate-x-8 group-hover:shadow-2xl group-hover:-translate-y-8 rounded-xl">
 
-                                                <img class="w-40 h-40 rounded-xl @error('sideView')
+                                                    <img class="w-40 h-40 rounded-xl @error('sideView')
                                         border-2 border-red-600
                                     @enderror "
-                                                    src="@if ($sideView == null) {{ asset('assets/uploadDesignStack.png') }}@else {{ $sideView->temporaryUrl() }} @endif"
-                                                    id="side-view" alt="">
+                                                        src="{{ asset('assets/uploadDesignStack.png') }}"
+                                                        id="side-view" alt="">
 
 
+                                                </div>
+                                                <div
+                                                    class="absolute inset-0 z-30 flex items-center justify-center w-40 h-40 mx-auto transition-all duration-300 bg-transparent border border-gray-200 border-dashed opacity-0 group-hover:opacity-80 rounded-xl">
+                                                </div>
                                             </div>
-                                            <div
-                                                class="absolute inset-0 z-30 flex items-center justify-center w-40 h-40 mx-auto transition-all duration-300 bg-transparent border border-gray-200 border-dashed opacity-0 group-hover:opacity-80 rounded-xl">
-                                            </div>
-                                        </div>
+                                        </x-mary-file>
                                     </label>
                                     <p class="grid justify-center text-sm text-center">
                                         <span>Side View</span>
                                         <span>jpeg, png, jpg only</span>
                                         @error('sideView')
-                                            <span class="fixed mx-2 mt-12 text-red-500">Invalid File
+                                            <span class="fixed mx-2 mt-12 text-red-500 ml-7">Invalid File
                                                 Format</span>
                                         @enderror
                                         <span class="fixed mx-2 mt-16 ">

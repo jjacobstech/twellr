@@ -1,22 +1,22 @@
 <!-- component -->
 <div id="sidebar"
-    class="h-[90vh] px-3 overflow-x-hidden transition-transform duration-300 ease-in-out shadow-xl bg-navy-blue md:block w-30 md:w-60 lg:w-60">
+    class="h-[90vh] px-3 overflow-x-hidden transition-transform duration-300 ease-in-out shadow-xl bg-white md:block w-30 md:w-60 lg:w-60">
     <div class="mt-10 space-y-6 md:space-y-10">
         <div id="menu" class="flex flex-col space-y-2">
 
             <a href=""
-                class="px-2 py-2 text-sm font-medium text-white transition duration-150 ease-in-out rounded-md hover:bg-white hover:text-navy-blue hover:text-base">
+                class="px-2 py-2 text-sm font-medium text-gray-500 transition duration-150 ease-in-out rounded-md hover:bg-golden hover:text-white hover:scale-105">
                 <svg class="inline-block w-6 h-6 fill-current" fill="currentColor" viewBox="0 0 20 20"
                     xmlns="http://www.w3.org/2000/svg">
                     <path
                         d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z">
                     </path>
                 </svg>
-                <span class="">Dashboard</span>
+                <span>Dashboard</span>
             </a>
             <div class="relative" x-data="{ open: false }">
                 <button @click="open = !open"
-                    class="flex items-center w-full px-2 py-2 text-sm font-medium text-white transition duration-150 ease-in-out rounded-md hover:bg-white hover:text-navy-blue hover:scale-105">
+                    class="flex items-center w-full px-2 py-2 text-sm font-medium text-gray-500 transition duration-150 ease-in-out rounded-md hover:bg-golden hover:text-white hover:scale-105">
                     <svg class="inline-block w-6 h-6 fill-current" fill="currentColor" viewBox="0 0 20 20"
                         xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd"
@@ -31,7 +31,7 @@
                     </svg>
                 </button>
                 <div x-show="open" @click.away='open = false'
-                    class="left-0 w-full mt-2 origin-top-right rounded-md shadow-lg bg-navy-blue transition-75"
+                    class="left-0 w-full mt-2 origin-top-right rounded-md shadow-lg bg-white shadow-gray-200 transition-75"
                     style="display: none;">
                     <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
                         <a href="#" class="block px-4 py-2 text-sm text-white hover:bg-white hover:text-navy-blue"
