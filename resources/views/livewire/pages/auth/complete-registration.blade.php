@@ -50,7 +50,7 @@ new #[Layout('layouts.guest')] class extends Component {
                     'email' => $validated['email'],
                     'google_id' => $this->google_id,
                     'avatar' => $this->avatar,
-                    'referral_link' => $validated['role'] == 'creative' ? config('app.url') . '/r/' . strtoupper(substr($validated['firstname'], 0, 2) . substr($validated['lastname'], 0, 2) . rand(1000, 9999)) : null,
+                    'referral_link' => $validated['role'] == 'creative' ? strtoupper(substr($validated['firstname'], 0, 2) . substr($validated['lastname'], 0, 2) . rand(1000, 9999)) : null,
                     'notify_purchase' => $validated['role'] == 'creative' ? 'yes' : 'no',
                     'password' => $validated['password'],
                     'role' => $validated['role'],

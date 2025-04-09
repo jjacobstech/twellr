@@ -58,7 +58,6 @@ new class extends Component {
                                 </label>
                                 <div class="mt-1 sm:col-span-3">
                                     <input type="password" wire:model="current_password" id="current_password"
-                                        autocomplete="current_ password"
                                         class="shadow-sm focus:ing-navy-blue focus:border-navy-blue block w-full sm:text-sm @if ($errors->get('current_password')) border-red-500
                                         @else
                                             border-gray-300 @endif rounded-md">
@@ -71,7 +70,7 @@ new class extends Component {
                                     Password
                                 </label>
                                 <div class="mt-1">
-                                    <input type="password" wire:model="password" id="password" autocomplete="password"
+                                    <input type="password" wire:model="password" id="password"
                                         class="shadow-sm focus:ring-navy-blue focus:border-navy-blue block w-full sm:text-sm  @if ($errors->get('password')) border-red-500
                                         @else
                                             border-gray-300 @endif rounded-md">
@@ -85,7 +84,6 @@ new class extends Component {
                                 </label>
                                 <div class="mt-1">
                                     <input type="password" wire:model="password_confirmation" id="confirm_password"
-                                        autocomplete="password"
                                         class="shadow-sm focus:ring-navy-blue focus:border-navy-blue block w-full sm:text-sm  @if ($errors->get('password_confirmation')) border-red-500
                                         @else
                                             border-gray-300 @endif rounded-md">

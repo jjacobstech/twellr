@@ -11,7 +11,10 @@ class UserController extends Controller
 {
     public function referral(?String $slug)
     {
-        $user = User::where('referral_link', "=", url()->current())->first();
-   
+        $user = User::where('referral_link', "=", $slug)->first();
+        return view('livewire.pages.referral-page', [
+            'user' => $user,
+            'referral_link' => $slug,
+        ]);
     }
 }

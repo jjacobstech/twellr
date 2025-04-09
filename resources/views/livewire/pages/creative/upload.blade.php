@@ -10,10 +10,10 @@ use Illuminate\Support\Facades\Auth;
 
 new #[Layout('layouts.app')] class extends Component {
     use WithFileUploads;
-    public string $name = '';
-    public string $price = '';
-    public string $category = '';
-    public string $description = '';
+    public string $name = 'test';
+    public string $price = '500';
+    public string $category = 'afro';
+    public string $description = 'lorem ipsum';
     public $designUpload;
     public $frontView;
     public $backView;
@@ -102,63 +102,83 @@ new #[Layout('layouts.app')] class extends Component {
     uploadModal: false,
     backButton: false,
 }"
-    x-on:livewire-upload-finish ="showNotification('Upload Complete', 'File Upload Successful' , 'success' , 5)">
+    x-on:livewire-upload-finish="showNotification('Upload Complete', 'File Upload Successful', 'success', 5)">
 
     @if (session('status'))
         @script
-            <script>
-                showNotification('Product Added', 'Product Added Successful', 'success', 5)
-            </script>
+            showNotification('Product Added', 'Product Added Successful', 'success', 5)
         @endscript
     @endif
-    <div class="flex gap-1">
-        @if ($errors->get('designUpload') || $errors->get('printUpload'))
-            @script
-                <script>
-                    showNotification('Invalid File Format',
-                        "Check Uploads", 'error', 5)
-                </script>
-            @endscript
-        @endif
 
+    {{-- Display errors for file uploads --}}
+    @if (
+        $errors->get('designUpload') ||
+            $errors->get('printUpload') ||
+            $errors->get('frontView') ||
+            $errors->get('backView') ||
+            $errors->get('sideView'))
+        @script
+            showNotification('Invalid File Format', "Check Uploads", 'error', 5)
+        @endscript
+    @endif
+
+    {{-- Main Layout: Sidebar + Content --}}
+    <div class="flex flex-col md:flex-row md:gap-1">
+        {{-- Sidebar Placeholder - Ensure this component is also responsive --}}
         <x-creative-sidebar />
-        <div class="text-xl w-[100%] p-4  bg-white ">
-            <div style="background-image: url('{{ asset('assets/blurred.png') }}')"
-                class="grid justify-center text-white bg-no-repeat bg-cover rounded-lg md:h-full lg:h-full">
 
-                {{-- Form Begin --}}
+        {{-- Main Content Area --}}
+        <div class="w-full p-4 bg-white text-xl">
+            {{-- Background Image Container - Let height be determined by content or use min-h for better flexibility --}}
+            <div style="background-image: url('{{ asset('assets/blurred.png') }}')"
+                class="relative grid justify-center text-white bg-no-repeat bg-cover rounded-lg min-h-[calc(100vh-2rem)] md:min-h-full">
+
+                {{-- Back Button - Positioned absolutely within the background container --}}
+                <div class="absolute top-4 left-4 z-10">
+                    <img x-show="backButton" x-transition:enter.duration.500ms x-cloak
+                        @click="form = true, uploadModal = false, backButton = false"
+                        class="w-12 h-12 md:w-16 md:h-16 transition hover:scale-110 cursor-pointer"
+                        src="{{ asset('assets/back-arrow.png') }}" alt="Back">
+                </div>
+
+                {{-- Form Container --}}
                 <form x-transition:enter.duration.500ms x-cloak="display:none"
-                    :class="uploadModal ? 'py-4' : 'w-[100%]  bg-[#dedddb] rounded-[40px] my-6'" action=""
-                    wire:submit.prevent='uploadProduct' enctype="multipart/form-data">
+                    :class="uploadModal ? 'w-full p-4 md:p-8 lg:p-12' : 'w-full max-w-4xl bg-[#dedddb] rounded-[40px] my-6'"
+                    wire:submit.prevent="uploadProduct" enctype="multipart/form-data">
                     @csrf
-                    <div x-show="form" x-transition:enter.duration.500ms>
-                        <div class="flex flex-col p-10 py-6">
-                            <div class="flex mt-4 ">
-                                <div class="flex-1 w-[60%]">
+
+                    {{-- Main Form View --}}
+                    <div x-show="form" x-transition:enter.duration.700ms class="py-3">
+                        <div class="flex flex-col  px-8 py-5">
+
+                            {{-- Name and Price Row - Stack vertically on small, horizontal on medium+ --}}
+                            <div class="flex flex-col md:flex-row md:gap-6">
+                                <div class="flex-1 w-full md:w-3/5">
                                     <x-input-label :value="__('Name')" class="text-gray-500 font-extrabold text-[17px]"
                                         for="name" />
                                     <x-text-input id="name" :class="$errors->get('name')
-                                        ? 'inline-block w-100 mt-2  border-1 border-red-600 bg-[#bebebe] rounded-xl'
-                                        : 'border-0 inline-block w-100 mt-2 bg-[#bebebe] rounded-xl '" type="text" name="name"
-                                        wire:model='name' required autofocus autocomplete="name" />
+                                        ? 'block w-full mt-2 border-1 border-red-600 bg-[#bebebe] rounded-xl'
+                                        : 'block border-0 w-full mt-2 bg-[#bebebe] rounded-xl'" type="text" name="name"
+                                        wire:model="name" required autofocus autocomplete="name" />
                                 </div>
 
-                                <div class="flex-1 w-[20%] ml-[20%]">
+                                <div class="w-full md:w-2/5">
                                     <x-input-label :value="__('Price')" class="text-gray-500 font-extrabold text-[17px]"
                                         for="price" />
                                     <x-text-input id="price" :class="$errors->get('price')
-                                        ? 'inline-block w-full mt-2 border-1 border-red-600 bg-[#bebebe] rounded-xl '
-                                        : 'border-0 inline-block w-full mt-2 bg-[#bebebe] rounded-xl '" wire:model='price' type="text"
+                                        ? 'block w-full mt-2 border-1 border-red-600 bg-[#bebebe] rounded-xl'
+                                        : 'block border-0 w-full mt-2 bg-[#bebebe] rounded-xl'" wire:model="price" type="text"
                                         name="price" required autofocus autocomplete="price" />
                                 </div>
                             </div>
 
+                            {{-- Category --}}
                             <div class="mt-4">
                                 <x-input-label :value="__('Category')" class="text-gray-500 font-extrabold text-[17px]"
                                     for="category" />
-                                <x-select id="category" wire:model='category' :class="$errors->get('category')
-                                    ? 'inline-block w-full mt-2  border-red-600 bg-[#bebebe] border-1 rounded-xl'
-                                    : 'inline-block w-full mt-2  border-[#bebebe] bg-[#bebebe] border-0 rounded-xl'" type="text"
+                                <x-select id="category" wire:model="category" :class="$errors->get('category')
+                                    ? 'block w-full mt-2 border-red-600 bg-[#bebebe] border-1 rounded-xl'
+                                    : 'block w-full mt-2 border-[#bebebe] bg-[#bebebe] border-0 rounded-xl'" type="text"
                                     name="category" required autofocus autocomplete="category">
                                     <x-slot name="options">
                                         <option class="text-black" disabled value="">Select a category</option>
@@ -171,208 +191,181 @@ new #[Layout('layouts.app')] class extends Component {
                                     </x-slot>
                                 </x-select>
                             </div>
-                            <div class="flex mt-4 ">
-                                <div class="w-[50%]">
+
+                            {{-- Description and Uploads Trigger Row - Stack vertically on small, horizontal on large+ --}}
+                            <div class="flex flex-col lg:flex-row lg:gap-6 mt-4">
+                                <div class="w-full lg:w-3/5">
                                     <x-input-label :value="__('Description')" class="text-gray-500 font-extrabold text-[17px]"
                                         for="description" />
-                                    <x-textarea-input wire:model='description' :class="$errors->get('description')
-                                        ? 'w-full border-1 border-red-600 px-2 py-1 mt-2 text-white h-28'
-                                        : 'w-full px-2 py-1 mt-2 text-white h-28'"
+                                    {{-- Use standard textarea or ensure x-textarea-input handles responsiveness --}}
+                                    <x-textarea-input wire:model="description" :class="$errors->get('description')
+                                        ? 'w-full border-1 border-red-600 px-2 py-1 mt-2 bg-[#bebebe] rounded-xl text-black h-28'
+                                        : 'w-full px-2 py-1 mt-2 bg-[#bebebe] border-0 rounded-xl text-black h-28'"
                                         id="description"></x-textarea-input>
                                 </div>
 
-                                <div class="w-[30%] ml-[20%]">
+                                <div class="w-full lg:w-2/5 mt-4 lg:mt-0 flex flex-col items-center lg:items-end">
                                     <x-input-label :value="__('Uploads')"
-                                        class="text-gray-500 font-extrabold text-[17px] ml-[40%]" for="name" />
-                                    <img @click="form=false, uploadModal=true, backButton = true"
-                                        class="{{ $errors->get('designUpload') || $errors->get('printUpload')
-                                            ? 'mt-2 h-28 w-28 hover:cursor-pointer border  border-red-600 rounded-2xl'
-                                            : 'mt-2 h-28 w-28 hover:cursor-pointer rounded-2xl' }}"
-                                        src="{{ asset('assets/image.png') }}" alt="">
+                                        class="text-gray-500 font-extrabold text-[17px] mb-2 text-center lg:text-left"
+                                        for="uploads" />
+                                    <img @click="form=false, uploadModal=true, backButton=true"
+                                        class="h-24 w-24 md:h-28 md:w-28 hover:cursor-pointer rounded-2xl {{ $errors->has('frontView') ||
+                                        $errors->has('backView') ||
+                                        $errors->has('sideView') ||
+                                        $errors->has('printUpload')
+                                            ? 'border-2 border-red-600'
+                                            : '' }}"
+                                        src="{{ asset('assets/image.png') }}" alt="Upload Trigger">
                                 </div>
-
-
                             </div>
                         </div>
-                        <p class="border-t-2 border-[#bebebe] m-0 w-100"></p>
-                        <div class="flex justify-center py-5">
-                            <div class="flex justify-center text-sm font-medium">
-                                <x-mary-button label="MONITIZE DESIGN"
-                                    class=" btn hover:bg-navy-blue hover:text-white active:bg-navy-blue bg-[#f7aa10] inline-block mt-0 text-neutral-900 px-6 py-4 rounded-xl font-bold uppercase text-[13px] focus:ring-0 focus:bg-navy-blue focus:text-white border-0"
-                                    wire:click="uploadProduct" spinner />
-                            </div>
-                            {{-- <x-bladewind.button type="submit"
-                                class="bg-[#f7aa10] inline-block mt-0 text-neutral-900 px-6 py-4 rounded-xl font-bold uppercase text-[13px] focus:ring-0 focus:bg-navy-blue focus:text-white"
-                                x-cloak="display:none" has_spinner="true" wire:loading.remove wire:click='uploadProduct'
-                                :outline="false">Monitize
-                                Design</x-bladewind.button>
-                            <x-bladewind.button type="submit" x-cloak="display:none"
-                                class="bg-[#f7aa10] inline-block mt-0 text-neutral-900 px-6 py-4 rounded-xl font-bold uppercase text-[13px] focus:ring-0 focus:bg-navy-blue focus:text-white"
-                                :has_spinner="true" show_spinner='true' wire:loading>Monitize
-                                Design</x-bladewind.button> --}}
 
+                        {{-- Divider --}}
+                        <div class="border-t-2 border-[#bebebe] w-full"></div>
+
+                        {{-- Submit Button --}}
+                        <div class="flex justify-center py-4">
+                            <x-mary-button label="MONETIZE DESIGN"
+                                class="btn hover:bg-navy-blue hover:text-white active:bg-navy-blue bg-[#f7aa10] text-neutral-900 px-6 py-4 rounded-xl font-bold uppercase text-[13px] focus:ring-0 focus:bg-navy-blue focus:text-white border-0"
+                                type="submit" spinner />
                         </div>
                     </div>
                     {{-- Form End --}}
 
                     {{-- Upload Modal --}}
+                    <div x-show="uploadModal" x-transition:enter.duration.500ms x-cloak class="py-10 md:py-16">
+                        {{-- Grid layout for uploads - 1 col default, 2 cols on small+, 4 cols on large+ --}}
+                        <div
+                            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 px-4 md:px-8 lg:px-16">
 
-                    <div x-show="uploadModal" x-transition:enter.duration.500ms x-cloak="display:none"
-                        class="justify-between py-[88.5px]">
-                        <div class="my-10 py-0.5">
-                            <div class="flex justify-between w-full md:flex md:space-x-24 md:py-2 md:px-16">
+                            <div class="grid justify-center content-start space-y-2 text-center">
+                                <label>
+                                    <x-mary-file omit-error="true" class="grid items-center"
+                                        change-text="Upload Front View" wire:model="frontView"
+                                        accept="image/png, image/jpeg, image/jpg">
+                                        {{-- Responsive Image Container --}}
+                                        <div class="relative group w-32 h-32 md:w-36 md:h-36 lg:w-40 lg:h-40 mx-auto">
 
-                                <div class="grid justify-center space-y-2">
-                                    <label for="front-view">
-                                        <x-mary-file change-text="{{ config('twellr.design_stack_formats') }}"
-                                            wire:model="frontView" accept="image/png, image/jpeg, image/jpg">
-                                            <div class="relative w-full group">
-                                                <div
-                                                    class="relative z-40 grid items-center justify-center w-40 h-40 mx-auto transition-all duration-500 bg-white cursor-pointer group-hover:translate-x-8 group-hover:shadow-2xl group-hover:-translate-y-8 rounded-xl">
-
-                                                    <img class="w-40 h-40 rounded-xl @error('frontView')
-                                        border-2 border-red-600
-                                    @enderror "
-                                                        src="{{ asset('assets/uploadDesignStack.png') }}"
-                                                        id="front-view" alt="">
-                                                </div>
-                                                <div
-                                                    class="absolute inset-0 z-30 flex items-center justify-center w-40 h-40 mx-auto transition-all duration-300 bg-transparent border border-gray-200 border-dashed opacity-0 group-hover:opacity-80 rounded-xl">
-                                                </div>
-                                            </div>
-                                        </x-mary-file>
-                                    </label>
-
-                                    <p class="grid justify-center text-sm text-center">
-                                        <span>Front View</span>
-                                        <span>jpeg, png, jpg only</span>
-                                        @error('frontView')
-                                            <span class="fixed mx-2 mt-12 text-red-500 ml-7">Invalid File
-                                                Format</span>
-                                        @enderror
-                                        <span class="fixed mx-2 mt-16 ">
-
-                                        </span>
-
-                                    </p>
-                                </div>
-
-
-                                <div class="grid justify-center space-y-2">
-                                    <label for="back-view">
-                                        <x-mary-file change-text="{{ config('twellr.design_stack_formats') }}"
-                                            wire:model="frontView" accept="image/png, image/jpeg, image/jpg">
-                                            <div class="relative w-full group">
-                                                <div
-                                                    class="relative z-40 flex items-center justify-center w-40 h-40 mx-auto transition-all duration-500 bg-white cursor-pointer group-hover:translate-x-8 group-hover:shadow-2xl group-hover:-translate-y-8 rounded-xl">
-
-                                                    <img class="w-40 h-40 rounded-xl @error('backView')
-                                        border-2 border-red-600
-                                    @enderror "
-                                                        src="{{ asset('assets/uploadDesignStack.png') }}"
-                                                        id="back-view" alt="">
-                                                </div>
-                                                <div
-                                                    class="absolute inset-0 z-30 flex items-center justify-center w-40 h-40 mx-auto transition-all duration-300 bg-transparent border border-gray-200 border-dashed opacity-0 group-hover:opacity-80 rounded-xl">
-                                                </div>
-                                            </div>
-                                        </x-mary-file>
-                                    </label>
-                                    <p class="grid justify-center text-sm text-center">
-                                        <span>Back View</span>
-                                        <span>jpeg, png, jpg only</span>
-                                        @error('backView')
-                                            <span class="fixed mx-2 mt-12 text-red-500 ml-7">Invalid File
-                                                Format</span>
-                                        @enderror
-                                        <span class="fixed mx-2 mt-16 ">
-
-                                        </span>
-
-                                    </p>
-                                </div>
-
-                                <div class="grid justify-center space-y-2">
-                                    {{-- <p class="hidden text-center">Upload To Design Stack</p> --}}
-                                    <label for="side-view">
-                                        <x-mary-file change-text="{{ config('twellr.design_stack_formats') }}"
-                                            wire:model="frontView" accept="image/png, image/jpeg, image/jpg">
-                                            <div class="relative w-full group">
-                                                <div
-                                                    class="relative z-40 flex items-center justify-center w-40 h-40 mx-auto transition-all duration-500 bg-white cursor-pointer group-hover:translate-x-8 group-hover:shadow-2xl group-hover:-translate-y-8 rounded-xl">
-
-                                                    <img class="w-40 h-40 rounded-xl @error('sideView')
-                                        border-2 border-red-600
-                                    @enderror "
-                                                        src="{{ asset('assets/uploadDesignStack.png') }}"
-                                                        id="side-view" alt="">
-
-
-                                                </div>
-                                                <div
-                                                    class="absolute inset-0 z-30 flex items-center justify-center w-40 h-40 mx-auto transition-all duration-300 bg-transparent border border-gray-200 border-dashed opacity-0 group-hover:opacity-80 rounded-xl">
-                                                </div>
-                                            </div>
-                                        </x-mary-file>
-                                    </label>
-                                    <p class="grid justify-center text-sm text-center">
-                                        <span>Side View</span>
-                                        <span>jpeg, png, jpg only</span>
-                                        @error('sideView')
-                                            <span class="fixed mx-2 mt-12 text-red-500 ml-7">Invalid File
-                                                Format</span>
-                                        @enderror
-                                        <span class="fixed mx-2 mt-16 ">
-
-                                        </span>
-
-                                    </p>
-                                </div>
-
-                                <div class="grid justify-center space-y-2">
-                                    <label for="printable_stack"
-                                        title="Upload Print file({{ config('twellr.printable_stack_format') }})...">
-                                        <input class="hidden" type="file" accept="*" wire:model='printUpload'
-                                            name="printable_stack" id="printable_stack">
-
-                                        <div class="relative w-full group ">
-                                            <div class="relative z-40 flex items-center justify-center w-40 h-40 mx-auto transition-all duration-500 bg-white cursor-pointer group-hover:translate-x-8 group-hover:shadow-2xl group-hover:-translate-y-8 rounded-xl "
-                                                id="printable-contaner">
-                                                <img class="w-40 h-40 rounded-xl @error('printUpload')
-                                        border-2 border-red-600
-                                    @enderror @if ($printUpload) p-5 @endif"
-                                                    src="@if ($printUpload != null) {{ asset('assets/file.png') }}@else{{ asset('assets/uploadPrintableStack.png') }} @endif"
-                                                    id="printImage" alt="">
-                                            </div>
                                             <div
-                                                class="absolute inset-0 z-30 flex items-center justify-center w-40 h-40 mx-auto transition-all duration-300 bg-transparent border border-gray-200 border-dashed opacity-0 group-hover:opacity-80 rounded-xl">
+                                                class="relative z-40 grid items-center justify-center w-full h-full transition-all duration-500 bg-white cursor-pointer group-hover:scale-105 group-hover:shadow-xl rounded-xl">
+                                                {{-- Preview or Placeholder --}}
+
+                                                <img class="w-full h-full rounded-xl object-cover"
+                                                    src="{{ asset('assets/uploadDesignStack.png') }}"
+                                                    alt="Upload Front View">
+                                            </div>
+                                            {{-- Dashed border overlay on hover --}}
+                                            <div
+                                                class="absolute inset-0 z-30 flex items-center justify-center w-full h-full transition-all duration-300 bg-transparent border border-gray-200 border-dashed opacity-0 group-hover:opacity-80 rounded-xl">
                                             </div>
                                         </div>
-                                    </label>
-                                    <p class="grid justify-center text-sm text-center">
-                                        <span>Upload Printable Stack</span>
-                                        <span>Image and Design Files only</span>
-                                        @error('printUpload')
-                                            <span class="fixed pt-1 mx-8 mt-10 text-red-500">Invalid File Format</span>
-                                        @enderror
-                                    </p>
-                                </div>
+                                    </x-mary-file>
+                                    @error('frontView')
+                                        <span class="block text-xs text-red-600">Invalid File Format</span>
+                                    @enderror
+                                </label>
+                                <p class="text-sm">
+                                    <span>Front View</span>
+                                    <span class="block text-xs text-gray-100">jpeg, png, jpg only</span>
+
+
+                                </p>
+                            </div>
+
+                            {{-- Back View --}}
+                            <div class="grid justify-center content-start space-y-2 text-center">
+                                <label>
+                                    <x-mary-file omit-error="true" change-text="Upload Back View" wire:model="backView"
+                                        accept="image/png, image/jpeg, image/jpg">
+                                        <div class="relative group w-32 h-32 md:w-36 md:h-36 lg:w-40 lg:h-40 mx-auto">
+                                            <div
+                                                class="relative z-40 grid items-center justify-center w-full h-full transition-all duration-500 bg-white cursor-pointer group-hover:scale-105 group-hover:shadow-xl rounded-xl">
+
+                                                <img class="w-full h-full rounded-xl object-cover"
+                                                    src="{{ asset('assets/uploadDesignStack.png') }}"
+                                                    alt="Upload Back View">
+
+                                            </div>
+                                            <div
+                                                class="absolute inset-0 z-30 flex items-center justify-center w-full h-full transition-all duration-300 bg-transparent border border-gray-200 border-dashed opacity-0 group-hover:opacity-80 rounded-xl">
+                                            </div>
+                                        </div>
+                                    </x-mary-file>
+                                    @error('backView')
+                                        <span class="block text-xs text-red-600">Invalid File Format</span>
+                                    @enderror
+                                </label>
+                                <p class="text-sm">
+                                    <span>Back View</span>
+                                    <span class="block text-xs text-gray-100">jpeg, png, jpg only</span>
+
+                                </p>
+                            </div>
+
+                            {{-- Side View --}}
+                            <div class="grid justify-center content-start space-y-2 text-center">
+                                <label>
+                                    <x-mary-file omit-error="true" change-text="Upload Side View"
+                                        wire:model="sideView" accept="image/png, image/jpeg, image/jpg">
+                                        <div class="relative group w-32 h-32 md:w-36 md:h-36 lg:w-40 lg:h-40 mx-auto">
+                                            <div
+                                                class="relative z-40 grid items-center justify-center w-full h-full transition-all duration-500 bg-white cursor-pointer group-hover:scale-105 group-hover:shadow-xl rounded-xl">
+                                                <img class="w-full h-full rounded-xl object-cover"
+                                                    src="{{ asset('assets/uploadDesignStack.png') }}"
+                                                    alt="Upload Side View">
+                                            </div>
+                                            <div
+                                                class="absolute inset-0 z-30 flex items-center justify-center w-full h-full transition-all duration-300 bg-transparent border border-gray-200 border-dashed opacity-0 group-hover:opacity-80 rounded-xl">
+                                            </div>
+                                        </div>
+                                    </x-mary-file>
+                                    @error('sideView')
+                                        <span class="block text-xs text-red-600">Invalid File Format</span>
+                                    @enderror
+                                </label>
+                                <p class="text-sm">
+                                    <span>Side View</span>
+                                    <span class="block text-xs text-gray-100">jpeg, png, jpg only</span>
+
+                                </p>
+                            </div>
+
+                            {{-- Printable Stack --}}
+                            <div class="grid justify-center content-start space-y-2 text-center">
+                                <label
+                                    title="Upload Print file ({{ config('twellr.printable_stack_format', 'Allowed Formats') }})">
+                                    <input class="hidden" type="file" accept="*" wire:model="printUpload"
+                                        name="printable_stack" id="printable_stack">
+
+                                    <div class="relative group w-32 h-32 md:w-36 md:h-36 lg:w-40 lg:h-40 mx-auto">
+                                        <div class="relative z-40 flex items-center justify-center w-full h-full transition-all duration-500 bg-white cursor-pointer group-hover:scale-105 group-hover:shadow-xl rounded-xl p-2 "
+                                            id="printable-container">
+                                            {{-- Display file icon or placeholder --}}
+                                            <img class="w-full h-full object-contain"
+                                                src="{{ $printUpload ? asset('assets/file.png') : asset('assets/uploadPrintableStack.png') }}"
+                                                id="printImage" alt="Printable Stack Upload">
+                                        </div>
+                                        <div
+                                            class="absolute inset-0 z-30 flex items-center justify-center w-full h-full transition-all duration-300 bg-transparent border border-gray-200 border-dashed opacity-0 group-hover:opacity-80 rounded-xl">
+                                        </div>
+                                    </div>
+                                    @error('printUpload')
+                                        <span class="block text-xs text-red-500">Invalid File Format</span>
+                                    @enderror
+                                </label>
+                                <p class="text-sm">
+
+                                    <span>Upload Printable Stack</span>
+                                    <span class="block text-xs text-gray-400">Image and Design Files only</span>
+
+                                </p>
                             </div>
                         </div>
-                        {{-- Upload Modal End --}}
-
-
                     </div>
+                    {{-- Upload Modal End --}}
                 </form>
-                <div class="absolute w-100 mt-[30%]  ">
-                    <img x-show="backButton" x-transition:enter.duration.500ms x-cloak="display:none"
-                        @click="form = true, uploadModal = false, backButton = false"
-                        class="w-16 h-16 ml-10 transition hover:scale-110" src="{{ asset('assets/back-arrow.png') }}"
-                        alt="">
-                </div>
-            </div>
-        </div>
-    </div>
-
-</div>
+                {{-- Form Container End --}}
+            </div> {{-- Background Image Container End --}}
+        </div> {{-- Main Content Area End --}}
+    </div> {{-- Main Layout End --}}
 </div>

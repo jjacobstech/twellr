@@ -197,6 +197,7 @@ new class extends Component {
         } else {
             $this->dispatch('profile-updated', name: $user->name);
         }
+        $this->redirectIntended(route('settings'), true);
     }
 
     /**
@@ -219,7 +220,7 @@ new class extends Component {
 }; ?>
 
 <!--Profile Form content -->
-<div class="w-full ">
+<div class="w-full " x-data="{ remove: true }">
     <div class="overflow-hidden bg-white rounded-lg shadow-md shadow-neutral-700">
         <div class="px-4 py-4 sm:px-6 bg-navy-blue">
             <h3 class="text-lg font-medium leading-6 text-gray-100">Profile Information</h3>
@@ -343,7 +344,7 @@ new class extends Component {
                                 </div>
                             </div>
                             <div class="col-span-12 md:col-span-3 ">
-                                <label for="X" class="block text-sm font-medium text-gray-700"> <svg
+                                <label for="x" class="block text-sm font-medium text-gray-700"> <svg
                                         class="w-10 h-10" xmlns="http://www.w3.org/2000/svg"
                                         viewBox="0 0 448 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
                                         <path
@@ -396,74 +397,75 @@ new class extends Component {
 
                     </div>
 
-                    <div class="mt-5 md:w-1/2 md:mt-0">
-                        <div class="md:col-span-6">
-                            <label for="avatar" class="block text-sm font-medium text-gray-700">
+                    <div class="mt-5 md:w-1/2 md:mt-0 grid gap-2">
+                        <div class="md:col-span-6 grid gap-1">
+                            <p class="block text-sm font-medium text-gray-700">
                                 Avatar
-                            </label>
-                            <div class="flex items-center mt-1">
-
-                                <div class="flex-shrink-0">
-                                    <img src="{{ Auth::user()->avatar ?? asset('assets/icons-user.png') }}"alt="avatar"
-                                        class="w-12 h-12 rounded-full">
-                                </div>
-                                <div class="flex ml-4">
-                                    <div
-                                        class="relative flex items-center px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm cursor-pointer hover:bg-gray-50 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-navy-blue">
-                                        <label for="avatar-upload"
-                                            class="relative text-sm font-medium pointer-events-none text-navy-blue">
-                                            <span>Change</span>
-                                            <span class="sr-only">avatar</span>
-                                        </label>
-                                        <x-mary-file id="avatar-upload" wire:model='avatarUpload' name="avatar"
-                                            type="file" crop-after-change accept="image/*"
-                                            class="absolute inset-0 w-full h-full border-gray-300 rounded-md opacity-0 cursor-pointer" />
-                                    </div>
-                                </div>
+                            </p>
+                            <div class="flex items-center ">
+                                <x-mary-file wire:model="avatarUpload" accept="image/png, image/jpeg, image/jpg">
+                                    <img class="h-20 w-20 rounded-full"
+                                        src="{{ Auth::user()->avatar ? asset('uploads/avatar/' . Auth::user()->avatar) : asset('assets/icons-user.png') }}"
+                                        alt="cover">
+                                </x-mary-file>
                             </div>
-                            <p class="mt-2 text-xs text-gray-500">JPG, PNG, GIF up to 1MB</p>
+                            <p class="text-xs text-gray-700">JPG, PNG, GIF up to 1MB</p>
                         </div>
 
                         <div class="md:col-span-6">
-                            <label for="cover-image" class="block text-sm font-medium text-gray-700">
+                            <p class="block text-sm font-medium text-gray-700">
                                 Cover image
-                            </label>
-                            <label for="cover-image-upload">
-                                @if ($coverUpload == null)
-                                    <div
-                                        class="flex justify-center px-3 py-3 mt-1 border-2 border-gray-500 border-dashed rounded-md hover:border-navy-blue">
-                                        <div class="space-y-1 text-center">
-                                            <svg class="w-12 h-12 mx-auto text-gray-500" stroke="currentColor"
-                                                fill="none" viewBox="0 0 48 48" aria-hidden="true">
-                                                <path
-                                                    d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                                                    stroke-width="2" stroke-linecap="round"
-                                                    stroke-linejoin="round" />
-                                            </svg>
-                                            <div class="flex justify-center text-sm text-gray-600">
-                                                <label for="cover-image-upload"
-                                                    class="relative flex justify-center font-medium text-center rounded-md cursor-pointer text-navy-blue hover:text-gray-500 focus-within:outline-none ">
-                                                    <span>Upload a file</span>
-                                                    <input id="cover-image-upload" wire:model='coverUpload'
-                                                        name="cover_image" type="file" accept="image/*"
-                                                        class="sr-only">
-                                                </label>
+                            </p>
+                            <label
+                                @if (Auth::user()->cover == null) :class="remove ? ' border-2 border-gray-500 border-dashed rounded-md hover:border-navy-blue' :
+                                    'border-0'" @endif
+                                class="flex justify-center px-3 py-3 mt-1 ">
+                                @if (Auth::user()->cover == null)
+                                    <div x-show="remove" class="space-y-1 text-center">
+                                        <svg class="w-12 h-12 mx-auto text-gray-500" stroke="currentColor"
+                                            fill="none" viewBox="0 0 48 48" aria-hidden="true">
+                                            <path
+                                                d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                        </svg>
+                                        <div class="flex justify-center text-sm text-gray-600">
+                                            <label for="cover-image-upload"
+                                                class="relative flex justify-center font-medium text-center rounded-md cursor-pointer text-navy-blue hover:text-gray-500 focus-within:outline-none ">
+                                                <span>Upload a file</span>
+                                            </label>
 
-                                            </div>
-                                            <p class="text-xs text-gray-500">
-                                                JPG, PNG, GIF up to 2MB
-                                            </p>
                                         </div>
+                                        <p class="text-xs text-gray-500">
+                                            JPG, PNG, GIF up to 2MB
+                                        </p>
                                     </div>
-                                @else
-                                    <div
-                                        class="flex justify-center px-1 py-1 mt-1 border-2 border-gray-500 border-dashed rounded-md hover:border-navy-blue">
-                                        <div class="space-y-1 text-center">
-                                            <img src="{{ $coverUpload->temporaryUrl() }}" alt="cover">
-                                        </div>
+                                    <div x-show="remove" class="space-y-1 text-center">
+                                        <svg class="w-12 h-12 mx-auto text-gray-500" stroke="currentColor"
+                                            fill="none" viewBox="0 0 48 48" aria-hidden="true">
+                                            <path
+                                                d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                        </svg>
+                                        <div class="flex justify-center text-sm text-gray-600">
+                                            <label for="cover-image-upload"
+                                                class="relative flex justify-center font-medium text-center rounded-md cursor-pointer text-navy-blue hover:text-gray-500 focus-within:outline-none ">
+                                                <span>Upload a file</span>
+                                            </label>
 
+                                        </div>
+                                        <p class="text-xs text-gray-500">
+                                            JPG, PNG, GIF up to 2MB
+                                        </p>
                                     </div>
                                 @endif
+                                <x-mary-file @click="remove = !remove" wire:model="coverUpload"
+                                    accept="image/png, image/jpeg, image/jpg">
+                                    <img :class="remove ? '' :
+                                        'border-2 border-gray-500 border-dashed rounded-md hover:border-navy-blue p-2'"
+                                        src="{{ Auth::user()->cover ? asset('uploads/cover/' . Auth::user()->cover) : '' }}"
+                                        class="@if (Auth::user()->cover) border-2 border-gray-500 border-dashed rounded-md hover:border-navy-blue p-2 @endif">
+                                </x-mary-file>
+
                             </label>
                         </div>
                     </div>
