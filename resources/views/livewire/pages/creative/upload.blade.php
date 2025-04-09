@@ -106,7 +106,9 @@ new #[Layout('layouts.app')] class extends Component {
 
     @if (session('status'))
         @script
-            showNotification('Product Added', 'Product Added Successful', 'success', 5)
+            <script>
+                showNotification('Product Added', 'Product Added Successful', 'success', 5)
+            </script>
         @endscript
     @endif
 
@@ -118,7 +120,9 @@ new #[Layout('layouts.app')] class extends Component {
             $errors->get('backView') ||
             $errors->get('sideView'))
         @script
-            showNotification('Invalid File Format', "Check Uploads", 'error', 5)
+            <script>
+                showNotification('Invalid File Format', "Check Uploads", 'error', 5)
+            </script>
         @endscript
     @endif
 
