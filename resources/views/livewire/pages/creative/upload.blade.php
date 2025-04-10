@@ -10,10 +10,10 @@ use Illuminate\Support\Facades\Auth;
 
 new #[Layout('layouts.app')] class extends Component {
     use WithFileUploads;
-    public string $name = 'test';
-    public string $price = '500';
-    public string $category = 'afro';
-    public string $description = 'lorem ipsum';
+    public string $name = '';
+    public string $price = '';
+    public string $category = '';
+    public string $description = '';
     public $designUpload;
     public $frontView;
     public $backView;
