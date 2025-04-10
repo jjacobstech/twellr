@@ -169,63 +169,92 @@ new #[Layout('layouts.guest')] class extends Component {
         <script>
             document.addEventListener("DOMContentLoaded", () => {
                 const form = document.getElementById("otp-form");
-                const inputs = [...form.querySelectorAll("input[type=text]")];
-                const submit = form.querySelector('button[type=submit]');
+                const inputs = Array.from(form.querySelectorAll("input[type=text]"));
 
+                // Use event delegation for better performance
+                form.addEventListener("keydown", (e) => {
+                    const target = e.target;
+                    if (!inputs.includes(target)) return;
 
-                const handleKeyDown = (e) => {
+                    // Only allow numeric input, navigation keys and modifier keys
                     if (
-                        !/^[0-9]{1}$/.test(e.key) &&
-                        e.key !== "Backspace" &&
-                        e.key !== "Delete" &&
-                        e.key !== "Tab" &&
-                        !e.metaKey
+                        !/^[0-9]$/.test(e.key) &&
+                        !["Backspace", "Delete", "Tab", "ArrowLeft", "ArrowRight"].includes(e.key) &&
+                        !e.metaKey && !e.ctrlKey
                     ) {
                         e.preventDefault();
-                    }
-
-                    if (e.key === "Delete" || e.key === "Backspace") {
-                        const index = inputs.indexOf(e.target);
-                        if (index > 0) {
-                            inputs[index - 1].value = "";
-                            inputs[index - 1].focus();
-                        }
-                    }
-                };
-
-                const handleInput = (e) => {
-                    const {
-                        target
-                    } = e;
-                    const index = inputs.indexOf(target);
-                    if (target.value) {
-                        if (index < inputs.length - 1) {
-                            inputs[index + 1].focus();
-                        }
-                    }
-                };
-
-                const handleFocus = (e) => {
-                    e.target.select();
-                };
-
-                const handlePaste = (e) => {
-                    e.preventDefault();
-                    const text = e.clipboardData.getData("text");
-                    if (!new RegExp(`^[0-9]{${inputs.length}}$`).test(text)) {
                         return;
                     }
-                    const digits = text.split("");
-                    inputs.forEach((input, index) => (input.value = digits[index]));
-                    // submit.focus() // Consider if you still need this
-                };
 
-                inputs.forEach((input) => {
-                    input.addEventListener("input", handleInput);
-                    input.addEventListener("keydown", handleKeyDown);
-                    input.addEventListener("focus", handleFocus);
-                    input.addEventListener("paste", handlePaste);
+                    // Handle backspace/delete
+                    if ((e.key === "Delete" || e.key === "Backspace") && target.value === "") {
+                        const index = inputs.indexOf(target);
+                        if (index > 0) {
+                            inputs[index - 1].focus();
+                            // For better UX, put cursor at the end
+                            const len = inputs[index - 1].value.length;
+                            inputs[index - 1].setSelectionRange(len, len);
+                        }
+                    }
                 });
+
+                form.addEventListener("input", (e) => {
+                    const target = e.target;
+                    if (!inputs.includes(target)) return;
+
+                    const index = inputs.indexOf(target);
+
+                    // Enforce single character
+                    if (target.value.length > 1) {
+                        target.value = target.value.slice(0, 1);
+                    }
+
+                    // Move to next input if value was entered
+                    if (target.value && index < inputs.length - 1) {
+                        setTimeout(() => inputs[index + 1].focus(), 0);
+                    }
+
+                    // Check if all inputs are filled to potentially submit
+                    const allFilled = inputs.every(input => input.value.length === 1);
+                    if (allFilled && index === inputs.length - 1) {
+                        // Optionally auto-submit or focus submit button
+                        // form.querySelector('button[type=submit]').focus();
+                    }
+                });
+
+                // Handle focus selection
+                form.addEventListener("click", (e) => {
+                    const target = e.target;
+                    if (inputs.includes(target)) {
+                        target.select();
+                    }
+                });
+
+                // Handle paste event for the entire form
+                form.addEventListener("paste", (e) => {
+                    // Only handle paste if one of our inputs is the target
+                    if (!inputs.includes(e.target)) return;
+
+                    e.preventDefault();
+                    const pastedText = (e.clipboardData || window.clipboardData).getData("text");
+                    const digits = pastedText.replace(/\D/g, "").split("").slice(0, inputs.length);
+
+                    if (digits.length > 0) {
+                        // Fill as many inputs as we have digits
+                        digits.forEach((digit, i) => {
+                            if (i < inputs.length) inputs[i].value = digit;
+                        });
+
+                        // Focus the next empty input or the last one
+                        const nextEmptyIndex = digits.length < inputs.length ? digits.length : inputs.length -
+                        1;
+                        inputs[nextEmptyIndex].focus();
+                    }
+                });
+
+                // Initial focus on first empty input
+                const firstEmptyInput = inputs.find(input => !input.value) || inputs[0];
+                firstEmptyInput.focus();
             });
 
             let countdownDate = new Date().getTime() + ({{ config('otp.expiry') }} * 60 * 1000); // 5 minutes from now

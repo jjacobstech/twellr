@@ -1,7 +1,9 @@
 <?php
 
 use App\Models\User;
+use App\Models\Referral;
 use Tzsk\Otp\Facades\Otp;
+use Illuminate\Http\Request;
 use Livewire\Volt\Component;
 use App\Mail\EmailVerification;
 use Livewire\Attributes\Layout;
@@ -16,11 +18,17 @@ new #[Layout('layouts.guest')] class extends Component {
     public string $email = '';
     public string $password = '';
     public string $role = 'user';
+    public string $referral;
+
+    public function mount(Request $request)
+    {
+        $this->referral = $request->query('referral');
+    }
 
     /**
      * Handle an incoming registration request.
      */
-    public function register()
+    public function register(Request $request)
     {
         $validated = $this->validate([
             'firstname' => ['required', 'string', 'max:255'],
@@ -28,9 +36,12 @@ new #[Layout('layouts.guest')] class extends Component {
             'role' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'string', Rules\Password::defaults()],
+            'referral' => ['nullable', 'string', 'exists:' . User::class . ',referral_link'],
         ]);
 
         $validated['password'] = Hash::make($validated['password']);
+
+        $referrer = $validated['referral'] ? User::where('referral_link', $validated['referral'])->first() : '';
 
         event(
             new Registered(
@@ -40,11 +51,23 @@ new #[Layout('layouts.guest')] class extends Component {
                     'email' => $validated['email'],
                     'password' => $validated['password'],
                     'role' => $validated['role'],
-                    'referral_link' => $validated['role'] == 'creative' ? strtoupper(substr($validated['firstname'], 0, 2) . substr($validated['lastname'], 0, 2) . rand(1000, 9999)) : null,
+                    'referral_link' => strtoupper(substr($validated['firstname'], 0, 2) . substr($validated['lastname'], 0, 2) . rand(1000, 9999)),
                     'notify_purchase' => $validated['role'] == 'creative' ? 'yes' : 'no',
+                    'referred_by' => $referrer ? $referrer->id : '',
                 ])),
             ),
         );
+
+        if ($referrer) {
+            Referral::create([
+                'referrer_id' => $referrer->id,
+                'referred_id' => $user->id,
+                'code_used' => $validated['referral'],
+                'status' => 'pending',
+            ]);
+        } else {
+            abort('500', 'Something went wrong but we are working on it');
+        }
 
         $otp = Otp::generate($validated['email']);
 
@@ -58,7 +81,7 @@ new #[Layout('layouts.guest')] class extends Component {
     }
 }; ?>
 
-<div class="my-5 border-0 md:my-10 h-screen px-10">
+<div class="h-screen px-10 my-5 border-0 md:my-10">
     <h1 class="w-full my-1 mb-5 text-3xl font-bold text-center md:text-4xl md:text-left ">Create Account</h1>
     <div>
 
@@ -66,7 +89,7 @@ new #[Layout('layouts.guest')] class extends Component {
             @session('status')
                 <div class="toast toast-top toast-right" x-transition:leave="500ms" x-data="{ show: true }" x-show="show">
 
-                    <div class="alert bg-navy-blue text-white font-extrabold transition-all ease-out">
+                    <div class="font-extrabold text-white transition-all ease-out alert bg-navy-blue">
                         <span>Registration successfully. </span>
                         <span @click="show = false">
                             @svg('eva-close', 'h-6 w-6 text-red-500 cursor-pointer')
@@ -79,7 +102,7 @@ new #[Layout('layouts.guest')] class extends Component {
     </div>
     <form wire:submit.prevent="register">
         {{-- role selector button --}}
-
+        <input type="text" wire:model="referral" class="hidden" />
         <div class="">
             <div class="md:flex justify-evenly">
                 <div

@@ -21,7 +21,7 @@ Route::fallback(function () {
 
 Route::middleware(['IsCreative', 'IsUser'])->group(function () {
     Route::view('dashboard', 'dashboard')
-        ->middleware(['auth', 'verified',])
+        ->middleware(['auth', 'verified', 'referred'])
         ->name('dashboard');
 
     Route::view('profile', 'profile')

@@ -82,7 +82,8 @@ class User extends Authenticatable
         'account_name',
         'account_no',
         'notify_purchase',
-        'remember_token'
+        'remember_token',
+        'referred_by'
     ];
 
     public function isCreative()
@@ -96,5 +97,10 @@ class User extends Authenticatable
     public function notifications()
     {
         return $this->hasMany(Notification::class);
+    }
+
+    public function withdrawalRequests()
+    {
+        return $this->hasMany(WithdrawalRequest::class);
     }
 }

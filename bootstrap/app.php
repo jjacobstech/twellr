@@ -4,8 +4,9 @@ use App\Http\Middleware\User;
 use App\Http\Middleware\Admin;
 use App\Http\Middleware\Creative;
 use App\Http\Middleware\AdminExists;
-use App\Http\Middleware\PaymentPreference;
 use Illuminate\Foundation\Application;
+use App\Http\Middleware\PaymentPreference;
+use App\Http\Middleware\Referred;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 
@@ -21,7 +22,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'IsUser' => User::class,
             'AdminExists' => AdminExists::class,
             'IsCreative' => Creative::class,
-            'PaymentPreference' => PaymentPreference::class
+            'PaymentPreference' => PaymentPreference::class,
+            'referred' => Referred::class
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

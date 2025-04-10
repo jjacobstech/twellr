@@ -17,7 +17,7 @@ new class extends Component {
     public $points;
     public $total_referrals = 0;
     public $total_rewards = 0;
-    public $recent_referrals = [];
+    public $recent_referrals;
 
     /**
      * Mount the component.
@@ -34,19 +34,19 @@ new class extends Component {
         $this->total_referrals = Referral::where('referrer_id', Auth::id())->count();
 
         // Get total rewards/points
-        $this->total_rewards = Auth::user()->referral_rewards ?? 0;
+        $this->total_rewards = Referral::where('referrer_id', Auth::user()->id)->count() ?? 0;
 
         // Get recent referrals (limited to 5)
         $this->recent_referrals = Referral::where('referrer_id', Auth::id())
-            ->with('user:id,firstname,lastname,avatar,created_at')
             ->orderBy('created_at', 'desc')
             ->take(5)
             ->get()
             ->map(function ($referral) {
+                $referred = User::where('id', $referral->referred_id)->first();
                 return [
-                    'name' => $referral->user ? $referral->user->firstname . ' ' . $referral->user->lastname : 'Anonymous',
-                    'avatar' => $referral->user ? $referral->user->avatar : null,
-                    'created_at' => $referral->created_at->diffForHumans(),
+                    'name' => $referred->firstname . ' ' . $referred->lastname,
+                    'avatar' => $referred->avatar,
+                    'created_at' => $referred->created_at->diffForHumans(),
                 ];
             });
     }
@@ -189,15 +189,21 @@ new class extends Component {
                         @if (isset($recent_referrals) && count($recent_referrals) > 0)
                             @foreach ($recent_referrals as $referral)
                                 <div class="flex items-center justify-between py-2 border-b border-gray-100">
-                                    <div class="flex items-center">
-                                        <div
-                                            class="w-8 h-8 bg-navy-blue rounded-full flex items-center justify-center text-white text-xs mr-2">
-                                            {{ substr($referral->name ?? 'User', 0, 1) }}
-                                        </div>
-                                        <span class="text-gray-700">{{ $referral->name ?? 'Someone' }}</span>
+                                    <div class="flex items-center gap-3">
+                                        @if (!isset($referral['avatar']) && $referral['avatar'] == null)
+                                            <div
+                                                class="w-10 h-10 flex items-center justify-center rounded-full bg-navy-blue text-white ">
+                                                {{ substr($referral['name'] ?? 'User ', 0, 1) }}
+                                            </div>
+                                        @else
+                                            <img class="w-10 h-10 rounded-full object-cover"
+                                                src="{{ asset('uploads/avatar/' . ($referral['avatar'] ?? 'default-avatar.png')) }}"
+                                                alt="User  Avatar">
+                                        @endif
+                                        <span class="text-gray-700">{{ $referral['name'] }}</span>
                                     </div>
                                     <span
-                                        class="text-xs text-gray-500">{{ $referral->created_at ?? 'Recently' }}</span>
+                                        class="text-xs text-gray-500">{{ $referral['created_at'] ?? 'Recently' }}</span>
                                 </div>
                             @endforeach
                         @else
