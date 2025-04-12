@@ -11,7 +11,6 @@
         "autoprefixer": "^10.4.21",
         "axios": "^1.8.1",
         "concurrently": "^9.0.1",
-        "daisyui": "^4.12.24",
         "laravel-vite-plugin": "^1.2.0",
         "postcss": "^8.5.3",
         "tailwindcss": "^3.4.17",
@@ -20,6 +19,7 @@
     "dependencies": {
         "@material-tailwind/html": "^3.0.0-beta.7",
         "chart.js": "^4.4.8",
+        "daisyui": "^5.0.12",
         "dropzone": "^6.0.0-beta.2",
         "preline": "^3.0.0"
     }

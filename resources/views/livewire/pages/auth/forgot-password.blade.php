@@ -33,7 +33,7 @@ new #[Layout('layouts.guest')] class extends Component {
     }
 }; ?>
 
-<div class="mt-20 px-10 h-screen">
+<div class="mt-20 lg:px-10 h-screen">
     <div class=" text-md text-gray-900 font-extrabold">
         {{ __('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.') }}
     </div>

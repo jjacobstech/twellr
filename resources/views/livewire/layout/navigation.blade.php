@@ -77,11 +77,11 @@ new class extends Component {
                 <form class="md:w-[100%] px-5  md:px-9 w-full">
                     <div class="flex justify-between w-full md:w-full">
                         <div class="relative flex pb-5 md:pb-0 pt-3 md:pt-0 w-[100%] md:my-3">
-                            <input type="search" id="search-dropdown" @click.stop="$dispatch('mary-search-open')"
+                            <input type="text" id="search-dropdown" @click.stop="$dispatch('mary-search-open')"
                                 class="font-bold block p-2.5 w-full  z-20 text-sm text-gray-900 bg-gray-200 rounded-l-lg border-0 active:border-0 hover:border hover:border-gray-400 focus:border-0 focus:ring-0 border-navy-blue "
                                 placeholder="Search by: Creator, Design, Location, Ratings"
                                 alt="Search by: Creator, Design, Location, Ratings"
-                                title='Search by: Creator, Design, Location, Ratings' required />
+                                title='Search by: Creator, Design, Location, Ratings'  />
                             <button type="submit"
                                 class=" top-0 end-0 p-2.5 text-sm font-medium h-full text-white bg-gray-200 border-0 rounded-e-lg active:bg-white active:text-navy-blue border-navy-blue hover:bg-navy-blue focus:ring-0 focus:outline-none ">
                                 <svg class="w-4 h-4 text-[#fbaa0d]" aria-hidden="true"
@@ -534,7 +534,7 @@ new class extends Component {
             <!-- Hamburger -->
             <div class="flex items-center -me-2 sm:hidden">
                 <button @click="open = ! open , more = false"
-                    class="inline-flex items-center justify-center p-2 transition duration-150 ease-in-out rounded-md text-navy-blue  hover:text-gray-500 hover:bg-gray-100  focus:outline-none focus:bg-gray-100  focus:text-gray-500 ">
+                    class="inline-flex items-center justify-center p-2 transition duration-150 ease-in-out rounded-md text-navy-blue hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 ">
                     <svg class="w-6 h-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                         <path :class="{ 'hidden': open, 'inline-flex': !open }" class="inline-flex"
                             stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -614,18 +614,19 @@ new class extends Component {
                     </span </x-responsive-nav-link>
 
                     <x-mary-drawer wire:model='drawer' class="w-11/12 rounded-none">
-                        <div
-                            class="flex items-center justify-end px-4 py-2 text-sm font-bold text-navy-blue bg-white border-b-2 border-gray-200">
+                 <div class="bg-black">
+                           <div
+                            class="flex items-center justify-end px-4 py-2 text-sm font-bold bg-white border-b-2 border-gray-200 text-navy-blue">
                             <span>
-                                <x-mary-button icon="o-x-mark" class="btn-ghost btn-sm" wire:click="closeDrawer" />
+                                <x-mary-button icon="o-x-mark" class="btn-ghost btn-sm dark:focus:bg-white dark:active:bg-white" wire:click="closeDrawer" />
                             </span>
                         </div>
-                        <div class="
-                                    transition-all duration-500 bg-gray-200"
+                        <div class="transition-all duration-500 bg-gray-200 "
                             x-cloak="display:none">
                             <div class="w-full py-2 bg-white">
                                 @if ($notification)
-                                    @foreach ($notifications as $notification)
+                                <div class="grid gap-2">
+                                        @foreach ($notifications as $notification)
                                         <div class="flex justify-between w-full bg-white hover:bg-gray-100">
                                             <div class="pt-1 mx-1">
                                                 <div class="text-sm">
@@ -648,15 +649,16 @@ new class extends Component {
                                             </x-bladewind.button>
                                         </div>
                                     @endforeach
+                                </div>
                                 @else
                                     <div class="w-full bg-white hover:bg-gray-100">
                                         <div class="pt-1">
                                             <div class="text-sm font-extrabold">
 
-                                                <h3 class="text-lg font-extrabold text-gray-700 w-full">No
+                                                <h3 class="w-full text-lg font-extrabold text-gray-700">No
                                                     Notifications
                                                 </h3>
-                                                <p class="mt-1 text-sm text-gray-500 w-full">You're all
+                                                <p class="w-full mt-1 text-sm text-gray-500">You're all
                                                     caught up!</p>
 
                                             </div>
@@ -665,6 +667,7 @@ new class extends Component {
                                 @endif
                             </div>
                         </div>
+                 </div>
                     </x-mary-drawer>
 
                     <x-responsive-nav-link @click="more = !more" wire:navigate>
@@ -787,6 +790,19 @@ new class extends Component {
                             {{ __('Explore') }}
                         </x-responsive-nav-link>
                     </div>
+
+                        <x-responsive-nav-link :href="route('settings')" wire:navigate>
+                            <span>
+                                <svg class="inline-block w-5 h-5 fill-current text-navy-blue"
+                                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="settings">
+                                    <path fill="none" d="M0 0h24v24H0V0z"></path>
+                                    <path
+                                        d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z">
+                                    </path>
+                                </svg>
+                            </span>
+                            {{ __('Settings') }}
+                        </x-responsive-nav-link>
 
                     <!-- Authentication -->
                     <button wire:click="logout" class="w-full text-start text-navy-blue">

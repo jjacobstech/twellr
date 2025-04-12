@@ -9,7 +9,7 @@ use Livewire\Attributes\Layout;
 use Illuminate\Support\Facades\Auth;
 
 new #[Layout('layouts.app')] class extends Component {
-    use WithFileUploads;
+   // use WithFileUploads;
     public string $name = '';
     public string $price = '';
     public string $category = '';
@@ -132,28 +132,28 @@ new #[Layout('layouts.app')] class extends Component {
         <x-creative-sidebar />
 
         {{-- Main Content Area --}}
-        <div class="w-full p-4 bg-white text-xl">
+        <div class="w-full p-4 text-xl bg-white">
             {{-- Background Image Container - Let height be determined by content or use min-h for better flexibility --}}
             <div style="background-image: url('{{ asset('assets/blurred.png') }}')"
                 class="relative grid justify-center text-white bg-no-repeat bg-cover rounded-lg min-h-[calc(100vh-2rem)] md:min-h-full">
 
                 {{-- Back Button - Positioned absolutely within the background container --}}
-                <div class="absolute top-4 left-4 z-10">
+                <div class="absolute z-10 top-4 left-4">
                     <img x-show="backButton" x-transition:enter.duration.500ms x-cloak
                         @click="form = true, uploadModal = false, backButton = false"
-                        class="w-12 h-12 md:w-16 md:h-16 transition hover:scale-110 cursor-pointer"
+                        class="w-12 h-12 transition cursor-pointer md:w-16 md:h-16 hover:scale-110"
                         src="{{ asset('assets/back-arrow.png') }}" alt="Back">
                 </div>
 
                 {{-- Form Container --}}
                 <form x-transition:enter.duration.500ms x-cloak="display:none"
                     :class="uploadModal ? 'w-full p-4 md:p-8 lg:p-12' : 'w-full max-w-4xl bg-[#dedddb] rounded-[40px] my-6'"
-                    wire:submit.prevent="uploadProduct" enctype="multipart/form-data">
+                    wire:submit="uploadProduct" enctype="multipart/form-data">
                     @csrf
 
                     {{-- Main Form View --}}
                     <div x-show="form" x-transition:enter.duration.700ms class="py-3">
-                        <div class="flex flex-col  px-8 py-5">
+                        <div class="flex flex-col px-8 py-5">
 
                             {{-- Name and Price Row - Stack vertically on small, horizontal on medium+ --}}
                             <div class="flex flex-col md:flex-row md:gap-6">
@@ -163,7 +163,7 @@ new #[Layout('layouts.app')] class extends Component {
                                     <x-text-input id="name" :class="$errors->get('name')
                                         ? 'block w-full mt-2 border-1 border-red-600 bg-[#bebebe] rounded-xl'
                                         : 'block border-0 w-full mt-2 bg-[#bebebe] rounded-xl'" type="text" name="name"
-                                        wire:model="name" required autofocus autocomplete="name" />
+                                        wire:model.live="name" required autofocus autocomplete="name" />
                                 </div>
 
                                 <div class="w-full md:w-2/5">
@@ -171,7 +171,7 @@ new #[Layout('layouts.app')] class extends Component {
                                         for="price" />
                                     <x-text-input id="price" :class="$errors->get('price')
                                         ? 'block w-full mt-2 border-1 border-red-600 bg-[#bebebe] rounded-xl'
-                                        : 'block border-0 w-full mt-2 bg-[#bebebe] rounded-xl'" wire:model="price" type="text"
+                                        : 'block border-0 w-full mt-2 bg-[#bebebe] rounded-xl'" wire:model.live="price" type="text"
                                         name="price" required autofocus autocomplete="price" />
                                 </div>
                             </div>
@@ -180,7 +180,7 @@ new #[Layout('layouts.app')] class extends Component {
                             <div class="mt-4">
                                 <x-input-label :value="__('Category')" class="text-gray-500 font-extrabold text-[17px]"
                                     for="category" />
-                                <x-select id="category" wire:model="category" :class="$errors->get('category')
+                                <x-select id="category" wire:model.live="category" :class="$errors->get('category')
                                     ? 'block w-full mt-2 border-red-600 bg-[#bebebe] border-1 rounded-xl'
                                     : 'block w-full mt-2 border-[#bebebe] bg-[#bebebe] border-0 rounded-xl'" type="text"
                                     name="category" required autofocus autocomplete="category">
@@ -197,18 +197,18 @@ new #[Layout('layouts.app')] class extends Component {
                             </div>
 
                             {{-- Description and Uploads Trigger Row - Stack vertically on small, horizontal on large+ --}}
-                            <div class="flex flex-col lg:flex-row lg:gap-6 mt-4">
+                            <div class="flex flex-col mt-4 lg:flex-row lg:gap-6">
                                 <div class="w-full lg:w-3/5">
                                     <x-input-label :value="__('Description')" class="text-gray-500 font-extrabold text-[17px]"
                                         for="description" />
                                     {{-- Use standard textarea or ensure x-textarea-input handles responsiveness --}}
-                                    <x-textarea-input wire:model="description" :class="$errors->get('description')
+                                    <x-textarea-input wire:model.live="description" :class="$errors->get('description')
                                         ? 'w-full border-1 border-red-600 px-2 py-1 mt-2 bg-[#bebebe] rounded-xl text-black h-28'
                                         : 'w-full px-2 py-1 mt-2 bg-[#bebebe] border-0 rounded-xl text-black h-28'"
                                         id="description"></x-textarea-input>
                                 </div>
 
-                                <div class="w-full lg:w-2/5 mt-4 lg:mt-0 flex flex-col items-center lg:items-end">
+                                <div class="flex flex-col items-center w-full mt-4 lg:w-2/5 lg:mt-0 lg:items-end">
                                     <x-input-label :value="__('Uploads')"
                                         class="text-gray-500 font-extrabold text-[17px] mb-2 text-center lg:text-left"
                                         for="uploads" />
@@ -240,21 +240,21 @@ new #[Layout('layouts.app')] class extends Component {
                     <div x-show="uploadModal" x-transition:enter.duration.500ms x-cloak class="py-10 md:py-16">
                         {{-- Grid layout for uploads - 1 col default, 2 cols on small+, 4 cols on large+ --}}
                         <div
-                            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 px-4 md:px-8 lg:px-16">
+                            class="grid grid-cols-1 gap-6 px-4 sm:grid-cols-2 lg:grid-cols-4 md:gap-8 md:px-8 lg:px-16">
 
-                            <div class="grid justify-center content-start space-y-2 text-center">
+                            <div class="grid content-start justify-center space-y-2 text-center">
                                 <label>
                                     <x-mary-file omit-error="true" class="grid items-center"
-                                        change-text="Upload Front View" wire:model="frontView"
+                                        change-text="Upload Front View" wire:model.live="frontView"
                                         accept="image/png, image/jpeg, image/jpg">
                                         {{-- Responsive Image Container --}}
-                                        <div class="relative group w-32 h-32 md:w-36 md:h-36 lg:w-40 lg:h-40 mx-auto">
+                                        <div class="relative w-32 h-32 mx-auto group md:w-36 md:h-36 lg:w-40 lg:h-40">
 
                                             <div
                                                 class="relative z-40 grid items-center justify-center w-full h-full transition-all duration-500 bg-white cursor-pointer group-hover:scale-105 group-hover:shadow-xl rounded-xl">
                                                 {{-- Preview or Placeholder --}}
 
-                                                <img class="w-full h-full rounded-xl object-cover"
+                                                <img class="object-cover w-full h-full rounded-xl"
                                                     src="{{ asset('assets/uploadDesignStack.png') }}"
                                                     alt="Upload Front View">
                                             </div>
@@ -277,15 +277,15 @@ new #[Layout('layouts.app')] class extends Component {
                             </div>
 
                             {{-- Back View --}}
-                            <div class="grid justify-center content-start space-y-2 text-center">
+                            <div class="grid content-start justify-center space-y-2 text-center">
                                 <label>
-                                    <x-mary-file omit-error="true" change-text="Upload Back View" wire:model="backView"
+                                    <x-mary-file omit-error="true" change-text="Upload Back View" wire:model.live="backView"
                                         accept="image/png, image/jpeg, image/jpg">
-                                        <div class="relative group w-32 h-32 md:w-36 md:h-36 lg:w-40 lg:h-40 mx-auto">
+                                        <div class="relative w-32 h-32 mx-auto group md:w-36 md:h-36 lg:w-40 lg:h-40">
                                             <div
                                                 class="relative z-40 grid items-center justify-center w-full h-full transition-all duration-500 bg-white cursor-pointer group-hover:scale-105 group-hover:shadow-xl rounded-xl">
 
-                                                <img class="w-full h-full rounded-xl object-cover"
+                                                <img class="object-cover w-full h-full rounded-xl"
                                                     src="{{ asset('assets/uploadDesignStack.png') }}"
                                                     alt="Upload Back View">
 
@@ -307,14 +307,14 @@ new #[Layout('layouts.app')] class extends Component {
                             </div>
 
                             {{-- Side View --}}
-                            <div class="grid justify-center content-start space-y-2 text-center">
+                            <div class="grid content-start justify-center space-y-2 text-center">
                                 <label>
                                     <x-mary-file omit-error="true" change-text="Upload Side View"
                                         wire:model="sideView" accept="image/png, image/jpeg, image/jpg">
-                                        <div class="relative group w-32 h-32 md:w-36 md:h-36 lg:w-40 lg:h-40 mx-auto">
+                                        <div class="relative w-32 h-32 mx-auto group md:w-36 md:h-36 lg:w-40 lg:h-40">
                                             <div
                                                 class="relative z-40 grid items-center justify-center w-full h-full transition-all duration-500 bg-white cursor-pointer group-hover:scale-105 group-hover:shadow-xl rounded-xl">
-                                                <img class="w-full h-full rounded-xl object-cover"
+                                                <img class="object-cover w-full h-full rounded-xl"
                                                     src="{{ asset('assets/uploadDesignStack.png') }}"
                                                     alt="Upload Side View">
                                             </div>
@@ -335,17 +335,17 @@ new #[Layout('layouts.app')] class extends Component {
                             </div>
 
                             {{-- Printable Stack --}}
-                            <div class="grid justify-center content-start space-y-2 text-center">
+                            <div class="grid content-start justify-center space-y-2 text-center">
                                 <label
                                     title="Upload Print file ({{ config('twellr.printable_stack_format', 'Allowed Formats') }})">
-                                    <input class="hidden" type="file" accept="*" wire:model="printUpload"
+                                    <input class="hidden" type="file" accept="*" wire:model.live="printUpload"
                                         name="printable_stack" id="printable_stack">
 
-                                    <div class="relative group w-32 h-32 md:w-36 md:h-36 lg:w-40 lg:h-40 mx-auto">
-                                        <div class="relative z-40 flex items-center justify-center w-full h-full transition-all duration-500 bg-white cursor-pointer group-hover:scale-105 group-hover:shadow-xl rounded-xl p-2 "
+                                    <div class="relative w-32 h-32 mx-auto group md:w-36 md:h-36 lg:w-40 lg:h-40">
+                                        <div class="relative z-40 flex items-center justify-center w-full h-full p-2 transition-all duration-500 bg-white cursor-pointer group-hover:scale-105 group-hover:shadow-xl rounded-xl "
                                             id="printable-container">
                                             {{-- Display file icon or placeholder --}}
-                                            <img class="w-full h-full object-contain"
+                                            <img class="object-contain w-full h-full"
                                                 src="{{ $printUpload ? asset('assets/file.png') : asset('assets/uploadPrintableStack.png') }}"
                                                 id="printImage" alt="Printable Stack Upload">
                                         </div>
@@ -360,7 +360,7 @@ new #[Layout('layouts.app')] class extends Component {
                                 <p class="text-sm">
 
                                     <span>Upload Printable Stack</span>
-                                    <span class="block text-xs text-gray-400">Image and Design Files only</span>
+                                    <span class="block text-xs text-white">Image and Design Files only</span>
 
                                 </p>
                             </div>

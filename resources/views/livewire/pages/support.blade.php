@@ -1,29 +1,29 @@
 <x-app-layout>
 
-    <div class=" bg-white  sm:px-8 lg:px-16 h-screen">
-        <div class="w-full max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="h-screen bg-white sm:px-8 lg:px-16">
+        <div class="w-full max-w-screen-xl px-4 mx-auto sm:px-6 lg:px-8">
             <header class="py-4 sm:py-6 md:py-2">
-                <h2 class="text-2xl sm:text-3xl font-extrabold text-gray-500">
+                <h2 class="text-2xl font-extrabold text-gray-500 sm:text-3xl">
                     {{ __('Support') }}
                 </h2>
             </header>
 
             <div
-                class="py-8 sm:py-12 md:py-16 px-6 sm:px-10 md:px-20 w-full bg-gray-100 rounded-lg sm:rounded-xl mt-4 flex flex-col items-center sm:items-start justify-center">
-                <p class="text-xl sm:text-2xl font-bold w-full md:w-[85%] lg:w-[75%] text-center sm:text-left">
+                class="flex flex-col items-center justify-center w-full px-6 py-8 mt-4 bg-gray-100 rounded-lg sm:py-12 md:py-16 sm:px-10 md:px-20 sm:rounded-xl sm:items-start">
+                <p class="text-xl sm:text-2xl font-bold w-full md:w-[85%] lg:w-[75%] text-center sm:text-left text-gray-500">
                     If you have questions or need additional information, do not hesitate to contact us. We have an
                     unbeatable support system so you can contact us via our chat using the button below.
                 </p>
 
                 <div
-                    class="my-6 sm:my-8 md:my-10 font-extrabold text-xl sm:text-2xl flex flex-col gap-1 text-center sm:text-left">
+                    class="flex flex-col gap-1 my-6 text-xl font-extrabold text-center sm:my-8 md:my-10 sm:text-2xl sm:text-left">
                     <p class="text-golden">Live Chat Support</p>
-                    <p>Click the button to chat with our support agent</p>
+                    <p class="text-gray-500" >Click the button to chat with our support agent</p>
                 </div>
 
-                <div class="w-full flex justify-center sm:justify-start">
+                <div class="flex justify-center w-full sm:justify-start">
                     <x-bladewind.button id="customer_support"
-                        class="uppercase py-2 sm:py-3 px-4 sm:px-5 text-white bg-golden hover:bg-golden/90 transition-colors rounded-lg sm:rounded-xl font-bold focus:bg-navy-blue flex items-center justify-center"
+                        class="flex items-center justify-center px-4 py-2 font-bold text-white uppercase transition-colors rounded-lg sm:py-3 sm:px-5 bg-golden hover:bg-golden/90 sm:rounded-xl focus:bg-navy-blue"
                         type="bg-golden">
                         <span class="flex items-center">
                             <img class="w-8 h-8 sm:w-10 sm:h-10" src="{{ asset('assets/tawk.png') }}" alt="Chat icon">

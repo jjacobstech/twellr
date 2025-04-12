@@ -4,7 +4,7 @@
     ?>
     <x-app-layout>
 
-        <div class="flex m-0 md:w-full  md:h-screen">
+        <div class="flex m-0 md:w-full md:h-screen">
             @if (Auth::user()->isCreative())
                 <x-creative-sidebar />
             @endif

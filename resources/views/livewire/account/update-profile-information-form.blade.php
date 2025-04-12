@@ -229,7 +229,7 @@ new class extends Component {
             </p>
         </div>
         <div class="border-t border-gray-400">
-            <form wire:submit.prevent="updateProfileInformation" class="px-4 py-5 space-y-6 bg-gray-100 sm:p-6">
+            <form wire:submit="updateProfileInformation" class="px-4 py-5 space-y-6 bg-gray-100 sm:p-6">
                 <div class="grid justify-between md:flex md:gap-10">
                     <div class="space-y-5 md:w-1/2">
                         {{-- Name and Email --}}
@@ -239,7 +239,7 @@ new class extends Component {
                                     First name
                                 </label>
                                 <div class="mt-1">
-                                    <input type="text" wire:model="firstname" id="firstname"
+                                    <input type="text" wire:model.live="firstname" id="firstname"
                                         autocomplete="given-name" required
                                         class="shadow-sm focus:ring-navy-blue focus:border-navy-blue block w-full sm:text-sm border-gray-300 rounded-md @error('firstname') border-red-500 @enderror">
                                 </div>
@@ -250,7 +250,7 @@ new class extends Component {
                                     Last name
                                 </label>
                                 <div class="mt-1">
-                                    <input type="text" wire:model="lastname" id="lastname"
+                                    <input type="text" wire:model.live="lastname" id="lastname"
                                         autocomplete="family-name" required
                                         class="shadow-sm focus:ring-navy-blue focus:border-navy-blue block w-full sm:text-sm border-gray-300 rounded-md @error('lastname') border-red-500 @enderror">
                                 </div>
@@ -261,7 +261,7 @@ new class extends Component {
                                     Email address
                                 </label>
                                 <div class="mt-1">
-                                    <input type="email" wire:model="email" id="email" autocomplete="email"
+                                    <input type="email" wire:model.live="email" id="email" autocomplete="email"
                                         required
                                         class="shadow-sm focus:ring-navy-blue focus:border-navy-blue block w-full sm:text-sm border-gray-300 rounded-md @error('email') border-red-500 @enderror">
                                 </div>
@@ -274,7 +274,7 @@ new class extends Component {
                                     Address
                                 </label>
                                 <div class="mt-1">
-                                    <input type="text" wire:model="address" id="address" autocomplete="address"
+                                    <input type="text" wire:model.live="address" id="address" autocomplete="address"
                                         required
                                         class="shadow-sm focus:ring-navy-blue focus:border-navy-blue block w-full sm:text-sm border-gray-300 rounded-md @error('address') border-red-500 @enderror">
                                 </div>
@@ -285,7 +285,7 @@ new class extends Component {
                                     Phone No
                                 </label>
                                 <div class="mt-1">
-                                    <input type="text" wire:model="phone_no" id="phone_no" autocomplete="number"
+                                    <input type="text" wire:model.live="phone_no" id="phone_no" autocomplete="number"
                                         required
                                         class="shadow-sm focus:ring-navy-blue focus:border-navy-blue block w-full sm:text-sm border-gray-300 rounded-md @error('phone_no') border-red-500 @enderror">
                                 </div>
@@ -296,7 +296,7 @@ new class extends Component {
                                     Bank
                                 </label>
                                 <div class="mt-1">
-                                    <input type="text" wire:model="bank_name" id="bank_name" autocomplete="bank"
+                                    <input type="text" wire:model.live="bank_name" id="bank_name" autocomplete="bank"
                                         required
                                         class="shadow-sm focus:ring-navy-blue focus:border-navy-blue block w-full sm:text-sm border-gray-300 rounded-md @error('bank_name') border-red-500 @enderror">
                                 </div>
@@ -307,7 +307,7 @@ new class extends Component {
                                     Account No
                                 </label>
                                 <div class="mt-1">
-                                    <input type="text" wire:model="account_no" id="account_no" autocomplete="number"
+                                    <input type="text" wire:model.live="account_no" id="account_no" autocomplete="number"
                                         required
                                         class="shadow-sm focus:ring-navy-blue focus:border-navy-blue block w-full sm:text-sm border-gray-300 @error('account_no') border-red-500 @enderror rounded-md">
 
@@ -321,7 +321,7 @@ new class extends Component {
                                     Account Name
                                 </label>
                                 <div class="mt-1">
-                                    <input type="text" wire:model="account_name" id="account_name"
+                                    <input type="text" wire:model.live="account_name" id="account_name"
                                         autocomplete="name" required
                                         class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-navy-blue focus:border-navy-blue sm:text-sm">
                                 </div>
@@ -336,7 +336,7 @@ new class extends Component {
                                 </label>
                                 <div class="mt-1">
 
-                                    <input type="text" wire:model="facebook" id="facebook"
+                                    <input type="text" wire:model.live="facebook" id="facebook"
                                         autocomplete="social-media"
                                         class="shadow-sm focus:ring-navy-blue focus:border-navy-blue block w-full sm:text-sm border-gray-300 rounded-md @error('facebook')
                                             border-red-500
@@ -352,7 +352,7 @@ new class extends Component {
                                     </svg></label>
                                 <div class="mt-1">
 
-                                    <input type="text" wire:model="x" id="x" autocomplete="social-media"
+                                    <input type="text" wire:model.live="x" id="x" autocomplete="social-media"
                                         class="shadow-sm focus:ring-navy-blue focus:border-navy-blue block w-full sm:text-sm border-gray-300 rounded-md @error('x')
                                             border-red-500
                                         @enderror">
@@ -368,7 +368,7 @@ new class extends Component {
                                 </label>
                                 <div class="mt-1">
 
-                                    <input type="text" wire:model="instagram" id="instagram"
+                                    <input type="text" wire:model.live="instagram" id="instagram"
                                         autocomplete="social-media"
                                         class="shadow-sm focus:ring-navy-blue focus:border-navy-blue block w-full sm:text-sm border-gray-300 rounded-md @error('instagram')
                                             border-red-500
@@ -386,7 +386,7 @@ new class extends Component {
                                 <div class="mt-1 ">
 
                                     <input type="text" placeholder="Paste whatsapp link here"
-                                        wire:model="whatsapp" id="whatsapp" autocomplete="social-media"
+                                        wire:model.live="whatsapp" id="whatsapp" autocomplete="social-media"
                                         class="shadow-sm focus:ring-navy-blue focus:border-navy-blue block w-full sm:text-sm border-gray-300 rounded-md @error('whatsapp')
                                             border-red-500
                                         @enderror">
@@ -397,23 +397,21 @@ new class extends Component {
 
                     </div>
 
-                    <div class="mt-5 md:w-1/2 md:mt-0 grid gap-2">
-                        <div class="md:col-span-6 grid gap-1">
-                            <p class="block text-sm font-medium text-gray-700">
+                    <div class="grid gap-2 mt-5 md:w-1/2 md:mt-0">
+                        <div class="space-y-2">
+                            <p class="font-extrabold text-gray-700 text-md">
                                 Avatar
                             </p>
-                            <div class="flex items-center ">
-                                <x-mary-file wire:model="avatarUpload" accept="image/png, image/jpeg, image/jpg">
-                                    <img class="h-20 w-20 rounded-full"
-                                        src="{{ Auth::user()->avatar ? asset('uploads/avatar/' . Auth::user()->avatar) : asset('assets/icons-user.png') }}"
-                                        alt="cover">
-                                </x-mary-file>
-                            </div>
-                            <p class="text-xs text-gray-700">JPG, PNG, GIF up to 1MB</p>
+                            <x-mary-file wire:model.live="avatarUpload" accept="image/png, image/jpeg, image/jpg">
+                                <img class="w-20 h-20 rounded-full"
+                                    src="{{ Auth::user()->avatar ? asset('uploads/avatar/' . Auth::user()->avatar) : asset('assets/icons-user.png') }}"
+                                    alt="cover">
+                            </x-mary-file>
+                            <p class="text-xs text-gray-700">JPG, PNG, GIF</p>
                         </div>
 
                         <div class="md:col-span-6">
-                            <p class="block text-sm font-medium text-gray-700">
+                            <p class="block font-extrabold text-gray-700 text-md">
                                 Cover image
                             </p>
                             <label
@@ -430,7 +428,7 @@ new class extends Component {
                                         </svg>
                                         <div class="flex justify-center text-sm text-gray-600">
                                             <label for="cover-image-upload"
-                                                class="relative flex justify-center font-medium text-center rounded-md cursor-pointer text-navy-blue hover:text-gray-500 focus-within:outline-none ">
+                                                class="relative flex justify-center font-medium text-center text-gray-500 rounded-md cursor-pointer hover:text-neutral-900 focus-within:outline-none ">
                                                 <span>Upload a file</span>
                                             </label>
 
@@ -440,7 +438,7 @@ new class extends Component {
                                         </p>
                                     </div>
                                 @endif
-                                <x-mary-file @click="remove = !remove" wire:model="coverUpload"
+                                <x-mary-file @click="remove = !remove" wire:model.live="coverUpload"
                                     accept="image/png, image/jpeg, image/jpg">
                                     <img :class="remove ? '' :
                                         'border-2 border-gray-500 border-dashed rounded-md hover:border-navy-blue p-2'"

@@ -18,7 +18,7 @@ new #[Layout('layouts.guest')] class extends Component {
     public string $email = '';
     public string $password = '';
     public string $role = 'user';
-    public string $referral;
+    public ?string $referral;
 
     public function mount(Request $request)
     {
@@ -81,8 +81,8 @@ new #[Layout('layouts.guest')] class extends Component {
     }
 }; ?>
 
-<div class="h-screen px-10 my-5 border-0 md:my-10">
-    <h1 class="w-full my-1 mb-5 text-3xl font-bold text-center md:text-4xl md:text-left ">Create Account</h1>
+<div class="h-screen lg:px-10 my-7 border-0 md:my-10">
+    <h1 class="w-full my-1 md:mb-5 text-3xl font-bold  md:text-4xl text-left ">Create Account</h1>
     <div>
 
         @session('message')
@@ -106,7 +106,7 @@ new #[Layout('layouts.guest')] class extends Component {
         <div class="">
             <div class="md:flex justify-evenly">
                 <div
-                    class="mb-3 font-semibold text-center md:w-1/2 md:py-3 lg:py-0 md:text-left lg:pr-10 md:text-lg md:font-bold">
+                    class="mb-3 font-semibold md:w-1/2 md:py-3 lg:py-0 text-left lg:pr-10 md:text-lg md:font-bold">
                     Sign up to create an account on Twellr
                 </div>
                 <x-selector />

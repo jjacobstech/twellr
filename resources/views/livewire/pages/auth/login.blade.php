@@ -45,7 +45,7 @@ new #[Layout('layouts.guest')] class extends Component {
     }
 }; ?>
 
-<div class="my-7 px-10 h-screen">
+<div class="my-7 lg:px-10 h-screen">
 
     @session('status')
         <div class="toast toast-top toast-right" x-transition:leave="500ms" x-data="{ show: true }" x-show="show">
