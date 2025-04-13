@@ -14,7 +14,7 @@
             <div class="relative" @click.away="open = false" x-data="{ open: false }">
                 <button @click="open = !open"
                     class="flex items-center w-full justify-between px-3 py-3 text-sm font-medium text-gray-600 rounded-lg transition-all hover:bg-golden hover:text-white group">
-                    <div class="flex items-center gap-2">
+                    <div class="flex items-center md:gap-2">
                         @svg('eva-upload', ['class' => 'w-6 h-6'])
                         <span class="hidden md:block">Uploaded Designs</span>
                     </div>

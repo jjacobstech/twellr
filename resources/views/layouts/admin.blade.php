@@ -29,7 +29,7 @@
 <body class=" p-0 m-0 font-sans antialiased bg-gray-100 border-0">
 
     <x-mary-toast/>
-        <livewire:layout.navigation />
+        <livewire:layout.admin.navigation />
 
         <!-- Page Content -->
         <main class="p-0 border-0">

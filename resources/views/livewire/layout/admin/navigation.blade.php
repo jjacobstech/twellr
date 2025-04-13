@@ -143,7 +143,7 @@ new class extends Component {
                 <!-- Logo -->
                 <div class="flex items-center shrink-0">
                     <a class="flex"
-                        href="{{ route('dashboard') }}"
+                        href="{{ route('admin.dashboard') }}"
                         wire:navigate>
                         <x-application-logo class="block w-auto fill-current h-9" />
                         <img class="hidden md:h-5 md:px-3 md:my-1 md:block" src="{{ asset('assets/twellr-text.png') }}"
@@ -440,7 +440,7 @@ new class extends Component {
                     <x-slot name="content">
                         {{-- Tablets - sm screen  --}}
                         <div class="hidden sm:block md:hidden">
-                            <x-dropdown-link class=' ' :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
+                            <x-dropdown-link class=' ' :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')" wire:navigate>
                                 <span>
                                     <svg class="inline-block w-6 h-6 fill-current" fill="currentColor"
                                         viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -451,23 +451,7 @@ new class extends Component {
                                 </span>
                                 {{ __('Dashboard') }}
                             </x-dropdown-link>
-                            <x-dropdown-link class=" text-bold " :href="route('profile')" wire:navigate>
-                                <span>
-                                    <svg class='inline-block w-5 h-5 fill-current text-navy-blue' fill="#000000"
-                                        viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg">
-                                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round">
-                                        </g>
-                                        <g id="SVGRepo_iconCarrier">
-                                            <title>profile</title>
-                                            <path
-                                                d="M28 9h-1.958v-2.938l-4.042-0.062 0.021 3h-12.146l0.083-3-3.958 0.062v3l-2-0.062c-1.104 0-2 0.896-2 2v14c0 1.104 0.896 2 2 2h24c1.104 0 2-0.896 2-2v-14c0-1.104-0.896-2-2-2zM23 7h2v4h-2v-4zM10 13.812c1.208 0 2.188 1.287 2.188 2.875s-0.98 2.875-2.188 2.875-2.188-1.287-2.188-2.875 0.98-2.875 2.188-2.875zM7 7h2v4h-2v-4zM5.667 22.948c0 0 0.237-1.902 0.776-2.261s2.090-0.598 2.090-0.598 1.006 1.075 1.434 1.075c0.427 0 1.433-1.075 1.433-1.075s1.552 0.238 2.091 0.598c0.633 0.422 0.791 2.261 0.791 2.261h-8.615zM26 22h-9v-1h9v1zM26 20h-9v-1h9v1zM26 18h-9v-1h9v1zM26 16h-9v-1h9v1z">
-                                            </path>
-                                        </g>
-                                    </svg>
-                                </span>
-                                {{ __('Profile') }}
-                            </x-dropdown-link>
+
                             <x-dropdown-link class="text-bold " :href="route('wallet')" x-show="admin" wire:navigate>
                                 <span>
                                     <svg class="inline-block w-5 h-5 fill-current" xmlns="http://www.w3.org/2000/svg"
@@ -526,7 +510,7 @@ new class extends Component {
                         </div>
                         {{-- Desktop --}}
                         <div class="hidden lg:block">
-                            <x-dropdown-link class='hidden md:block' :href="route('dashboard')" :active="request()->routeIs('dashboard')"
+                            <x-dropdown-link class='hidden md:block' :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')"
                                 wire:navigate>
                                 <span>
                                     <svg class="inline-block w-6 h-6 fill-current" fill="currentColor"
@@ -538,23 +522,7 @@ new class extends Component {
                                 </span>
                                 {{ __('Dashboard') }}
                             </x-dropdown-link>
-                            <x-dropdown-link class="hidden text-bold md:block" :href="route('profile')" wire:navigate>
-                                <span>
-                                    <svg class='inline-block w-5 h-5 fill-current text-navy-blue' fill="#000000"
-                                        viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg">
-                                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round">
-                                        </g>
-                                        <g id="SVGRepo_iconCarrier">
-                                            <title>profile</title>
-                                            <path
-                                                d="M28 9h-1.958v-2.938l-4.042-0.062 0.021 3h-12.146l0.083-3-3.958 0.062v3l-2-0.062c-1.104 0-2 0.896-2 2v14c0 1.104 0.896 2 2 2h24c1.104 0 2-0.896 2-2v-14c0-1.104-0.896-2-2-2zM23 7h2v4h-2v-4zM10 13.812c1.208 0 2.188 1.287 2.188 2.875s-0.98 2.875-2.188 2.875-2.188-1.287-2.188-2.875 0.98-2.875 2.188-2.875zM7 7h2v4h-2v-4zM5.667 22.948c0 0 0.237-1.902 0.776-2.261s2.090-0.598 2.090-0.598 1.006 1.075 1.434 1.075c0.427 0 1.433-1.075 1.433-1.075s1.552 0.238 2.091 0.598c0.633 0.422 0.791 2.261 0.791 2.261h-8.615zM26 22h-9v-1h9v1zM26 20h-9v-1h9v1zM26 18h-9v-1h9v1zM26 16h-9v-1h9v1z">
-                                            </path>
-                                        </g>
-                                    </svg>
-                                </span>
-                                {{ __('Profile') }}
-                            </x-dropdown-link>
+
                             <x-dropdown-link class="hidden text-bold md:block" :href="route('wallet')" x-show="admin"
                                 wire:navigate>
                                 <span>
@@ -651,7 +619,7 @@ new class extends Component {
         <!-- Responsive Settings Options -->
         <div class="fixed w-screen pb-1 bg-white border-t border-gray-200 text-navy-blue">
             <div>
-                <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
+                <x-responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')" wire:navigate>
                     <span>
                         <svg class="inline-block w-6 h-6 fill-navy-blue" viewBox="0 0 20 20"
                             xmlns="http://www.w3.org/2000/svg">
@@ -662,22 +630,7 @@ new class extends Component {
                     </span>
                     {{ __('Dashboard') }}
                 </x-responsive-nav-link>
-                <x-responsive-nav-link :href="route('profile')" wire:navigate>
-                    <span>
-                        <svg class='inline-block w-5 h-5 fill-navy-blue' viewBox="0 0 32 32" version="1.1"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                            <g id="SVGRepo_iconCarrier">
-                                <title>profile</title>
-                                <path
-                                    d="M28 9h-1.958v-2.938l-4.042-0.062 0.021 3h-12.146l0.083-3-3.958 0.062v3l-2-0.062c-1.104 0-2 0.896-2 2v14c0 1.104 0.896 2 2 2h24c1.104 0 2-0.896 2-2v-14c0-1.104-0.896-2-2-2zM23 7h2v4h-2v-4zM10 13.812c1.208 0 2.188 1.287 2.188 2.875s-0.98 2.875-2.188 2.875-2.188-1.287-2.188-2.875 0.98-2.875 2.188-2.875zM7 7h2v4h-2v-4zM5.667 22.948c0 0 0.237-1.902 0.776-2.261s2.090-0.598 2.090-0.598 1.006 1.075 1.434 1.075c0.427 0 1.433-1.075 1.433-1.075s1.552 0.238 2.091 0.598c0.633 0.422 0.791 2.261 0.791 2.261h-8.615zM26 22h-9v-1h9v1zM26 20h-9v-1h9v1zM26 18h-9v-1h9v1zM26 16h-9v-1h9v1z">
-                                </path>
-                            </g>
-                        </svg>
-                    </span>
-                    {{ __('Profile') }}
-                </x-responsive-nav-link>
+
                 <x-responsive-nav-link x-cloak="display:none" wire:click="$toggle('drawer')" wire:navigate>
                     <span>
                         <svg class="inline-block w-5 h-5 fill-navy-blue" viewBox="0 0 24 24" fill="none"

@@ -10,11 +10,6 @@ Route::get('/', fn() => view('welcome'))->name('home');
 
 Route::middleware('guest')->get('/r/{slug?}', [UserController::class, "referral"]);
 
-Route::get('/test/{slug?}', function () {
-    // for functon tests
-    return url()->current();
-})->middleware('auth');
-
 Route::fallback(function () {
     abort(404);
 });
