@@ -18,8 +18,7 @@
 
 
     <!-- UI Libraries - Load in correct order -->
-    {{-- <link href="{{ asset('vendor/bladewind/css/animate.min.css') }}" rel="stylesheet" />
-    <link href="{{ asset('vendor/bladewind/css/bladewind-ui.min.css') }}" rel="stylesheet" /> --}}
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" />
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -31,11 +30,11 @@
 
 </head>
 
-<body class="h-screen overflow-hidden font-sans antialiased bg-white" x-data>
+<body class="h-screen  font-sans antialiased bg-white">
     <x-mary-spotlight shortcut="meta.slash" search-text="Search by: Creator, Design, Location, Ratings"
         no-results-text="Ops! Nothing here." class="bg-white" />
 
-    <div class="bg-gray-100 ">
+    <div class="bg-gray-100 h-full">
         <livewire:layout.navigation />
 
         <!-- Page Heading -->
