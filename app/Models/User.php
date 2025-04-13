@@ -94,6 +94,15 @@ class User extends Authenticatable
         return false;
     }
 
+    public function isAdmin()
+    {
+        if (Auth::user()->role == 'admin') {
+            return true;
+        }
+        return false;
+    }
+
+
     public function notifications()
     {
         return $this->hasMany(Notification::class);

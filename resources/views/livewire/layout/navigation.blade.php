@@ -11,6 +11,7 @@ new class extends Component {
     public $notifications;
     public $redirection;
     public bool $isCreative;
+    public bool $isAdmin;
     public bool $drawer = false;
     public $result;
     public $userActions;
@@ -24,6 +25,7 @@ new class extends Component {
 
         $this->notifications = $notifications;
         $this->isCreative = Auth::user()->isCreative();
+        $this->isAdmin = Auth::user()->isAdmin();
     }
     public function closeDrawer()
     {
@@ -37,7 +39,7 @@ new class extends Component {
         if ($keyword != '') {
             if (!Auth::user()) {
                 $this->result = $this->users($keyword);
-            //    $this->userActions = $this->actions;
+                //    $this->userActions = $this->actions;
             }
 
             if (Auth::user()) {
@@ -70,32 +72,32 @@ new class extends Component {
     // Static search, but it could come from a database
     public function actions()
     {
-        return (object)[
-        'register' =>    [
+        return (object) [
+            'register' => [
                 'name' => 'Register',
                 'description' => 'Create A Twellr Account',
                 'icon' => "<x-mary-icon name='o-user' class='p-2 rounded-full w-11 h-11 bg-yellow-50' />",
                 'link' => route('register'),
             ],
-      'explore' =>     [
+            'explore' => [
                 'name' => 'Explore',
                 'description' => 'Discover New Creatives',
                 'icon' => '<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5m0-10v10"/></svg>',
                 'link' => route('explore'),
             ],
-       'blog' =>     [
+            'blog' => [
                 'name' => 'Blog',
                 'description' => 'Read The Latest News',
                 'icon' => '<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v18H3V3z"/><path d="M3 9h18M3 15h18"/></svg>',
                 'link' => route('blog'),
             ],
-   'marketplace' =>         [
+            'marketplace' => [
                 'name' => 'Marketplace',
                 'description' => 'Buy & Sell Designs',
                 'icon' => '<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5m0-10v10"/></svg>',
                 'link' => route('market.place'),
             ],
-     'support' =>       [
+            'support' => [
                 'name' => 'Support',
                 'description' => 'Get Help & Support',
                 'icon' => '<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5m0-10v10"/></svg>',
@@ -131,7 +133,7 @@ new class extends Component {
 ?>
 
 
-<nav x-data="{ open: false, more: false, notification: false }" class="bg-white border-gray-100">
+<nav x-data="{ open: false, more: false, notification: false, term: '', admin: !$wire.isAdmin }" class="bg-white border-gray-100">
 
     <!-- Primary Navigation Menu -->
     <div class="px-5 mx-auto md:px-2 max-w-7xl sm:px-6 lg:px-4">
@@ -150,7 +152,7 @@ new class extends Component {
                 </div>
 
             </div>
-            <div class="w-full sm:-my-px sm:ms-10 sm:flex">
+            <div class="w-full sm:-my-px md:ms-10 sm:flex">
                 {{-- Search Bar --}}
                 <form class="w-full px-3 sm:px-5 md:px-9">
                     <div class="flex justify-between w-full">
@@ -161,8 +163,8 @@ new class extends Component {
                                 placeholder="Search by: Creator, Design, Location, Ratings"
                                 alt="Search by: Creator, Design, Location, Ratings"
                                 title='Search by: Creator, Design, Location, Ratings' />
-                            <span wire:click="search"
-                                class="top-0 end-0 p-2.5 text-sm font-medium h-full text-white bg-gray-200 border-0 rounded-e-lg active:bg-white active:text-navy-blue border-navy-blue hover:bg-navy-blue focus:ring-0 focus:outline-none ">
+                            <span
+                                class="top-0 end-0 p-2.5 text-sm font-medium h-full text-white bg-gray-200 border-0 rounded-e-lg  focus:ring-0 focus:outline-none ">
                                 <svg class="w-4 h-4 text-[#fbaa0d]" aria-hidden="true"
                                     xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
@@ -182,14 +184,14 @@ new class extends Component {
                                                 @foreach ($result as $item)
                                                     <a href="{{ $item->link }}"
                                                         class="flex items-center gap-2 p-1 sm:p-2 border-b border-gray-200 hover:bg-gray-100 transition-colors">
-                                                        <img src="{{ $item->avatar }}" alt="{{ $item->name}}"
+                                                        <img src="{{ $item->avatar }}" alt="{{ $item->name }}"
                                                             class="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover">
                                                         <div class="min-w-0 flex-1">
                                                             <h4
                                                                 class="text-xs sm:text-sm font-bold text-gray-800 truncate">
-                                                                {{ $item->name}}</h4>
+                                                                {{ $item->name }}</h4>
                                                             <p class="text-xs text-gray-500 truncate">
-                                                                {{$item->email }}</p>
+                                                                {{ $item->email }}</p>
                                                         </div>
                                                     </a>
                                                 @endforeach
@@ -202,8 +204,8 @@ new class extends Component {
                     </div>
                 </form>
 
-
-                <div class="justify-center w-100 md:flex  md:w-[10%] mt-3 text-[#b7c1ab] hidden hover:cursor-pointer">
+                {{-- More --}}
+                <div class="justify-center w-100 sm:flex   md:w-[10%] mt-3 text-[#b7c1ab] hidden hover:cursor-pointer">
                     <span class="w-5 h-5 pt-2 mx-1 ">
                         <svg class="w-5 h-5" viewBox="0 -3.5 29 29" version="1.1" xmlns="http://www.w3.org/2000/svg"
                             xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -244,7 +246,7 @@ new class extends Component {
                             </button>
                         </x-slot>
                         <x-slot name="content">
-                            <x-dropdown-link x-show="$wire.isCreative" class="hidden text-bold md:block"
+                            <x-dropdown-link x-show="$wire.isCreative" class="hidden text-bold sm:block"
                                 :href="route('creative.upload')">
                                 <span>
                                     <svg class="inline-block w-5 h-5 fill-navy-blue " version="1.1" id="Capa_1"
@@ -276,7 +278,7 @@ new class extends Component {
                                 {{ __('Upload') }}
                             </x-dropdown-link>
 
-                            <x-dropdown-link class='hidden md:block' :href="route('explore')" :active="request()->routeIs('explore')" wire:navigate>
+                            <x-dropdown-link class='hidden sm:block' :href="route('explore')" :active="request()->routeIs('explore')" wire:navigate>
 
                                 <span>
                                     <svg class="inline-block w-6 h-6 fill-current text-navy-blue"
@@ -291,7 +293,7 @@ new class extends Component {
                             </x-dropdown-link>
 
 
-                            <x-dropdown-link class="hidden text-bold md:block" :href="route('blog')" wire:navigate>
+                            <x-dropdown-link class="hidden text-bold sm:block" :href="route('blog')" wire:navigate>
                                 <span>
                                     <svg class="inline-block w-5 h-5 fill-current" id="Layer_1" data-name="Layer 1"
                                         xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
@@ -309,7 +311,7 @@ new class extends Component {
                                 </span>
                                 {{ __('Blog') }}
                             </x-dropdown-link>
-                            <x-dropdown-link class="hidden text-bold md:block" :href="route('market.place')" wire:navigate>
+                            <x-dropdown-link class="hidden text-bold sm:block" :href="route('market.place')" wire:navigate>
                                 <span>
                                     <svg class="inline-block w-5 h-5 fill-current" fill="#000000" height="200px"
                                         width="200px" version="1.1" id="Capa_1"
@@ -340,7 +342,8 @@ new class extends Component {
                     </x-dropdown>
                 </div>
 
-                <div class="justify-center hidden pl-3 md:flex">
+
+                <div x-show="admin" class="justify-center hidden pl-3 md:flex">
                     <a class="my-2 " href="{{ route('support') }}">
                         <span class="py-3 w-100">
                             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -414,7 +417,7 @@ new class extends Component {
             </div>
 
             <!-- Settings Dropdown -->
-            <div class="hidden sm:flex sm:items-center sm:mr-7">
+            <div class="hidden sm:flex sm:items-center sm:ml-5 md:ml-0 md:mr-7">
 
                 <x-avatar />
                 <x-dropdown align="right" width="48" class="shadow-2xl shadow-navy-blue ">
@@ -435,8 +438,9 @@ new class extends Component {
                     </x-slot>
 
                     <x-slot name="content">
-                        <div class=" sm:block md:hidden">
-                            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
+                        {{-- Tablets - sm screen  --}}
+                        <div class="hidden sm:block md:hidden">
+                            <x-dropdown-link class=' ' :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
                                 <span>
                                     <svg class="inline-block w-6 h-6 fill-current" fill="currentColor"
                                         viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -446,11 +450,11 @@ new class extends Component {
                                     </svg>
                                 </span>
                                 {{ __('Dashboard') }}
-                            </x-responsive-nav-link>
-                            <x-responsive-nav-link :href="route('profile')" wire:navigate>
+                            </x-dropdown-link>
+                            <x-dropdown-link class=" text-bold " :href="route('profile')" wire:navigate>
                                 <span>
-                                    <svg class='inline-block w-5 h-5 fill-current' fill="#000000" viewBox="0 0 32 32"
-                                        version="1.1" xmlns="http://www.w3.org/2000/svg">
+                                    <svg class='inline-block w-5 h-5 fill-current text-navy-blue' fill="#000000"
+                                        viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg">
                                         <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                                         <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round">
                                         </g>
@@ -463,74 +467,44 @@ new class extends Component {
                                     </svg>
                                 </span>
                                 {{ __('Profile') }}
-                            </x-responsive-nav-link>
-                            <x-responsive-nav-link :href="route('wallet')" wire:navigate>
+                            </x-dropdown-link>
+                            <x-dropdown-link class="text-bold " :href="route('wallet')" x-show="admin" wire:navigate>
                                 <span>
                                     <svg class="inline-block w-5 h-5 fill-current" xmlns="http://www.w3.org/2000/svg"
                                         viewBox="0 0 512 512">
                                         <path fill="#001f54"
                                             d="M64 32C28.7 32 0 60.7 0 96L0 416c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-224c0-35.3-28.7-64-64-64L80 128c-8.8 0-16-7.2-16-16s7.2-16 16-16l368 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L64 32zM416 272a32 32 0 1 1 0 64 32 32 0 1 1 0-64z" />
                                     </svg>
-
                                 </span>
-                                {{ __('Wallet') }}
-                            </x-responsive-nav-link>
-                            <x-responsive-nav-link :href="route('cart')" wire:navigate>
+
+                                <span class="mt-2"> {{ __('Wallet') }}</span>
+                            </x-dropdown-link>
+                            <x-dropdown-link class=" text-bold" :href="route('cart')" x-show="admin" wire:navigate>
                                 <span>
-                                    @svg('eva-shopping-cart-outline', 'w-6 h-5 text-white')
+                                    @svg('eva-shopping-cart', 'w-6 h-6 text-navy-blue inline-block fill-current')
                                 </span>
                                 {{ __('Cart') }}
-                            </x-responsive-nav-link>
-                            <x-responsive-nav-link :href="route('blog')" wire:navigate>
-                                <span>
-                                    <svg class="inline-block w-5 h-5 fill-current" id="Layer_1" data-name="Layer 1"
-                                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                                        <defs>
-                                            <style>
-                                                .cls-1 {
-                                                    fill: #141f38;
-                                                }
-                                            </style>
-                                        </defs>
-                                        <title>browser-3-glyph</title>
-                                        <path class="cls-1"
-                                            d="M448,0H64A64,64,0,0,0,0,64v51.2H512V64A64,64,0,0,0,448,0ZM70.4,76.8A19.2,19.2,0,1,1,89.6,57.6,19.2,19.2,0,0,1,70.4,76.8Zm51.2,0a19.2,19.2,0,1,1,19.2-19.2A19.2,19.2,0,0,1,121.6,76.8Zm51.2,0A19.2,19.2,0,1,1,192,57.6,19.2,19.2,0,0,1,172.8,76.8ZM0,448a64,64,0,0,0,64,64H448a64,64,0,0,0,64-64V140.8H0ZM294.4,192H435.2a12.8,12.8,0,1,1,0,25.6H294.4a12.8,12.8,0,1,1,0-25.6Zm0,51.2H435.2a12.8,12.8,0,1,1,0,25.6H294.4a12.8,12.8,0,1,1,0-25.6Zm0,51.2H384a12.8,12.8,0,0,1,0,25.6H294.4a12.8,12.8,0,1,1,0-25.6Zm0,76.8H435.2a12.8,12.8,0,1,1,0,25.6H294.4a12.8,12.8,0,1,1,0-25.6Zm0,51.2H384a12.8,12.8,0,0,1,0,25.6H294.4a12.8,12.8,0,1,1,0-25.6ZM64,211.2a32,32,0,0,1,32-32H211.2a32,32,0,0,1,32,32V416a32,32,0,0,1-32,32H96a32,32,0,0,1-32-32Z" />
-                                    </svg>
+                            </x-dropdown-link>
 
-                                </span>
-                                {{ __('Blog') }}
-                            </x-responsive-nav-link>
-                            <x-responsive-nav-link wire:navigate>
+                            <x-dropdown-link class="text-bold" :href="route('settings')" wire:navigate>
                                 <span>
-                                    <svg class="inline-block w-5 h-5 fill-current" viewBox="0 0 24 24" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round">
-                                        </g>
-                                        <g id="SVGRepo_iconCarrier">
-                                            <path
-                                                d="M19.3399 14.49L18.3399 12.83C18.1299 12.46 17.9399 11.76 17.9399 11.35V8.82C17.9399 6.47 16.5599 4.44 14.5699 3.49C14.0499 2.57 13.0899 2 11.9899 2C10.8999 2 9.91994 2.59 9.39994 3.52C7.44994 4.49 6.09994 6.5 6.09994 8.82V11.35C6.09994 11.76 5.90994 12.46 5.69994 12.82L4.68994 14.49C4.28994 15.16 4.19994 15.9 4.44994 16.58C4.68994 17.25 5.25994 17.77 5.99994 18.02C7.93994 18.68 9.97994 19 12.0199 19C14.0599 19 16.0999 18.68 18.0399 18.03C18.7399 17.8 19.2799 17.27 19.5399 16.58C19.7999 15.89 19.7299 15.13 19.3399 14.49Z"
-                                                fill="#000000"></path>
-                                            <path
-                                                d="M14.8297 20.01C14.4097 21.17 13.2997 22 11.9997 22C11.2097 22 10.4297 21.68 9.87969 21.11C9.55969 20.81 9.31969 20.41 9.17969 20C9.30969 20.02 9.43969 20.03 9.57969 20.05C9.80969 20.08 10.0497 20.11 10.2897 20.13C10.8597 20.18 11.4397 20.21 12.0197 20.21C12.5897 20.21 13.1597 20.18 13.7197 20.13C13.9297 20.11 14.1397 20.1 14.3397 20.07C14.4997 20.05 14.6597 20.03 14.8297 20.01Z"
-                                                fill="#000000"></path>
-                                        </g>
+                                    <svg class="inline-block w-5 h-5 fill-current text-navy-blue"
+                                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="settings">
+                                        <path fill="none" d="M0 0h24v24H0V0z"></path>
+                                        <path
+                                            d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z">
+                                        </path>
                                     </svg>
-                                    <span :class="{ 'hidden': true }"
-                                        class="inline-block w-5 h-5 text-sm font-bold text-center text-white rounded-full fill-current bg-navy-blue">1
-                                    </span>
                                 </span>
-                                {{ __('Notification') }}
-
-                            </x-responsive-nav-link>
+                                {{ __('Settings') }}
+                            </x-dropdown-link>
 
                             <!-- Logout Button -->
-                            <button wire:click="logout" class="w-full text-start ">
-                                <x-responsive-nav-link>
-
-                                    <span class="">
-                                        <svg class='inline-block w-5 h-5 fill-current' viewBox="0 0 24 24"
-                                            width='10' height='10' fill="none"
+                            <button wire:click="logout" class="w-full text-start">
+                                <x-dropdown-link>
+                                    <span>
+                                        <svg class='inline-block w-5 h-5 fill-current text-navy-blue'
+                                            viewBox="0 0 24 24" width='10' height='10' fill="none"
                                             xmlns="http://www.w3.org/2000/svg">
                                             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                                             <g id="SVGRepo_tracerCarrier" stroke-linecap="round"
@@ -539,99 +513,106 @@ new class extends Component {
                                             <g id="SVGRepo_iconCarrier">
                                                 <path
                                                     d="M17.2929 14.2929C16.9024 14.6834 16.9024 15.3166 17.2929 15.7071C17.6834 16.0976 18.3166 16.0976 18.7071 15.7071L21.6201 12.7941C21.6351 12.7791 21.6497 12.7637 21.6637 12.748C21.87 12.5648 22 12.2976 22 12C22 11.7024 21.87 11.4352 21.6637 11.252C21.6497 11.2363 21.6351 11.2209 21.6201 11.2059L18.7071 8.29289C18.3166 7.90237 17.6834 7.90237 17.2929 8.29289C16.9024 8.68342 16.9024 9.31658 17.2929 9.70711L18.5858 11H13C12.4477 11 12 11.4477 12 12C12 12.5523 12.4477 13 13 13H18.5858L17.2929 14.2929Z"
-                                                    fill="#000000"></path>
+                                                    fill="navy-blue"></path>
                                                 <path
                                                     d="M5 2C3.34315 2 2 3.34315 2 5V19C2 20.6569 3.34315 22 5 22H14.5C15.8807 22 17 20.8807 17 19.5V16.7326C16.8519 16.647 16.7125 16.5409 16.5858 16.4142C15.9314 15.7598 15.8253 14.7649 16.2674 14H13C11.8954 14 11 13.1046 11 12C11 10.8954 11.8954 10 13 10H16.2674C15.8253 9.23514 15.9314 8.24015 16.5858 7.58579C16.7125 7.4591 16.8519 7.35296 17 7.26738V4.5C17 3.11929 15.8807 2 14.5 2H5Z"
-                                                    fill="#000000"></path>
+                                                    fill="navy-blue"></path>
                                             </g>
                                         </svg>
                                     </span>
                                     {{ __('Log Out') }}
-                                </x-responsive-nav-link>
+                                </x-dropdown-link>
                             </button>
                         </div>
-                        <x-dropdown-link class='hidden md:block' :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
-                            <span>
-                                <svg class="inline-block w-6 h-6 fill-current" fill="currentColor"
-                                    viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                    <path
-                                        d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z">
-                                    </path>
-                                </svg>
-                            </span>
-                            {{ __('Dashboard') }}
-                        </x-dropdown-link>
-                        <x-dropdown-link class="hidden text-bold md:block" :href="route('profile')" wire:navigate>
-                            <span>
-                                <svg class='inline-block w-5 h-5 fill-current text-navy-blue' fill="#000000"
-                                    viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg">
-                                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round">
-                                    </g>
-                                    <g id="SVGRepo_iconCarrier">
-                                        <title>profile</title>
-                                        <path
-                                            d="M28 9h-1.958v-2.938l-4.042-0.062 0.021 3h-12.146l0.083-3-3.958 0.062v3l-2-0.062c-1.104 0-2 0.896-2 2v14c0 1.104 0.896 2 2 2h24c1.104 0 2-0.896 2-2v-14c0-1.104-0.896-2-2-2zM23 7h2v4h-2v-4zM10 13.812c1.208 0 2.188 1.287 2.188 2.875s-0.98 2.875-2.188 2.875-2.188-1.287-2.188-2.875 0.98-2.875 2.188-2.875zM7 7h2v4h-2v-4zM5.667 22.948c0 0 0.237-1.902 0.776-2.261s2.090-0.598 2.090-0.598 1.006 1.075 1.434 1.075c0.427 0 1.433-1.075 1.433-1.075s1.552 0.238 2.091 0.598c0.633 0.422 0.791 2.261 0.791 2.261h-8.615zM26 22h-9v-1h9v1zM26 20h-9v-1h9v1zM26 18h-9v-1h9v1zM26 16h-9v-1h9v1z">
-                                        </path>
-                                    </g>
-                                </svg>
-                            </span>
-                            {{ __('Profile') }}
-                        </x-dropdown-link>
-                        <x-dropdown-link class="hidden text-bold md:block" :href="route('wallet')" wire:navigate>
-                            <span>
-                                <svg class="inline-block w-5 h-5 fill-current" xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 512 512">
-                                    <path fill="#001f54"
-                                        d="M64 32C28.7 32 0 60.7 0 96L0 416c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-224c0-35.3-28.7-64-64-64L80 128c-8.8 0-16-7.2-16-16s7.2-16 16-16l368 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L64 32zM416 272a32 32 0 1 1 0 64 32 32 0 1 1 0-64z" />
-                                </svg>
-                            </span>
-
-                            <span class="mt-2"> {{ __('Wallet') }}</span>
-                        </x-dropdown-link>
-                        <x-dropdown-link class="hidden text-bold md:block" :href="route('cart')" wire:navigate>
-                            <span>
-                                @svg('eva-shopping-cart', 'w-6 h-6 text-navy-blue inline-block fill-current')
-                            </span>
-                            {{ __('Cart') }}
-                        </x-dropdown-link>
-
-                        <x-dropdown-link class="hidden text-bold md:block" :href="route('settings')" wire:navigate>
-                            <span>
-                                <svg class="inline-block w-5 h-5 fill-current text-navy-blue"
-                                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="settings">
-                                    <path fill="none" d="M0 0h24v24H0V0z"></path>
-                                    <path
-                                        d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z">
-                                    </path>
-                                </svg>
-                            </span>
-                            {{ __('Settings') }}
-                        </x-dropdown-link>
-
-                        <!-- Logout Button -->
-                        <button wire:click="logout" class="w-full text-start">
-                            <x-dropdown-link class='hidden md:block'>
+                        {{-- Desktop --}}
+                        <div class="hidden lg:block">
+                            <x-dropdown-link class='hidden md:block' :href="route('dashboard')" :active="request()->routeIs('dashboard')"
+                                wire:navigate>
                                 <span>
-                                    <svg class='inline-block w-5 h-5 fill-current text-navy-blue' viewBox="0 0 24 24"
-                                        width='10' height='10' fill="none"
-                                        xmlns="http://www.w3.org/2000/svg">
+                                    <svg class="inline-block w-6 h-6 fill-current" fill="currentColor"
+                                        viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z">
+                                        </path>
+                                    </svg>
+                                </span>
+                                {{ __('Dashboard') }}
+                            </x-dropdown-link>
+                            <x-dropdown-link class="hidden text-bold md:block" :href="route('profile')" wire:navigate>
+                                <span>
+                                    <svg class='inline-block w-5 h-5 fill-current text-navy-blue' fill="#000000"
+                                        viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg">
                                         <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                                         <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round">
                                         </g>
                                         <g id="SVGRepo_iconCarrier">
+                                            <title>profile</title>
                                             <path
-                                                d="M17.2929 14.2929C16.9024 14.6834 16.9024 15.3166 17.2929 15.7071C17.6834 16.0976 18.3166 16.0976 18.7071 15.7071L21.6201 12.7941C21.6351 12.7791 21.6497 12.7637 21.6637 12.748C21.87 12.5648 22 12.2976 22 12C22 11.7024 21.87 11.4352 21.6637 11.252C21.6497 11.2363 21.6351 11.2209 21.6201 11.2059L18.7071 8.29289C18.3166 7.90237 17.6834 7.90237 17.2929 8.29289C16.9024 8.68342 16.9024 9.31658 17.2929 9.70711L18.5858 11H13C12.4477 11 12 11.4477 12 12C12 12.5523 12.4477 13 13 13H18.5858L17.2929 14.2929Z"
-                                                fill="navy-blue"></path>
-                                            <path
-                                                d="M5 2C3.34315 2 2 3.34315 2 5V19C2 20.6569 3.34315 22 5 22H14.5C15.8807 22 17 20.8807 17 19.5V16.7326C16.8519 16.647 16.7125 16.5409 16.5858 16.4142C15.9314 15.7598 15.8253 14.7649 16.2674 14H13C11.8954 14 11 13.1046 11 12C11 10.8954 11.8954 10 13 10H16.2674C15.8253 9.23514 15.9314 8.24015 16.5858 7.58579C16.7125 7.4591 16.8519 7.35296 17 7.26738V4.5C17 3.11929 15.8807 2 14.5 2H5Z"
-                                                fill="navy-blue"></path>
+                                                d="M28 9h-1.958v-2.938l-4.042-0.062 0.021 3h-12.146l0.083-3-3.958 0.062v3l-2-0.062c-1.104 0-2 0.896-2 2v14c0 1.104 0.896 2 2 2h24c1.104 0 2-0.896 2-2v-14c0-1.104-0.896-2-2-2zM23 7h2v4h-2v-4zM10 13.812c1.208 0 2.188 1.287 2.188 2.875s-0.98 2.875-2.188 2.875-2.188-1.287-2.188-2.875 0.98-2.875 2.188-2.875zM7 7h2v4h-2v-4zM5.667 22.948c0 0 0.237-1.902 0.776-2.261s2.090-0.598 2.090-0.598 1.006 1.075 1.434 1.075c0.427 0 1.433-1.075 1.433-1.075s1.552 0.238 2.091 0.598c0.633 0.422 0.791 2.261 0.791 2.261h-8.615zM26 22h-9v-1h9v1zM26 20h-9v-1h9v1zM26 18h-9v-1h9v1zM26 16h-9v-1h9v1z">
+                                            </path>
                                         </g>
                                     </svg>
                                 </span>
-                                {{ __('Log Out') }}
+                                {{ __('Profile') }}
                             </x-dropdown-link>
-                        </button>
+                            <x-dropdown-link class="hidden text-bold md:block" :href="route('wallet')" x-show="admin"
+                                wire:navigate>
+                                <span>
+                                    <svg class="inline-block w-5 h-5 fill-current" xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 512 512">
+                                        <path fill="#001f54"
+                                            d="M64 32C28.7 32 0 60.7 0 96L0 416c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-224c0-35.3-28.7-64-64-64L80 128c-8.8 0-16-7.2-16-16s7.2-16 16-16l368 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L64 32zM416 272a32 32 0 1 1 0 64 32 32 0 1 1 0-64z" />
+                                    </svg>
+                                </span>
+
+                                <span class="mt-2"> {{ __('Wallet') }}</span>
+                            </x-dropdown-link>
+                            <x-dropdown-link class="hidden text-bold md:block" :href="route('cart')" x-show="admin"
+                                wire:navigate>
+                                <span>
+                                    @svg('eva-shopping-cart', 'w-6 h-6 text-navy-blue inline-block fill-current')
+                                </span>
+                                {{ __('Cart') }}
+                            </x-dropdown-link>
+
+                            <x-dropdown-link class="hidden text-bold md:block" :href="route('settings')" wire:navigate>
+                                <span>
+                                    <svg class="inline-block w-5 h-5 fill-current text-navy-blue"
+                                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="settings">
+                                        <path fill="none" d="M0 0h24v24H0V0z"></path>
+                                        <path
+                                            d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z">
+                                        </path>
+                                    </svg>
+                                </span>
+                                {{ __('Settings') }}
+                            </x-dropdown-link>
+
+                            <!-- Logout Button -->
+                            <button wire:click="logout" class="w-full text-start">
+                                <x-dropdown-link class='hidden md:block'>
+                                    <span>
+                                        <svg class='inline-block w-5 h-5 fill-current text-navy-blue'
+                                            viewBox="0 0 24 24" width='10' height='10' fill="none"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round"
+                                                stroke-linejoin="round">
+                                            </g>
+                                            <g id="SVGRepo_iconCarrier">
+                                                <path
+                                                    d="M17.2929 14.2929C16.9024 14.6834 16.9024 15.3166 17.2929 15.7071C17.6834 16.0976 18.3166 16.0976 18.7071 15.7071L21.6201 12.7941C21.6351 12.7791 21.6497 12.7637 21.6637 12.748C21.87 12.5648 22 12.2976 22 12C22 11.7024 21.87 11.4352 21.6637 11.252C21.6497 11.2363 21.6351 11.2209 21.6201 11.2059L18.7071 8.29289C18.3166 7.90237 17.6834 7.90237 17.2929 8.29289C16.9024 8.68342 16.9024 9.31658 17.2929 9.70711L18.5858 11H13C12.4477 11 12 11.4477 12 12C12 12.5523 12.4477 13 13 13H18.5858L17.2929 14.2929Z"
+                                                    fill="navy-blue"></path>
+                                                <path
+                                                    d="M5 2C3.34315 2 2 3.34315 2 5V19C2 20.6569 3.34315 22 5 22H14.5C15.8807 22 17 20.8807 17 19.5V16.7326C16.8519 16.647 16.7125 16.5409 16.5858 16.4142C15.9314 15.7598 15.8253 14.7649 16.2674 14H13C11.8954 14 11 13.1046 11 12C11 10.8954 11.8954 10 13 10H16.2674C15.8253 9.23514 15.9314 8.24015 16.5858 7.58579C16.7125 7.4591 16.8519 7.35296 17 7.26738V4.5C17 3.11929 15.8807 2 14.5 2H5Z"
+                                                    fill="navy-blue"></path>
+                                            </g>
+                                        </svg>
+                                    </span>
+                                    {{ __('Log Out') }}
+                                </x-dropdown-link>
+                            </button>
+                        </div>
                     </x-slot>
                 </x-dropdown>
             </div>
@@ -838,7 +819,7 @@ new class extends Component {
                             </span>
                             {{ __('Marketplace') }}
                         </x-responsive-nav-link>
-                        <x-responsive-nav-link :href="route('wallet')" wire:navigate>
+                        <x-responsive-nav-link :href="route('wallet')" x-show="admin" wire:navigate>
                             <span>
 
                                 <svg class="inline-block w-5 h-5 fill-navy-blue" xmlns="http://www.w3.org/2000/svg"
@@ -850,14 +831,14 @@ new class extends Component {
                             {{ __('Wallet') }}
 
                         </x-responsive-nav-link>
-                        <x-responsive-nav-link :href="route('cart')" wire:navigate>
+                        <x-responsive-nav-link :href="route('cart')" x-show="admin" wire:navigate>
 
                             <span>
                                 @svg('eva-shopping-cart', 'w-6 h-6 text-navy-blue inline-block fill-current')
                             </span>
                             {{ __('Cart') }}
                         </x-responsive-nav-link>
-                        <x-responsive-nav-link x-show="$wire.isCreative" :href="route('creative.upload')">
+                        <x-responsive-nav-link x-show="$wire.isCreative" x-show="admin" :href="route('creative.upload')">
                             <span>
                                 <svg class="inline-block w-5 h-5 fill-navy-blue " version="1.1" id="Capa_1"
                                     xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -898,6 +879,27 @@ new class extends Component {
                                 </svg>
                             </span>
                             {{ __('Explore') }}
+                        </x-responsive-nav-link>
+                               <x-responsive-nav-link :href="route('blog')" wire:navigate>
+                            <span>
+
+                               <span>
+                                    <svg class="inline-block w-5 h-5 fill-current" id="Layer_1" data-name="Layer 1"
+                                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                                        <defs>
+                                            <style>
+                                                .cls-1 {
+                                                    fill: #141f38;
+                                                }
+                                            </style>
+                                        </defs>
+                                        <title>browser-3-glyph</title>
+                                        <path class="cls-1"
+                                            d="M448,0H64A64,64,0,0,0,0,64v51.2H512V64A64,64,0,0,0,448,0ZM70.4,76.8A19.2,19.2,0,1,1,89.6,57.6,19.2,19.2,0,0,1,70.4,76.8Zm51.2,0a19.2,19.2,0,1,1,19.2-19.2A19.2,19.2,0,0,1,121.6,76.8Zm51.2,0A19.2,19.2,0,1,1,192,57.6,19.2,19.2,0,0,1,172.8,76.8ZM0,448a64,64,0,0,0,64,64H448a64,64,0,0,0,64-64V140.8H0ZM294.4,192H435.2a12.8,12.8,0,1,1,0,25.6H294.4a12.8,12.8,0,1,1,0-25.6Zm0,51.2H435.2a12.8,12.8,0,1,1,0,25.6H294.4a12.8,12.8,0,1,1,0-25.6Zm0,51.2H384a12.8,12.8,0,0,1,0,25.6H294.4a12.8,12.8,0,1,1,0-25.6Zm0,76.8H435.2a12.8,12.8,0,1,1,0,25.6H294.4a12.8,12.8,0,1,1,0-25.6Zm0,51.2H384a12.8,12.8,0,0,1,0,25.6H294.4a12.8,12.8,0,1,1,0-25.6ZM64,211.2a32,32,0,0,1,32-32H211.2a32,32,0,0,1,32,32V416a32,32,0,0,1-32,32H96a32,32,0,0,1-32-32Z" />
+                                    </svg>
+                                </span>
+                                {{ __('Blog') }}
+
                         </x-responsive-nav-link>
                     </div>
 

@@ -102,7 +102,7 @@ new class extends Component {
 ?>
 
 
-<nav x-data="{ open: false, more: false, notification: false }" class="bg-white border-gray-100">
+<nav x-data="{ open: false, more: false, notification: false,term:'' }" class="bg-white border-gray-100">
     <!-- Primary Navigation Menu -->
     <div class="px-5 mx-auto md:px-2 max-w-7xl sm:px-6 lg:px-4">
         <div class="flex justify-between h-16">

@@ -19,8 +19,6 @@
 
     <!-- UI Libraries - Load in correct order -->
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" />
-
     @vite(['resources/css/app.css', 'resources/js/app.js'])
      <!-- Scripts -->
     @bukStyles(true)
@@ -31,8 +29,6 @@
 </head>
 
 <body class="h-screen  font-sans antialiased bg-white">
-    <x-mary-spotlight shortcut="meta.slash" search-text="Search by: Creator, Design, Location, Ratings"
-        no-results-text="Ops! Nothing here." class="bg-white" />
 
     <div class="bg-gray-100 h-full">
         <livewire:layout.navigation />
@@ -53,6 +49,5 @@
     </div>
 
     <script src="{{ asset('vendor/bladewind/js/helpers.js') }}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
 </body>
 </html>

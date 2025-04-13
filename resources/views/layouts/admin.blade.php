@@ -26,19 +26,10 @@
     @bukScripts(true)
 </head>
 
-<body class="h-screen p-0 m-0 font-sans antialiased bg-white border-0 md:overflow-hidden">
+<body class=" p-0 m-0 font-sans antialiased bg-gray-100 border-0">
 
-    <x-mary-spotlight shortcut="meta.slash" no-results-text="Ops! Nothing here." />
-    <div class="p-0 m-0 bg-gray-100 border-0 ">
+    <x-mary-toast/>
         <livewire:layout.navigation />
-        <!-- Page Heading -->
-        @if (isset($header))
-            <header class="bg-white shadow">
-                <div class="px-4 py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
-                    {{ $header }}
-                </div>
-            </header>
-        @endif
 
         <!-- Page Content -->
         <main class="p-0 border-0">
@@ -47,7 +38,5 @@
     </div>
 </body>
 <script src="{{ asset('vendor/bladewind/js/helpers.js') }}"></script>
-{{-- <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script> --}}
-
 
 </html>

@@ -1,63 +1,69 @@
-<!-- component -->
+<!-- Optimized Sidebar Component -->
 <div id="sidebar"
-    class="h-[90vh] px-3 overflow-x-hidden transition-transform duration-300 ease-in-out shadow-xl bg-white md:block w-30 md:w-60 lg:w-60">
-    <div class="mt-10 space-y-6 md:space-y-10">
+    class="h-screen transition-all duration-300 shadow-lg bg-white overflow-y-auto overflow-x-hidden w-16 sm:w-20 md:w-64 lg:w-72">
+    <div class="py-6 px-2 md:px-4 space-y-6">
         <div id="menu" class="flex flex-col space-y-2">
-
-            <a href=""
-                class="px-2 py-2 text-sm font-medium text-gray-500 transition duration-150 ease-in-out rounded-md hover:bg-golden hover:text-white hover:scale-105">
-                <svg class="inline-block w-6 h-6 fill-current" fill="currentColor" viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path
-                        d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z">
-                    </path>
-                </svg>
-                <span>Dashboard</span>
+            <!-- Dashboard Link -->
+            <a href="{{ route('admin.dashboard') }}"
+                class="flex items-center gap-2 px-3 py-3 text-sm font-medium text-gray-600 rounded-lg transition-all hover:bg-golden hover:text-white group">
+                @svg('heroicon-o-home', ['class' => 'w-6 h-6'])
+                <span class="hidden md:block hover:block ">Dashboard</span>
             </a>
-            <div class="relative" x-data="{ open: false }">
+
+            <!-- Uploaded Designs Dropdown -->
+            <div class="relative" @click.away="open = false" x-data="{ open: false }">
                 <button @click="open = !open"
-                    class="flex items-center w-full px-2 py-2 text-sm font-medium text-gray-500 transition duration-150 ease-in-out rounded-md hover:bg-golden hover:text-white hover:scale-105">
-                    <svg class="inline-block w-6 h-6 fill-current" fill="currentColor" viewBox="0 0 20 20"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd"
-                            d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-                            clip-rule="evenodd"></path>
-                    </svg>
-                    <span class="flex-1 text-left">Uploaded Designs</span>
-                    <svg :class="{ 'rotate-180': open }" class="w-4 h-4 transition-transform transform fill-current"
+                    class="flex items-center w-full justify-between px-3 py-3 text-sm font-medium text-gray-600 rounded-lg transition-all hover:bg-golden hover:text-white group">
+                    <div class="flex items-center gap-2">
+                        @svg('eva-upload', ['class' => 'w-6 h-6'])
+                        <span class="hidden md:block">Uploaded Designs</span>
+                    </div>
+                    <svg :class="{ 'rotate-180': open }" class="w-4 h-4 transition-transform transform hidden md:block"
                         fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7">
-                        </path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                     </svg>
                 </button>
-                <div x-show="open" @click.away='open = false'
-                    class="left-0 w-full mt-2 origin-top-right rounded-md shadow-lg bg-white shadow-gray-200 transition-75"
+                <div x-show="open" @click.away="open = false"
+                    class="mt-1 w-full bg-white rounded-lg shadow-lg overflow-hidden transition-all"
                     style="display: none;">
-                    <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                        <a href="#" class="block px-4 py-2 text-sm text-white hover:bg-white hover:text-navy-blue"
+                    <div class="py-1" role="menu" aria-orientation="vertical">
+                        <a href="#"
+                            class=" px-4 py-2 text-sm text-gray-700 hover:bg-golden hover:text-white transition-colors flex"
                             role="menuitem">
-                            Design Stack
+                            @svg('eva-star', ['class' => 'w-4 h-4'])
+                            <span class="hidden md:block"> Design Stack</span>
                         </a>
-                        <a href="#" class="block px-4 py-2 text-sm text-white hover:bg-white hover:text-navy-blue"
+                        <a href="#"
+                            class=" px-4 py-2 text-sm text-gray-700 hover:bg-golden hover:text-white transition-colors flex"
                             role="menuitem">
-                            Printable Stack
+                            @svg('heroicon-o-document', ['class' => 'w-4 h-4'])
+                            <span class="hidden md:block"> Printable Stack</span>
                         </a>
-
                     </div>
                 </div>
             </div>
+
+            <!-- Promote Design Link -->
             <a href=""
-                class="px-2 py-2 text-sm font-medium text-white transition duration-150 ease-in-out rounded-md hover:bg-white hover:text-navy-blue hover:scale-105">
-                <svg class="inline-block w-6 h-6 fill-current" fill="currentColor" viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg">
+                class="flex items-center gap-2 px-3 py-3 text-sm font-medium text-gray-600 rounded-lg transition-all hover:bg-golden hover:text-white group">
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                     <path
                         d="M11 17a1 1 0 001.447.894l4-2A1 1 0 0017 15V9.236a1 1 0 00-1.447-.894l-4 2a1 1 0 00-.553.894V17zM15.211 6.276a1 1 0 000-1.788l-4.764-2.382a1 1 0 00-.894 0L4.789 4.488a1 1 0 000 1.788l4.764 2.382a1 1 0 00.894 0l4.764-2.382zM4.447 8.342A1 1 0 003 9.236V15a1 1 0 00.553.894l4 2A1 1 0 009 17v-5.764a1 1 0 00-.553-.894l-4-2z">
                     </path>
                 </svg>
-                <span class="">Promote Design</span>
+                <span class="hidden md:block">Promote Design</span>
             </a>
+            <a href=""
+                class="flex items-center gap-2 px-3 py-3 text-sm font-medium text-gray-600 rounded-lg transition-all hover:bg-golden hover:text-white group">
+                    @svg('eva-globe',['class'=> 'w-6 h-6'])
+                <span class="hidden md:block"> {{ __('Blog') }}</span>
 
-
+            </a>
+            <a href=""
+                class="flex items-center gap-2 px-3 py-3 text-sm font-medium text-gray-600 rounded-lg transition-all hover:bg-golden hover:text-white group">
+                @svg('heroicon-o-cog', ['class' => 'w-6 h-6'])
+                <span class="hidden md:block">Settings</span>
+            </a>
         </div>
     </div>
 </div>
