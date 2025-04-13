@@ -11,16 +11,14 @@
         "blade-ui-kit/blade-ui-kit": "^0.7.0",
         "hasnayeen/blade-eva-icons": "^2.1",
         "laravel/breeze": "^2.3",
-        "laravel/framework": "^11.31",
+        "laravel/framework": "^12.0",
         "laravel/socialite": "^5.17",
         "laravel/tinker": "^2.9",
         "livewire/livewire": "^3.6",
         "livewire/volt": "^1.7",
         "mkocansey/bladewind": "^2.9",
         "predis/predis": "^2.3",
-        "robsontenorio/mary": "^1.41",
-        "tzsk/otp": "^8.0",
-        "unicodeveloper/laravel-paystack": "^1.2"
+        "robsontenorio/mary": "^2.2"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

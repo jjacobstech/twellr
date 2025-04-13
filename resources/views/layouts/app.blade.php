@@ -15,13 +15,15 @@
     <link rel="shortcut icon" href="{{ asset('assets/twellr.svg') }}" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
+
+
     <!-- UI Libraries - Load in correct order -->
-    <link href="{{ asset('vendor/bladewind/css/animate.min.css') }}" rel="stylesheet" />
-    <link href="{{ asset('vendor/bladewind/css/bladewind-ui.min.css') }}" rel="stylesheet" />
+    {{-- <link href="{{ asset('vendor/bladewind/css/animate.min.css') }}" rel="stylesheet" />
+    <link href="{{ asset('vendor/bladewind/css/bladewind-ui.min.css') }}" rel="stylesheet" /> --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" />
 
-    <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+     <!-- Scripts -->
     @bukStyles(true)
 
     <!-- Scripts needed in head -->
@@ -29,11 +31,11 @@
 
 </head>
 
-<body class="font-sans antialiased bg-white">
-    <x-mary-spotlight shortcut="meta.slash" search-text="Find creators, designs, ratings"
-        no-results-text="Ops! Nothing here." />
+<body class="h-screen overflow-hidden font-sans antialiased bg-white" x-data>
+    <x-mary-spotlight shortcut="meta.slash" search-text="Search by: Creator, Design, Location, Ratings"
+        no-results-text="Ops! Nothing here." class="bg-white" />
 
-    <div class="bg-gray-100">
+    <div class="bg-gray-100 ">
         <livewire:layout.navigation />
 
         <!-- Page Heading -->
@@ -51,7 +53,7 @@
         </main>
     </div>
 
-    {{-- <script src="{{ asset('vendor/bladewind/js/helpers.js') }}"></script> --}}
+    <script src="{{ asset('vendor/bladewind/js/helpers.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
 </body>
 </html>

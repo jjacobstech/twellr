@@ -19,41 +19,41 @@
 </head>
 </>
 
-<body class="bg-gray-100 font-sans h-screen">
-    <x-mary-spotlight shortcut="meta.slash" search-text="Find Creators" no-results-text="Ops! Nothing here." />
+<body class="h-screen font-sans bg-gray-100">
+    {{-- <x-mary-spotlight shortcut="meta.slash" search-text="Find Creators" no-results-text="Ops! Nothing here." /> --}}
 
     <livewire:welcome.navigation>
-        <div class=" container-fluid p-6 md:p-10 lg:p-10 bg-white mt-1 lg:pb-20">
-            <div class="text-center mb-5">
-                <h1 class="text-4xl md:text-4xl font-bold text-gray-800 mb-2">Stay Creative. Monetize your designs.</h1>
-                <p class="text-2xl text-gray-600 font-bold">Co-create your fashion. Have a say in what you wear!</p>
+        <div class="p-6 mt-1 bg-white  container-fluid md:p-10 lg:p-10 lg:pb-20">
+            <div class="mb-5 text-center">
+                <h1 class="mb-2 text-4xl font-bold text-gray-800 md:text-4xl">Stay Creative. Monetize your designs.</h1>
+                <p class="text-2xl font-bold text-gray-600">Co-create your fashion. Have a say in what you wear!</p>
                 <a href="{{ route('login') }}">
                     <button
-                        class="bg-navy-blue hover:bg-golden transition-colors text-white font-semibold py-3 px-6 rounded-md mt-6">
+                        class="px-6 py-3 mt-6 font-semibold text-white transition-colors rounded-md bg-navy-blue hover:bg-golden">
                         Get Started Now
                     </button>
                 </a>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="relative bg-yellow-200 rounded-md overflow-hidden shadow-md">
+            <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+                <div class="relative overflow-hidden bg-yellow-200 rounded-md shadow-md">
                     <div
                         class="absolute top-3 left-3 bg-red-500 text-white font-semibold py-1 px-3 rounded-sm transform rotate-[-20deg]">
                         NEW
                     </div>
                     <img src="{{ asset('assets/hoodie-front-back-mockup_1247017-29.jpg') }}" alt="New Sweater Design"
-                        class="w-full h-64 object-cover">
+                        class="object-cover w-full h-64">
                 </div>
 
-                <div x-data="{ showModal: false }" class="bg-white rounded-md overflow-hidden shadow-md">
+                <div x-data="{ showModal: false }" class="overflow-hidden bg-white rounded-md shadow-md">
                     <img src="{{ asset('assets/white-sweater-png-sticker-design-space-transparent-background_53876-988335.jpg') }}"
-                        alt="Co-creation Example" class="w-full h-64 object-contain cursor-pointer"
+                        alt="Co-creation Example" class="object-contain w-full h-64 cursor-pointer"
                         @click="showModal = true">
                     {{-- <div x-show="showModal"
-                        class="fixed z-50 backdrop-blur-md inset-0 overflow-y-auto bg-gray-900 bg-opacity-50"
+                        class="fixed inset-0 z-50 overflow-y-auto bg-gray-900 bg-opacity-50 backdrop-blur-md"
                         aria-labelledby="modal-title" role="dialog" aria-modal="true">
                         <div class="flex items-center justify-center min-h-screen p-4">
-                            <div class="relative bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+                            <div class="relative w-full max-w-md p-6 bg-white rounded-lg shadow-xl">
                                 <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                                     <h3 class="text-lg font-medium text-gray-900" id="modal-title">
                                         Co-create this look!
@@ -65,22 +65,22 @@
                                         </p>
                                         <div class="mt-4">
                                             <label for="design-idea"
-                                                class="block text-gray-700 text-sm font-bold mb-2">Your
+                                                class="block mb-2 text-sm font-bold text-gray-700">Your
                                                 Design Idea:</label>
                                             <textarea id="design-idea"
-                                                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                                class="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
                                                 rows="3" placeholder="Suggest a color, pattern, or detail..."></textarea>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
                                     <button type="button"
-                                        class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
+                                        class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
                                         @click="showModal = false">
                                         Submit Idea
                                     </button>
                                     <button type="button"
-                                        class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm"
+                                        class="inline-flex justify-center w-full px-4 py-2 mt-3 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm"
                                         @click="showModal = false">
                                         Close
                                     </button>
@@ -91,6 +91,11 @@
                 </div>
             </div>
         </div>
+            <footer class="bg-white shadow">
+        <div class="px-4 py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
+            <p class="text-center text-gray-500">© {{ date('Y') }} {{ config('app.name') }}. All rights reserved.</p>
+        </div>
+    </footer>
 </body>
 
 </html>

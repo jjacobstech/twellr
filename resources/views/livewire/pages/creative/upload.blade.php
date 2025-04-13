@@ -9,7 +9,7 @@ use Livewire\Attributes\Layout;
 use Illuminate\Support\Facades\Auth;
 
 new #[Layout('layouts.app')] class extends Component {
-   // use WithFileUploads;
+    use WithFileUploads;
     public string $name = '';
     public string $price = '';
     public string $category = '';
@@ -255,7 +255,7 @@ new #[Layout('layouts.app')] class extends Component {
                                                 {{-- Preview or Placeholder --}}
 
                                                 <img class="object-cover w-full h-full rounded-xl"
-                                                    src="{{ asset('assets/uploadDesignStack.png') }}"
+                                                    src="{{ asset('assets/uploadDesignStack.png') ?? $frontView->temporaryUrl() }}"
                                                     alt="Upload Front View">
                                             </div>
                                             {{-- Dashed border overlay on hover --}}
@@ -286,7 +286,7 @@ new #[Layout('layouts.app')] class extends Component {
                                                 class="relative z-40 grid items-center justify-center w-full h-full transition-all duration-500 bg-white cursor-pointer group-hover:scale-105 group-hover:shadow-xl rounded-xl">
 
                                                 <img class="object-cover w-full h-full rounded-xl"
-                                                    src="{{ asset('assets/uploadDesignStack.png') }}"
+                                                    src="{{ asset('assets/uploadDesignStack.png') ?? $backView->temporaryUrl() }}"
                                                     alt="Upload Back View">
 
                                             </div>
@@ -315,7 +315,7 @@ new #[Layout('layouts.app')] class extends Component {
                                             <div
                                                 class="relative z-40 grid items-center justify-center w-full h-full transition-all duration-500 bg-white cursor-pointer group-hover:scale-105 group-hover:shadow-xl rounded-xl">
                                                 <img class="object-cover w-full h-full rounded-xl"
-                                                    src="{{ asset('assets/uploadDesignStack.png') }}"
+                                                    src="{{ asset('assets/uploadDesignStack.png') ?? $sideView->temporaryUrl()  }}"
                                                     alt="Upload Side View">
                                             </div>
                                             <div

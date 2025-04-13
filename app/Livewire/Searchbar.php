@@ -1,28 +1,30 @@
 <?php
 
-namespace App\Support;
+namespace App\Livewire;
 
 use App\Models\User;
+use Livewire\Component;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
 
-class Spotlight
+class Searchbar extends Component
 {
     public function search(Request $request)
     {
-        // Example of security concern
-        // Guests can not search
-        if (! Auth::user()) {
-            return collect()
-                ->merge($this->actions(search: $request->search))
-                ->merge($this->users($request->search));
-        }
+            // Example of security concern
+            // Guests can not search
+            if (!Auth::user()) {
+                return collect()
+                    ->merge($this->actions(search: $request->search))
+                    ->merge($this->users($request->search));
+            }
 
-        if (Auth::user()) {
-            return collect()
-                ->merge($this->users($request->search));
-        }
+            if (Auth::user()) {
+                return collect()->merge($this->users($request->search));
+            }
+
+
     }
 
     // Database search
@@ -39,7 +41,7 @@ class Spotlight
                     'avatar' => $user->avatar ? asset('uploads/avatar/' . $user->avatar) : asset('assets/icons-user.png'),
                     'name' => "$user->firstname $user->lastname",
                     'description' => $user->email,
-                    'link' => '/r/'.$user->referral_link
+                    'link' => '/r/' . $user->referral_link,
                 ];
             });
     }
@@ -57,5 +59,9 @@ class Spotlight
                 'link' => route('register'),
             ],
         ]);
+    }
+    public function render()
+    {
+        return view('livewire.searchbar');
     }
 }

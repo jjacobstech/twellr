@@ -12,6 +12,8 @@ new class extends Component {
     public $redirection;
     public bool $isCreative;
     public bool $drawer = false;
+    public $result;
+    public $keyword = '';
 
     public function mount()
     {
@@ -25,6 +27,57 @@ new class extends Component {
     public function closeDrawer()
     {
         $this->drawer = false;
+    }
+
+    public function search($keyword = '')
+    {
+        // Example of security concern
+        // Guests can not search
+        if ($keyword != '') {
+            if (!Auth::user()) {
+                $this->result = collect()->merge($this->actions($keyword))->merge($this->users($keyword));
+            }
+
+            if (Auth::user()) {
+                $this->result = collect()->merge($this->users($keyword));
+            }
+        } else {
+            $this->result = '';
+        }
+    }
+
+    // Database search
+    public function users(string $search = '')
+    {
+        return User::query()
+            ->where('firstname', 'like', "%$search%")
+            ->orWhere('lastname', 'like', "%$search%")
+            ->orWhere('instagram', 'like', "%$search%")
+            ->take(5)
+            ->get()
+            ->map(function (User $user) {
+                return [
+                    'avatar' => $user->avatar ? asset('uploads/avatar/' . $user->avatar) : asset('assets/icons-user.png'),
+                    'name' => "$user->firstname $user->lastname",
+                    'description' => $user->email,
+                    'link' => '/r/' . $user->referral_link,
+                ];
+            });
+    }
+
+    // Static search, but it could come from a database
+    public function actions(string $search = '')
+    {
+        $icon = Blade::render("<x-mary-icon name='o-user' class='p-2 rounded-full w-11 h-11 bg-yellow-50' />");
+
+        return collect([
+            [
+                'name' => 'Register',
+                'description' => 'Create A Twellr Account',
+                'icon' => $icon,
+                'link' => route('register'),
+            ],
+        ]);
     }
 
     public function markAsRead($id)
@@ -57,6 +110,7 @@ new class extends Component {
 <nav x-data="{ open: false, more: false, notification: false }" class="bg-white border-gray-100">
     <!-- Primary Navigation Menu -->
     <div class="px-5 mx-auto md:px-2 max-w-7xl sm:px-6 lg:px-4">
+
         <div class="flex justify-between h-16">
             <div class="flex">
                 <!-- Logo -->
@@ -71,18 +125,18 @@ new class extends Component {
                 </div>
 
             </div>
-
             <div class="w-full sm:-my-px sm:ms-10 sm:flex">
                 {{-- Search Bar --}}
                 <form class="md:w-[100%] px-5  md:px-9 w-full">
                     <div class="flex justify-between w-full md:w-full">
                         <div class="relative flex pb-5 md:pb-0 pt-3 md:pt-0 w-[100%] md:my-3">
-                            <input type="text" id="search-dropdown" @click.stop="$dispatch('mary-search-open')"
+                            <input type="text" id="search-dropdown" x-model="term"
+                                x-on:keydown="$wire.search(term)" x-on:keyup="$wire.search(term)"
                                 class="font-bold block p-2.5 w-full  z-20 text-sm text-gray-900 bg-gray-200 rounded-l-lg border-0 active:border-0 hover:border hover:border-gray-400 focus:border-0 focus:ring-0 border-navy-blue "
                                 placeholder="Search by: Creator, Design, Location, Ratings"
                                 alt="Search by: Creator, Design, Location, Ratings"
-                                title='Search by: Creator, Design, Location, Ratings'  />
-                            <button type="submit"
+                                title='Search by: Creator, Design, Location, Ratings' />
+                            <span wire:click="search"
                                 class=" top-0 end-0 p-2.5 text-sm font-medium h-full text-white bg-gray-200 border-0 rounded-e-lg active:bg-white active:text-navy-blue border-navy-blue hover:bg-navy-blue focus:ring-0 focus:outline-none ">
                                 <svg class="w-4 h-4 text-[#fbaa0d]" aria-hidden="true"
                                     xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
@@ -90,9 +144,31 @@ new class extends Component {
                                         stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
                                 </svg>
                                 <span class="sr-only">Search</span>
-                            </button>
+                            </span>
                         </div>
                     </div>
+                    {{-- @if ($result != '') --}}
+                    <div class="w-72">
+                        <div x-show="term != ''" class="absolute z-50 w-full mt-2 bg-white rounded-md shadow-lg">
+                            <div class="w-full p-3">
+                                <div class="flex flex-col gap-2">
+                                    @foreach ($result as $item)
+                                        <a href="{{ $item['link'] }}"
+                                            class="flex items-center gap-2 p-2 border-b-2 border-gray-500 hover:bg-gray-100">
+                                            <img src="{{ $item['avatar'] }}" alt=""
+                                                class="w-10 h-10 rounded-full">
+                                            <div>
+                                                <h4 class="text-sm font-bold text-gray-800">{{ $item['name'] }}</h4>
+                                                <p class="text-xs text-gray-500">{{ $item['description'] }}</p>
+                                            </div>
+                                        </a>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- @endif --}}
                 </form>
 
 
@@ -249,7 +325,8 @@ new class extends Component {
                     <span class="z-20 py-5">
                         <x-dropdown width='w-[500px]' contentClasses="w-full rounded-md">
                             <x-slot name="trigger">
-                                <x-bladewind.bell show_dot="{{ $notification }}" color="red" animate_dot="true" />
+                                <x-bladewind.bell show_dot="{{ $notification }}" color="red"
+                                    animate_dot="true" />
                             </x-slot>
                             <x-slot name="content">
                                 <x-bladewind.dropmenu-item class="p-0 bg-white rounded-lg" hover="false"
@@ -614,60 +691,62 @@ new class extends Component {
                     </span </x-responsive-nav-link>
 
                     <x-mary-drawer wire:model='drawer' class="w-11/12 rounded-none">
-                 <div class="bg-black">
-                           <div
-                            class="flex items-center justify-end px-4 py-2 text-sm font-bold bg-white border-b-2 border-gray-200 text-navy-blue">
-                            <span>
-                                <x-mary-button icon="o-x-mark" class="btn-ghost btn-sm dark:focus:bg-white dark:active:bg-white" wire:click="closeDrawer" />
-                            </span>
-                        </div>
-                        <div class="transition-all duration-500 bg-gray-200 "
-                            x-cloak="display:none">
-                            <div class="w-full py-2 bg-white">
-                                @if ($notification)
-                                <div class="grid gap-2">
-                                        @foreach ($notifications as $notification)
-                                        <div class="flex justify-between w-full bg-white hover:bg-gray-100">
-                                            <div class="pt-1 mx-1">
-                                                <div class="text-sm">
-                                                    <span class="font-medium text-slate-900">
-                                                        {{ $notification->message }}
+                        <div class="bg-black">
+                            <div
+                                class="flex items-center justify-end px-4 py-2 text-sm font-bold bg-white border-b-2 border-gray-200 text-navy-blue">
+                                <span>
+                                    <x-mary-button icon="o-x-mark"
+                                        class="btn-ghost btn-sm dark:focus:bg-white dark:active:bg-white"
+                                        wire:click="closeDrawer" />
+                                </span>
+                            </div>
+                            <div class="transition-all duration-500 bg-gray-200 " x-cloak="display:none">
+                                <div class="w-full py-2 bg-white">
+                                    @if ($notification)
+                                        <div class="grid gap-2">
+                                            @foreach ($notifications as $notification)
+                                                <div class="flex justify-between w-full bg-white hover:bg-gray-100">
+                                                    <div class="pt-1 mx-1">
+                                                        <div class="text-sm">
+                                                            <span class="font-medium text-slate-900">
+                                                                {{ $notification->message }}
 
-                                                    </span>
+                                                            </span>
 
-                                                    <div class="text-xs">
-                                                        {{ Carbon::parse($notification->created_at)->format('D-M-Y') }}
+                                                            <div class="text-xs">
+                                                                {{ Carbon::parse($notification->created_at)->format('D-M-Y') }}
+                                                            </div>
+                                                        </div>
                                                     </div>
+                                                    <x-bladewind.button
+                                                        wire:click="markAsRead('{{ $notification->id }}')"
+                                                        class="ml-20 hover:bg-navy-blue" type="bg-golden"
+                                                        button_text_css="text-white" size="small">
+                                                        <span>
+                                                            Mark As Read
+                                                        </span>
+                                                    </x-bladewind.button>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    @else
+                                        <div class="w-full bg-white hover:bg-gray-100">
+                                            <div class="pt-1">
+                                                <div class="text-sm font-extrabold">
+
+                                                    <h3 class="w-full text-lg font-extrabold text-gray-700">No
+                                                        Notifications
+                                                    </h3>
+                                                    <p class="w-full mt-1 text-sm text-gray-500">You're all
+                                                        caught up!</p>
+
                                                 </div>
                                             </div>
-                                            <x-bladewind.button wire:click="markAsRead('{{ $notification->id }}')"
-                                                class="ml-20 hover:bg-navy-blue" type="bg-golden"
-                                                button_text_css="text-white" size="small">
-                                                <span>
-                                                    Mark As Read
-                                                </span>
-                                            </x-bladewind.button>
                                         </div>
-                                    @endforeach
+                                    @endif
                                 </div>
-                                @else
-                                    <div class="w-full bg-white hover:bg-gray-100">
-                                        <div class="pt-1">
-                                            <div class="text-sm font-extrabold">
-
-                                                <h3 class="w-full text-lg font-extrabold text-gray-700">No
-                                                    Notifications
-                                                </h3>
-                                                <p class="w-full mt-1 text-sm text-gray-500">You're all
-                                                    caught up!</p>
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endif
                             </div>
                         </div>
-                 </div>
                     </x-mary-drawer>
 
                     <x-responsive-nav-link @click="more = !more" wire:navigate>
@@ -791,18 +870,18 @@ new class extends Component {
                         </x-responsive-nav-link>
                     </div>
 
-                        <x-responsive-nav-link :href="route('settings')" wire:navigate>
-                            <span>
-                                <svg class="inline-block w-5 h-5 fill-current text-navy-blue"
-                                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="settings">
-                                    <path fill="none" d="M0 0h24v24H0V0z"></path>
-                                    <path
-                                        d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z">
-                                    </path>
-                                </svg>
-                            </span>
-                            {{ __('Settings') }}
-                        </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('settings')" wire:navigate>
+                        <span>
+                            <svg class="inline-block w-5 h-5 fill-current text-navy-blue"
+                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="settings">
+                                <path fill="none" d="M0 0h24v24H0V0z"></path>
+                                <path
+                                    d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z">
+                                </path>
+                            </svg>
+                        </span>
+                        {{ __('Settings') }}
+                    </x-responsive-nav-link>
 
                     <!-- Authentication -->
                     <button wire:click="logout" class="w-full text-start text-navy-blue">
