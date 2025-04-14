@@ -7,10 +7,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+
 
 /**
  * Class AdminSetting
- * 
+ *
  * @property int $id
  * @property string $title
  * @property string $description
@@ -41,40 +43,29 @@ use Illuminate\Database\Eloquent\Model;
  */
 class AdminSetting extends Model
 {
+    use HasFactory;
 	protected $table = 'admin_settings';
 	public $timestamps = false;
 
-	protected $casts = [
-		'fee_commission' => 'int',
-		'days_process_withdrawals' => 'int',
-		'advertisement_status' => 'bool',
-		'push_notification_status' => 'bool'
-	];
+    protected $casts = [
+        'commission_fee' => 'int',
+        'shipping_fee' => 'int',
+        'advertisement_status' => 'bool'
+    ];
 
-	protected $fillable = [
-		'title',
-		'description',
-		'email_verification',
-		'email_no_reply',
-		'email_admin',
-		'currency_symbol',
-		'currency_code',
-		'fee_commission',
-		'currency_position',
-		'days_process_withdrawals',
-		'google_login',
-		'logo',
-		'logo_2',
-		'text_logo',
-		'favicon',
-		'avatar',
-		'maintenance_mode',
-		'vat',
-		'wallet_format',
-		'advertisement_status',
-		'referral_system',
-		'push_notification_status',
-		'onesignal_appid',
-		'onesignal_restapi'
-	];
+    protected $fillable = [
+        'currency_symbol',
+        'currency_code',
+        'commission_fee',
+        'shipping_fee',
+        'logo',
+        'logo_2',
+        'text_logo',
+        'favicon',
+        'maintenance_mode',
+        'vat',
+        'wallet_format',
+        'advertisement_status',
+        'referral_system'
+    ];
 }

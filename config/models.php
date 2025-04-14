@@ -446,7 +446,7 @@ return [
         | if you want the $fillable to be generated in base files
         |
         */
-        'fillable_in_base_files' => false,
+        'fillable_in_base_files' => true,
 
         /*
         |--------------------------------------------------------------------------

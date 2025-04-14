@@ -142,9 +142,7 @@ new class extends Component {
             <div class="flex">
                 <!-- Logo -->
                 <div class="flex items-center shrink-0">
-                    <a class="flex"
-                        href="{{ route('dashboard') }}"
-                        wire:navigate>
+                    <a class="flex" href="{{ route('dashboard') }}" wire:navigate>
                         <x-application-logo class="block w-auto fill-current h-9" />
                         <img class="hidden md:h-5 md:px-3 md:my-1 md:block" src="{{ asset('assets/twellr-text.png') }}"
                             alt="">
@@ -880,10 +878,10 @@ new class extends Component {
                             </span>
                             {{ __('Explore') }}
                         </x-responsive-nav-link>
-                               <x-responsive-nav-link :href="route('blog')" wire:navigate>
+                        <x-responsive-nav-link :href="route('blog')" wire:navigate>
                             <span>
 
-                               <span>
+                                <span>
                                     <svg class="inline-block w-5 h-5 fill-current" id="Layer_1" data-name="Layer 1"
                                         xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
                                         <defs>

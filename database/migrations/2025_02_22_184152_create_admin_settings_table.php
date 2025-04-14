@@ -6,6 +6,10 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+
+    public function seed(){
+        
+    }
     /**
      * Run the migrations.
      */
@@ -13,32 +17,21 @@ return new class extends Migration
     {
         Schema::create('admin_settings', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('title');
-            $table->text('description');
-            $table->enum('email_verification', ['0', '1'])->comment('0 Off, 1 On');
-            $table->string('email_no_reply', 200);
-            $table->string('email_admin', 200);
-            $table->char('currency_symbol', 10);
-            $table->string('currency_code', 20);
-            $table->unsignedInteger('fee_commission');
-            $table->string('currency_position', 100)->default('left');
-            $table->unsignedInteger('days_process_withdrawals');
-            $table->enum('google_login', ['on', 'off'])->default('off');
-            $table->string('logo', 100);
-            $table->string('logo_2', length: 100);
-            $table->string('text_logo', length: 100);
-            $table->string('favicon', 100);
-            $table->string('avatar', 100);
+            $table->char('currency_symbol', 10)->nullable();
+            $table->string('currency_code', 20)->nullable();
+            $table->unsignedInteger('commission_fee')->default(0);
+            $table->unsignedInteger('shipping_fee')->default(0);
+            $table->string('logo', 100)->nullable();
+            $table->string('logo_2', length: 100)->nullable();
+            $table->string('text_logo', length: 100)->nullable();
+            $table->string('favicon', 100)->nullable();
             $table->enum('maintenance_mode', ['on', 'off'])->default('off');
-            $table->string('vat', length: 100);
-            $table->enum('wallet_format', ['real_money', 'credits', 'points', 'tokens'])->default('real_money');
+            $table->unsignedInteger('vat')->default(0);
             $table->boolean('advertisement_status')->default(true);
-            $table->enum('referral_system', ['on', 'off'])->default('off');
-            $table->boolean('push_notification_status')->default(false);
-            $table->string('onesignal_appid', 150);
-            $table->string('onesignal_restapi', 150);
         });
+        $this->seed('AdminSettingsSeeder');
     }
+
 
     /**
      * Reverse the migrations.

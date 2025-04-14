@@ -142,9 +142,7 @@ new class extends Component {
             <div class="flex">
                 <!-- Logo -->
                 <div class="flex items-center shrink-0">
-                    <a class="flex"
-                        href="{{ route('admin.dashboard') }}"
-                        wire:navigate>
+                    <a class="flex" href="{{ route('admin.dashboard') }}" wire:navigate>
                         <x-application-logo class="block w-auto fill-current h-9" />
                         <img class="hidden md:h-5 md:px-3 md:my-1 md:block" src="{{ asset('assets/twellr-text.png') }}"
                             alt="">
@@ -181,6 +179,14 @@ new class extends Component {
                                         class="bg-white rounded-md shadow-lg mt-1 max-h-96 overflow-y-auto">
                                         <div class="w-full p-2 sm:p-3">
                                             <div class="flex flex-col gap-1 sm:gap-2">
+
+                                                @if ($result->isEmpty())
+
+                                                                <p class="text-md font-bold text-black">Opps! Nothing
+                                                                    Found</p>
+                                                        
+                                                @endif
+
                                                 @foreach ($result as $item)
                                                     <a href="{{ $item->link }}"
                                                         class="flex items-center gap-2 p-1 sm:p-2 border-b border-gray-200 hover:bg-gray-100 transition-colors">
@@ -199,10 +205,12 @@ new class extends Component {
                                         </div>
                                     </div>
                                 </div>
+
                             @endif
                         </div>
                     </div>
                 </form>
+                {{-- Search Bar End --}}
 
                 {{-- More --}}
                 <div class="justify-center w-100 sm:flex   md:w-[10%] mt-3 text-[#b7c1ab] hidden hover:cursor-pointer">
@@ -228,6 +236,8 @@ new class extends Component {
                             </g>
                         </svg>
                     </span>
+
+
                     <span class="capitalize font-bold text-lg text-[#909090]  mt-1">More</span>
                     <x-dropdown contentClass="mt-5" align="right" width="48" class="shadow-2xl shadow-navy-blue">
                         <x-slot name="trigger">
@@ -341,8 +351,9 @@ new class extends Component {
                         </x-slot>
                     </x-dropdown>
                 </div>
+                {{-- More End --}}
 
-
+                {{-- Support --}}
                 <div x-show="admin" class="justify-center hidden pl-3 md:flex">
                     <a class="my-2 " href="{{ route('support') }}">
                         <span class="py-3 w-100">
@@ -355,6 +366,9 @@ new class extends Component {
                         </span>
                     </a>
                 </div>
+                {{-- Support End --}}
+
+                {{-- Notification --}}
                 <div class="justify-center hidden mx-5 md:flex z-999">
                     <span class="z-20 py-5">
                         <x-dropdown width='w-[500px]' contentClasses="w-full rounded-md">
@@ -414,6 +428,7 @@ new class extends Component {
                         </x-dropdown>
                     </span>
                 </div>
+                {{-- Notification End --}}
             </div>
 
             <!-- Settings Dropdown -->
@@ -452,25 +467,8 @@ new class extends Component {
                                 {{ __('Dashboard') }}
                             </x-dropdown-link>
 
-                            <x-dropdown-link class="text-bold " :href="route('wallet')" x-show="admin" wire:navigate>
-                                <span>
-                                    <svg class="inline-block w-5 h-5 fill-current" xmlns="http://www.w3.org/2000/svg"
-                                        viewBox="0 0 512 512">
-                                        <path fill="#001f54"
-                                            d="M64 32C28.7 32 0 60.7 0 96L0 416c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-224c0-35.3-28.7-64-64-64L80 128c-8.8 0-16-7.2-16-16s7.2-16 16-16l368 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L64 32zM416 272a32 32 0 1 1 0 64 32 32 0 1 1 0-64z" />
-                                    </svg>
-                                </span>
 
-                                <span class="mt-2"> {{ __('Wallet') }}</span>
-                            </x-dropdown-link>
-                            <x-dropdown-link class=" text-bold" :href="route('cart')" x-show="admin" wire:navigate>
-                                <span>
-                                    @svg('eva-shopping-cart', 'w-6 h-6 text-navy-blue inline-block fill-current')
-                                </span>
-                                {{ __('Cart') }}
-                            </x-dropdown-link>
-
-                            <x-dropdown-link class="text-bold" :href="route('settings')" wire:navigate>
+                            <x-dropdown-link class="text-bold" :href="route('admin.settings')" wire:navigate>
                                 <span>
                                     <svg class="inline-block w-5 h-5 fill-current text-navy-blue"
                                         xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="settings">
@@ -510,8 +508,7 @@ new class extends Component {
                         </div>
                         {{-- Desktop --}}
                         <div class="hidden lg:block">
-                            <x-dropdown-link class='hidden md:block' :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')"
-                                wire:navigate>
+                            <x-dropdown-link class='hidden md:block' :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')" wire:navigate>
                                 <span>
                                     <svg class="inline-block w-6 h-6 fill-current" fill="currentColor"
                                         viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -523,27 +520,7 @@ new class extends Component {
                                 {{ __('Dashboard') }}
                             </x-dropdown-link>
 
-                            <x-dropdown-link class="hidden text-bold md:block" :href="route('wallet')" x-show="admin"
-                                wire:navigate>
-                                <span>
-                                    <svg class="inline-block w-5 h-5 fill-current" xmlns="http://www.w3.org/2000/svg"
-                                        viewBox="0 0 512 512">
-                                        <path fill="#001f54"
-                                            d="M64 32C28.7 32 0 60.7 0 96L0 416c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-224c0-35.3-28.7-64-64-64L80 128c-8.8 0-16-7.2-16-16s7.2-16 16-16l368 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L64 32zM416 272a32 32 0 1 1 0 64 32 32 0 1 1 0-64z" />
-                                    </svg>
-                                </span>
-
-                                <span class="mt-2"> {{ __('Wallet') }}</span>
-                            </x-dropdown-link>
-                            <x-dropdown-link class="hidden text-bold md:block" :href="route('cart')" x-show="admin"
-                                wire:navigate>
-                                <span>
-                                    @svg('eva-shopping-cart', 'w-6 h-6 text-navy-blue inline-block fill-current')
-                                </span>
-                                {{ __('Cart') }}
-                            </x-dropdown-link>
-
-                            <x-dropdown-link class="hidden text-bold md:block" :href="route('settings')" wire:navigate>
+                            <x-dropdown-link class="hidden text-bold md:block" :href="route('admin.settings')" wire:navigate>
                                 <span>
                                     <svg class="inline-block w-5 h-5 fill-current text-navy-blue"
                                         xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="settings">
@@ -772,55 +749,7 @@ new class extends Component {
                             </span>
                             {{ __('Marketplace') }}
                         </x-responsive-nav-link>
-                        <x-responsive-nav-link :href="route('wallet')" x-show="admin" wire:navigate>
-                            <span>
 
-                                <svg class="inline-block w-5 h-5 fill-navy-blue" xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 512 512">
-                                    <path fill="#001f54"
-                                        d="M64 32C28.7 32 0 60.7 0 96L0 416c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-224c0-35.3-28.7-64-64-64L80 128c-8.8 0-16-7.2-16-16s7.2-16 16-16l368 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L64 32zM416 272a32 32 0 1 1 0 64 32 32 0 1 1 0-64z" />
-                                </svg>
-                            </span>
-                            {{ __('Wallet') }}
-
-                        </x-responsive-nav-link>
-                        <x-responsive-nav-link :href="route('cart')" x-show="admin" wire:navigate>
-
-                            <span>
-                                @svg('eva-shopping-cart', 'w-6 h-6 text-navy-blue inline-block fill-current')
-                            </span>
-                            {{ __('Cart') }}
-                        </x-responsive-nav-link>
-                        <x-responsive-nav-link x-show="$wire.isCreative" x-show="admin" :href="route('creative.upload')">
-                            <span>
-                                <svg class="inline-block w-5 h-5 fill-navy-blue " version="1.1" id="Capa_1"
-                                    xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                                    viewBox="0 0 384.97 384.97" xml:space="preserve">
-                                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round">
-                                    </g>
-                                    <g id="SVGRepo_iconCarrier">
-                                        <g>
-                                            <g id="Upload">
-                                                <path
-                                                    d="M372.939,264.641c-6.641,0-12.03,5.39-12.03,12.03v84.212H24.061v-84.212c0-6.641-5.39-12.03-12.03-12.03 S0,270.031,0,276.671v96.242c0,6.641,5.39,12.03,12.03,12.03h360.909c6.641,0,12.03-5.39,12.03-12.03v-96.242 C384.97,270.019,379.58,264.641,372.939,264.641z">
-                                                </path>
-                                                <path
-                                                    d="M117.067,103.507l63.46-62.558v235.71c0,6.641,5.438,12.03,12.151,12.03c6.713,0,12.151-5.39,12.151-12.03V40.95 l63.46,62.558c4.74,4.704,12.439,4.704,17.179,0c4.74-4.704,4.752-12.319,0-17.011l-84.2-82.997 c-4.692-4.656-12.584-4.608-17.191,0L99.888,86.496c-4.752,4.704-4.74,12.319,0,17.011 C104.628,108.211,112.327,108.211,117.067,103.507z">
-                                                </path>
-                                            </g>
-                                            <g> </g>
-                                            <g> </g>
-                                            <g> </g>
-                                            <g> </g>
-                                            <g> </g>
-                                            <g> </g>
-                                        </g>
-                                    </g>
-                                </svg>
-                            </span>
-                            {{ __('Upload') }}
-                        </x-responsive-nav-link>
                         <x-responsive-nav-link :href="route('explore')" wire:navigate>
                             <span>
                                 <svg class="inline-block w-6 h-6 fill-current text-navy-blue"
@@ -833,10 +762,10 @@ new class extends Component {
                             </span>
                             {{ __('Explore') }}
                         </x-responsive-nav-link>
-                               <x-responsive-nav-link :href="route('blog')" wire:navigate>
+                        <x-responsive-nav-link :href="route('blog')" wire:navigate>
                             <span>
 
-                               <span>
+                                <span>
                                     <svg class="inline-block w-5 h-5 fill-current" id="Layer_1" data-name="Layer 1"
                                         xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
                                         <defs>
@@ -856,7 +785,7 @@ new class extends Component {
                         </x-responsive-nav-link>
                     </div>
 
-                    <x-responsive-nav-link :href="route('settings')" wire:navigate>
+                    <x-responsive-nav-link :href="route('admin.settings')" wire:navigate>
                         <span>
                             <svg class="inline-block w-5 h-5 fill-current text-navy-blue"
                                 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="settings">

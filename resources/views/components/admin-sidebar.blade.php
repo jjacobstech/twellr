@@ -36,7 +36,7 @@
                         <a href="#"
                             class=" px-4 py-2 text-sm text-gray-700 hover:bg-golden hover:text-white transition-colors flex"
                             role="menuitem">
-                            @svg('heroicon-o-document', ['class' => 'w-4 h-4'])
+                            @svg('heroicon-o-document', ['class' => 'w-4 h-4 fill-current'])
                             <span class="hidden md:block"> Printable Stack</span>
                         </a>
                     </div>
@@ -59,7 +59,7 @@
                 <span class="hidden md:block"> {{ __('Blog') }}</span>
 
             </a>
-            <a href=""
+            <a href="{{ route('admin.preferences') }}"
                 class="flex items-center gap-2 px-3 py-3 text-sm font-medium text-gray-600 rounded-lg transition-all hover:bg-golden hover:text-white group">
                 @svg('heroicon-o-cog', ['class' => 'w-6 h-6'])
                 <span class="hidden md:block">Settings</span>

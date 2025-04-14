@@ -5,9 +5,16 @@ use Illuminate\Support\Facades\Route;
 
 Volt::route('admin/email/verification', 'pages.admin.auth.email-verification')->middleware('guest')->name(name: 'admin.email.verification');
 
-Route::middleware(['IsAdmin'])->group(function () {
+Route::middleware(['auth', 'verified','IsAdmin'])->group(function () {
 
-    Volt::route('admin/dashboard', 'pages.admin.dashboard')
-        ->middleware(['auth', 'verified'])
-        ->name('admin.dashboard');
+
+    Volt::route('admin/dashboard', 'pages.admin.dashboard')->name('admin.dashboard');
+
+    Volt::route('admin/profile', 'pages.admin.profile')->name('admin.profile');
+
+    Volt::route('admin/settings', 'pages.admin.settings')->name('admin.settings');
+
+    Volt::route('admin/system/preferences', 'pages.admin.preferences')->name('admin.preferences');
+
+
 });

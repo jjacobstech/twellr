@@ -28,25 +28,25 @@ new #[Layout('layouts.admin')] class extends Component {
         <div class="mb-6">
             <h2 class="text-xl font-bold mb-4 text-gray-800 border-b pb-2">Weekly Performance</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div class="p-4 bg-pink-500 text-white rounded-xl shadow">
+                <div class="p-4 bg-navy-blue text-white rounded-xl shadow">
                     <h3 class="font-semibold text-sm uppercase">Avg Weekly Designer Signups</h3>
                     <div class="text-2xl font-bold mt-2">{{ $weeklySignups ?? '0' }}</div>
                     <div class="text-xs mt-1">+{{ $weeklySignupGrowth ?? '0' }}% from last week</div>
                 </div>
 
-                <div class="p-4 bg-pink-500 text-white rounded-xl shadow">
+                <div class="p-4 bg-navy-blue text-white rounded-xl shadow">
                     <h3 class="font-semibold text-sm uppercase">Weekly Designs Uploaded</h3>
                     <div class="text-2xl font-bold mt-2">{{ $weeklyDesigns ?? '0' }}</div>
                     <div class="text-xs mt-1">+{{ $weeklyDesignsGrowth ?? '0' }}% from last week</div>
                 </div>
 
-                <div class="p-4 bg-pink-500 text-white rounded-xl shadow">
+                <div class="p-4 bg-navy-blue text-white rounded-xl shadow">
                     <h3 class="font-semibold text-sm uppercase">Avg Weekly Designer Income</h3>
                     <div class="text-2xl font-bold mt-2">${{ $weeklyIncome ?? '0' }}</div>
                     <div class="text-xs mt-1">+{{ $weeklyIncomeGrowth ?? '0' }}% from last week</div>
                 </div>
 
-                <div class="p-4 bg-pink-500 text-white rounded-xl shadow">
+                <div class="p-4 bg-navy-blue text-white rounded-xl shadow">
                     <h3 class="font-semibold text-sm uppercase">Weekly Shirts Purchased</h3>
                     <div class="text-2xl font-bold mt-2">{{ $weeklyPurchases ?? '0' }}</div>
                     <div class="text-xs mt-1">+{{ $weeklyPurchasesGrowth ?? '0' }}% from last week</div>
@@ -63,13 +63,13 @@ new #[Layout('layouts.admin')] class extends Component {
                 <div class="p-4 bg-white border rounded-xl shadow">
                     <h3 class="font-semibold text-gray-700 mb-3">Designer Signups</h3>
                     <div class="flex justify-between">
-                        <div class="text-center p-3 bg-pink-100 rounded-lg">
-                            <div class="text-sm text-gray-600">Monthly</div>
-                            <div class="text-xl font-bold text-pink-600">{{ $monthlySignups ?? '0' }}</div>
+                        <div class="text-center p-3 bg-navy-blue rounded-lg">
+                            <div class="text-sm text-white">Monthly</div>
+                            <div class="text-xl font-bold text-white">{{ $monthlySignups ?? '0' }}</div>
                         </div>
-                        <div class="text-center p-3 bg-pink-100 rounded-lg">
-                            <div class="text-sm text-gray-600">Annually</div>
-                            <div class="text-xl font-bold text-pink-600">{{ $annualSignups ?? '0' }}</div>
+                        <div class="text-center p-3 bg-navy-blue rounded-lg">
+                            <div class="text-sm text-white">Annually</div>
+                            <div class="text-xl font-bold text-white">{{ $annualSignups ?? '0' }}</div>
                         </div>
                     </div>
                     {{-- <livewire:pages.admin.charts.signup-trend /> --}}
@@ -79,13 +79,13 @@ new #[Layout('layouts.admin')] class extends Component {
                 <div class="p-4 bg-white border rounded-xl shadow">
                     <h3 class="font-semibold text-gray-700 mb-3">Designs Uploaded</h3>
                     <div class="flex justify-between">
-                        <div class="text-center p-3 bg-pink-100 rounded-lg">
-                            <div class="text-sm text-gray-600">Monthly</div>
-                            <div class="text-xl font-bold text-pink-600">{{ $monthlyDesigns ?? '0' }}</div>
+                        <div class="text-center p-3 bg-navy-blue rounded-lg">
+                            <div class="text-sm text-white">Monthly</div>
+                            <div class="text-xl font-bold text-white">{{ $monthlyDesigns ?? '0' }}</div>
                         </div>
-                        <div class="text-center p-3 bg-pink-100 rounded-lg">
-                            <div class="text-sm text-gray-600">Annually</div>
-                            <div class="text-xl font-bold text-pink-600">{{ $annualDesigns ?? '0' }}</div>
+                        <div class="text-center p-3 bg-navy-blue rounded-lg">
+                            <div class="text-sm text-white">Annually</div>
+                            <div class="text-xl font-bold text-white">{{ $annualDesigns ?? '0' }}</div>
                         </div>
                     </div>
                     {{-- <livewire:pages.admin.charts.designs-trend /> --}}
@@ -95,13 +95,13 @@ new #[Layout('layouts.admin')] class extends Component {
                 <div class="p-4 bg-white border rounded-xl shadow">
                     <h3 class="font-semibold text-gray-700 mb-3">Designer Incomes</h3>
                     <div class="flex justify-between">
-                        <div class="text-center p-3 bg-pink-100 rounded-lg">
-                            <div class="text-sm text-gray-600">Monthly</div>
-                            <div class="text-xl font-bold text-pink-600">${{ $monthlyIncome ?? '0' }}</div>
+                        <div class="text-center p-3 bg-navy-blue rounded-lg">
+                            <div class="text-sm text-white">Monthly</div>
+                            <div class="text-xl font-bold text-white">${{ $monthlyIncome ?? '0' }}</div>
                         </div>
-                        <div class="text-center p-3 bg-pink-100 rounded-lg">
-                            <div class="text-sm text-gray-600">Annually</div>
-                            <div class="text-xl font-bold text-pink-600">${{ $annualIncome ?? '0' }}</div>
+                        <div class="text-center p-3 bg-navy-blue rounded-lg">
+                            <div class="text-sm text-white">Annually</div>
+                            <div class="text-xl font-bold text-white">${{ $annualIncome ?? '0' }}</div>
                         </div>
                     </div>
                     {{-- <livewire:pages.admin.charts.income-trend /> --}}
@@ -111,13 +111,13 @@ new #[Layout('layouts.admin')] class extends Component {
                 <div class="p-4 bg-white border rounded-xl shadow">
                     <h3 class="font-semibold text-gray-700 mb-3">Shirts Purchased</h3>
                     <div class="flex justify-between">
-                        <div class="text-center p-3 bg-pink-100 rounded-lg">
-                            <div class="text-sm text-gray-600">Monthly</div>
-                            <div class="text-xl font-bold text-pink-600">{{ $monthlyPurchases ?? '0' }}</div>
+                        <div class="text-center p-3 bg-navy-blue rounded-lg">
+                            <div class="text-sm text-white">Monthly</div>
+                            <div class="text-xl font-bold text-white">{{ $monthlyPurchases ?? '0' }}</div>
                         </div>
-                        <div class="text-center p-3 bg-pink-100 rounded-lg">
-                            <div class="text-sm text-gray-600">Annually</div>
-                            <div class="text-xl font-bold text-pink-600">{{ $annualPurchases ?? '0' }}</div>
+                        <div class="text-center p-3 bg-navy-blue rounded-lg">
+                            <div class="text-sm text-white">Annually</div>
+                            <div class="text-xl font-bold text-white">{{ $annualPurchases ?? '0' }}</div>
                         </div>
                     </div>
                     {{-- <livewire:pages.admin.charts.purchases-trend /> --}}
@@ -161,7 +161,7 @@ new #[Layout('layouts.admin')] class extends Component {
 
         <!-- Footer -->
         <footer class="mt-8 border-t pt-4">
-            <p class="text-center text-gray-600 text-sm">Copyright © 2025 Twellr. All Rights Reserved</p>
+            <p class="text-center text-gray-500 text-sm">Copyright © 2025 Twellr. All Rights Reserved</p>
         </footer>
     </div>
 </div>
