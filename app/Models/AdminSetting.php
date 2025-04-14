@@ -48,8 +48,9 @@ class AdminSetting extends Model
 	public $timestamps = false;
 
     protected $casts = [
-        'commission_fee' => 'int',
-        'shipping_fee' => 'int',
+        'commission_fee' => 'float',
+        'shipping_fee' => 'float',
+        'vat' => 'int',
         'advertisement_status' => 'bool'
     ];
 
@@ -64,8 +65,6 @@ class AdminSetting extends Model
         'favicon',
         'maintenance_mode',
         'vat',
-        'wallet_format',
-        'advertisement_status',
-        'referral_system'
+        'advertisement_status'
     ];
 }

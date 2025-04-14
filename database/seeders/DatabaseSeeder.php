@@ -16,18 +16,6 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        AdminSetting::factory()->create([
-            'currency_symbol' => '₦',
-            'currency_code' => 'NGN',
-            'commission_fee' => 0,
-            'shipping_fee' => 0,
-            'logo' => 'logo.png',
-            'logo_2' => 'logo_2.png',
-            'text_logo' => 'text_logo.png',
-            'favicon' => 'favicon.png',
-            'maintenance_mode' => 'off',
-            'vat' => 0,
-            'advertisement_status' => true,
-        ]);
+        AdminSetting::factory()->create();
     }
 }

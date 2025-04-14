@@ -12,9 +12,12 @@ Route::middleware(['auth', 'verified','IsAdmin'])->group(function () {
 
     Volt::route('admin/profile', 'pages.admin.profile')->name('admin.profile');
 
-    Volt::route('admin/settings', 'pages.admin.settings')->name('admin.settings');
+    Volt::route('admin/settings', 'pages.admin.settings')->name(name: 'admin.settings');
 
     Volt::route('admin/system/preferences', 'pages.admin.preferences')->name('admin.preferences');
+
+    Volt::route('admin/uploaded/designs', 'pages.admin.designs')->name('admin.designs');
+
 
 
 });

@@ -8,17 +8,21 @@ use App\Models\Notification;
 use Livewire\Attributes\Layout;
 use Livewire\Volt\Component;
 use Illuminate\Support\Facades\Auth;
+use function Livewire\Volt\{state, computed, mount, rules, layout};
 
-new #[Layout('layouts.admin')] class extends Component {
-    public function mount()
-    {
-        // $this->dispatchToast('success', 'Welcome to the dashboard!');
-    }
-};
+layout('layouts.admin');
+
+state(['weeklySignups' => 0]);
+state(['weeklySignupsGrowth' => 0]);
+
+state(['weeklySignups' => 0]);
+state(['weeklySignupsGrowth' => 0]);
+
+
 
 ?>
 
-<div class="flex  gap-1 w-full mt-1 h-screen">
+<div class="flex  gap-1 w-full pt-1 fixed bg-gray-100 overflow-hidden h-screen">
     <!-- Sidebar component -->
     <x-admin-sidebar />
 

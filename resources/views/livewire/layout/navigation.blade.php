@@ -171,7 +171,7 @@ new class extends Component {
                                 <span class="sr-only">Search</span>
                             </span>
 
-                            @if ($result != '')
+                           @if ($result != '')
                                 <div class="absolute top-full left-0 w-full z-[9999]">
                                     <div x-show="term != ''" x-transition:enter="transition ease-out duration-200"
                                         x-transition:enter-start="opacity-0 transform scale-95"
@@ -179,6 +179,14 @@ new class extends Component {
                                         class="bg-white rounded-md shadow-lg mt-1 max-h-96 overflow-y-auto">
                                         <div class="w-full p-2 sm:p-3">
                                             <div class="flex flex-col gap-1 sm:gap-2">
+
+                                                @if ($result->isEmpty())
+
+                                                                <p class="text-md font-bold text-black">Opps! Nothing
+                                                                    Found</p>
+
+                                                @endif
+
                                                 @foreach ($result as $item)
                                                     <a href="{{ $item->link }}"
                                                         class="flex items-center gap-2 p-1 sm:p-2 border-b border-gray-200 hover:bg-gray-100 transition-colors">
@@ -197,6 +205,7 @@ new class extends Component {
                                         </div>
                                     </div>
                                 </div>
+
                             @endif
                         </div>
                     </div>

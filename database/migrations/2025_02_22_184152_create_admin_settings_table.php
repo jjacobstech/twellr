@@ -8,7 +8,7 @@ return new class extends Migration
 {
 
     public function seed(){
-        
+
     }
     /**
      * Run the migrations.
@@ -19,17 +19,16 @@ return new class extends Migration
             $table->increments('id');
             $table->char('currency_symbol', 10)->nullable();
             $table->string('currency_code', 20)->nullable();
-            $table->unsignedInteger('commission_fee')->default(0);
-            $table->unsignedInteger('shipping_fee')->default(0);
+            $table->decimal('commission_fee')->default(0.00);
+            $table->decimal('shipping_fee')->default(0.00);
             $table->string('logo', 100)->nullable();
             $table->string('logo_2', length: 100)->nullable();
             $table->string('text_logo', length: 100)->nullable();
             $table->string('favicon', 100)->nullable();
             $table->enum('maintenance_mode', ['on', 'off'])->default('off');
-            $table->unsignedInteger('vat')->default(0);
+            $table->decimal('vat')->default(0.00);
             $table->boolean('advertisement_status')->default(true);
         });
-        $this->seed('AdminSettingsSeeder');
     }
 
 

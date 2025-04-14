@@ -162,7 +162,7 @@ new class extends Component {
                                 alt="Search by: Creator, Design, Location, Ratings"
                                 title='Search by: Creator, Design, Location, Ratings' />
                             <span
-                                class="top-0 end-0 p-2.5 text-sm font-medium h-full text-white bg-gray-200 border-0 rounded-e-lg  focus:ring-0 focus:outline-none ">
+                                class="top-0 end-0 p-2.5 text-sm font-medium h-full text-white bg-gray-200 border-0 rounded-r-lg  focus:ring-0 focus:outline-none ">
                                 <svg class="w-4 h-4 text-[#fbaa0d]" aria-hidden="true"
                                     xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
@@ -184,7 +184,7 @@ new class extends Component {
 
                                                                 <p class="text-md font-bold text-black">Opps! Nothing
                                                                     Found</p>
-                                                        
+
                                                 @endif
 
                                                 @foreach ($result as $item)

@@ -12,35 +12,36 @@
 
             <!-- Uploaded Designs Dropdown -->
             <div class="relative" @click.away="open = false" x-data="{ open: false }">
-                <button @click="open = !open"
+                <a href="{{ route('admin.designs') }}"
+                {{-- @click="open = !open" --}}
                     class="flex items-center w-full justify-between px-3 py-3 text-sm font-medium text-gray-600 rounded-lg transition-all hover:bg-golden hover:text-white group">
                     <div class="flex items-center md:gap-2">
                         @svg('eva-upload', ['class' => 'w-6 h-6'])
                         <span class="hidden md:block">Uploaded Designs</span>
                     </div>
-                    <svg :class="{ 'rotate-180': open }" class="w-4 h-4 transition-transform transform hidden md:block"
+                    {{-- <svg :class="{ 'rotate-180': open }" class="w-4 h-4 transition-transform transform hidden md:block"
                         fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                    </svg>
-                </button>
-                <div x-show="open" @click.away="open = false"
+                    </svg> --}}
+                </a>
+                {{-- <div x-show="open" @mouseleave="open = false" @click.away="open = false"
                     class="mt-1 w-full bg-white rounded-lg shadow-lg overflow-hidden transition-all"
                     style="display: none;">
                     <div class="py-1" role="menu" aria-orientation="vertical">
                         <a href="#"
-                            class=" px-4 py-2 text-sm text-gray-700 hover:bg-golden hover:text-white transition-colors flex"
+                            class=" px-4 py-2 text-sm text-gray-700 hover:bg-golden hover:text-white transition-colors flex gap-1"
                             role="menuitem">
                             @svg('eva-star', ['class' => 'w-4 h-4'])
                             <span class="hidden md:block"> Design Stack</span>
                         </a>
                         <a href="#"
-                            class=" px-4 py-2 text-sm text-gray-700 hover:bg-golden hover:text-white transition-colors flex"
+                            class=" px-4 py-2 text-sm text-gray-700 hover:bg-golden hover:text-white transition-colors flex gap-1"
                             role="menuitem">
                             @svg('heroicon-o-document', ['class' => 'w-4 h-4 fill-current'])
                             <span class="hidden md:block"> Printable Stack</span>
                         </a>
                     </div>
-                </div>
+                </div> --}}
             </div>
 
             <!-- Promote Design Link -->
@@ -53,16 +54,21 @@
                 </svg>
                 <span class="hidden md:block">Promote Design</span>
             </a>
+              <a href=""
+                class="flex items-center gap-2 px-3 py-3 text-sm font-medium text-gray-600 rounded-lg transition-all hover:bg-golden hover:text-white group">
+                @svg('eva-car', ['class' => 'w-6 h-6'])
+                <span class="hidden md:block">Orders</span>
+            </a>
             <a href=""
                 class="flex items-center gap-2 px-3 py-3 text-sm font-medium text-gray-600 rounded-lg transition-all hover:bg-golden hover:text-white group">
                     @svg('eva-globe',['class'=> 'w-6 h-6'])
-                <span class="hidden md:block"> {{ __('Blog') }}</span>
+                <span class="hidden md:block"> {{ __('Blog Posts') }}</span>
 
             </a>
             <a href="{{ route('admin.preferences') }}"
                 class="flex items-center gap-2 px-3 py-3 text-sm font-medium text-gray-600 rounded-lg transition-all hover:bg-golden hover:text-white group">
                 @svg('heroicon-o-cog', ['class' => 'w-6 h-6'])
-                <span class="hidden md:block">Settings</span>
+                <span class="hidden md:block">System Preferences</span>
             </a>
         </div>
     </div>
