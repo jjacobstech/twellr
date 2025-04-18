@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\User;
+use Mary\Traits\Toast;
 use App\Helpers\FileHelper;
 use Livewire\Volt\Component;
 use Livewire\WithFileUploads;
@@ -10,6 +11,7 @@ use Illuminate\Support\Facades\Session;
 
 new class extends Component {
     use WithFileUploads;
+    use Toast;
 
     public string $firstname = '';
     public string $lastname = '';
@@ -187,6 +189,7 @@ new class extends Component {
             $this->redirectIntended(route('market.place'), true);
         } else {
             $this->dispatch('profile-updated', name: $user->name);
+            $this->success('Profile Updated');
         }
         $this->redirectIntended(route('settings'), true);
     }
@@ -211,7 +214,9 @@ new class extends Component {
 }; ?>
 
 <!--Profile Form content -->
-<div class="w-full " x-data="{ remove: true }">
+<div class="w-full " x-data="{ remove: true }"
+x-on:livewire-upload-error="$wire.error('Upload Failed')"
+x-on:livewire-upload-finish="$wire.success('Upload Successful')">
     <div class="overflow-hidden bg-white rounded-lg shadow-md shadow-neutral-700">
         <div class="px-4 py-4 sm:px-6 bg-navy-blue">
             <h3 class="text-lg font-medium leading-6 text-gray-100">Profile Information</h3>

@@ -97,12 +97,14 @@ new #[Layout('layouts.app')] class extends Component {
     }
 }; ?>
 
-<div x-data="{
-    form: true,
-    uploadModal: false,
-    backButton: false,
+<div  x-data="{
+    form: !true,
+    uploadModal: !false,
+    backButton: !false,
 }"
-    x-on:livewire-upload-finish="showNotification('Upload Complete', 'File Upload Successful', 'success', 5)">
+x-on:livewire-upload-error="$wire.error('Upload Failed')"
+x-on:livewire-upload-finish="$wire.success('Upload Successful')"
+>
 
     @if (session('status'))
         @script
@@ -127,15 +129,15 @@ new #[Layout('layouts.app')] class extends Component {
     @endif
 
     {{-- Main Layout: Sidebar + Content --}}
-    <div class="flex flex-col md:flex-row md:gap-1">
+    <div class="flex flex-col bg-gray-100 md:flex-row md:gap-1">
         {{-- Sidebar Placeholder - Ensure this component is also responsive --}}
-        <x-creative-sidebar />
+        <x-creative-sidebar class="w-[12%]"/>
 
         {{-- Main Content Area --}}
-        <div class="w-full p-4 text-xl bg-white">
+        <div class="w-[87%] p-4 text-xl bg-white">
             {{-- Background Image Container - Let height be determined by content or use min-h for better flexibility --}}
             <div style="background-image: url('{{ asset('assets/blurred.png') }}')"
-                class="relative grid justify-center text-white bg-no-repeat bg-cover rounded-lg min-h-[calc(100vh-2rem)] md:min-h-full">
+                class="relative flex justify-center text-white bg-no-repeat bg-cover rounded-lg ">
 
                 {{-- Back Button - Positioned absolutely within the background container --}}
                 <div class="absolute z-10 top-4 left-4">
@@ -147,17 +149,17 @@ new #[Layout('layouts.app')] class extends Component {
 
                 {{-- Form Container --}}
                 <form x-transition:enter.duration.500ms x-cloak="display:none"
-                    :class="uploadModal ? 'w-full p-4 md:p-8 lg:p-12' : 'w-full max-w-4xl bg-[#dedddb] rounded-[40px] my-6'"
+                    :class="uploadModal ? 'w-full p-4 md:p-8 lg:p-12' : 'md:w-[45%] w-full bg-[#dedddb] rounded-[40px] my-6'"
                     wire:submit="uploadProduct" enctype="multipart/form-data">
                     @csrf
 
                     {{-- Main Form View --}}
-                    <div x-show="form" x-transition:enter.duration.700ms class="py-3">
-                        <div class="flex flex-col px-8 py-5">
+                    <div x-show="form" x-transition:enter.duration.700ms class="py-3 ">
+                        <div class="flex flex-col h-full px-10 py-10">
 
                             {{-- Name and Price Row - Stack vertically on small, horizontal on medium+ --}}
                             <div class="flex flex-col md:flex-row md:gap-6">
-                                <div class="flex-1 w-full md:w-3/5">
+                                <div class="flex-1 w-full md:w-[70%]">
                                     <x-input-label :value="__('Name')" class="text-gray-500 font-extrabold text-[17px]"
                                         for="name" />
                                     <x-text-input id="name" :class="$errors->get('name')
@@ -166,7 +168,7 @@ new #[Layout('layouts.app')] class extends Component {
                                         wire:model.live="name" required autofocus autocomplete="name" />
                                 </div>
 
-                                <div class="w-full md:w-2/5">
+                                <div class="w-full md:w-[30%]">
                                     <x-input-label :value="__('Price')" class="text-gray-500 font-extrabold text-[17px]"
                                         for="price" />
                                     <x-text-input id="price" :class="$errors->get('price')
@@ -228,7 +230,7 @@ new #[Layout('layouts.app')] class extends Component {
                         <div class="border-t-2 border-[#bebebe] w-full"></div>
 
                         {{-- Submit Button --}}
-                        <div class="flex justify-center py-4">
+                        <div class="flex justify-center py-6">
                             <x-mary-button label="MONETIZE DESIGN"
                                 class="btn hover:bg-navy-blue hover:text-white active:bg-navy-blue bg-[#f7aa10] text-neutral-900 px-6 py-4 rounded-xl font-bold uppercase text-[13px] focus:ring-0 focus:bg-navy-blue focus:text-white border-0"
                                 type="submit" spinner />
@@ -237,10 +239,10 @@ new #[Layout('layouts.app')] class extends Component {
                     {{-- Form End --}}
 
                     {{-- Upload Modal --}}
-                    <div x-show="uploadModal" x-transition:enter.duration.500ms x-cloak class="py-10 md:py-16">
+                    <div x-show="uploadModal" x-transition:enter.duration.500ms x-cloak class="py-10 md:py-28 ">
                         {{-- Grid layout for uploads - 1 col default, 2 cols on small+, 4 cols on large+ --}}
                         <div
-                            class="grid grid-cols-1 gap-6 px-4 sm:grid-cols-2 lg:grid-cols-4 md:gap-8 md:px-8 lg:px-16">
+                            class="grid grid-cols-1 gap-6 px-4 sm:grid-cols-2 lg:grid-cols-4 md:gap-8 md:px-8 md:py-3 lg:px-16">
 
                             <div class="grid content-start justify-center space-y-2 text-center">
                                 <label>

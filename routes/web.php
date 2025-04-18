@@ -9,6 +9,7 @@ use App\Http\Controllers\UserController;
 Route::get('/', fn() => view('welcome'))->name('home');
 
 Route::middleware('guest')->get('/r/{slug?}', [UserController::class, "referral"]);
+Route::middleware('guest')->get('/c/{slug?}', [UserController::class, "userProfile"]);
 
 Route::fallback(function () {
     abort(404);

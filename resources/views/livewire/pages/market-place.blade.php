@@ -23,6 +23,8 @@ new #[Layout('layouts.app')] class extends Component {
     public string $size = '';
     public bool $owner;
     public $cartItem;
+    public $added;
+    public $exists;
 
     public function mount()
     {
@@ -37,7 +39,7 @@ new #[Layout('layouts.app')] class extends Component {
 
         $itemExists = Cart::where('product_id', '=', $product->id)->exists();
         if ($itemExists) {
-            $this->redirectIntended(route('market.place'), true);
+             $this->warning('Cannot Add',"This item is already in the cart");
         } elseif (!$itemExists) {
             $addToCart = Cart::create([
                 'user_id' => $product->user_id,
@@ -46,10 +48,7 @@ new #[Layout('layouts.app')] class extends Component {
             if (!$addToCart) {
                 abort(500, 'Something went wrong but we are working on it');
             }
-            session()->flash('product_added', true);
-            session()->put('item', $product->name);
-
-            $this->redirectIntended(route('market.place'), true);
+             $this->success('Added', 'Item added to cart!',);
         }
     }
 
@@ -113,6 +112,8 @@ new #[Layout('layouts.app')] class extends Component {
             $this->redirectIntended(route('market.place'), true);
         }
     }
+
+
 }; ?>
 
 <div class="h-screen" x-data="{
@@ -120,19 +121,25 @@ new #[Layout('layouts.app')] class extends Component {
 }">
 
 
-    @if (session('status'))
-        @script
-            <script>
-                showNotification('Order Succesful', 'Your order is on its way 🙂', 'success', 5)
-            </script>
-        @endscript
-    @endif
     @if (session('product_added'))
-        <div class="toast toast-top toast-right z-30 mt-10" x-transition:leave="500ms" x-data="{ show: true }"
+        <div class="z-30 mt-10 toast toast-top toast-right"  id="status-message"  x-transition:leave="500ms" x-data="{ show: true }"
             x-show="show">
 
-            <div class="alert bg-navy-blue text-white font-extrabold transition-all ease-out">
+
+            <div class="font-extrabold text-white transition-all ease-out alert bg-navy-blue">
                 <span>{{ session('item') }} added to cart </span>
+                <span @click="show = false">
+                    @svg('eva-close', 'h-6 w-6 text-red-500 cursor-pointer')
+                </span>
+            </div>
+
+        </div>
+    @endif
+    @if (session('product_exists'))
+        <div class="z-30 mt-10 toast toast-top toast-right" id="status-message" x-transition:leave="500ms" x-data="{ show: true }"
+            x-show="show">
+            <div class="font-extrabold text-white transition-all ease-out alert bg-navy-blue">
+                <span>{{ session('item') }} is already in cart</span>
                 <span @click="show = false">
                     @svg('eva-close', 'h-6 w-6 text-red-500 cursor-pointer')
                 </span>
@@ -145,14 +152,14 @@ new #[Layout('layouts.app')] class extends Component {
         <x-market-place-sidebar class="" />
         <div class="relative bg-white w-screen md:w-[72%] lg:w-[80%] md:h-screen pb-5 md:pb-20">
             <div x-cloak="display:hidden"
-                class="relative grid lg:hidden w-full h-full gap-5 pt-1  overflow-y-scroll md:grid-cols-2 sm:grid-cols-2 px-5">
+                class="relative grid w-full h-full gap-5 px-5 pt-1 overflow-y-scroll lg:hidden md:grid-cols-2 sm:grid-cols-2">
                 @foreach ($products as $product)
                     <x-product-card :$product />
                 @endforeach
             </div>
 
             <div x-cloak="display:hidden"
-                class="relative lg:grid hidden w-full h-full gap-5 pt-1  overflow-y-scroll md:grid-cols-4 px-5">
+                class="relative hidden w-full h-full gap-5 px-5 pt-1 overflow-y-scroll lg:grid md:grid-cols-4">
                 @foreach ($products as $product)
                     <x-product-card :$product />
                 @endforeach
@@ -160,10 +167,10 @@ new #[Layout('layouts.app')] class extends Component {
             </div>
             <div x-data="{ isOpen: @entangle('modal').live }" x-show="isOpen" x-cloak='display:none' x-transition.opacity
                 class="fixed inset-0 z-20 w-screen h-full px-5 py-16 sm:py-24 md:py-44 md:px-20 lg:py-16 bg-black/40 backdrop-blur-sm pb-26">
-                <div class="grid lg:flex h-full bg-white justify-evenly rounded-xl md:flex-row"
+                <div class="grid h-full bg-white lg:flex justify-evenly rounded-xl md:flex-row"
                     @click.away="$wire.modal = false">
                     <div class=" object-fit-contain lg:w-[75%] carousel rounded-t-xl md:rounded-none lg:rounded-l-xl">
-                        <div class="relative carousel-item w-full" id="front-view">
+                        <div class="relative w-full carousel-item" id="front-view">
                             <img src="@if ($order) {{ asset('uploads/products/design-stack/' . $order->front_view) }} @endif"
                                 alt="shopping image" class="object-cover w-full h-full ">
 
@@ -211,7 +218,7 @@ new #[Layout('layouts.app')] class extends Component {
                                     {{ $order->price }}
                                 @endif
                             </div>
-                            <div class="flex-none w-full mt-2 text-md font-extrabold text-black ">
+                            <div class="flex-none w-full mt-2 font-extrabold text-black text-md ">
                                 @if ($order)
                                     {{ $order->category }}
                                 @endif
@@ -222,7 +229,7 @@ new #[Layout('layouts.app')] class extends Component {
                                 @endif
                             </div>
                         </div>
-                        <div class="flex items-baseline mt-4 mb-3 md:mb-6 text-gray-700">
+                        <div class="flex items-baseline mt-4 mb-3 text-gray-700 md:mb-6">
                             <div class="flex space-x-2">
 
                                 <label class="text-center text-black">
@@ -262,8 +269,9 @@ new #[Layout('layouts.app')] class extends Component {
                             <x-input-label class="font-extrabold bg-white " for="email" :value="__('Delivery Address')" />
 
                             <div class="w-full ">
-                                <x-text-input wire:model="address" id="address" class="block w-full mt-2 text-black"
-                                    type="text" name="email" required autocomplete="address" />
+                                <x-text-input wire:model="address" id="address"
+                                    class="block w-full mt-2 text-black" type="text" name="email" required
+                                    autocomplete="address" />
                                 <x-input-error :messages="$errors->get('address')" class="mt-2" />
                             </div>
                         </div>

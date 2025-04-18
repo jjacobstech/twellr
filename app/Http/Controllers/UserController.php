@@ -17,4 +17,13 @@ class UserController extends Controller
             'referral_link' => $slug,
         ]);
     }
+
+    public function userProfile(?String $slug)
+    {
+        $user = User::where('referral_link', "=", $slug)->first();
+        return view('livewire.pages.referral-page', [
+            'user' => $user,
+            'referral_link' => $slug,
+        ]);
+    }
 }

@@ -8,9 +8,11 @@ use App\Models\BlogCategory;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Artisan;
-use function Livewire\Volt\{state, computed, mount, rules, layout};
+use function Livewire\Volt\{state, computed, mount, rules, layout,uses};
+use  Mary\Traits\Toast;
 
 layout('layouts.admin');
+uses(Toast::class);
 state(['categories' => fn() => Category::all()]);
 state(['blogCategories' => fn() => BlogCategory::all()]);
 
@@ -56,9 +58,7 @@ $updateShippingFee = function () {
 
     if ($shipping) {
         $shipping->update(['shipping_fee' => $this->shippingFee]);
-        $this->showSuccessMessage = true;
-        $this->successMessage = 'Shipping fee updated successfully.';
-        $this->hideSuccessMessage();
+        $this->success('Shipping fee updated successfully.');
     }
 };
 
@@ -69,10 +69,7 @@ $updateCommissionRate = function () {
 
     if ($commission) {
         $commission->update(['commission_fee' => $this->commissionRate]);
-
-        $this->showSuccessMessage = true;
-        $this->successMessage = 'Commission rate updated successfully.';
-        $this->hideSuccessMessage();
+        $this->success('Commission rate updated successfully.');
     }
 };
 
@@ -89,9 +86,7 @@ $toggleDebugMode = function () {
     // Clear config cache
     Artisan::call('config:clear');
 
-    $this->showSuccessMessage = true;
-    $this->successMessage = 'Debug mode ' . ($this->debugMode ? 'enabled' : 'disabled') . ' successfully.';
-    $this->hideSuccessMessage();
+    $this->success('Debug mode ' . ($this->debugMode ? 'enabled' : 'disabled') . ' successfully.');
 };
 
 $addCategory = function () {
@@ -101,9 +96,9 @@ $addCategory = function () {
     $this->categories = Category::all();
     $this->newCategory = '';
 
-    $this->showSuccessMessage = true;
-    $this->successMessage = 'Category added successfully.';
-    $this->hideSuccessMessage();
+
+    $this->success('Category added successfully.');
+
 };
 
 $deleteCategory = function ($categoryId) {
@@ -111,9 +106,7 @@ $deleteCategory = function ($categoryId) {
     $category->delete();
     $this->categories = Category::all();
 
-    $this->showSuccessMessage = true;
-    $this->successMessage = 'Category deleted successfully.';
-    $this->hideSuccessMessage();
+    $this->success('Category deleted successfully.');
 };
 
 $startEditCategory = function ($categoryId) {
@@ -132,9 +125,7 @@ $saveEditCategory = function () {
     $this->editingCategory = null;
     $this->editCategoryName = '';
 
-    $this->showSuccessMessage = true;
-    $this->successMessage = 'Category updated successfully.';
-    $this->hideSuccessMessage();
+   $this->success('Category updated successfully.');
 };
 
 $cancelEditCategory = function () {
@@ -149,9 +140,7 @@ $addBlogCategory = function () {
     $this->blogCategories = BlogCategory::all();
     $this->newBlogCategory = '';
 
-    $this->showSuccessMessage = true;
-    $this->successMessage = 'Blog Category added successfully.';
-    $this->hideSuccessMessage();
+    $this->success('Blog Category added successfully.');
 };
 
 $deleteBlogCategory = function ($blogCategoryId) {
@@ -159,9 +148,7 @@ $deleteBlogCategory = function ($blogCategoryId) {
     $blogCategory->delete();
     $this->blogCategories = BlogCategory::all();
 
-    $this->showSuccessMessage = true;
-    $this->successMessage = 'Blog Category deleted successfully.';
-    $this->hideSuccessMessage();
+    $this->success('Blog Category deleted successfully.');
 };
 
 $startEditBlogCategory = function ($blogCategoryId) {
@@ -180,9 +167,7 @@ $saveEditBlogCategory = function () {
     $this->editingBlogCategory = null;
     $this->editBlogCategoryName = '';
 
-    $this->showSuccessMessage = true;
-    $this->successMessage = 'Category updated successfully.';
-    $this->hideSuccessMessage();
+    $this->success('Category updated successfully.');
 };
 
 $cancelEditBlogCategory = function () {
@@ -204,9 +189,7 @@ $addCountry = function () {
     $this->countries = Country::with('states')->get();
     $this->newCountry = ['name' => '', 'code' => ''];
 
-    $this->showSuccessMessage = true;
-    $this->successMessage = 'Country added successfully.';
-    $this->hideSuccessMessage();
+    $this->success('Country added successfully.');
 };
 
 $deleteCountry = function ($countryId) {
@@ -214,9 +197,7 @@ $deleteCountry = function ($countryId) {
     $country->delete();
     $this->countries = Country::with('states')->get();
 
-    $this->showSuccessMessage = true;
-    $this->successMessage = 'Country deleted successfully.';
-    $this->hideSuccessMessage();
+    $this->success('Country deleted successfully.');
 };
 
 $addState = function () {
@@ -233,9 +214,7 @@ $addState = function () {
     $this->countries = Country::with('states')->get();
     $this->newState = ['name' => '', 'country_id' => $this->newState['country_id']];
 
-    $this->showSuccessMessage = true;
-    $this->successMessage = 'State added successfully.';
-    $this->hideSuccessMessage();
+    $this->success('State added successfully.');
 };
 
 $deleteState = function ($stateId) {
@@ -243,57 +222,9 @@ $deleteState = function ($stateId) {
     $state->delete();
     $this->countries = Country::with('states')->get();
 
-    $this->showSuccessMessage = true;
-    $this->successMessage = 'State deleted successfully.';
-    $this->hideSuccessMessage();
+    $this->success('State deleted successfully.');
 };
 
-$updateSettingsFile = function ($key, $value) {
-    $settingsPath = config_path('settings.php');
-
-    // Create the settings file if it doesn't exist
-    if (!File::exists($settingsPath)) {
-        $settingsContent = "<?php\n\nreturn [\n    '{$key}' => {$value},\n];\n";
-        File::put($settingsPath, $settingsContent);
-    } else {
-        $settings = include $settingsPath;
-        $settings[$key] = $value;
-
-        $settingsContent = "<?php\n\nreturn [\n";
-        foreach ($settings as $k => $v) {
-            // Format the value based on type
-            if (is_string($v)) {
-                $formattedValue = "'{$v}'";
-            } elseif (is_bool($v)) {
-                $formattedValue = $v ? 'true' : 'false';
-            } else {
-                $formattedValue = $v;
-            }
-
-            $settingsContent .= "    '{$k}' => {$formattedValue},\n";
-        }
-        $settingsContent .= "];\n";
-
-        File::put($settingsPath, $settingsContent);
-    }
-
-    // Clear config cache
-    Artisan::call('config:clear');
-};
-
-$hideSuccessMessage = function () {
-    // Auto-hide the success message after 3 seconds
-    $this->dispatch(
-        'setTimeout',
-        handler: "
-        document.querySelector('#success-alert').classList.add('opacity-0');
-        setTimeout(() => {
-            $this->showSuccessMessage = false;
-        }, 500);
-    ",
-        ms: 3000,
-    );
-};
 ?>
 <div class="w-screen bg-gray-100 h-screen overflow-hidden fixed pt-1">
 
@@ -314,7 +245,7 @@ $hideSuccessMessage = function () {
     @endif
 
     <div wire:loading class="toast toast-top top-28 z-[9999]">
-        <div class=" alert-info alert top-10 bg-navy-blue border border-navy-blue text-white py-3 rounded mb-6 transition-opacity duration-500 "
+        <div class=" alert-info alert top-10 bg-green-500 border border-green-500 text-white py-3 rounded mb-6 transition-opacity duration-500 "
             role="alert">
             <svg class="animate-spin inline-block bw-spinner h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg"
                 fill="none" viewBox="0 0 24 24">

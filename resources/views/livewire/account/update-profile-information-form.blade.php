@@ -1,5 +1,5 @@
 <?php
-
+use Mary\Traits\Toast;
 use App\Models\User;
 use App\Helpers\FileHelper;
 use Livewire\Volt\Component;
@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Session;
 
 new class extends Component {
     use WithFileUploads;
+    use Toast;
 
     public string $firstname = '';
     public string $lastname = '';
@@ -195,6 +196,7 @@ new class extends Component {
         if (session()->has('was_redirected')) {
             $this->redirectIntended(route('market.place'), true);
         } else {
+
             $this->dispatch('profile-updated', name: $user->name);
         }
         $this->redirectIntended(route('settings'), true);
@@ -220,7 +222,10 @@ new class extends Component {
 }; ?>
 
 <!--Profile Form content -->
-<div class="w-full " x-data="{ remove: true }">
+<div class="w-full " x-data="{ remove: true }"
+x-on:livewire-upload-error="$wire.error('Upload Failed')"
+x-on:livewire-upload-finish="$wire.success('Upload Successful')"
+>
     <div class="overflow-hidden bg-white rounded-lg shadow-md shadow-neutral-700">
         <div class="px-4 py-4 sm:px-6 bg-navy-blue">
             <h3 class="text-lg font-medium leading-6 text-gray-100">Profile Information</h3>
@@ -241,7 +246,7 @@ new class extends Component {
                                 <div class="mt-1">
                                     <input type="text" wire:model.live="firstname" id="firstname"
                                         autocomplete="given-name" required
-                                        class="shadow-sm focus:ring-navy-blue focus:border-navy-blue block w-full sm:text-sm border-gray-300 rounded-md @error('firstname') border-red-500 @enderror">
+                                        class="shadow-sm text-gray-700 focus:ring-navy-blue focus:border-navy-blue block w-full sm:text-sm border-gray-300 rounded-md @error('firstname') border-red-500 @enderror">
                                 </div>
                             </div>
 
@@ -252,7 +257,7 @@ new class extends Component {
                                 <div class="mt-1">
                                     <input type="text" wire:model.live="lastname" id="lastname"
                                         autocomplete="family-name" required
-                                        class="shadow-sm focus:ring-navy-blue focus:border-navy-blue block w-full sm:text-sm border-gray-300 rounded-md @error('lastname') border-red-500 @enderror">
+                                        class="shadow-sm text-gray-700 focus:ring-navy-blue focus:border-navy-blue block w-full sm:text-sm border-gray-300 rounded-md @error('lastname') border-red-500 @enderror">
                                 </div>
                             </div>
 
@@ -263,7 +268,7 @@ new class extends Component {
                                 <div class="mt-1">
                                     <input type="email" wire:model.live="email" id="email" autocomplete="email"
                                         required
-                                        class="shadow-sm focus:ring-navy-blue focus:border-navy-blue block w-full sm:text-sm border-gray-300 rounded-md @error('email') border-red-500 @enderror">
+                                        class="shadow-sm text-gray-700 focus:ring-navy-blue focus:border-navy-blue block w-full sm:text-sm border-gray-300 rounded-md @error('email') border-red-500 @enderror">
                                 </div>
                             </div>
 
@@ -276,7 +281,7 @@ new class extends Component {
                                 <div class="mt-1">
                                     <input type="text" wire:model.live="address" id="address" autocomplete="address"
                                         required
-                                        class="shadow-sm focus:ring-navy-blue focus:border-navy-blue block w-full sm:text-sm border-gray-300 rounded-md @error('address') border-red-500 @enderror">
+                                        class="shadow-sm text-gray-700 focus:ring-navy-blue focus:border-navy-blue block w-full sm:text-sm border-gray-300 rounded-md @error('address') border-red-500 @enderror">
                                 </div>
                             </div>
 
@@ -287,7 +292,7 @@ new class extends Component {
                                 <div class="mt-1">
                                     <input type="text" wire:model.live="phone_no" id="phone_no" autocomplete="number"
                                         required
-                                        class="shadow-sm focus:ring-navy-blue focus:border-navy-blue block w-full sm:text-sm border-gray-300 rounded-md @error('phone_no') border-red-500 @enderror">
+                                        class="shadow-sm text-gray-700 focus:ring-navy-blue focus:border-navy-blue block w-full sm:text-sm border-gray-300 rounded-md @error('phone_no') border-red-500 @enderror">
                                 </div>
                             </div>
 
@@ -298,7 +303,7 @@ new class extends Component {
                                 <div class="mt-1">
                                     <input type="text" wire:model.live="bank_name" id="bank_name" autocomplete="bank"
                                         required
-                                        class="shadow-sm focus:ring-navy-blue focus:border-navy-blue block w-full sm:text-sm border-gray-300 rounded-md @error('bank_name') border-red-500 @enderror">
+                                        class="shadow-sm text-gray-700 focus:ring-navy-blue focus:border-navy-blue block w-full sm:text-sm border-gray-300 rounded-md @error('bank_name') border-red-500 @enderror">
                                 </div>
                             </div>
 
@@ -309,7 +314,7 @@ new class extends Component {
                                 <div class="mt-1">
                                     <input type="text" wire:model.live="account_no" id="account_no" autocomplete="number"
                                         required
-                                        class="shadow-sm focus:ring-navy-blue focus:border-navy-blue block w-full sm:text-sm border-gray-300 @error('account_no') border-red-500 @enderror rounded-md">
+                                        class="shadow-sm text-gray-700 focus:ring-navy-blue focus:border-navy-blue block w-full sm:text-sm border-gray-300 @error('account_no') border-red-500 @enderror rounded-md">
 
 
                                 </div>
@@ -323,7 +328,7 @@ new class extends Component {
                                 <div class="mt-1">
                                     <input type="text" wire:model.live="account_name" id="account_name"
                                         autocomplete="name" required
-                                        class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-navy-blue focus:border-navy-blue sm:text-sm">
+                                        class="block w-full border-gray-300 rounded-md shadow-sm text-gray-700 focus:ring-navy-blue focus:border-navy-blue sm:text-sm">
                                 </div>
                             </div>
                             <div class="col-span-12 md:col-span-3">
@@ -338,7 +343,7 @@ new class extends Component {
 
                                     <input type="text" wire:model.live="facebook" id="facebook"
                                         autocomplete="social-media"
-                                        class="shadow-sm focus:ring-navy-blue focus:border-navy-blue block w-full sm:text-sm border-gray-300 rounded-md @error('facebook')
+                                        class="shadow-sm text-gray-700 focus:ring-navy-blue focus:border-navy-blue block w-full sm:text-sm border-gray-300 rounded-md @error('facebook')
                                             border-red-500
                                         @enderror">
                                 </div>
@@ -353,7 +358,7 @@ new class extends Component {
                                 <div class="mt-1">
 
                                     <input type="text" wire:model.live="x" id="x" autocomplete="social-media"
-                                        class="shadow-sm focus:ring-navy-blue focus:border-navy-blue block w-full sm:text-sm border-gray-300 rounded-md @error('x')
+                                        class="shadow-sm text-gray-700 focus:ring-navy-blue focus:border-navy-blue block w-full sm:text-sm border-gray-300 rounded-md @error('x')
                                             border-red-500
                                         @enderror">
                                 </div>
@@ -370,7 +375,7 @@ new class extends Component {
 
                                     <input type="text" wire:model.live="instagram" id="instagram"
                                         autocomplete="social-media"
-                                        class="shadow-sm focus:ring-navy-blue focus:border-navy-blue block w-full sm:text-sm border-gray-300 rounded-md @error('instagram')
+                                        class="shadow-sm text-gray-700 focus:ring-navy-blue focus:border-navy-blue block w-full sm:text-sm border-gray-300 rounded-md @error('instagram')
                                             border-red-500
                                         @enderror">
                                 </div>
@@ -387,7 +392,7 @@ new class extends Component {
 
                                     <input type="text" placeholder="Paste whatsapp link here"
                                         wire:model.live="whatsapp" id="whatsapp" autocomplete="social-media"
-                                        class="shadow-sm focus:ring-navy-blue focus:border-navy-blue block w-full sm:text-sm border-gray-300 rounded-md @error('whatsapp')
+                                        class="shadow-sm text-gray-700 focus:ring-navy-blue focus:border-navy-blue block w-full sm:text-sm border-gray-300 rounded-md @error('whatsapp')
                                             border-red-500
                                         @enderror">
                                 </div>

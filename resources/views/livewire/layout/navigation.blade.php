@@ -2,11 +2,14 @@
 
 use Carbon\Carbon;
 use App\Models\User;
+use Mary\Traits\Toast;
 use App\Models\Notification;
 use Livewire\Volt\Component;
 use App\Livewire\Actions\Logout;
 
 new class extends Component {
+    use Toast;
+
     public bool $notification = false;
     public $notifications;
     public $redirection;
@@ -111,7 +114,8 @@ new class extends Component {
         $notification = Notification::where('id', '=', $id)->first();
         $notification->fill(['read_at' => now()]);
         $notification->save();
-        $this->redirectIntended($this->redirection, true);
+        $this->success('Success');
+       $this->redirectIntended($this->redirection, true);
     }
 
     /**
@@ -369,10 +373,10 @@ new class extends Component {
                                 <x-bladewind.bell show_dot="{{ $notification }}" color="red"
                                     animate_dot="true" />
                             </x-slot>
-                            <x-slot name="content">
+                            <x-slot  name="content">
                                 <x-bladewind.dropmenu-item class="p-0 bg-white rounded-lg" hover="false"
                                     padded="false" transparent="false">
-                                    <x-bladewind.list-view class="w-full py-2 bg-white" compact="true">
+                                    <x-bladewind.list-view  class="w-full py-2 bg-white" compact="true">
                                         @if ($notification)
                                             @foreach ($notifications as $notification)
                                                 <x-bladewind.list-item

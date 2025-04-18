@@ -28,9 +28,9 @@
 
 </head>
 
-<body class="h-screen  font-sans antialiased bg-white">
-
-    <div class="bg-gray-100 h-full">
+<body class="fixed w-screen h-screen font-sans antialiased bg-white">
+<x-mary-toast position="toast-top top-right" />
+    <div class="h-full bg-gray-100">
         <livewire:layout.navigation />
 
         <!-- Page Heading -->
