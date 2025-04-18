@@ -157,12 +157,12 @@ new class extends Component {
                         <div class="relative flex w-full py-2 md:py-3">
                             <input type="text" id="search-dropdown" x-model="term" x-on:keydown="$wire.search(term)"
                                 x-on:keyup="$wire.search(term)"
-                                class="font-bold block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-200 rounded-l-lg border-0 active:border-0 hover:border hover:border-gray-400 focus:border-0 focus:ring-0 border-navy-blue "
+                                class="font-bold block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-200 rounded-lg border-0 active:border-0 hover:border hover:border-gray-400 focus:border-0 focus:ring-0 border-navy-blue "
                                 placeholder="Search by: Creator, Design, Location, Ratings"
                                 alt="Search by: Creator, Design, Location, Ratings"
                                 title='Search by: Creator, Design, Location, Ratings' />
                             <span
-                                class="top-0 end-0 p-2.5 text-sm font-medium h-full text-white bg-gray-200 border-0 rounded-r-lg  focus:ring-0 focus:outline-none ">
+                                class="top-0 end-0 p-2.5 text-sm font-medium absolute z-50 mt-3.5 text-white bg-gray-200 border-0 rounded-l-lg mr-1  focus:ring-0 focus:outline-none ">
                                 <svg class="w-4 h-4 text-[#fbaa0d]" aria-hidden="true"
                                     xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"

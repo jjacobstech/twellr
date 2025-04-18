@@ -98,9 +98,9 @@ new #[Layout('layouts.app')] class extends Component {
 }; ?>
 
 <div  x-data="{
-    form: !true,
-    uploadModal: !false,
-    backButton: !false,
+    form: true,
+    uploadModal: false,
+    backButton: false,
 }"
 x-on:livewire-upload-error="$wire.error('Upload Failed')"
 x-on:livewire-upload-finish="$wire.success('Upload Successful')"

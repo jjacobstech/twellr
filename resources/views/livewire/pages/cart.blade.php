@@ -1,10 +1,11 @@
 <?php
 
-use Mary\Traits\Toast;
 use App\Models\Cart;
+use Mary\Traits\Toast;
 use App\Models\Product;
 use App\Models\Purchase;
 use App\Models\Transaction;
+use App\Models\AdminSetting;
 use App\Models\Notification;
 use Livewire\Volt\Component;
 use Livewire\Attributes\Layout;
@@ -16,11 +17,14 @@ new #[Layout('layouts.app')] class extends Component {
     public $cartItems;
     public $totalPrice = 0;
     public $address;
+    public $shipping_fee;
 
     public function mount()
     {
         $this->address = auth()->user()->address;
         $this->loadCartItems();
+        $settings = AdminSetting::first();
+        $this->shipping_fee = $settings ? $settings->shipping_fee : 0;
     }
 
     public function loadCartItems()
@@ -142,7 +146,7 @@ new #[Layout('layouts.app')] class extends Component {
     @endif
 
     <!-- Main Container -->
-    <div class="max-w-6xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+    <div class="max-w-6xl mx-auto px-4 py-8 sm:px-6 lg:px-4">
         <h1 class="text-2xl font-bold text-gray-700 mb-6">Shopping Cart</h1>
 
         <!-- Cart Container -->
@@ -196,7 +200,7 @@ new #[Layout('layouts.app')] class extends Component {
                                                     <path d="M416 208H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h384c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z" />
                                                 </svg>
                                             </button>
-                                            <span class="px-3 py-1 border-x text-sm">{{ $item->quantity }}</span>
+                                            <span class="px-3 py-1 border-x text-sm text-black">{{ $item->quantity }}</span>
                                             <button wire:click="incrementQuantity({{ $item }})" class="px-3 py-1">
                                                 <svg class="w-3 h-3 text-gray-600" fill="currentColor" viewBox="0 0 448 512">
                                                     <path d="M416 208H272V32c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v176H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h176v176c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V272h144c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z" />
@@ -291,7 +295,7 @@ new #[Layout('layouts.app')] class extends Component {
                         <div>
                             <label class="block mb-2 text-sm font-medium uppercase">Shipping</label>
                             <select class="w-full p-2 rounded bg-white text-gray-700 text-sm">
-                                <option>Standard shipping - Free</option>
+                                <option>Standard Shipping - {{ $shipping_fee ? "$$shipping_fee" : "Free" }}</option>
                             </select>
                         </div>
 
@@ -311,7 +315,7 @@ new #[Layout('layouts.app')] class extends Component {
                         <div class="pt-4 border-t border-blue-800">
                             <div class="flex justify-between font-medium">
                                 <span class="uppercase text-sm">Total cost</span>
-                                <span>${{ $totalPrice }}</span>
+                                <span>${{ $totalPrice+$shipping_fee }}</span>
                             </div>
                         </div>
 

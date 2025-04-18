@@ -49,4 +49,14 @@ class Purchase extends Model
         'zip',
         'expired_at'
     ];
+
+    public function customer(){
+        return $this->belongsTo(User::class, 'buyer_id','id');
+    }
+
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class, 'product_id', 'id');
+    }
 }

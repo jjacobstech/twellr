@@ -54,7 +54,7 @@
                 </svg>
                 <span class="hidden md:block">Promote Design</span>
             </a>
-              <a href=""
+              <a href="{{ route('admin.orders') }}"
                 class="flex items-center gap-2 px-3 py-3 text-sm font-medium text-gray-600 rounded-lg transition-all hover:bg-golden hover:text-white group">
                 @svg('eva-car', ['class' => 'w-6 h-6'])
                 <span class="hidden md:block">Orders</span>
