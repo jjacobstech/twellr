@@ -103,7 +103,7 @@
         </div>
 
         <!-- Category or product type badge -->
-        @if (isset($product->category))
+        {{-- @if (isset($product->category)) --}}
             <div class="mt-2 mb-3 flex ">
                 <div class=" w-[70%]">
                     <span
@@ -116,12 +116,12 @@
                     </x-bladewind.button>
                 </div>
             </div>
-        @endif
+        {{-- @endif --}}
         <!-- Action Buttons -->
 
         <!-- Brief description if available -->
-        @if (isset($product->short_description))
-            <p class="mt-1 text-sm text-gray-600 line-clamp-2">{{ $product->short_description }}</p>
+        @if (isset($product->description))
+            <p class="mt-1 text-sm text-gray-600 line-clamp-2">{{ $product->description }}</p>
         @endif
     </div>
 

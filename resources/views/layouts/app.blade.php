@@ -31,7 +31,12 @@
 <body class="fixed w-screen h-screen font-sans antialiased bg-white">
 <x-mary-toast position="toast-top top-right" />
     <div class="h-full bg-gray-100">
-        <livewire:layout.navigation />
+        To Allow Admin view blog, marketplace and explore pages from admin panel
+     @if (Auth::user()->role === 'admin' || Auth::user()->role == 'admin'  )
+            <livewire:layout.admin.navigation />
+     @else
+            <livewire:layout.navigation />
+     @endif
 
         <!-- Page Heading -->
         @if (isset($header))

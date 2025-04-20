@@ -20,11 +20,15 @@ class Purchase extends Model
      * @property string $delivery_status
      * @property string $phone_no
      * @property string $address
-     * @property string $city
-     * @property string $zip
-     * @property Carbon|null $created_at
+     * @property float $amount
+     * @property string|null $location
+     * @property string|null $size
+     * @property Carbon $created_at
      * @property Carbon|null $updated_at
      * @property Carbon|null $expired_at
+     * @property string $product_name
+     * @property string $product_category
+     * @property string $material
      *
      * @package App\Models\Base
      */
@@ -35,8 +39,10 @@ class Purchase extends Model
         'user_id' => 'int',
         'buyer_id' => 'int',
         'product_id' => 'int',
+        'amount' => 'float',
         'expired_at' => 'datetime'
     ];
+
     protected $fillable = [
         'transactions_id',
         'user_id',
@@ -45,9 +51,13 @@ class Purchase extends Model
         'delivery_status',
         'phone_no',
         'address',
-        'city',
-        'zip',
-        'expired_at'
+        'amount',
+        'location',
+        'size',
+        'expired_at',
+        'product_name',
+        'product_category',
+        'material'
     ];
 
     public function customer(){
