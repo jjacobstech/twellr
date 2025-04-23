@@ -1,20 +1,22 @@
-<div class="max-w-sm overflow-hidden bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300">
+<div class="max-w-sm overflow-hidden transition-shadow duration-300 bg-white shadow-md rounded-xl hover:shadow-lg">
     <!-- Product Image -->
     <div class="relative group">
-        <img class="w-full h-64 object-cover rounded-t-xl"
+        <img class="object-cover w-full h-64 rounded-t-xl"
             src="{{ asset('uploads/products/design-stack/' . $product->front_view) }}" alt="{{ $product->name }}">
         <!-- Quick view overlay - appears on hover -->
         <div
-            class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-t-xl">
+            class="absolute inset-0 flex items-center justify-center transition-opacity duration-300 bg-black opacity-0 bg-opacity-40 group-hover:opacity-100 rounded-t-xl">
             <!-- Action Buttons -->
-            <div class="px-5 pb-4  space-x-2 hidden lg:flex">
+                           @if ($product->user_id != Auth::id())
+
+            <div class="hidden px-5 pb-4 space-x-2 lg:flex">
                 <x-bladewind.button wire:click="orderModal({{ $product->id }})" size="small" radius="medium"
                     type="bg-navy-blue hover:bg-golden focus:ring-0" button_text_css="text-white" class="flex-1">
                     Buy Now
                 </x-bladewind.button>
 
-                <button wire:click="addToCart({{ $product->id }})"
-                    class="p-2 rounded-md border border-gray-300 hover:border-golden hover:bg-golden transition-colors hidden lg:block">
+                    <button wire:click="addToCart({{ $product->id }})"
+                    class="hidden p-2 transition-colors border border-gray-300 rounded-md hover:border-golden hover:bg-golden lg:block">
                     <span>
                         @svg('eva-shopping-cart-outline', 'w-6 h-5 text-white')
                     </span>
@@ -27,24 +29,25 @@
                     </span>
                 </button>
             </div>
+            @endif
         </div>
 
         <!-- Price tag overlay - always visible -->
-        <div class="absolute top-4 right-4 bg-black bg-opacity-80 text-white px-3 py-1 rounded-full">
+        <div class="absolute px-3 py-1 text-white bg-black rounded-full top-4 right-4 bg-opacity-80">
             <span class="font-bold text-golden">{{ $product->price }}</span>
         </div>
     </div>
 
     <!-- Product Info -->
     <div class="px-5 py-4">
-        <div class="flex justify-between items-start">
+        <div class="flex items-start justify-between">
             <div class="flex-1">
                 <!-- Larger, more prominent product name -->
-                <h3 class="text-xl font-bold text-gray-800 mb-1">{{ $product->name }}</h3>
+                <h3 class="mb-1 text-xl font-bold text-gray-800">{{ $product->name }}</h3>
 
                 <!-- Secondary price display -->
                 <div class="flex items-center mb-2">
-                    <span class="text-md font-bold text-gray-600 mr-2">
+                    <span class="mr-2 font-bold text-gray-600 text-md">
                         @if ($product->status == 'available')
                             In Stock
                         @else
@@ -81,8 +84,9 @@
                 @endif --}}
             </div>
 
-            <div class="flex gap-2">
-                <button wire:click="addToCart({{ $product->id }})" class="p-2 rounded-md border transition-colors">
+          @if ($product->user_id != Auth::id())
+                <div class="flex gap-2">
+                <button wire:click="addToCart({{ $product->id }})" class="p-2 transition-colors border rounded-md">
                     <span>
                         @svg('eva-shopping-cart-outline', 'w-6 h-5 text-navy-blue fill-navy-blue')
                         {{-- @svg('eva-shopping-cart', 'w-6 h-5 text-navy-blue fill-navy-blue') --}}
@@ -91,7 +95,7 @@
 
                 <!-- Wishlist icon -->
 
-                <button wire:click="addToWishlist({{ $product->id }})" id="wishlist"
+                    <button wire:click="addToWishlist({{ $product->id }})" id="wishlist"
                     class="p-1.5 rounded-full transition-colors group">
 
                     @svg('eva-heart-outline', 'w-7 h-5 text-red-500 hover:text-navy-blue')
@@ -99,22 +103,25 @@
 
                 </button>
             </div>
+            @endif
 
         </div>
 
         <!-- Category or product type badge -->
         {{-- @if (isset($product->category)) --}}
-            <div class="mt-2 mb-3 flex ">
+            <div class="flex mt-2 mb-3 ">
                 <div class=" w-[70%]">
                     <span
-                        class="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-800 rounded-md ">{{ $product->category }}</span>
+                        class="px-2 py-1 text-xs font-medium text-gray-800 bg-gray-100 rounded-md ">{{ $product->category }}</span>
                 </div>
+                  @if ($product->user_id != Auth::id())
                 <div class="w-[30%]">
                     <x-bladewind.button wire:click="orderModal({{ $product->id }})" size="tiny" radius="small"
                         type="bg-navy-blue hover:bg-golden focus:ring-0" button_text_css="text-white" class="flex-1 ">
                         Buy Now
                     </x-bladewind.button>
                 </div>
+                @endif
             </div>
         {{-- @endif --}}
         <!-- Action Buttons -->

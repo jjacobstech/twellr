@@ -1,42 +1,96 @@
 <?php
+
 use Carbon\Carbon;
-use App\Models\Transaction;
+use Mary\Traits\Toast;
 use App\Models\Purchase;
-use Livewire\Volt\Component;
-use Livewire\Attributes\Layout;
+use App\Models\Withdrawal;
+use App\Models\Transaction;
+
+use App\Rules\WithdrawalRule;
 use Illuminate\Support\Facades\Auth;
+use function Livewire\Volt\{state, layout, uses, usesPagination};
+usesPagination(view: 'vendor.livewire.tailwind', theme: 'simple');
+layout('layouts.app');
+uses(Toast::class);
 
-new #[Layout('layouts.app')] class extends Component {
-    public $balance;
-    public $transactions;
-    public $purchases;
-    public $paginator;
-    public int $user;
-    public int $count = 10;
+state(['balance' => '$' . Auth::user()->wallet_balance]);
+state(['dateSort' => 'desc']);
+state('paginator');
+state(['user' => Auth::user()->id]);
+state(['count' => 10]);
+state(['transactions' => fn() => Auth::user()->role == 'creative' ? Transaction::where('user_id', '=', Auth::id())->paginate($this->count)->reverse() : '']);
+state(['purchases' => fn() => Auth::user()->role == 'user' ? Purchase::where('buyer_id', '=', Auth::id())->with('product')->paginate($this->count)->reverse() : '']);
+state(['withdrawalModal' => false]);
+state('amount');
 
-    public function mount()
-    {
-        $this->user = Auth::user()->id;
-        $this->balance = '$' . Auth::user()->wallet_balance;
-        switch (Auth::user()->role) {
-            case 'user':
-                $this->purchases = Purchase::where('buyer_id', '=', Auth::id())->with('product')->paginate($this->count)->reverse();
-                break;
-            case 'creative':
-                $this->transactions = Transaction::where('user_id', '=', Auth::id())->paginate($this->count)->reverse();
-                break;
-        }
-    }
-    public function addFunds()
-    {
-        redirect(route('add.funds'))->withInput([
-            'user_id' => Auth::user()->id,
-            'balance' => Auth::user()->wallet_balance,
-        ]);
-    }
-
-    public function withdraw() {}
+$addFunds = function () {
+    redirect(route('add.funds'))->withInput([
+        'user_id' => Auth::user()->id,
+        'balance' => Auth::user()->wallet_balance,
+    ]);
 };
+
+$generateReferenceNumber = function () {
+    $prefix = 'TRX';
+    do {
+        $timestamp = now()->format('YmdHis');
+        $randomString = strtoupper(Str::random(6));
+        $reference_no = $prefix . $timestamp . $randomString . Auth::id();
+
+        $exists = Transaction::where('ref_no', '=', $reference_no)->first();
+    } while ($exists);
+
+    return $reference_no;
+};
+
+$withdraw = function () {
+    $validator = $this->validate(
+        [
+            'amount' => ['required', 'numeric', new WithdrawalRule()],
+        ],
+        [
+            'amount.required' => 'Add the amount you want to withdraw',
+            'amount.numeric' => 'Wrong Amount',
+        ],
+    );
+
+    $ref_no = $this->generateReferenceNumber();
+
+    $withdrawal = Withdrawal::create([
+          'user_id' => Auth::id(),
+        'amount' => $validator['amount'],
+        'account_name' => Auth::user()->account_name,
+        'account_no' => Auth::user()->account_no,
+        'bank_name' => Auth::user()->bank_name,
+        'status',
+        'transaction_reference' => $ref_no,
+    ]);
+
+    if(!$withdrawal){
+         $this->withdrawalModal = false;
+      return  $this->error('Withdrawal Error','An error has occured, but we are working on it');
+    }
+
+  $transaction = Transaction::create([
+          'user_id' => Auth::id(),
+        "buyer_id"=> Auth::id(),
+        'amount' => $validator['amount'],
+        'transaction_type' => 'withdrawal',
+        'status' => 'pending' ,
+        'ref_no' => $ref_no
+    ]);
+
+        if(!$transaction){
+        Withdrawal::where('id','=',$withdrawal->id)->delete();
+         $this->withdrawalModal = false;
+        return $this->error('Withdrawal Error','An error has occured, but we are working on it');
+    }
+
+    $this->withdrawalModal = false;
+    $this->success('Withdrawal Succesful', 'Your withdrawal request has been sent and will be processed within 24hours',timeout:5000);
+
+};
+
 ?>
 <div class="pb-5 bg-white px-7 md:px-20" x-data="{
     current: true
@@ -46,6 +100,10 @@ new #[Layout('layouts.app')] class extends Component {
             {{ __('Wallet') }}
         </h2>
     </header>
+
+    <div class="px-4 pb-3">
+
+    </div>
     <div
         class="py-4 px-5 bg-gray-100 md:px-5 w-100 rounded-[14px] text-center md:items-center md:mt-5 lg:mt-0 md:justify-center mb-2 md:flex grid space-y-2 md:space-0">
         <div class="grid justify-start w-full md:w-1/2 ">
@@ -58,9 +116,33 @@ new #[Layout('layouts.app')] class extends Component {
                 class="px-5 py-2 duration-500 bg-golden text-neutral-600 hover:scale-110 rounded-xl">Add
                 Funds</button>
             @if (Auth::user()->isCreative())
-                <button
+                <button wire:click='withdrawalModal = true'
                     class="bg-white border-[1px] border-neutral-600 text-black py-2 px-5 rounded-xl hover:scale-110 duration-500 ">Withdraw</button>
             @endif
+        </div>
+    </div>
+    <div x-cloak="display:hidden" wire:show='withdrawalModal' class="w-screen h-screen bg-black/30 backdrop-blur-sm inset-0 absolute z-[999]">
+        <div class="flex justify-center md:px-20 lg:px-[30%] mt-[20%]">
+            <x-bladewind.card class=" lg:w-full">
+
+                <div class="flex flex-col justify-center">
+                    <div class="grid ">
+                        <x-input-label class="text-md">Amount</x-input-label>
+
+                        <div class="grid justify-between space-y-2 lg:flex w-100">
+                            <x-text-input wire:model="amount" />
+                            <x-mary-button label="Withdraw"
+                                class="bg-[#001f54] text-white hover:bg-golden hover:border-golden h-12"
+                                wire:click="withdraw" spinner />
+                        </div>
+<x-input-error :messages="$errors->get('amount')"/>
+
+                    </div>
+                    <p class="text-black w-[80%]"><b>Note:</b> <em class="text-sm">A withdrawal charge is applied to all
+                            withdrawal</em></p>
+
+                </div>
+            </x-bladewind.card>
         </div>
     </div>
     <h1 class="px-5 py-2 mt-5 md:mt-3 text-2xl font-extrabold text-left  text-gray-500 bg-gray-100 rounded-t-[14px]">
@@ -108,16 +190,17 @@ new #[Layout('layouts.app')] class extends Component {
                                     </th>
                                     <td
                                         class="px-4 py-3 text-center font-medium {{ $transaction->amount > 0 ? 'text-green-600' : 'text-red-600' }}">
-                                        {{ $transaction->amount }}
+                                        ${{ $transaction->amount }}
                                     </td>
                                     <td class="px-4 py-3 text-center">
                                         <span
-                                            class="px-2 py-1 text-xs font-medium rounded-full whitespace-nowrap
-                                @if ($transaction->status == 'completed') bg-green-100 text-green-800
-                                @elseif($transaction->status == 'pending') bg-yellow-100 text-yellow-800
-                                @elseif($transaction->status == 'failed') bg-red-100 text-red-800
-                                @else bg-gray-100 text-gray-800 @endif">
-                                            {{ $transaction->status }}
+                                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                                            {{ $transaction->status === 'pending' ? 'bg-yellow-100 text-yellow-800' : '' }}
+                                            {{ $transaction->status === 'processing' ? 'bg-blue-100 text-blue-800' : '' }}
+                                            {{ $transaction->status === 'shipped' ? 'bg-indigo-100 text-indigo-800' : '' }}
+                                            {{ $transaction->status === 'delivered' ? 'bg-green-100 text-green-800' : '' }}
+                                            {{ $transaction->status === 'cancelled' ? 'bg-red-100 text-red-800' : '' }}">
+                                            {{ ucfirst($transaction->status) }}
                                         </span>
                                     </td>
                                     <td class="px-4 py-3 text-center text-gray-500">
@@ -144,18 +227,19 @@ new #[Layout('layouts.app')] class extends Component {
                                     <span
                                         class="font-medium capitalize">{{ $transaction->transaction_type }}hghgh</span>
                                     <span
-                                        class="px-2 py-1 text-xs font-medium rounded-full whitespace-nowrap
-                            @if ($transaction->status == 'completed') bg-green-100 text-green-800
-                            @elseif($transaction->status == 'pending') bg-yellow-100 text-yellow-800
-                            @elseif($transaction->status == 'failed') bg-red-100 text-red-800
-                            @else bg-gray-100 text-gray-800 @endif">
-                                        {{ $transaction->status }}
+                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                                            {{ $transaction->status === 'pending' ? 'bg-yellow-100 text-yellow-800' : '' }}
+                                            {{ $transaction->status === 'processing' ? 'bg-blue-100 text-blue-800' : '' }}
+                                            {{ $transaction->status === 'shipped' ? 'bg-indigo-100 text-indigo-800' : '' }}
+                                            {{ $transaction->status === 'delivered' ? 'bg-green-100 text-green-800' : '' }}
+                                            {{ $transaction->status === 'cancelled' ? 'bg-red-100 text-red-800' : '' }}">
+                                        {{ ucfirst($transaction->status) }}
                                     </span>
                                 </div>
                                 <div class="flex items-center justify-between">
                                     <span
                                         class="font-medium {{ $transaction->amount > 0 ? 'text-green-600' : 'text-red-600' }}">
-                                        {{ $transaction->amount }}
+                                        ${{ $transaction->amount }}
                                     </span>
                                     <span class="text-xs text-gray-500">
                                         {{ Carbon::parse($transaction->created_at)->format('d/m/Y') }}
@@ -170,7 +254,7 @@ new #[Layout('layouts.app')] class extends Component {
 
         @if (!Auth::user()->isCreative())
 
-            <div class="w-full overflow-x-auto rounded-lg shadow-sm">
+            <div class="w-full overflow-x-auto rounded-lg shadow-sm ">
                 @if ($purchases == null || $purchases->isEmpty())
                     <div class="flex items-center justify-center p-8 bg-white">
                         <div class="text-center">
@@ -212,17 +296,17 @@ new #[Layout('layouts.app')] class extends Component {
                                     </th>
                                     <td
                                         class="px-4 py-3 text-center font-medium {{ $purchase->product->price > 0 ? 'text-green-600' : 'text-red-600' }}">
-                                        {{ $purchase->product->price }}
+                                        ${{ $purchase->amount }}
                                     </td>
                                     <td class="px-4 py-3 text-center">
                                         <span
-                                            class="px-2 py-1 text-xs font-medium rounded-full whitespace-nowrap
-                                @if ($purchase->delivery_status == 'delivered') bg-green-100 text-green-800
-                                @elseif($purchase->delivery_status == 'shipping') bg-blue-100 text-blue-800
-                                @elseif($purchase->delivery_status == 'pending') bg-yellow-100 text-yellow-800
-                                @elseif($purchase->delivery_status == 'cancelled') bg-red-100 text-red-800
-                                @else bg-gray-100 text-gray-800 @endif">
-                                            {{ $purchase->delivery_status }}
+                                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                                            {{ $purchase->delivery_status === 'pending' ? 'bg-yellow-100 text-yellow-800' : '' }}
+                                            {{ $purchase->delivery_status === 'processing' ? 'bg-blue-100 text-blue-800' : '' }}
+                                            {{ $purchase->delivery_status === 'shipped' ? 'bg-indigo-100 text-indigo-800' : '' }}
+                                            {{ $purchase->delivery_status === 'delivered' ? 'bg-green-100 text-green-800' : '' }}
+                                            {{ $purchase->delivery_status === 'cancelled' ? 'bg-red-100 text-red-800' : '' }}">
+                                            {{ ucfirst($purchase->delivery_status) }}
                                         </span>
                                     </td>
                                     <td class="px-4 py-3 text-center text-gray-500">
@@ -236,7 +320,7 @@ new #[Layout('layouts.app')] class extends Component {
             </div>
 
             <!-- Responsive version for small screens (hidden on md and above) -->
-            <div class="mt-4 md:hidden">
+            <div class="hidden mt-4">
                 @if ($purchases == null || $purchases->isEmpty())
                     <div class="p-6 text-center bg-white rounded-lg">
                         <p class="text-gray-500">No purchases found</p>
@@ -248,19 +332,19 @@ new #[Layout('layouts.app')] class extends Component {
                                 <div class="flex items-center justify-between mb-2">
                                     <span class="font-medium capitalize">{{ $purchase->transaction_type }}</span>
                                     <span
-                                        class="px-2 py-1 text-xs font-medium rounded-full whitespace-nowrap
-                            @if ($purchase->status == 'delivered') bg-green-100 text-green-800
-                            @elseif($purchase->status == 'shipping') bg-blue-100 text-blue-800
-                            @elseif($purchase->status == 'processing') bg-yellow-100 text-yellow-800
-                            @elseif($purchase->status == 'cancelled') bg-red-100 text-red-800
-                            @else bg-gray-100 text-gray-800 @endif">
-                                        {{ $purchase->status }}
+                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                                            {{ $purchase->delivery_status === 'pending' ? 'bg-yellow-100 text-yellow-800' : '' }}
+                                            {{ $purchase->delivery_status === 'processing' ? 'bg-blue-100 text-blue-800' : '' }}
+                                            {{ $purchase->delivery_status === 'shipped' ? 'bg-indigo-100 text-indigo-800' : '' }}
+                                            {{ $purchase->delivery_status === 'delivered' ? 'bg-green-100 text-green-800' : '' }}
+                                            {{ $purchase->delivery_status === 'cancelled' ? 'bg-red-100 text-red-800' : '' }}">
+                                        {{ ucfirst($purchase->delivery_status) }}
                                     </span>
                                 </div>
                                 <div class="flex items-center justify-between">
                                     <span
                                         class="font-medium {{ $purchase->amount > 0 ? 'text-green-600' : 'text-red-600' }}">
-                                        {{ $purchase->amount }}
+                                        ${{ $purchase->amount }}
                                     </span>
                                     <span class="text-xs text-gray-500">
                                         {{ Carbon::parse($purchase->created_at)->format('d/m/Y') }}
@@ -275,13 +359,13 @@ new #[Layout('layouts.app')] class extends Component {
     </div>
     <div class="flex justify-between py-2 bg-white">
 
-@php
-if(Auth::user()->isCreative()) {
-         $paginator = $transaction->paginate($count) ;
-} else {
-             $paginator = $purchase->paginate($count);
-}
-@endphp
+        @php
+            if (Auth::user()->isCreative()) {
+                $paginator = Transaction::where('user_id', '=', Auth::id())->paginate($count);
+            } else {
+                $paginator = Purchase::where('buyer_id', '=', Auth::id())->with('product')->paginate($count);
+            }
+        @endphp
 
 
 

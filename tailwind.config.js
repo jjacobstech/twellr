@@ -47,5 +47,5 @@ export default
             forms,
             require('daisyui')
         ],
-
+darkMode:"class"
     };

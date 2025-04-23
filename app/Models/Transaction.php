@@ -37,6 +37,7 @@ class Transaction extends Model
         "buyer_id",
         'amount',
         'transaction_type',
-        'status'
+        'status',
+        'ref_no'
     ];
 }

@@ -90,6 +90,7 @@ new #[Layout('layouts.app')] class extends Component {
                     'phone_no' => Auth::user()->phone_no,
                     'quantity' => $cartItem->quantity,
                     'size' => $cartItem->size,
+                    
                 ]);
                 $purchase ? '' : abort(500, 'Something Went Wrong During Purchase Creation');
 

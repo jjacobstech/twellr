@@ -57,7 +57,8 @@ class Purchase extends Model
         'expired_at',
         'product_name',
         'product_category',
-        'material'
+        'material',
+        'quantity'
     ];
 
     public function customer(){

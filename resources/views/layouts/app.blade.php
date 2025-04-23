@@ -31,7 +31,7 @@
 <body class="fixed w-screen h-screen font-sans antialiased bg-white">
 <x-mary-toast position="toast-top top-right" />
     <div class="h-full bg-gray-100">
-        To Allow Admin view blog, marketplace and explore pages from admin panel
+        {{-- To Allow Admin view blog, marketplace and explore pages from admin panel --}}
      @if (Auth::user()->role === 'admin' || Auth::user()->role == 'admin'  )
             <livewire:layout.admin.navigation />
      @else
