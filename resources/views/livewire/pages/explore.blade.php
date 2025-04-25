@@ -1,17 +1,22 @@
 <?php
 
 use Livewire\Volt\Component;
-use Livewire\Attributes\Layout;
 use Illuminate\Support\Facades\Auth;
+use function Livewire\Volt\{state, layout, mount};
+use App\Models\Product;
 
-new #[Layout('layouts.app')] class extends Component {}; ?>
+layout('layouts.app');
 
-<div x-data="{
-    form: true,
-    uploadModal: false,
-    backButton: false,
+state(['latestDesigns' => fn() => Product::latest()->take(7)->get()]);
+state(['pickedForYou' => fn() => Product::latest()->take(7)->get()]);
+state(['whoRockedItBest' => fn() => Product::latest()->take(7)->get()]);
+state(['trendingDesigns' => fn() => Product::latest()->take(7)->get()]);
+state(['designersOfTheWeek' => fn() => Product::latest()->take(7)->get()]);
+state(['featuredDesign' => fn() => Product::latest()->take(7)->get()]);
 
-}">
+?>
+
+<div>
     <div class="flex gap-1 w-[100%]  h-screen pb-2">
         <div class="bg-white px-8 md:px-16 py-8  w-[100%]  pb-20 overflow-y-scroll mb-16">
             <h1 class="text-3xl w-full  font-extrabold text-gray-500 md:hidden">Explore</h1>
@@ -29,20 +34,16 @@ new #[Layout('layouts.app')] class extends Component {}; ?>
                     </p>
                 </a>
             </div>
-            <div
-                class="relative md:hidden flex justify-center w-full gap-3 md:px-5 py-3 md:bg-gray-100 grid-col-4 md:grid-cols-7 sm:grid-cols-2 rounded-2xl">
-                <x-explore-card wire:navigate />
 
-            </div>
             <div
                 class="relative hidden  md:grid w-full gap-3 md:px-5 py-3 bg-gray-100 grid-col-4 md:grid-cols-7 sm:grid-cols-2 rounded-2xl">
-                <x-explore-card wire:navigate />
-                <x-explore-card wire:navigate />
-                <x-explore-card wire:navigate />
-                <x-explore-card wire:navigate />
-                <x-explore-card wire:navigate />
-                <x-explore-card wire:navigate />
-                <x-explore-card wire:navigate />
+                @forelse ($latestDesigns as $latestDesign)
+                    <x-explore-card wire:navigate :product="$latestDesign" />
+
+
+                @empty
+                    <p class="text-gray-400">No Latest Designs</p>
+                @endforelse
             </div>
             <div class="flex justify-between w-full my-3 text-lg">
                 <p class="font-extrabold text-gray-400 text-[21px]">Picked For You</p>
@@ -58,18 +59,24 @@ new #[Layout('layouts.app')] class extends Component {}; ?>
             </div>
             <div
                 class="relative md:hidden flex justify-center w-full gap-3 md:px-5 py-3 md:bg-gray-100 grid-col-4 md:grid-cols-7 sm:grid-cols-2 rounded-2xl">
-                <x-explore-card wire:navigate />
+                @forelse ($latestDesigns as $latestDesign)
+                    <x-explore-card wire:navigate :product="$latestDesign" />
+
+
+                @empty
+                    <p class="text-gray-400">No Latest Designs</p>
+                @endforelse
 
             </div>
             <div
                 class="relative hidden  md:grid w-full gap-3 md:px-5 py-3 bg-gray-100 grid-col-4 md:grid-cols-7 sm:grid-cols-2 rounded-2xl">
-                <x-explore-card wire:navigate />
-                <x-explore-card wire:navigate />
-                <x-explore-card wire:navigate />
-                <x-explore-card wire:navigate />
-                <x-explore-card wire:navigate />
-                <x-explore-card wire:navigate />
-                <x-explore-card wire:navigate />
+                @forelse ($latestDesigns as $latestDesign)
+                    <x-explore-card wire:navigate :product="$latestDesign" />
+
+
+                @empty
+                    <p class="text-gray-400">No Latest Designs</p>
+                @endforelse
             </div>
             <div class="flex justify-between w-full my-3 text-lg">
                 <p class="font-extrabold text-gray-400 text-[21px]">Who Rocked It Best</p>
@@ -83,20 +90,26 @@ new #[Layout('layouts.app')] class extends Component {}; ?>
                     </p>
                 </a>
             </div>
-            <div
+             <div
                 class="relative md:hidden flex justify-center w-full gap-3 md:px-5 py-3 md:bg-gray-100 grid-col-4 md:grid-cols-7 sm:grid-cols-2 rounded-2xl">
-                <x-explore-card wire:navigate />
+                @forelse ($latestDesigns as $latestDesign)
+                    <x-explore-card wire:navigate :product="$latestDesign" />
+
+
+                @empty
+                    <p class="text-gray-400">No Latest Designs</p>
+                @endforelse
 
             </div>
             <div
                 class="relative hidden  md:grid w-full gap-3 md:px-5 py-3 bg-gray-100 grid-col-4 md:grid-cols-7 sm:grid-cols-2 rounded-2xl">
-                <x-explore-card wire:navigate />
-                <x-explore-card wire:navigate />
-                <x-explore-card wire:navigate />
-                <x-explore-card wire:navigate />
-                <x-explore-card wire:navigate />
-                <x-explore-card wire:navigate />
-                <x-explore-card wire:navigate />
+                @forelse ($latestDesigns as $latestDesign)
+                    <x-explore-card wire:navigate :product="$latestDesign" />
+
+
+                @empty
+                    <p class="text-gray-400">No Latest Designs</p>
+                @endforelse
             </div>
             <div class="flex justify-between w-full my-3 text-lg">
                 <p class="font-extrabold text-gray-400 text-[23px]">Trending Designs</p>
@@ -112,18 +125,24 @@ new #[Layout('layouts.app')] class extends Component {}; ?>
             </div>
             <div
                 class="relative md:hidden flex justify-center w-full gap-3 md:px-5 py-3 md:bg-gray-100 grid-col-4 md:grid-cols-7 sm:grid-cols-2 rounded-2xl">
-                <x-explore-card wire:navigate />
+                @forelse ($latestDesigns as $latestDesign)
+                    <x-explore-card wire:navigate :product="$latestDesign" />
+
+
+                @empty
+                    <p class="text-gray-400">No Latest Designs</p>
+                @endforelse
 
             </div>
             <div
                 class="relative hidden  md:grid w-full gap-3 md:px-5 py-3 bg-gray-100 grid-col-4 md:grid-cols-7 sm:grid-cols-2 rounded-2xl">
-                <x-explore-card wire:navigate />
-                <x-explore-card wire:navigate />
-                <x-explore-card wire:navigate />
-                <x-explore-card wire:navigate />
-                <x-explore-card wire:navigate />
-                <x-explore-card wire:navigate />
-                <x-explore-card wire:navigate />
+                @forelse ($latestDesigns as $latestDesign)
+                    <x-explore-card wire:navigate :product="$latestDesign" />
+
+
+                @empty
+                    <p class="text-gray-400">No Latest Designs</p>
+                @endforelse
             </div>
             <div class="flex justify-between w-full my-3 text-lg">
                 <p class="font-extrabold text-gray-400 text-[21px]">Designers Of The Week</p>
@@ -137,20 +156,26 @@ new #[Layout('layouts.app')] class extends Component {}; ?>
                     </p>
                 </a>
             </div>
-            <div
+             <div
                 class="relative md:hidden flex justify-center w-full gap-3 md:px-5 py-3 md:bg-gray-100 grid-col-4 md:grid-cols-7 sm:grid-cols-2 rounded-2xl">
-                <x-explore-card wire:navigate />
+                @forelse ($latestDesigns as $latestDesign)
+                    <x-explore-card wire:navigate :product="$latestDesign" />
+
+
+                @empty
+                    <p class="text-gray-400">No Latest Designs</p>
+                @endforelse
 
             </div>
             <div
                 class="relative hidden  md:grid w-full gap-3 md:px-5 py-3 bg-gray-100 grid-col-4 md:grid-cols-7 sm:grid-cols-2 rounded-2xl">
-                <x-explore-card wire:navigate />
-                <x-explore-card wire:navigate />
-                <x-explore-card wire:navigate />
-                <x-explore-card wire:navigate />
-                <x-explore-card wire:navigate />
-                <x-explore-card wire:navigate />
-                <x-explore-card wire:navigate />
+                @forelse ($latestDesigns as $latestDesign)
+                    <x-explore-card wire:navigate :product="$latestDesign" />
+
+
+                @empty
+                    <p class="text-gray-400">No Latest Designs</p>
+                @endforelse
             </div>
             <div class="flex justify-between w-full my-3 text-lg">
                 <p class="font-extrabold text-gray-400 text-[21px]">Featured Designs</p>
@@ -166,20 +191,25 @@ new #[Layout('layouts.app')] class extends Component {}; ?>
             </div>
             <div
                 class="relative md:hidden flex justify-center w-full gap-3 md:px-5 py-3 md:bg-gray-100 grid-col-4 md:grid-cols-7 sm:grid-cols-2 rounded-2xl">
-                <x-explore-card wire:navigate />
+                @forelse ($latestDesigns as $latestDesign)
+                    <x-explore-card wire:navigate :product="$latestDesign" />
+
+
+                @empty
+                    <p class="text-gray-400">No Latest Designs</p>
+                @endforelse
 
             </div>
             <div
                 class="relative hidden  md:grid w-full gap-3 md:px-5 py-3 bg-gray-100 grid-col-4 md:grid-cols-7 sm:grid-cols-2 rounded-2xl">
-                <x-explore-card wire:navigate />
-                <x-explore-card wire:navigate />
-                <x-explore-card wire:navigate />
-                <x-explore-card wire:navigate />
-                <x-explore-card wire:navigate />
-                <x-explore-card wire:navigate />
-                <x-explore-card wire:navigate />
-            </div>
+                @forelse ($latestDesigns as $latestDesign)
+                    <x-explore-card wire:navigate :product="$latestDesign" />
 
+
+                @empty
+                    <p class="text-gray-400">No Latest Designs</p>
+                @endforelse
+            </div>
         </div>
 
     </div>

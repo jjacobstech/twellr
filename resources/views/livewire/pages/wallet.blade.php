@@ -24,10 +24,10 @@ state(['withdrawalModal' => false]);
 state('amount');
 
 $addFunds = function () {
-    redirect(route('add.funds'))->withInput([
-        'user_id' => Auth::user()->id,
-        'balance' => Auth::user()->wallet_balance,
-    ]);
+    redirect(route('add.funds',[
+        'id' => Auth::user()->id,
+
+    ]));
 };
 
 $generateReferenceNumber = function () {
@@ -121,13 +121,20 @@ $withdraw = function () {
             @endif
         </div>
     </div>
-    <div x-cloak="display:hidden" wire:show='withdrawalModal' class="w-screen h-screen bg-black/30 backdrop-blur-sm inset-0 absolute z-[999]">
-        <div class="flex justify-center md:px-20 lg:px-[30%] mt-[20%]">
+    <div x-cloak="display:hidden"  wire:show='withdrawalModal' class="w-screen h-screen bg-black/30 backdrop-blur-sm inset-0 absolute z-[999]">
+        <div class="flex justify-center md:px-20 lg:px-[30%] mt-[20%]" >
             <x-bladewind.card class=" lg:w-full">
 
                 <div class="flex flex-col justify-center">
                     <div class="grid ">
-                        <x-input-label class="text-md">Amount</x-input-label>
+                        <div class="flex justify-end">
+                              <x-mary-button icon="o-x-mark"
+                                class="justify btn-dark hover:bg-navy-blue btn-sm btn-circle left-0" wire:click='withdrawalModal = false'
+                                 />
+                        </div>
+                                                    <x-input-label class="text-md">Amount</x-input-label>
+
+
 
                         <div class="grid justify-between space-y-2 lg:flex w-100">
                             <x-text-input wire:model="amount" />

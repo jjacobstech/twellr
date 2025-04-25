@@ -58,17 +58,20 @@ new class extends Component {
     {
         return User::query()
             ->where('firstname', 'like', "%$search%")
+            ->where('role', '!=', 'admin')
             ->orWhere('lastname', 'like', "%$search%")
             ->orWhere('instagram', 'like', "%$search%")
             ->take(5)
             ->get()
             ->map(function (User $user) {
-                return (object) [
-                    'avatar' => $user->avatar ? asset('uploads/avatar/' . $user->avatar) : asset('assets/icons-user.png'),
-                    'name' => "$user->firstname $user->lastname",
-                    'email' => $user->email,
-                    'link' => '/r/' . $user->referral_link,
-                ];
+
+                    return (object) [
+                        'avatar' => $user->avatar ? asset('uploads/avatar/' . $user->avatar) : asset('assets/icons-user.png'),
+                        'name' => "$user->firstname $user->lastname",
+                        'email' => $user->email,
+                        'link' => '/r/' . $user->referral_link,
+                    ];
+
             });
     }
 
@@ -138,7 +141,7 @@ new class extends Component {
 
 
 <nav x-data="{ open: false, more: false, notification: false, term: '', admin: !$wire.isAdmin }" class="bg-white border-gray-100">
-
+    
     <!-- Primary Navigation Menu -->
     <div class="px-5 mx-auto md:px-2 max-w-7xl sm:px-6 lg:px-4">
 
@@ -175,34 +178,31 @@ new class extends Component {
                                 <span class="sr-only">Search</span>
                             </span>
 
-                            @if ($result != '')
+                            @if ($result != '' )
                                 <div class="absolute top-full left-0 w-full z-[9999]">
-                                    <div x-show="term != ''" x-transition:enter="transition ease-out duration-200"
+                                    <div  x-transition:enter="transition ease-out duration-200"
                                         x-transition:enter-start="opacity-0 transform scale-95"
                                         x-transition:enter-end="opacity-100 transform scale-100"
                                         class="mt-1 overflow-y-auto bg-white rounded-md shadow-lg max-h-96">
                                         <div class="w-full p-2 sm:p-3">
                                             <div class="flex flex-col gap-1 sm:gap-2">
-
-                                                @if ($result->isEmpty())
-                                                    <p class="font-bold text-black text-md">Opps! Nothing
-                                                        Found</p>
-                                                @endif
-
-                                                @foreach ($result as $item)
-                                                    <a href="{{ $item->link }}"
-                                                        class="flex items-center gap-2 p-1 transition-colors border-b border-gray-200 sm:p-2 hover:bg-gray-100">
-                                                        <img src="{{ $item->avatar }}" alt="{{ $item->name }}"
-                                                            class="object-cover w-8 h-8 rounded-full sm:w-10 sm:h-10">
-                                                        <div class="flex-1 min-w-0">
-                                                            <h4
-                                                                class="text-xs font-bold text-gray-800 truncate sm:text-sm">
-                                                                {{ $item->name }}</h4>
-                                                            <p class="text-xs text-gray-500 truncate">
-                                                                {{ $item->email }}</p>
-                                                        </div>
-                                                    </a>
-                                                @endforeach
+                                                @forelse ($result as $item)
+                                                        <a href="{{ $item->link }}"
+                                                            class="flex items-center gap-2 p-1 transition-colors border-b border-gray-200 sm:p-2 hover:bg-gray-100">
+                                                            <img src="{{ $item->avatar }}" alt="{{ $item->name }}"
+                                                                class="object-cover w-8 h-8 rounded-full sm:w-10 sm:h-10">
+                                                            <div class="flex-1 min-w-0">
+                                                                <h4
+                                                                    class="text-xs font-bold text-gray-800 truncate sm:text-sm">
+                                                                    {{ $item->name }}</h4>
+                                                                <p class="text-xs text-gray-500 truncate">
+                                                                    {{ $item->email }}</p>
+                                                            </div>
+                                                        </a>
+                                                    @empty
+                                                        <p class="font-bold text-black text-md">Opps! Nothing
+                                                            Found</p>
+                                                    @endforelse
                                             </div>
                                         </div>
                                     </div>
@@ -368,8 +368,8 @@ new class extends Component {
                 <div class="justify-center hidden mx-5 sm:flex z-999">
                     <span class="z-20 py-5">
 
-                        <x-bladewind.bell show_dot="{{ $notification }}"
-                            wire:click='drawer = true' color="red" animate_dot="true" />
+                        <x-bladewind.bell show_dot="{{ $notification }}" wire:click='drawer = true' color="red"
+                            animate_dot="true" />
                     </span>
                 </div>
 
@@ -388,30 +388,30 @@ new class extends Component {
                             padded="false" transparent="false">
 
                             <x-bladewind.list-view class="w-full py-2 bg-white" compact="true">
-                                    @forelse ($notifications as $notification)
-                                        <x-bladewind.list-item
-                                            class="flex justify-between w-full bg-white hover:bg-gray-100">
-                                            <div class="pt-1 mx-1">
-                                                <div class="text-sm">
-                                                    <span class="font-medium text-slate-900">
-                                                        {{ $notification->message }}
+                                @forelse ($notifications as $notification)
+                                    <x-bladewind.list-item
+                                        class="flex justify-between w-full bg-white hover:bg-gray-100">
+                                        <div class="pt-1 mx-1">
+                                            <div class="text-sm">
+                                                <span class="font-medium text-slate-900">
+                                                    {{ $notification->message }}
 
-                                                    </span>
+                                                </span>
 
-                                                    <div class="text-xs">
-                                                        {{ Carbon::parse($notification->created_at)->format('D-M-Y') }}
-                                                    </div>
+                                                <div class="text-xs">
+                                                    {{ Carbon::parse($notification->created_at)->format('D-M-Y') }}
                                                 </div>
                                             </div>
-                                            <x-bladewind.button wire:click="markAsRead('{{ $notification->id }}')"
-                                                class="ml-20 hover:bg-navy-blue" type="bg-golden"
-                                                button_text_css="text-white" size="small">
-                                                <span>
-                                                    Mark As Read
-                                                </span>
-                                            </x-bladewind.button>
-                                        </x-bladewind.list-item>
-                                    @empty
+                                        </div>
+                                        <x-bladewind.button wire:click="markAsRead('{{ $notification->id }}')"
+                                            class="ml-20 hover:bg-navy-blue" type="bg-golden"
+                                            button_text_css="text-white" size="small">
+                                            <span>
+                                                Mark As Read
+                                            </span>
+                                        </x-bladewind.button>
+                                    </x-bladewind.list-item>
+                                @empty
                                     <x-bladewind.list-item class="w-full bg-white hover:bg-gray-100">
                                         <div class="grid text-left">
                                             <h3 class="text-lg font-extrabold text-gray-700">No

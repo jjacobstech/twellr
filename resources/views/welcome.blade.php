@@ -19,7 +19,7 @@
 </head>
 </>
 
-<body class="h-screen font-sans bg-gray-100">
+<body class="h-screen font-sans bg-gray-100 overflow-hidden">
     {{-- <x-mary-spotlight shortcut="meta.slash" search-text="Find Creators" no-results-text="Ops! Nothing here." /> --}}
 
     <livewire:welcome.navigation>
@@ -47,55 +47,16 @@
 
                 <div x-data="{ showModal: false }" class="overflow-hidden bg-white rounded-md shadow-md">
                     <img src="{{ asset('assets/white-sweater-png-sticker-design-space-transparent-background_53876-988335.jpg') }}"
-                        alt="Co-creation Example" class="object-contain w-full h-64 cursor-pointer"
-                        @click="showModal = true">
-                    {{-- <div x-show="showModal"
-                        class="fixed inset-0 z-50 overflow-y-auto bg-gray-900 bg-opacity-50 backdrop-blur-md"
-                        aria-labelledby="modal-title" role="dialog" aria-modal="true">
-                        <div class="flex items-center justify-center min-h-screen p-4">
-                            <div class="relative w-full max-w-md p-6 bg-white rounded-lg shadow-xl">
-                                <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                                    <h3 class="text-lg font-medium text-gray-900" id="modal-title">
-                                        Co-create this look!
-                                    </h3>
-                                    <div class="mt-2">
-                                        <p class="text-sm text-gray-500">
-                                            Imagine this hat in different colors or with custom embellishments. You can
-                                            contribute your ideas!
-                                        </p>
-                                        <div class="mt-4">
-                                            <label for="design-idea"
-                                                class="block mb-2 text-sm font-bold text-gray-700">Your
-                                                Design Idea:</label>
-                                            <textarea id="design-idea"
-                                                class="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
-                                                rows="3" placeholder="Suggest a color, pattern, or detail..."></textarea>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
-                                    <button type="button"
-                                        class="inline-flex justify-center w-full px-4 py-2 text-base font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
-                                        @click="showModal = false">
-                                        Submit Idea
-                                    </button>
-                                    <button type="button"
-                                        class="inline-flex justify-center w-full px-4 py-2 mt-3 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm"
-                                        @click="showModal = false">
-                                        Close
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div> --}}
+                        alt="Co-creation Example" class="object-contain w-full h-64 cursor-pointer">
+
                 </div>
             </div>
+                <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8 mt-16">
+                    <p class="text-center text-gray-500 bg-transparent">© {{ date('Y') }} {{ config('app.name') }}. All rights
+                        reserved.</p>
+                </div>
         </div>
-            <footer class="bg-white shadow">
-        <div class="px-4 py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
-            <p class="text-center text-gray-500">© {{ date('Y') }} {{ config('app.name') }}. All rights reserved.</p>
-        </div>
-    </footer>
+
 </body>
 
 </html>

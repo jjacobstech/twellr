@@ -28,6 +28,7 @@ new class extends Component {
     public ?string $whatsapp;
     public ?string $x;
     public ?string $instagram;
+    public $withdrawalThreshold;
     public $cropConfig = [
         'width' => 50,
         'height' => 50,
@@ -79,6 +80,7 @@ new class extends Component {
         $this->whatsapp = Auth::user()->whatsapp;
         $this->facebook = Auth::user()->facebook;
         $this->instagram = Auth::user()->instagram;
+        $this->withdrawalThreshold = Auth::user()->withdrawal_threshold;
     }
 
     /**
@@ -103,6 +105,7 @@ new class extends Component {
             'facebook' => ['string', 'max:255'],
             'whatsapp' => ['string', 'max:255'],
             'instagram' => ['string', 'max:255'],
+            'withdrawalThreshold' => ['numeric'],
         ]));
 
         $avatar = $userInfo->avatarUpload;
@@ -136,6 +139,7 @@ new class extends Component {
                 'facebook' => $userInfo->facebook,
                 'whatsapp' => $userInfo->whatsapp,
                 'instagram' => $userInfo->instagram,
+                'withdrawal_threshold' => $userInfo->withdrawalThreshold
             ]);
         } elseif ($this->avatarUpload == null) {
             $user->fill([
@@ -152,6 +156,8 @@ new class extends Component {
                 'facebook' => $userInfo->facebook,
                 'whatsapp' => $userInfo->whatsapp,
                 'instagram' => $userInfo->instagram,
+                'withdrawal_threshold' => $userInfo->withdrawalThreshold
+
             ]);
         } elseif ($this->coverUpload == null) {
             $user->fill([
@@ -168,6 +174,7 @@ new class extends Component {
                 'facebook' => $userInfo->facebook,
                 'whatsapp' => $userInfo->whatsapp,
                 'instagram' => $userInfo->instagram,
+                'withdrawal_threshold' => $userInfo->withdrawalThreshold
             ]);
         } else {
             $user->fill([
@@ -185,6 +192,7 @@ new class extends Component {
                 'facebook' => $userInfo->facebook,
                 'whatsapp' => $userInfo->whatsapp,
                 'instagram' => $userInfo->instagram,
+                'withdrawal_threshold' => $userInfo->withdrawalThreshold
             ]);
         }
 
@@ -395,6 +403,15 @@ x-on:livewire-upload-finish="$wire.success('Upload Successful')"
                                         class="shadow-sm text-gray-700 focus:ring-navy-blue focus:border-navy-blue block w-full sm:text-sm border-gray-300 rounded-md @error('whatsapp')
                                             border-red-500
                                         @enderror">
+                                </div>
+                            </div>
+                             <div class="col-span-12 md:col-span-3">
+                                <label for="withdrawal_threshold" class="block text-sm font-medium text-gray-700">
+                                    Withdrawal Threshold ($)
+                                </label>
+                                <div class="mt-1">
+                                    <input type="number"  step="1" wire:model.live="withdrawalThreshold" id="withdrawal_threshold" required
+                                        class="shadow-sm text-gray-700 focus:ring-navy-blue focus:border-navy-blue block w-full sm:text-sm border-gray-300 rounded-md @error('lastname') border-red-500 @enderror">
                                 </div>
                             </div>
                         </div>

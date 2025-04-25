@@ -17,8 +17,12 @@ class WithdrawalRule implements ValidationRule
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         $wallet_balance = User::where('id', '=', Auth::id())->value('wallet_balance');
+        $withdrawal_threshold = User::where('id', '=', Auth::id())->value('withdrawal_threshold');
+
         if ($wallet_balance < $value) {
-            $fail("$value is higher than your current balance");
+            $fail("Insufficient balance");
+        } elseif ($withdrawal_threshold > $value) {
+            $fail("Current withdrawal is below Withdrawal Threshold - $$withdrawal_threshold");
         }
     }
 }

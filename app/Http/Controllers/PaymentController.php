@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use Yabacon\Paystack;
 
 use App\Http\Requests;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redirect;
-use Paystack;
+
 
 class PaymentController extends Controller
 {
@@ -22,7 +23,7 @@ class PaymentController extends Controller
                 "currency" => "NGN",
                 "orderID" => 23456,
             );
-            return Paystack::getAuthorizationUrl($data)->redirectNow();
+            Paystack
         } catch (\Exception $e) {
             return Redirect::back()->withMessage(['msg' => 'The paystack token has expired. Please refresh the page and try again.', 'type' => 'error']);
         }

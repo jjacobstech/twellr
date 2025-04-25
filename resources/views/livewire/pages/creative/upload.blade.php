@@ -1,5 +1,6 @@
 <?php
 
+use Mary\Traits\Toast;
 use App\Models\Product;
 use App\Models\Category;
 use App\Helpers\FileHelper;
@@ -10,6 +11,8 @@ use Illuminate\Support\Facades\Auth;
 
 new #[Layout('layouts.app')] class extends Component {
     use WithFileUploads;
+    use Toast;
+
     public string $name = '';
     public string $price = '';
     public string $category = '';
@@ -29,16 +32,18 @@ new #[Layout('layouts.app')] class extends Component {
 
     public function uploadProduct()
     {
+
         $product = (object) ($validated = $this->validate([
-            'name' => 'required|string',
-            'price' => 'required|numeric',
-            'category' => 'required|string',
-            'description' => 'required|string',
-            'frontView' => ['required', 'file', 'mimes:' . config('twellr.design_stack_format')],
-            'backView' => ['required', 'file', 'mimes:' . config('twellr.design_stack_format')],
-            'sideView' => ['required', 'file', 'mimes:' . config('twellr.design_stack_format')],
             'printUpload' => ['required', 'file', 'mimes:' . config('twellr.printable_stack_format')],
-        ]));
+            'sideView' => ['required', 'file', 'mimes:' . config('twellr.design_stack_format')],
+            'backView' => ['required', 'file', 'mimes:' . config('twellr.design_stack_format')],
+            'frontView' => ['required', 'file', 'mimes:' . config('twellr.design_stack_format')],
+            'description' => 'required|string',
+            'category' => 'required|string',
+            'price' => 'required|numeric',
+            'name' => 'required|string',
+        ],
+        ));
 
         $frontView = $product->frontView;
         $backView = $product->backView;
@@ -106,27 +111,41 @@ x-on:livewire-upload-error="$wire.error('Upload Failed')"
 x-on:livewire-upload-finish="$wire.success('Upload Successful')"
 >
 
-    @if (session('status'))
-        @script
-            <script>
-                showNotification('Product Added', 'Product Added Successful', 'success', 5)
-            </script>
-        @endscript
-    @endif
+@session('status')
+    {{$this->success('Product Upload Successful' , "Check Marketplace to view product")  }}
+@endsession
 
-    {{-- Display errors for file uploads --}}
-    @if (
-        $errors->get('designUpload') ||
-            $errors->get('printUpload') ||
-            $errors->get('frontView') ||
-            $errors->get('backView') ||
-            $errors->get('sideView'))
-        @script
-            <script>
-                showNotification('Invalid File Format', "Check Uploads", 'error', 5)
-            </script>
-        @endscript
-    @endif
+@error('printUpload')
+    {{ $this->error( 'Print File Upload Error','Upload Print File') }}
+@enderror
+
+@error('sideView')
+    {{ $this->error( 'Side View Upload Error','Upload Side View') }}
+@enderror
+
+@error('backView')
+    {{ $this->error( 'Back View Upload Error','Upload Back View') }}
+@enderror
+
+@error('frontView')
+    {{ $this->error( 'Front View Upload Error','Upload Front View') }}
+@enderror
+
+@error('description')
+    {{ $this->error('Description Field is empty') }}
+@enderror
+
+@error('category')
+{{ $this->error('Category Field is empty') }}
+@enderror
+
+@error('price')
+{{$this->error('Price Field is empty') }}
+@enderror
+
+@error('name')
+{{ $this->error('Name Field is empty') }}
+@enderror
 
     {{-- Main Layout: Sidebar + Content --}}
     <div class="flex flex-col bg-gray-100 md:flex-row md:gap-1">
@@ -134,7 +153,7 @@ x-on:livewire-upload-finish="$wire.success('Upload Successful')"
         <x-creative-sidebar class="w-[12%]"/>
 
         {{-- Main Content Area --}}
-        <div class="w-[87%] p-4 text-xl bg-white">
+        <div class="w-[87%] px-4 py-2.5 text-xl bg-white">
             {{-- Background Image Container - Let height be determined by content or use min-h for better flexibility --}}
             <div style="background-image: url('{{ asset('assets/blurred.png') }}')"
                 class="relative flex justify-center text-white bg-no-repeat bg-cover rounded-lg ">
@@ -154,7 +173,7 @@ x-on:livewire-upload-finish="$wire.success('Upload Successful')"
                     @csrf
 
                     {{-- Main Form View --}}
-                    <div x-show="form" x-transition:enter.duration.700ms class="py-3 ">
+                    <div x-show="form" x-transition:enter.duration.700ms class="">
                         <div class="flex flex-col h-full px-10 py-10">
 
                             {{-- Name and Price Row - Stack vertically on small, horizontal on medium+ --}}
@@ -163,18 +182,18 @@ x-on:livewire-upload-finish="$wire.success('Upload Successful')"
                                     <x-input-label :value="__('Name')" class="text-gray-500 font-extrabold text-[17px]"
                                         for="name" />
                                     <x-text-input id="name" :class="$errors->get('name')
-                                        ? 'block w-full mt-2 border-1 border-red-600 bg-[#bebebe] rounded-xl'
+                                        ? 'block w-full mt-2 ring-1 border-0 ring-red-600 bg-[#bebebe] rounded-xl'
                                         : 'block border-0 w-full mt-2 bg-[#bebebe] rounded-xl'" type="text" name="name"
-                                        wire:model.live="name" required autofocus autocomplete="name" />
+                                        wire:model.live="name"  autofocus autocomplete="name" />
                                 </div>
 
                                 <div class="w-full md:w-[30%]">
                                     <x-input-label :value="__('Price')" class="text-gray-500 font-extrabold text-[17px]"
                                         for="price" />
                                     <x-text-input id="price" :class="$errors->get('price')
-                                        ? 'block w-full mt-2 border-1 border-red-600 bg-[#bebebe] rounded-xl'
+                                        ? 'block w-full mt-2 ring-1 border-0 ring-red-600 bg-[#bebebe] rounded-xl'
                                         : 'block border-0 w-full mt-2 bg-[#bebebe] rounded-xl'" wire:model.live="price" type="text"
-                                        name="price" required autofocus autocomplete="price" />
+                                        name="price"  autofocus autocomplete="price" />
                                 </div>
                             </div>
 
@@ -183,9 +202,9 @@ x-on:livewire-upload-finish="$wire.success('Upload Successful')"
                                 <x-input-label :value="__('Category')" class="text-gray-500 font-extrabold text-[17px]"
                                     for="category" />
                                 <x-select id="category" wire:model.live="category" :class="$errors->get('category')
-                                    ? 'block w-full mt-2 border-red-600 bg-[#bebebe] border-1 rounded-xl'
+                                    ? 'block w-full mt-2 border-0 ring-red-600 bg-[#bebebe] ring-1 rounded-xl'
                                     : 'block w-full mt-2 border-[#bebebe] bg-[#bebebe] border-0 rounded-xl'" type="text"
-                                    name="category" required autofocus autocomplete="category">
+                                    name="category"  autofocus autocomplete="category">
                                     <x-slot name="options">
                                         <option class="text-black" disabled value="">Select a category</option>
                                         @foreach ($categories as $category)
@@ -205,7 +224,7 @@ x-on:livewire-upload-finish="$wire.success('Upload Successful')"
                                         for="description" />
                                     {{-- Use standard textarea or ensure x-textarea-input handles responsiveness --}}
                                     <x-textarea-input wire:model.live="description" :class="$errors->get('description')
-                                        ? 'w-full border-1 border-red-600 px-2 py-1 mt-2 bg-[#bebebe] rounded-xl text-black h-28'
+                                        ? 'w-full ring-1 border-0 ring-red-600 px-2 py-1 mt-2 bg-[#bebebe] rounded-xl text-black h-28'
                                         : 'w-full px-2 py-1 mt-2 bg-[#bebebe] border-0 rounded-xl text-black h-28'"
                                         id="description"></x-textarea-input>
                                 </div>
@@ -219,7 +238,7 @@ x-on:livewire-upload-finish="$wire.success('Upload Successful')"
                                         $errors->has('backView') ||
                                         $errors->has('sideView') ||
                                         $errors->has('printUpload')
-                                            ? 'border-2 border-red-600'
+                                            ? 'ring-1 ring-red-600 border-0'
                                             : '' }}"
                                         src="{{ asset('assets/image.png') }}" alt="Upload Trigger">
                                 </div>
@@ -239,10 +258,10 @@ x-on:livewire-upload-finish="$wire.success('Upload Successful')"
                     {{-- Form End --}}
 
                     {{-- Upload Modal --}}
-                    <div x-show="uploadModal" x-transition:enter.duration.500ms x-cloak class="py-10 md:py-28 ">
+                    <div x-show="uploadModal" x-transition:enter.duration.500ms x-cloak class="py-10 md:py-24 ">
                         {{-- Grid layout for uploads - 1 col default, 2 cols on small+, 4 cols on large+ --}}
                         <div
-                            class="grid grid-cols-1 gap-6 px-4 sm:grid-cols-2 lg:grid-cols-4 md:gap-8 md:px-8 md:py-3 lg:px-16">
+                            class="grid grid-cols-1 gap-6 px-4 sm:grid-cols-2 lg:grid-cols-4 md:gap-8 md:px-8 md:py-[17px] lg:px-16">
 
                             <div class="grid content-start justify-center space-y-2 text-center">
                                 <label>
