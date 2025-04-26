@@ -10,7 +10,7 @@
             @endif
             @if (route('dashboard') == url()->current())
                 <div
-                    class="w-full px-3 pt-0 pb-5 space-y-5 bg-white md:pt-5 md:flex md:flex-col md:flex-1 md:h-full md:w-[82%] md:overflow-auto lg:mx-1">
+                    class="w-full overflow-y-scroll px-3 py-3 pb-20 space-y-5 bg-white md:pt-5 md:flex md:flex-col md:flex-1 md:h-full md:w-[82%] md:overflow-auto lg:mx-1">
                     <!-- Banner Image -->
                     <div class="relative">
                         <img class="w-full rounded-xl h-[200px] md:h-[254px] object-cover"

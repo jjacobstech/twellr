@@ -113,4 +113,80 @@ class User extends Authenticatable
     {
         return $this->hasMany(Withdrawal::class);
     }
+
+    public function following()
+    {
+        return $this->belongsToMany(User::class, 'followers', 'user_id', 'following_id')
+            ->withTimestamps();
+    }
+
+    /**
+     * Get all users who follow this user
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function followers()
+    {
+        return $this->belongsToMany(User::class, 'followers', 'following_id', 'user_id')
+            ->withTimestamps();
+    }
+
+    /**
+     * Check if user is following another user
+     *
+     * @param int $userId
+     * @return bool
+     */
+    public function isFollowing($userId)
+    {
+        return $this->following()->where('following_id', $userId)->exists();
+    }
+
+    public function pickedForYou()
+    {
+        // Get IDs of users this user is following
+        $followingIds = $this->following()->pluck('users.id');
+
+        // If not following anyone, return empty collection
+        if ($followingIds->isEmpty()) {
+            return collect();
+        }
+
+        // Return products where the user_id is in the following list
+        return Product::whereIn('user_id', $followingIds)
+            ->latest()->take(7)  // Order by most recent first
+            ->get();
+    }
+
+    /**
+     * Check if user is followed by another user
+     *
+     * @param int $userId
+     * @return bool
+     */
+    public function isFollowedBy($userId)
+    {
+        return $this->followers()->where('user_id', $userId)->exists();
+    }
+
+    /**
+     * Get count of followers
+     *
+     * @return int
+     */
+    public function getFollowersCountAttribute()
+    {
+        return $this->followers()->count();
+    }
+
+    /**
+     * Get count of users being followed
+     *
+     * @return int
+     */
+    public function getFollowingCountAttribute()
+    {
+        return $this->following()->count();
+    }
+
 }

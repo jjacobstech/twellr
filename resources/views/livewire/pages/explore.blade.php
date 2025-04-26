@@ -1,14 +1,15 @@
 <?php
 
+use App\Models\User;
+use App\Models\Product;
 use Livewire\Volt\Component;
 use Illuminate\Support\Facades\Auth;
 use function Livewire\Volt\{state, layout, mount};
-use App\Models\Product;
 
 layout('layouts.app');
 
 state(['latestDesigns' => fn() => Product::latest()->take(7)->get()]);
-state(['pickedForYou' => fn() => Product::latest()->take(7)->get()]);
+state(['pickedForYous' => fn() => auth()->user()->pickedForYou()]);
 state(['whoRockedItBest' => fn() => Product::latest()->take(7)->get()]);
 state(['trendingDesigns' => fn() => Product::latest()->take(7)->get()]);
 state(['designersOfTheWeek' => fn() => Product::latest()->take(7)->get()]);
@@ -59,8 +60,8 @@ state(['featuredDesign' => fn() => Product::latest()->take(7)->get()]);
             </div>
             <div
                 class="relative md:hidden flex justify-center w-full gap-3 md:px-5 py-3 md:bg-gray-100 grid-col-4 md:grid-cols-7 sm:grid-cols-2 rounded-2xl">
-                @forelse ($latestDesigns as $latestDesign)
-                    <x-explore-card wire:navigate :product="$latestDesign" />
+                @forelse ($pickedForYous as $pickedForYou)
+                    <x-explore-card wire:navigate :product="$pickedForYou" />
 
 
                 @empty
@@ -70,8 +71,8 @@ state(['featuredDesign' => fn() => Product::latest()->take(7)->get()]);
             </div>
             <div
                 class="relative hidden  md:grid w-full gap-3 md:px-5 py-3 bg-gray-100 grid-col-4 md:grid-cols-7 sm:grid-cols-2 rounded-2xl">
-                @forelse ($latestDesigns as $latestDesign)
-                    <x-explore-card wire:navigate :product="$latestDesign" />
+                @forelse ($pickedForYous as $pickedForYou)
+                    <x-explore-card wire:navigate :product="$pickedForYou" />
 
 
                 @empty

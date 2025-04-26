@@ -86,7 +86,7 @@ new class extends Component {
                     alt="{{ Auth::user()->name }}" />
             </div>
             <div
-                class="mt-24 md:py-9 w-100 bg-gray-100 rounded-[14px] md:mt-[12rem] text-center items-center justify-center grid">
+                class="mt-24 md:py-9 w-100 bg-white rounded-[14px] md:mt-[12rem] text-center items-center justify-center grid">
                 <span class="mt-12 md:mt-16">
                     <x-bladewind.rating rating="{{ $rating }}" size="medium" class="text-golden"
                         name="creative-rating" />
@@ -97,7 +97,7 @@ new class extends Component {
         </div>
 
         <!-- Enhanced Referral Section -->
-        <div class="justify-between px-5 py-10 my-10 bg-gray-100 md:px-10 md:gap-6 md:flex w-100 rounded-xl shadow-sm">
+        <div class="justify-between px-5 py-10 my-10 bg-white md:px-10 md:gap-6 md:flex w-100 rounded-xl shadow-sm">
             <!-- Left Column: Header and Stats -->
             <div class="grid justify-center gap-2 w-100 md:w-1/2 md:justify-items-start">
                 <div class="flex items-center mb-2">

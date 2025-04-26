@@ -56,23 +56,23 @@ new class extends Component {
     // Database search
     public function users(string $search = '')
     {
-        return User::query()
-            ->where('firstname', 'like', "%$search%")
-            ->where('role', '!=', 'admin')
+      return User::query()
+    ->where('role', 'creative')
+    ->where(function ($query) use ($search) {
+        $query->where('firstname', 'like', "%$search%")
             ->orWhere('lastname', 'like', "%$search%")
-            ->orWhere('instagram', 'like', "%$search%")
-            ->take(5)
-            ->get()
-            ->map(function (User $user) {
-
-                    return (object) [
-                        'avatar' => $user->avatar ? asset('uploads/avatar/' . $user->avatar) : asset('assets/icons-user.png'),
-                        'name' => "$user->firstname $user->lastname",
-                        'email' => $user->email,
-                        'link' => '/r/' . $user->referral_link,
-                    ];
-
-            });
+            ->orWhere('instagram', 'like', "%$search%");
+    })
+    ->take(5)
+    ->get()
+    ->map(function (User $user) {
+        return (object) [
+            'avatar' => $user->avatar ? asset('uploads/avatar/' . $user->avatar) : asset('assets/icons-user.png'),
+            'name' => "$user->firstname $user->lastname",
+            'email' => $user->email,
+            'link' => "/$user->firstname$user->lastname?creator=$user->referral_link",
+        ];
+    });
     }
 
     // Static search, but it could come from a database
@@ -141,7 +141,7 @@ new class extends Component {
 
 
 <nav x-data="{ open: false, more: false, notification: false, term: '', admin: !$wire.isAdmin }" class="bg-white border-gray-100">
-    
+
     <!-- Primary Navigation Menu -->
     <div class="px-5 mx-auto md:px-2 max-w-7xl sm:px-6 lg:px-4">
 
@@ -365,6 +365,7 @@ new class extends Component {
                     </a>
                 </div>
 
+                {{-- Notification --}}
                 <div class="justify-center hidden mx-5 sm:flex z-999">
                     <span class="z-20 py-5">
 

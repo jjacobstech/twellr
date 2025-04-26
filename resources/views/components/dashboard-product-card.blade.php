@@ -12,7 +12,7 @@
     <div class="mt-2">
 
 
-        <p class="text-lg font-semibold text-golden">{{ $product->price }}</p>
+        <p class="text-lg font-semibold text-golden">{{App\Models\AdminSetting::first()->value('currency_symbol').$product->price }}</p>
         <p class="font-bold text-gray-500">{{ $product->category }}</p>
     </div>
 </div>

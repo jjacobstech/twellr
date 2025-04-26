@@ -65,6 +65,7 @@ class AdminSetting extends Model
         'favicon',
         'maintenance_mode',
         'vat',
-        'advertisement_status'
+        'advertisement_status',
+        'currency'
     ];
 }

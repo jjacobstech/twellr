@@ -1,6 +1,7 @@
 @props([
     'name' => defaultBladewindName(),
     'rating' => 0,
+    'functional' => false,
     'class' => '',
     'size' => config('bladewind.rating.size', 'small'),
     'color' => 'orange',
@@ -28,7 +29,7 @@
             class="inline bw-rating-{{ $x }} {{ $name }}@if ($rating != 0 && $x <= $rating * 1) rated @endif"
             @if ($clickable) onmouseover="flipStars('{{ $name }}', {{ $rating }}, {{ $x }}, 'on')"
              onmouseout="flipStars('{{ $name }}', {{ $rating }}, {{ $x }}, 'off')"
-             onclick="setRating('{{ $name }}', {{ $x }});{!! $onclick !!}" @endif>
+             onclick="setRating('{{ $name }}', {{ $x }});{!! $onclick !!}" @endif @if($functional)  wire:click="setRating({{ $x }}) @endif">
             <svg xmlns="http://www.w3.org/2000/svg"
                 class="h-{{ $sizing[$size] + $size_adjustment }} w-{{ $sizing[$size] + $size_adjustment }} filled @if ($rating == 0 || $x > $rating * 1) hidden @endif inline text-{{ $color }}-600 @if ($clickable) cursor-pointer @else cursor-default @endif @if ($size == 'big') mx-[-3px] @else mr-[-2px] @endif mt-[-1px]"
                 viewBox="0 0 20 20" fill="currentColor">

@@ -7,6 +7,8 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use App\Models\Comment;
+use App\Models\Question;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -66,4 +68,38 @@ class Product extends Model
         'print_stack_size',
         'status'
     ];
+
+    /**
+     * Get the comments for this product.
+     */
+    public function comments(){
+        return $this->hasMany(Comment::class);
+    }
+
+    /**
+     * Get only root comments (not replies) for this product.
+     */
+    public function rootComments()
+    {
+        return $this->hasMany(Comment::class)
+            ->whereNull('parent_id')
+            ->where('is_approved', true);
+    }
+
+    /**
+     * Get the questions for this product.
+     */
+    public function questions()
+    {
+        return $this->hasMany(Question::class);
+    }
+
+    /**
+     * Get only public questions for this product.
+     */
+    public function publicQuestions()
+    {
+        return $this->hasMany(Question::class)
+            ->where('is_public', true);
+    }
 }

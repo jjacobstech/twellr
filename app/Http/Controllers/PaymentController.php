@@ -23,7 +23,7 @@ class PaymentController extends Controller
                 "currency" => "NGN",
                 "orderID" => 23456,
             );
-            Paystack
+
         } catch (\Exception $e) {
             return Redirect::back()->withMessage(['msg' => 'The paystack token has expired. Please refresh the page and try again.', 'type' => 'error']);
         }
@@ -35,9 +35,9 @@ class PaymentController extends Controller
      */
     public function confirmPayment()
     {
-        $paymentDetails = Paystack::getPaymentData();
+        // $paymentDetails = Paystack::getPaymentData();
 
-        dd($paymentDetails);
+        // dd($paymentDetails);
         // Now you have the payment details,
         // you can store the authorization_code in your db to allow for recurrent subscriptions
         // you can then redirect or do whatever you want

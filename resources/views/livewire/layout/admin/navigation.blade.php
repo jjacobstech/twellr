@@ -64,7 +64,7 @@ new class extends Component {
                     'avatar' => $user->avatar ? asset('uploads/avatar/' . $user->avatar) : asset('assets/icons-user.png'),
                     'name' => "$user->firstname $user->lastname",
                     'email' => $user->email,
-                    'link' => '/r/' . $user->referral_link,
+                    'link' => '/c/' . $user->referral_link,
                 ];
             });
     }
@@ -181,10 +181,8 @@ new class extends Component {
                                             <div class="flex flex-col gap-1 sm:gap-2">
 
                                                 @if ($result->isEmpty())
-
-                                                                <p class="text-md font-bold text-black">Opps! Nothing
-                                                                    Found</p>
-
+                                                    <p class="text-md font-bold text-black">Opps! Nothing
+                                                        Found</p>
                                                 @endif
 
                                                 @foreach ($result as $item)
@@ -369,64 +367,66 @@ new class extends Component {
                 {{-- Support End --}}
 
                 {{-- Notification --}}
-                <div class="justify-center hidden mx-5 md:flex z-999">
+                <div class="justify-center hidden mx-5 sm:flex z-999">
                     <span class="z-20 py-5">
-                        <x-dropdown width='w-[500px]' contentClasses="w-full rounded-md">
-                            <x-slot name="trigger">
-                                <x-bladewind.bell show_dot="{{ $notification }}" color="red"
-                                    animate_dot="true" />
-                            </x-slot>
-                            <x-slot name="content">
-                                <x-bladewind.dropmenu-item class="p-0 bg-white rounded-lg" hover="false"
-                                    padded="false" transparent="false">
-                                    <x-bladewind.list-view class="w-full py-2 bg-white" compact="true">
-                                        @if ($notification)
-                                            @foreach ($notifications as $notification)
-                                                <x-bladewind.list-item
-                                                    class="flex justify-between w-full bg-white hover:bg-gray-100">
-                                                    <div class="pt-1 mx-1">
-                                                        <div class="text-sm">
-                                                            <span class="font-medium text-slate-900">
-                                                                {{ $notification->message }}
 
-                                                            </span>
-
-                                                            <div class="text-xs">
-                                                                {{ Carbon::parse($notification->created_at)->format('D-M-Y') }}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <x-bladewind.button
-                                                        wire:click="markAsRead('{{ $notification->id }}')"
-                                                        class="ml-20 hover:bg-navy-blue" type="bg-golden"
-                                                        button_text_css="text-white" size="small">
-                                                        <span>
-                                                            Mark As Read
-                                                        </span>
-                                                    </x-bladewind.button>
-                                                </x-bladewind.list-item>
-                                            @endforeach
-                                        @else
-                                            <x-bladewind.list-item
-                                                class="flex justify-between w-full bg-white hover:bg-gray-100">
-                                                <div class="pt-1 mx-1">
-                                                    <div class="text-sm font-extrabold">
-                                                        <div class="grid justify-evenly">
-                                                            <h3 class="text-lg font-extrabold text-gray-700">No
-                                                                Notifications
-                                                            </h3>
-                                                            <p class="mt-1 text-sm text-gray-500">You're all
-                                                                caught up!</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </x-bladewind.list-item>
-                                        @endif
-                                    </x-bladewind.list-view>
-                                </x-bladewind.dropmenu-item>
-                            </x-slot>
-                        </x-dropdown>
+                        <x-bladewind.bell show_dot="{{ $notification }}" wire:click='drawer = true' color="red"
+                            animate_dot="true" />
                     </span>
+                </div>
+
+                <div wire:show='drawer' x-cloak="display:hidden" x-transition:enter="500ms" x-transition.opacity
+                    class="fixed inset-0 w-screen h-full ease-in-out bg-black/40 backdrop-blur-sm z-[9999]">
+                    <div class="fixed right-0 grid lg:w-[40%] h-screen  bg-white rounded-none ">
+                        <div class="flex justify-between w-full px-4 py-4">
+                            <div class='text-xl font-bold text-black '>
+                                Notification
+                            </div>
+                            <x-mary-button icon="o-x-mark"
+                                class="justify btn-dark hover:bg-navy-blue btn-sm btn-circle"
+                                wire:click="drawer = false" />
+                        </div>
+                        <x-bladewind.dropmenu-item class="p-0 overflow-y-scroll bg-white" hover="false"
+                            padded="false" transparent="false">
+
+                            <x-bladewind.list-view class="w-full py-2 bg-white" compact="true">
+                                @forelse ($notifications as $notification)
+                                    <x-bladewind.list-item
+                                        class="flex justify-between w-full bg-white hover:bg-gray-100">
+                                        <div class="pt-1 mx-1">
+                                            <div class="text-sm">
+                                                <span class="font-medium text-slate-900">
+                                                    {{ $notification->message }}
+
+                                                </span>
+
+                                                <div class="text-xs">
+                                                    {{ Carbon::parse($notification->created_at)->format('D-M-Y') }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <x-bladewind.button wire:click="markAsRead('{{ $notification->id }}')"
+                                            class="ml-20 hover:bg-navy-blue" type="bg-golden"
+                                            button_text_css="text-white" size="small">
+                                            <span>
+                                                Mark As Read
+                                            </span>
+                                        </x-bladewind.button>
+                                    </x-bladewind.list-item>
+                                @empty
+                                    <x-bladewind.list-item class="w-full bg-white hover:bg-gray-100">
+                                        <div class="grid text-left">
+                                            <h3 class="text-lg font-extrabold text-gray-700">No
+                                                Notifications
+                                            </h3>
+                                            <p class="mt-1 text-sm text-gray-500">You're all
+                                                caught up!</p>
+                                        </div>
+                                    </x-bladewind.list-item>
+                                @endforelse
+                            </x-bladewind.list-view>
+                        </x-bladewind.dropmenu-item>
+                    </div>
                 </div>
                 {{-- Notification End --}}
             </div>

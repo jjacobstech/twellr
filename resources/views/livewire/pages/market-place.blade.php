@@ -262,15 +262,15 @@ new #[Layout('layouts.app')] class extends Component {
     }
 }; ?>
 
-<div>
+<div class="h-full">
 
     <!-- Marketplace -->
-    <div wire:show="marketplace" class="flex w-[100%] space-x-1">
+    <div wire:show="marketplace" class="flex w-[100%] space-x-1 h-full">
 
         <x-market-place-sidebar class="" />
         <div class="relative bg-white w-screen pb-8 md:pb-0 md:w-[72%] lg:w-[80%] md:h-screen py-4 overflow-y-scroll">
             <div x-cloak="display:hidden"
-                class="relative grid w-full h-full gap-5 px-5 pt-1 mb-1 overflow-y-scroll md:h-screen lg:hidden md:grid-cols-2 sm:grid-cols-2">
+                class="relative grid w-full gap-5 px-5 pt-1 mb-16 overflow-y-scroll md:h-screen lg:hidden md:grid-cols-2 sm:grid-cols-2">
                 @foreach ($products as $product)
                     <x-product-card :$product />
                 @endforeach
@@ -343,11 +343,6 @@ new #[Layout('layouts.app')] class extends Component {
                                     {{ $order->category }}
                                 @endif
                             </div>
-                            {{-- <div class="flex-none w-full mt-2 text-sm font-medium text-black ">
-                                @if ($order)
-                                    In Stock
-                                @endif
-                            </div> --}}
                         </div>
 
                         <!-- Order Button -->
@@ -725,4 +720,4 @@ new #[Layout('layouts.app')] class extends Component {
         </div>
     </div>
 </div>
-</div>
+

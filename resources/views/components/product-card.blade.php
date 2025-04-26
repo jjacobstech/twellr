@@ -34,7 +34,7 @@
 
         <!-- Price tag overlay - always visible -->
         <div class="absolute px-3 py-1 text-white bg-black rounded-full top-4 right-4 bg-opacity-80">
-            <span class="font-bold text-golden">{{ $product->price }}</span>
+            <span class="font-bold text-golden">{{App\Models\AdminSetting::first()->value('currency_symbol').$product->price }}</span>
         </div>
     </div>
 
