@@ -1,40 +1,56 @@
 <?php
 
 use App\Models\State;
+use Mary\Traits\Toast;
 use App\Models\Country;
 use App\Models\Category;
+use App\Models\Material;
+use App\Models\ShippingFee;
 use App\Models\AdminSetting;
 use App\Models\BlogCategory;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Artisan;
-use function Livewire\Volt\{state, computed, mount, rules, layout,uses};
-use  Mary\Traits\Toast;
-
+use function Livewire\Volt\{state, computed, mount, rules, layout, uses};
 layout('layouts.admin');
 uses(Toast::class);
+
 state(['categories' => fn() => Category::all()]);
 state(['blogCategories' => fn() => BlogCategory::all()]);
+state(['materials' => fn() => Material::all()]);
+state(['shippingRates' => fn() => ShippingFee::all()]);
+state(['countries' => fn() => Country::with('states')->get()]);
 
-state(['newCategory' => '']);
-state(['newBlogCategory' => '']);
-
-state([
-    'shippingFee' => fn() => AdminSetting::where('id', 1)->first()->shipping_fee,
-]);
 state([
     'commissionRate' => fn() => AdminSetting::where('id', 1)->first()->commission_fee,
 ]);
+
+state(['newCategory' => '']);
+state(['newBlogCategory' => '']);
+state(['newMaterial' => '']);
+state(['newMaterialPrice' => '']);
+
 state(['debugMode' => fn() => config('app.debug', false)]);
-state(['countries' => fn() => Country::with('states')->get()]);
 state(['newCountry' => ['name' => '', 'code' => '']]);
 state(['newState' => ['name' => '', 'country_id' => '']]);
+
 state(['editingCategory' => null]);
-state(['editCategoryName' => '']);
 state(['editingBlogCategory' => null]);
+state(['editingShippingFee' => null]);
+state(['editingMaterial' => null]);
+
+state(['editCategoryName' => '']);
 state(['editBlogCategoryName' => '']);
-state(['showSuccessMessage' => false]);
+state(['editShippingFee' => '']);
+state(['editShippingFeeLocation' => '']);
+state(['shippingFee' => '']);
+state(['shippingFeeLocation' => '']);
 state(['successMessage' => '']);
+state(['editMaterialName' => '']);
+state(['editMaterialPrice' => '']);
+state(['editMaterial' => '']);
+state(['material' => '']);
+state(['showSuccessMessage' => false]);
 
 mount(function () {
     $this->debugMode = config('app.debug', false);
@@ -43,6 +59,7 @@ mount(function () {
 rules([
     'newCategory' => 'required|min:3|max:50|unique:categories,name',
     'shippingFee' => 'required|numeric|min:0',
+    'shippingFeeLocation' => 'required|string|min:0',
     'commissionRate' => 'required|numeric|min:0|max:100',
     'newCountry.name' => 'required|min:3|max:100',
     'newCountry.code' => 'required|size:2|alpha|unique:countries,code',
@@ -51,15 +68,62 @@ rules([
     'editCategoryName' => 'required|min:3|max:50',
 ]);
 
-$updateShippingFee = function () {
-    $this->validate(['shippingFee' => 'required|numeric|min:0']);
+$addShippingFee = function () {
+    $this->validate([
+        'shippingFee' => 'required|numeric|min:0',
+        'shippingFeeLocation' => 'required|string|min:0|unique:shippingRates,location',
+    ]);
 
-    $shipping = AdminSetting::where('id', 1);
+    ShippingFee::create([
+        'rate' => $this->shippingFee,
+        'location' => $this->shippingFeeLocation,
+    ]);
+    $this->shippingRates = ShippingFee::all();
+    $this->shippingFee = '';
+    $this->shippingFeeLocation = '';
+
+    $this->success('Category added successfully.');
+};
+
+$deleteShippingFee = function ($id) {
+    $shipping = ShippingFee::where('id', $id);
 
     if ($shipping) {
-        $shipping->update(['shipping_fee' => $this->shippingFee]);
-        $this->success('Shipping fee updated successfully.');
+        $shipping->delete();
+        $this->editingShippingFee = null;
+        $this->editShippingFee = '';
+        $this->editShippingFeeLocation = '';
+        $this->success('Shipping rate deleted successfully.');
     }
+};
+
+$saveEditShippingFee = function () {
+    $this->validate([
+        'editShippingFee' => 'required|numeric|min:0',
+        'editShippingFeeLocation' => 'required|string|min:0',
+    ]);
+
+    $shipping = ShippingFee::where('id', $this->editingShippingFee);
+
+    if ($shipping) {
+        $shipping->update(['rate' => $this->editShippingFee, 'location' => $this->editShippingFeeLocation]);
+        $this->editingShippingFee = null;
+        $this->editShippingFee = '';
+        $this->editShippingFeeLocation = '';
+        $this->success('Shipping rate updated successfully.');
+    }
+};
+
+$startEditShippingFee = function ($id) {
+    $this->editingShippingFee = $id;
+    $this->editShippingFee = ShippingFee::find($id)->rate;
+    $this->editShippingFeeLocation = ShippingFee::find($id)->location;
+};
+
+$cancelEditShippingFee = function () {
+    $this->editingShippingFee = null;
+    $this->editShippingFee = '';
+    $this->editShippingFeeLocation = '';
 };
 
 $updateCommissionRate = function () {
@@ -96,9 +160,7 @@ $addCategory = function () {
     $this->categories = Category::all();
     $this->newCategory = '';
 
-
     $this->success('Category added successfully.');
-
 };
 
 $deleteCategory = function ($categoryId) {
@@ -125,7 +187,7 @@ $saveEditCategory = function () {
     $this->editingCategory = null;
     $this->editCategoryName = '';
 
-   $this->success('Category updated successfully.');
+    $this->success('Category updated successfully.');
 };
 
 $cancelEditCategory = function () {
@@ -225,6 +287,50 @@ $deleteState = function ($stateId) {
     $this->success('State deleted successfully.');
 };
 
+$addMaterial = function () {
+    $this->validate(['newMaterial' => 'required|min:3|max:50|unique:materials,name',
+        'newMaterialPrice' => 'required|numeric|min:0',
+    ]);
+
+    Material::create(['name' => $this->newMaterial]);
+    $this->materials = Material::all();
+    $this->newMaterial = '';
+
+    $this->success('Material added successfully.');
+};
+
+$deleteMaterial = function ($material_id) {
+    $material = Material::findOrFail($material_id);
+    $material->delete();
+    $this->materials = Material::all();
+
+    $this->success('Material deleted successfully.');
+};
+
+$startEditMaterial = function ($material_id) {
+    $this->editingMaterial = $material_id;
+    $this->editMaterialName = Material::find($material_id)->name;
+};
+
+$saveEditMaterial = function () {
+    $this->validate(['editMaterialName' => 'required|min:3|max:50']);
+
+    $material = Material::findOrFail($this->editingMaterial);
+    $material->name = $this->editMaterialName;
+    $material->save();
+
+    $this->materials = Material::all();
+    $this->editingMaterial = null;
+    $this->editMaterialName = '';
+
+    $this->success('Material updated successfully.');
+};
+
+$cancelEditMaterial = function () {
+    $this->editingMaterial = null;
+    $this->editMaterialName = '';
+};
+
 ?>
 <div class="w-screen bg-gray-100 h-screen overflow-hidden fixed pt-1">
 
@@ -268,51 +374,145 @@ $deleteState = function ($stateId) {
             <div class="bg-white shadow rounded-lg p-6 mb-6">
                 <h2 class="text-xl font-semibold mb-4 text-gray-700 ">Shipping & Commission Settings</h2>
 
-                <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-                    <!-- Shipping Fee -->
-                    <div>
-                        <label for="shippingFee" class="block text-sm font-medium text-gray-700 mb-1">Default Shipping
-                            Fee</label>
-                        <div class="mt-1 relative rounded-md shadow-sm">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <span class="text-gray-500 sm:text-sm">$</span>
-                            </div>
-                            <input type="number" wire:model="shippingFee" id="shippingFee"
-                                class="text-gray-700 focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md"
-                                placeholder="0.00" step="0.01">
+                <!-- Commission Rate -->
+                <div>
+                    <label for="commissionRate" class="block text-sm font-medium text-gray-700 mb-1">Commission Rate
+                        (%)</label>
+                    <div class="mt-1 relative rounded-md shadow-sm">
+                        <input type="number" wire:model="commissionRate" id="commissionRate"
+                            class="text-gray-700 focus:ring-indigo-500 focus:border-indigo-500 block w-full pr-12 sm:text-sm border-gray-300 rounded-md"
+                            placeholder="0" step="0.1">
+                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                            <span class="text-gray-500 sm:text-sm">%</span>
                         </div>
-                        @error('shippingFee')
-                            <span class="text-red-500 text-sm">{{ $message }}</span>
-                        @enderror
-
-                        <button wire:click="updateShippingFee"
-                            class="mt-2 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded text-sm">
-                            Update Shipping Fee
-                        </button>
                     </div>
+                    @error('commissionRate')
+                        <span class="text-red-500 text-sm">{{ $message }}</span>
+                    @enderror
 
-                    <!-- Commission Rate -->
-                    <div>
-                        <label for="commissionRate" class="block text-sm font-medium text-gray-700 mb-1">Commission Rate
-                            (%)</label>
-                        <div class="mt-1 relative rounded-md shadow-sm">
-                            <input type="number" wire:model="commissionRate" id="commissionRate"
-                                class="text-gray-700 focus:ring-indigo-500 focus:border-indigo-500 block w-full pr-12 sm:text-sm border-gray-300 rounded-md"
-                                placeholder="0" step="0.1">
-                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                                <span class="text-gray-500 sm:text-sm">%</span>
+                    <button wire:click="updateCommissionRate"
+                        class="mt-2 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded text-sm">
+                        Update Commission Rate
+                    </button>
+                </div>
+
+                <div class="grid gap-6 mt-3">
+                    <!-- Shipping Fee -->
+                    <div class="flex w-full gap-3">
+                        <div class="w-1/2">
+                            <label for="shippingFee" class="block text-sm font-medium text-gray-700 mb-1">
+                                Shipping
+                                Fee</label>
+                            <div class="mt-1 relative rounded-md shadow-sm">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <span class="text-gray-500 sm:text-sm">$</span>
+                                </div>
+                                <input type="number" wire:model="shippingFee" id="shippingFee"
+                                    class="text-gray-700 focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md"
+                                    placeholder="0.00" step="0.01">
                             </div>
-                        </div>
-                        @error('commissionRate')
-                            <span class="text-red-500 text-sm">{{ $message }}</span>
-                        @enderror
+                            @error('shippingFee')
+                                <span class="text-red-500 text-sm">{{ $message }}</span>
+                            @enderror
 
-                        <button wire:click="updateCommissionRate"
-                            class="mt-2 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded text-sm">
-                            Update Commission Rate
-                        </button>
+                            <button wire:click="addShippingFee"
+                                class="mt-2 bg-green-600 hover:bg-blue-700 text-white py-2 px-4 rounded text-sm ">
+                                Add Shipping Fee
+                            </button>
+                        </div>
+
+                        <div class="w-1/2">
+                            <label for="location" class="block text-sm font-medium text-gray-700 mb-1">
+                                Location
+                            </label>
+                            <div class="mt-1 relative rounded-md shadow-sm">
+                                <div class="absolute inset-y-0 left-0  flex items-center pointer-events-none">
+                                    <span class="text-gray-500 sm:text-sm pl-1.5">
+                                        @svg('eva-pin', ['class' => 'w-5 h-5'])
+                                    </span>
+                                </div>
+                                <input type="text" wire:model="shippingFeeLocation" id="shippingLocation"
+                                    class="text-gray-700 focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md"
+                                    placeholder="Add Location">
+                            </div>
+                            @error('shippingLocation')
+                                <span class="text-red-500 text-sm">{{ $message }}</span>
+                            @enderror
+                        </div>
                     </div>
                 </div>
+
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Location
+                                </th>
+                                <th scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Fee
+                                </th>
+                                <th scope="col"
+                                    class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Actions
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200 text-gray-700">
+                            @foreach ($shippingRates as $shippingRate)
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                                        @if ($editingShippingFee === $shippingRate->id)
+                                            <input type="text" wire:model="editShippingFeeLocation"
+                                                class="focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md ">
+                                            @error('editShippingFee')
+                                                <span class="text-red-500 text-sm">{{ $message }}</span>
+                                            @enderror
+                                        @else
+                                            {{ $shippingRate->location }}
+                                        @endif
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                                        @if ($editingShippingFee === $shippingRate->id)
+                                            <input type="text" wire:model="editShippingFee"
+                                                class="focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md ">
+                                            @error('editShippingFee')
+                                                <span class="text-red-500 text-sm">{{ $message }}</span>
+                                            @enderror
+                                        @else
+                                            {{ $shippingRate->rate }}
+                                        @endif
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        @if ($editingShippingFee === $shippingRate->id)
+                                            <button wire:click="saveEditShippingFee"
+                                                class="text-green-600 hover:text-green-900 mr-3">Save</button>
+                                            <button wire:click="cancelEditShippingFee"
+                                                class="text-gray-600 hover:text-gray-900">Cancel</button>
+                                        @else
+                                            <button wire:click="startEditShippingFee({{ $shippingRate->id }})"
+                                                class="text-indigo-600 hover:text-indigo-900 mr-3">Edit</button>
+                                            <button wire:click="deleteShippingFee({{ $shippingRate->id }})"
+                                                class="text-red-600 hover:text-red-900"
+                                                onclick="return confirm('Are you sure you want to delete this category?')">Delete</button>
+                                        @endif
+                                    </td>
+                                </tr>
+                            @endforeach
+
+                            @if (count($shippingRates) === 0)
+                                <tr>
+                                    <td colspan="2" class="px-6 py-4 text-center text-sm text-gray-500">
+                                        No Shipping Rates found. Add your first Shipping Rate above.
+                                    </td>
+                                </tr>
+                            @endif
+                        </tbody>
+                    </table>
+                </div>
+
             </div>
 
             <!-- Categories Management Section -->
@@ -471,6 +671,106 @@ $deleteState = function ($stateId) {
 
             </div>
 
+            <!-- Material Management Section -->
+            <div class="bg-white shadow rounded-lg p-6 mb-6">
+                <h2 class="text-xl font-semibold mb-4 text-gray-700">Material Management</h2>
+
+                <!-- Add Material -->
+                <div class="mb-6 text-gray-700">
+                    <label for="newMaterial" class="block text-sm font-medium text-gray-700 mb-1">Add New
+                        Material</label>
+                    <div class="flex gap-2">
+                        <input type="text" wire:model="newMaterial" id="newMaterial"
+                            class="focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md text-gray-700"
+                            placeholder="Material name">
+                             <input type="text" wire:model="newMaterialPrice" id="newMaterialPrice"
+                            class="focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md text-gray-700"
+                            placeholder="Material Price">
+                        <button wire:click="addMaterial"
+                            class="bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded text-sm">
+                            Add
+                        </button>
+                    </div>
+                    @error('newMaterial')
+                        <span class="text-red-500 text-sm">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <!-- Categories List -->
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Name
+                                </th>
+                                   <th scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Price
+                                </th>
+                                <th scope="col"
+                                    class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Actions
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200 text-gray-700">
+                            @foreach ($materials as $material)
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                                        @if ($editingMaterial === $material->id)
+                                            <input type="text" wire:model="editMaterialName"
+                                                class="focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md ">
+                                            @error('editMaterialName')
+                                                <span class="text-red-500 text-sm">{{ $message }}</span>
+                                            @enderror
+                                        @else
+                                            {{ $material->name }}
+                                        @endif
+                                    </td>
+                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                                        @if ($editingMaterial === $material->id)
+                                            <input type="text" wire:model="editMaterialPrice"
+                                                class="focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md ">
+                                            @error('editMaterialPrice')
+                                                <span class="text-red-500 text-sm">{{ $message }}</span>
+                                            @enderror
+                                        @else
+                                            {{ $material->price }}
+                                        @endif
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        @if ($editingMaterial === $material->id)
+                                            <button wire:click="saveEditMaterial"
+                                                class="text-green-600 hover:text-green-900 mr-3">Save</button>
+                                            <button wire:click="cancelEditMaterial"
+                                                class="text-gray-600 hover:text-gray-900">Cancel</button>
+                                        @else
+                                            <button wire:click="startEditMaterial({{ $material->id }})"
+                                                class="text-indigo-600 hover:text-indigo-900 mr-3">Edit</button>
+                                            <button wire:click="deleteMaterial({{ $material->id }})"
+                                                class="text-red-600 hover:text-red-900"
+                                                onclick="return confirm('Are you sure you want to delete this material?')">Delete</button>
+                                        @endif
+                                    </td>
+                                </tr>
+                            @endforeach
+
+                            @if (count($materials) === 0)
+                                <tr>
+                                    <td colspan="2" class="px-6 py-4 text-center text-sm text-gray-500">
+                                        No categories found. Add your first material above.
+                                    </td>
+                                </tr>
+                            @endif
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+
             <!-- Countries and States Management -->
             <div class="bg-white shadow rounded-lg p-6 mb-6 text-gray-700">
                 <h2 class="text-xl font-semibold mb-4">Location Management</h2>
@@ -490,7 +790,8 @@ $deleteState = function ($stateId) {
                             @enderror
                         </div>
                         <div>
-                            <label for="countryCode" class="block text-sm font-medium text-gray-700 mb-1">Country Code
+                            <label for="countryCode" class="block text-sm font-medium text-gray-700 mb-1">Country
+                                Code
                                 (2
                                 letters)</label>
                             <input type="text" wire:model="newCountry.code" id="countryCode"
@@ -594,7 +895,8 @@ $deleteState = function ($stateId) {
                                         </tbody>
                                     </table>
                                 @else
-                                    <p class="text-sm text-gray-500">No states/provinces added for this country yet.
+                                    <p class="text-sm text-gray-500">No states/provinces added for this country
+                                        yet.
                                     </p>
                                 @endif
                             </div>

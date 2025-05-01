@@ -1,11 +1,12 @@
 <?php
 
 use Carbon\Carbon;
+use App\Models\User;
 use Mary\Traits\Toast;
 use App\Models\Purchase;
 use App\Models\Withdrawal;
 use App\Models\Transaction;
-
+use App\Models\AdminSetting;
 use App\Rules\WithdrawalRule;
 use Illuminate\Support\Facades\Auth;
 use function Livewire\Volt\{state, layout, uses, usesPagination};
@@ -13,7 +14,7 @@ usesPagination(view: 'vendor.livewire.tailwind', theme: 'simple');
 layout('layouts.app');
 uses(Toast::class);
 
-state(['balance' => '$' . Auth::user()->wallet_balance]);
+state(['balance' => Auth::user()->wallet_balance]);
 state(['dateSort' => 'desc']);
 state('paginator');
 state(['user' => Auth::user()->id]);
@@ -22,12 +23,15 @@ state(['transactions' => fn() => Auth::user()->role == 'creative' ? Transaction:
 state(['purchases' => fn() => Auth::user()->role == 'user' ? Purchase::where('buyer_id', '=', Auth::id())->with('product')->paginate($this->count)->reverse() : '']);
 state(['withdrawalModal' => false]);
 state('amount');
+state(['commission' => AdminSetting::first()->value('commission_fee')]);
+state(['processing_time' => AdminSetting::first()->value('withdrawal_time')]);
 
 $addFunds = function () {
-    redirect(route('add.funds',[
-        'id' => Auth::user()->id,
-
-    ]));
+    redirect(
+        route('add.funds', [
+            'id' => Auth::user()->id,
+        ]),
+    );
 };
 
 $generateReferenceNumber = function () {
@@ -57,38 +61,48 @@ $withdraw = function () {
     $ref_no = $this->generateReferenceNumber();
 
     $withdrawal = Withdrawal::create([
-          'user_id' => Auth::id(),
-        'amount' => $validator['amount'],
+        'user_id' => Auth::id(),
+        'amount' => ($validator['amount'] * $this->commission) + $validator['amount'],
         'account_name' => Auth::user()->account_name,
         'account_no' => Auth::user()->account_no,
         'bank_name' => Auth::user()->bank_name,
-        'status',
+        'status'=> 'pending',
         'transaction_reference' => $ref_no,
     ]);
 
-    if(!$withdrawal){
-         $this->withdrawalModal = false;
-      return  $this->error('Withdrawal Error','An error has occured, but we are working on it');
+    if (!$withdrawal) {
+        $this->withdrawalModal = false;
+        return $this->error('Withdrawal Error', 'An error has occured, but we are working on it');
     }
 
-  $transaction = Transaction::create([
-          'user_id' => Auth::id(),
-        "buyer_id"=> Auth::id(),
-        'amount' => $validator['amount'],
+    $transaction = Transaction::create([
+        'user_id' => Auth::id(),
+        'buyer_id' => Auth::id(),
+        'amount' => ($validator['amount'] * $this->commission) + $validator['amount'],
         'transaction_type' => 'withdrawal',
-        'status' => 'pending' ,
-        'ref_no' => $ref_no
+        'status' => 'pending',
+        'ref_no' => $ref_no,
     ]);
 
-        if(!$transaction){
-        Withdrawal::where('id','=',$withdrawal->id)->delete();
-         $this->withdrawalModal = false;
-        return $this->error('Withdrawal Error','An error has occured, but we are working on it');
+    if (!$transaction) {
+        Withdrawal::where('id', '=', $withdrawal->id)->delete();
+        $this->withdrawalModal = false;
+        return $this->error('Withdrawal Error', 'An error has occured, but we are working on it');
+    }
+    $user = User::where('id', '=', Auth::id())->first();
+    $user->wallet_balance = $user->wallet_balance - (($validator['amount'] * $this->commission) + $validator['amount']);
+    $withdrawalDeducted = $user->save();
+
+    if (!$withdrawalDeducted) {
+        Withdrawal::where('id', '=', $withdrawal->id)->delete();
+        Transaction::where('id', '=', $transaction->id)->delete();
+
+        $this->withdrawalModal = false;
+        return $this->error('Withdrawal Error', 'An error has occured, but we are working on it');
     }
 
     $this->withdrawalModal = false;
-    $this->success('Withdrawal Succesful', 'Your withdrawal request has been sent and will be processed within 24hours',timeout:5000);
-
+    $this->success('Withdrawal Succesful', 'Your withdrawal request has been sent and will be processed within '.$this->processing_time, timeout: 5000);
 };
 
 ?>
@@ -109,7 +123,7 @@ $withdraw = function () {
         <div class="grid justify-start w-full md:w-1/2 ">
             <p class="grid justify-start pb-3 text-gray-400">Current Balance</p>
             <p class="grid justify-start text-4xl font-extrabold text-gray-700 duration-500 hover:scale-110">
-                {{ $balance }}</p>
+                {{ AdminSetting::value('currency_symbol') . $balance }}</p>
         </div>
         <div class="flex justify-center gap-5 font-bold md:justify-end md:w-1/2">
             <button wire:click="addFunds"
@@ -121,18 +135,19 @@ $withdraw = function () {
             @endif
         </div>
     </div>
-    <div x-cloak="display:hidden"  wire:show='withdrawalModal' class="w-screen h-screen bg-black/30 backdrop-blur-sm inset-0 absolute z-[999]">
-        <div class="flex justify-center md:px-20 lg:px-[30%] mt-[20%]" >
+    <div x-cloak="display:hidden" wire:show='withdrawalModal'
+        class="w-screen h-screen bg-black/30 backdrop-blur-sm inset-0 absolute z-[999]">
+        <div class="flex justify-center md:px-20 lg:px-[30%] mt-[20%]">
             <x-bladewind.card class=" lg:w-full">
 
                 <div class="flex flex-col justify-center">
                     <div class="grid ">
                         <div class="flex justify-end">
-                              <x-mary-button icon="o-x-mark"
-                                class="justify btn-dark hover:bg-navy-blue btn-sm btn-circle left-0" wire:click='withdrawalModal = false'
-                                 />
+                            <x-mary-button icon="o-x-mark"
+                                class="justify btn-dark hover:bg-navy-blue btn-sm btn-circle left-0"
+                                wire:click='withdrawalModal = false' />
                         </div>
-                                                    <x-input-label class="text-md">Amount</x-input-label>
+                        <x-input-label class="text-md">Amount</x-input-label>
 
 
 
@@ -142,7 +157,7 @@ $withdraw = function () {
                                 class="bg-[#001f54] text-white hover:bg-golden hover:border-golden h-12"
                                 wire:click="withdraw" spinner />
                         </div>
-<x-input-error :messages="$errors->get('amount')"/>
+                        <x-input-error :messages="$errors->get('amount')" />
 
                     </div>
                     <p class="text-black w-[80%]"><b>Note:</b> <em class="text-sm">A withdrawal charge is applied to all
@@ -204,9 +219,8 @@ $withdraw = function () {
                                             class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
                                             {{ $transaction->status === 'pending' ? 'bg-yellow-100 text-yellow-800' : '' }}
                                             {{ $transaction->status === 'processing' ? 'bg-blue-100 text-blue-800' : '' }}
-                                            {{ $transaction->status === 'shipped' ? 'bg-indigo-100 text-indigo-800' : '' }}
-                                            {{ $transaction->status === 'delivered' ? 'bg-green-100 text-green-800' : '' }}
-                                            {{ $transaction->status === 'cancelled' ? 'bg-red-100 text-red-800' : '' }}">
+                                            {{ $transaction->status === 'completed' ? 'bg-green-100 text-green-800' : '' }}
+                                            {{ $transaction->status === 'rejected' ? 'bg-red-100 text-red-800' : '' }}">
                                             {{ ucfirst($transaction->status) }}
                                         </span>
                                     </td>
@@ -280,6 +294,15 @@ $withdraw = function () {
                                     Item
                                 </th>
                                 <th scope="col" class="px-4 py-3 text-center">
+                                    Price
+                                </th>
+                                <th scope="col" class="px-4 py-3 text-center">
+                                    Material
+                                </th>
+                                <th scope="col" class="px-4 py-3 text-center">
+                                    Quantity
+                                </th>
+                                <th scope="col" class="px-4 py-3 text-center">
                                     Amount
                                 </th>
                                 <th scope="col" class="px-4 py-3 text-center">
@@ -300,6 +323,18 @@ $withdraw = function () {
                                     <th scope="row"
                                         class="px-4 py-3 font-medium text-center text-gray-900 capitalize whitespace-nowrap">
                                         {{ $purchase->product->name }}
+                                    </th>
+                                    <th scope="row"
+                                        class="px-4 py-3 font-medium text-center text-gray-900 capitalize whitespace-nowrap">
+                                        {{ $purchase->product->price }}
+                                    </th>
+                                    <th scope="row"
+                                        class="px-4 py-3 font-medium text-center text-gray-900 capitalize whitespace-nowrap">
+                                        {{ $purchase->material->price }}
+                                    </th>
+                                    <th scope="row"
+                                        class="px-4 py-3 font-medium text-center text-gray-900 capitalize whitespace-nowrap">
+                                        {{ $purchase->quantity }}
                                     </th>
                                     <td
                                         class="px-4 py-3 text-center font-medium {{ $purchase->product->price > 0 ? 'text-green-600' : 'text-red-600' }}">

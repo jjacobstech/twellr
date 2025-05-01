@@ -2,6 +2,8 @@
 use App\Models\User;
 use Mary\Traits\Toast;
 use App\Models\Purchase;
+use App\Models\Withdrawal;
+use App\Models\Transaction;
 use App\Models\AdminSetting;
 use function Livewire\Volt\{state, mount, layout, uses, with, usesPagination};
 usesPagination(view: 'vendor.livewire.tailwind', theme: 'simple');
@@ -11,7 +13,7 @@ uses(Toast::class);
 state(['searchTerm' => '']);
 state(['statusFilter' => '']);
 state(['dateSort' => 'desc']);
-state(['statuses' => ['pending', 'processing', 'shipped', 'delivered', 'cancelled']]);
+state(['statuses' => ['pending', 'processing', 'completed', 'rejected']]);
 state(['currentPage' => 1]);
 state(['perPage' => 5]);
 state('viewData');
@@ -20,34 +22,35 @@ state(['viewCard' => false]);
 mount(function () {});
 
 with([
-    'orders' => fn() => Purchase::orderBy('created_at', $this->dateSort)
+    'withdrawals' => fn() => Withdrawal::orderBy('created_at', $this->dateSort)
         ->where(function ($query) {
             $query
                 ->where('id', 'like', "%{$this->searchTerm}%")
-                ->orWhereHas('customer', function ($user) {
+                ->orWhereHas('user', function ($user) {
                     $user
                         ->where('firstname', 'like', "%{$this->searchTerm}%")
                         ->orWhere('lastname', 'like', "%{$this->searchTerm}%")
                         ->orWhere('email', 'like', "%{$this->searchTerm}%");
-                })
-                ->orWhereHas('product', function ($user) {
-                    $user->where('name', 'like', "%{$this->searchTerm}%");
                 });
         })
-        ->where('delivery_status', 'like', "%$this->statusFilter%")
-        ->with('customer', 'product', 'material')
+        ->where('status', 'like', "%$this->statusFilter%")
+        ->with('user')
         ->paginate($this->perPage),
 ]);
 
 // Method to update order status
-$updateStatus = function ($orderId, $newStatus) {
-    $order = Purchase::findOrFail($orderId);
-    $oldStatus = $order->delivery_status;
-    $order->delivery_status = $newStatus;
-    $order->save();
+$updateStatus = function ($withdrawal_id, $newStatus) {
+    $withdrawal = Withdrawal::findOrFail($withdrawal_id);
+    $transaction = Transaction::where('ref_no','=',$withdrawal->transaction_reference)->first();
+    $oldStatus = $withdrawal->status;
+    $withdrawal->status = $newStatus;
 
-    $this->success("Order #$order->id status changed from  $oldStatus to $newStatus");
-    $this->viewData = Purchase::find($orderId);
+    $transaction->status = $newStatus;
+    $withdrawal->save();
+    $transaction->save();
+
+    $this->success("Order #$withdrawal->id status changed from  $oldStatus to $newStatus");
+    $this->viewData = Withdrawal::find($withdrawal->id);
 };
 
 // Method to reset filters
@@ -60,18 +63,18 @@ $resetFilters = function () {
 // Method to toggle sort direction
 $toggleSort = function () {
     $this->dateSort = $this->dateSort === 'desc' ? 'asc' : 'desc';
-    $this->loadOrders();
+
 };
 
 // Method to change page
 $orderSearch = function () {
     //dd($this->searchTerm,$this->statusFilter);
-    $query = Purchase::where('delivery_status', $this->statusFilter)->get();
+    $query = Withdrawal::where('status', $this->statusFilter)->get();
     dd($this->orders);
 };
 
 $view = function ($id) {
-    $this->viewData = Purchase::with('shippingLocation')->find($id);
+    $this->viewData = Withdrawal::with('user')->find($id);
 
     $this->viewCard = true;
 };
@@ -115,33 +118,27 @@ $view = function ($id) {
                         </th>
                         <th scope="col"
                             class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                            Product
+                            Bank
                         </th>
                         <th scope="col"
                             class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                            Material
+                            Account Name
                         </th>
 
                         <th scope="col"
                             class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                            location
+                            Account No
                         </th>
-                        <th scope="col"
-                            class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                            Date
-                        </th>
-                        <th scope="col"
+                            <th scope="col"
                             class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
                             Price
                         </th>
                         <th scope="col"
                             class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                            Quantity
+                            Date
                         </th>
-                        <th scope="col"
-                            class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                            Total
-                        </th>
+
+
                         <th scope="col"
                             class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
                             Status
@@ -159,41 +156,32 @@ $view = function ($id) {
                                 #{{ $viewData->id }}
                             </td>
                             <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
-                                {{ "{$viewData->customer->firstname} {$viewData->customer->lastname} " ?? 'N/A' }}<br>
-                                <span class="text-xs">{{ $viewData->customer->email ?? '' }}</span>
+                                {{ "{$viewData->user->firstname} {$viewData->user->lastname} " ?? 'N/A' }}<br>
+                                <span class="text-xs">{{ $viewData->user->email ?? '' }}</span>
                             </td>
                             <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
-                                {{ $viewData->product->name }}
+                                {{ $viewData->bank_name }}
                             </td>
                             <td class="px-6 py-4 text-sm text-gray-500 capitalize grid">
-                                <span>{{ $viewData->material->name }}</span>
-                                <span class="text-xs">{{ $viewData->material->price }}</span>
+                                <span>{{ $viewData->account_name }}</span>
                             </td>
                             <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
-                                {{ $viewData->shippingLocation->location }}
+                                {{ $viewData->account_no}}
                             </td>
-
+                                    <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
+                                {{ AdminSetting::value('currency_symbol').number_format($viewData->amount, 2) }}
+                            </td>
                             <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
                                 {{ $viewData->created_at->format('M d, Y H') }}
-                            </td>
-                            <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
-                                {{ number_format($viewData->product->price, 2) }}
-                            </td>
-                            <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
-                                {{$viewData->quantity }}
-                            </td>
-                            <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
-                                {{ AdminSetting::value('currency_symbol').number_format($viewData->amount, 2) }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <span
                                     class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
-                                            {{ $viewData->delivery_status === 'pending' ? 'bg-yellow-100 text-yellow-800' : '' }}
-                                            {{ $viewData->delivery_status === 'processing' ? 'bg-blue-100 text-blue-800' : '' }}
-                                            {{ $viewData->delivery_status === 'shipped' ? 'bg-indigo-100 text-indigo-800' : '' }}
-                                            {{ $viewData->delivery_status === 'delivered' ? 'bg-green-100 text-green-800' : '' }}
-                                            {{ $viewData->delivery_status === 'cancelled' ? 'bg-red-100 text-red-800' : '' }}">
-                                    {{ ucfirst($viewData->delivery_status) }}
+                                            {{ $viewData->status === 'pending' ? 'bg-yellow-100 text-yellow-800' : '' }}
+                                            {{ $viewData->status === 'processing' ? 'bg-blue-100 text-blue-800' : '' }}
+                                            {{ $viewData->status === 'completed' ? 'bg-green-100 text-green-800' : '' }}
+                                            {{ $viewData->status === 'rejected' ? 'bg-red-100 text-red-800' : '' }}">
+                                    {{ ucfirst($viewData->status) }}
                                 </span>
                             </td>
                             <td class="px-6 py-4 text-sm font-medium text-right whitespace-nowrap">
@@ -202,7 +190,7 @@ $view = function ($id) {
                                         class="text-xs text-black border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
                                         @foreach ($statuses as $status)
                                             <option value="{{ $status }}"
-                                                {{ $viewData->delivery_status === $status ? 'selected' : '' }}>
+                                                {{ $viewData->status === $status ? 'selected' : '' }}>
                                                 {{ ucfirst($status) }}
                                             </option>
                                         @endforeach
@@ -281,37 +269,41 @@ $view = function ($id) {
                 </div>
             </div>
             <div class="px-4 pb-3">
-                {{ $orders->links() }}
+                {{ $withdrawals->links() }}
             </div>
             <!-- Orders table -->
-            <div class="w-full px-5 overflow-x-scroll">
-                <div class="overflow-hidden border-b border-gray-200 shadow sm:rounded-lg">
+            <div class="w-full  overflow-x-scroll">
+                <div class=" border-b border-gray-200 shadow sm:rounded-lg">
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
                             <tr>
                                 <th scope="col"
-                                    class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                                    class="px-1 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
                                     # Order
                                 </th>
                                 <th scope="col"
                                     class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
                                     Customer
                                 </th>
-                                <th scope="col"
+                                  <th scope="col"
                                     class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                                    Product
+                                    Bank
+                                </th>
+                                  <th scope="col"
+                                    class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                                    Account Name
+                                </th>
+                                  <th scope="col"
+                                    class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                                    Account Number
                                 </th>
                                 <th scope="col"
+                                    class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                                    Amount
+                                </th>
+                                     <th scope="col"
                                     class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
                                     Date
-                                </th>
-                                <th scope="col"
-                                    class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                                    Price
-                                </th>
-                                <th scope="col"
-                                    class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                                    Total
                                 </th>
                                 <th scope="col"
                                     class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
@@ -324,51 +316,54 @@ $view = function ($id) {
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
-                            @forelse($orders as $order)
+                            @forelse($withdrawals as $withdrawal)
                                 <tr>
                                     <td class="px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
-                                        #{{ $order->id }}
+                                        #{{ $withdrawal->id }}
                                     </td>
                                     <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
-                                        {{ "{$order->customer->firstname} {$order->customer->lastname} " ?? 'N/A' }}<br>
-                                        <span class="text-xs">{{ $order->customer->email ?? '' }}</span>
+                                        {{ "{$withdrawal->user->firstname} {$withdrawal->user->lastname} " ?? 'N/A' }}<br>
+                                        <span class="text-xs">{{ $withdrawal->user->email ?? '' }}</span>
                                     </td>
                                     <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
-                                        {{ $order->product->name }}
+                                        {{ $withdrawal->bank_name }}
                                     </td>
                                     <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
-                                        {{ $order->created_at->format('M d, Y H') }}
+                                        {{ $withdrawal->account_name }}
+                                    </td>
+                                      <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
+                                        {{ $withdrawal->account_no }}
                                     </td>
                                     <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
-                                        {{ number_format($order->product->price, 2) }}
+                                        {{ $withdrawal->amount }}
                                     </td>
                                     <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
-                                        {{ number_format($order->amount, 2) }}
+                                        {{ $withdrawal->created_at->format('M d, Y H') }}
                                     </td>
+
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <span
                                             class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
-                                            {{ $order->delivery_status === 'pending' ? 'bg-yellow-100 text-yellow-800' : '' }}
-                                            {{ $order->delivery_status === 'processing' ? 'bg-blue-100 text-blue-800' : '' }}
-                                            {{ $order->delivery_status === 'shipped' ? 'bg-indigo-100 text-indigo-800' : '' }}
-                                            {{ $order->delivery_status === 'delivered' ? 'bg-green-100 text-green-800' : '' }}
-                                            {{ $order->delivery_status === 'cancelled' ? 'bg-red-100 text-red-800' : '' }}">
-                                            {{ ucfirst($order->delivery_status) }}
+                                            {{ $withdrawal->status === 'pending' ? 'bg-yellow-100 text-yellow-800' : '' }}
+                                            {{ $withdrawal->status === 'processing' ? 'bg-blue-100 text-blue-800' : '' }}
+                                            {{ $withdrawal->status === 'completed' ? 'bg-green-100 text-green-800' : '' }}
+                                            {{ $withdrawal->status === 'rejected' ? 'bg-red-100 text-red-800' : '' }}">
+                                            {{ ucfirst($withdrawal->status) }}
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 text-sm font-medium text-right whitespace-nowrap">
                                         <div class="flex items-center justify-end space-x-2">
                                             <select
-                                                x-on:change="$wire.updateStatus({{ $order->id }}, event.target.value )"
+                                                x-on:change="$wire.updateStatus({{ $withdrawal->id }}, event.target.value )"
                                                 class="text-xs text-black border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
                                                 @foreach ($statuses as $status)
                                                     <option value="{{ $status }}"
-                                                        {{ $order->delivery_status === $status ? 'selected' : '' }}>
+                                                        {{ $withdrawal->status === $status ? 'selected' : '' }}>
                                                         {{ ucfirst($status) }}
                                                     </option>
                                                 @endforeach
                                             </select>
-                                            <a wire:click='view({{ $order->id }})'
+                                            <a wire:click='view({{ $withdrawal->id }})'
                                                 class="text-indigo-600 cursor-pointer hover:text-indigo-900 ">
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5"
                                                     fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -386,7 +381,7 @@ $view = function ($id) {
                                 <tr>
                                     <td colspan="6"
                                         class="px-6 py-4 text-sm text-center text-gray-500 whitespace-nowrap">
-                                        No orders found.
+                                        No Withdrawal Request found.
                                     </td>
                                 </tr>
                             @endforelse

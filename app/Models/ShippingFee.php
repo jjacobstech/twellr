@@ -32,7 +32,7 @@ class ShippingFee extends Model
      * Find shipping rate for a specific location.
      *
      * @param string $location
-     * @return \App\Models\ShippingRate|null
+     * @return \App\Models\ShippingFee|null
      */
     public static function findByLocation($location)
     {

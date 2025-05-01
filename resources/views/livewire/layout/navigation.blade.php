@@ -118,7 +118,8 @@ new class extends Component {
         $notification->fill(['read_at' => now()]);
         $notification->save();
         $this->success('Success');
-        $this->redirectIntended($this->redirection, true);
+        $this->mount();
+       // $this->redirectIntended($this->redirection, true);
     }
 
     /**

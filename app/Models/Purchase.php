@@ -52,13 +52,13 @@ class Purchase extends Model
         'phone_no',
         'address',
         'amount',
-        'location',
+      'location_id',
         'size',
-        'expired_at',
         'product_name',
         'product_category',
-        'material',
+        'material_id',
         'quantity'
+
     ];
 
     public function customer(){
@@ -70,4 +70,15 @@ class Purchase extends Model
     {
         return $this->belongsTo(Product::class, 'product_id', 'id');
     }
+
+    public function material()
+    {
+        return $this->belongsTo(Material::class, 'material_id', 'id');
+    }
+    public function shippingLocation()
+    {
+        return $this->belongsTo(ShippingFee::class, 'location_id', 'id');
+    }
+
+
 }

@@ -16,7 +16,7 @@ Route::middleware(['auth', 'verified'])->group(
         Volt::route('/blog', 'pages.blog')->name('blog');
         Volt::route('settings', 'pages.settings')->name('settings');
         Volt::route('cart', 'pages.cart')->name('cart');
-        Volt::route('/{slug}', 'pages.creative.profile')->name('creative.profile');
+        Volt::route('/{slug}', 'pages.creative.profile')->name(name: 'creative.profile');
         Route::get('/add/funds', [PaymentController::class, 'initPayment'])->name('add.funds');
         Route::get('/payment/confirm', [PaymentController::class, 'confirmPayment'])->name('confirm.payment');
     }

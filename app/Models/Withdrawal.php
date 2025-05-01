@@ -46,14 +46,6 @@ class Withdrawal extends Model
     }
 
     /**
-     * Get the admin who processed this withdrawal request.
-     */
-    public function processor()
-    {
-        return $this->belongsTo(User::class, 'processed_by');
-    }
-
-    /**
      * Scope a query to only include pending requests.
      */
     public function scopePending($query)
@@ -80,8 +72,8 @@ class Withdrawal extends Model
     /**
      * Scope a query to only include processed requests.
      */
-    public function scopeProcessed($query)
+    public function scopeProcessing($query)
     {
-        return $query->where('status', 'processed');
+        return $query->where('status', 'processing');
     }
 }

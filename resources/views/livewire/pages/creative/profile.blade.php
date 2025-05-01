@@ -37,7 +37,7 @@ mount(function ()
     }
 });
 
-$setRating = function($a, $b){
+$setRating = function( $b){
 dd($b);
 };
 
@@ -78,7 +78,7 @@ $toggleFollow = action( function() {
         </h2>
 
         <a href="{{ route('settings') }}">
-            <svg class="h-7 w-7 text-gray-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+            <svg class="text-gray-500 h-7 w-7" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                 stroke-linejoin="round">
                 <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
@@ -99,7 +99,7 @@ $toggleFollow = action( function() {
             <div
                 class="mt-24 md:py-9 w-100 bg-white rounded-[14px] md:mt-[12rem] text-center items-center justify-center grid">
                 <span class="mt-12 md:mt-16">
-                    <x-bladewind.rating rating="{{ $rating }}" name="{{ $user->id }}" size="medium" class="text-golden"
+                    <x-bladewind.rating rating="{{ $rating }}" name="{{ $user->id }}" functional size="medium" class="text-golden"
                         name="creative-rating" />
                 </span>
                 <h1 class="my-2 text-lg font-bold text-gray-500 md:text-3xl">{{ $user->firstname }}
@@ -119,7 +119,7 @@ $toggleFollow = action( function() {
         </div>
 
 
-        <div class="justify-between px-5 py-10 my-10 bg-white md:px-10 md:gap-6 md:flex w-100 rounded-xl shadow-sm">
+        <div class="justify-between px-5 py-10 my-10 bg-white shadow-sm md:px-10 md:gap-6 md:flex w-100 rounded-xl">
             <div x-cloak="display:hidden"
                 class="relative grid w-full h-full gap-5 px-5 pt-1 mb-1 overflow-y-scroll md:h-screen lg:hidden md:grid-cols-2 sm:grid-cols-2">
                 @forelse ($designs as $design)
@@ -141,29 +141,3 @@ $toggleFollow = action( function() {
     </div>
 </div>
 
-<script>
-    function copyReferralLink() {
-        const copyText = document.getElementById("referral_link");
-        copyText.select();
-        copyText.setSelectionRange(0, 99999); // For mobile devices
-
-        navigator.clipboard.writeText(copyText.value).then(() => {
-            // Visual feedback
-            const copyButton = document.getElementById("copyButton");
-            const originalText = copyButton.innerText;
-            const originalBg = copyButton.classList.contains('bg-golden');
-
-            copyButton.innerText = "Copied!";
-            copyButton.classList.remove('bg-golden');
-            copyButton.classList.add('bg-green-500');
-            copyButton.classList.add('text-white');
-
-            setTimeout(() => {
-                copyButton.innerText = originalText;
-                copyButton.classList.remove('bg-green-500');
-                copyButton.classList.remove('text-white');
-                if (originalBg) copyButton.classList.add('bg-golden');
-            }, 2000);
-        });
-    }
-</script>

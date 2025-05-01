@@ -64,7 +64,7 @@ new class extends Component {
                     'avatar' => $user->avatar ? asset('uploads/avatar/' . $user->avatar) : asset('assets/icons-user.png'),
                     'name' => "$user->firstname $user->lastname",
                     'email' => $user->email,
-                    'link' => '/c/' . $user->referral_link,
+                    'link' => '/'. $user->referral_link,
                 ];
             });
     }
@@ -157,7 +157,7 @@ new class extends Component {
                         <div class="relative flex w-full py-2 md:py-3">
                             <input type="text" id="search-dropdown" x-model="term" x-on:keydown="$wire.search(term)"
                                 x-on:keyup="$wire.search(term)"
-                                class="font-bold block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-200 rounded-lg border-0 active:border-0 hover:border hover:border-gray-400 focus:border-0 focus:ring-0 border-navy-blue "
+                                class="font-bold block p-2.5 w-full z-19 text-sm text-gray-900 bg-gray-200 rounded-lg border-0 active:border-0 hover:border hover:border-gray-400 focus:border-0 focus:ring-0 border-navy-blue "
                                 placeholder="Search by: Creator, Design, Location, Ratings"
                                 alt="Search by: Creator, Design, Location, Ratings"
                                 title='Search by: Creator, Design, Location, Ratings' />
@@ -367,8 +367,8 @@ new class extends Component {
                 {{-- Support End --}}
 
                 {{-- Notification --}}
-                <div class="justify-center hidden mx-5 sm:flex z-999">
-                    <span class="z-20 py-5">
+                <div class="justify-center hidden mx-5 sm:flex z-19">
+                    <span class=" py-5">
 
                         <x-bladewind.bell show_dot="{{ $notification }}" wire:click='drawer = true' color="red"
                             animate_dot="true" />

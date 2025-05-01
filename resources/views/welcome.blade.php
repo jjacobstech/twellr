@@ -19,11 +19,10 @@
 </head>
 </>
 
-<body class="h-screen font-sans bg-gray-100 overflow-hidden">
-    {{-- <x-mary-spotlight shortcut="meta.slash" search-text="Find Creators" no-results-text="Ops! Nothing here." /> --}}
+<body class="h-screen overflow-hidden font-sans bg-gray-100">
 
     <livewire:welcome.navigation>
-        <div class="p-6 mt-1 bg-white  container-fluid md:p-10 lg:p-10 lg:pb-20 h-full">
+        <div class="h-full p-6 mt-1 bg-white container-fluid md:p-10 lg:p-10 lg:pb-20">
             <div class="mb-5 text-center">
                 <h1 class="mb-2 text-4xl font-bold text-gray-800 md:text-4xl">Stay Creative. Monetize your designs.</h1>
                 <p class="text-2xl font-bold text-gray-600">Co-create your fashion. Have a say in what you wear!</p>
@@ -51,7 +50,7 @@
 
                 </div>
             </div>
-                <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8 mt-16">
+                <div class="px-4 mx-auto mt-16 max-w-7xl sm:px-6 lg:px-8">
                     <p class="text-center text-gray-500 bg-transparent">© {{ date('Y') }} {{ config('app.name') }}. All rights
                         reserved.</p>
                 </div>

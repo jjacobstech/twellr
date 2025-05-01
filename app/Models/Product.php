@@ -69,6 +69,9 @@ class Product extends Model
         'status'
     ];
 
+    public function designer(){
+        return $this->belongsTo(User::class,'user_id', 'id');
+    }
     /**
      * Get the comments for this product.
      */

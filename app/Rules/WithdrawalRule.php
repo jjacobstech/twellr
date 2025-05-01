@@ -2,6 +2,7 @@
 
 namespace App\Rules;
 
+use App\Models\Base\AdminSetting;
 use Closure;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -16,8 +17,8 @@ class WithdrawalRule implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        $wallet_balance = User::where('id', '=', Auth::id())->value('wallet_balance');
-        $withdrawal_threshold = User::where('id', '=', Auth::id())->value('withdrawal_threshold');
+        $wallet_balance = User::where('id', '=', Auth::id())->value(column: 'wallet_balance');
+        $withdrawal_threshold = AdminSetting::first()->value('withdrawal_threshold');
 
         if ($wallet_balance < $value) {
             $fail("Insufficient balance");

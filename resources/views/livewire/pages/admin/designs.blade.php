@@ -5,6 +5,7 @@ namespace App\Livewire;
 use Carbon\Carbon;
 use App\Models\Product;
 use Livewire\Component;
+use App\Models\AdminSetting;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Storage;
 use function Livewire\Volt\{layout, mount, state, rules};
@@ -31,7 +32,7 @@ rules([
 mount(fn() => $this->loadDesigns());
 
 $loadDesigns = function () {
-    $this->designs = Product::all();
+    $this->designs = Product::with('designer')->get();
 };
 
 $search = function ($keyword) {
@@ -116,9 +117,11 @@ $hideSuccessMessage = function () {
                 @foreach ($designs as $design)
                     <div class="border rounded-lg overflow-hidden bg-gray-50">
                         <div class="p-4 bg-navy-blue border border-navy-blue flex justify-between items-center text-white">
+                              <h4 class="text-lg font-medium">{{ $design->designer->firstname. " " .$design->designer->lastname }}</h4>
                             <h4 class="text-lg font-medium">{{ $design->name }}</h4>
-                            {{-- <div class="text-sm">{{ Carbon::parse($design->created_at)->format('D-M-Y')}}</div> --}}
-                          <div class="text-sm">  {{ Carbon::parse($design->created_at)->format('d/m/Y') }}</div>
+                            <h4 class="text-lg font-medium">{{ AdminSetting::value('currency_symbol') }}{{ $design->price }}</h4>
+
+                          <div class="text-sm font-medium">  {{ Carbon::parse($design->created_at)->format('d/m/Y') }}</div>
                         </div>
 
                         <div class="p-4 border-0">

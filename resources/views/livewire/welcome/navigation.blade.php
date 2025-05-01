@@ -48,7 +48,7 @@ new class extends Component {
                     'avatar' => $user->avatar ? asset('uploads/avatar/' . $user->avatar) : asset('assets/icons-user.png'),
                     'name' => "$user->firstname $user->lastname",
                     'email' => $user->email,
-                    'link' => '/r/' . $user->referral_link,
+                    'link' => "/$user->firstname$user->lastname?creator=$user->referral_link",
                 ];
             });
     }
@@ -144,7 +144,7 @@ new class extends Component {
                                     <div x-show="term != ''" x-transition:enter="transition ease-out duration-200"
                                         x-transition:enter-start="opacity-0 transform scale-95"
                                         x-transition:enter-end="opacity-100 transform scale-100"
-                                        class="bg-white rounded-md shadow-lg mt-1 max-h-96 overflow-y-auto">
+                                        class="mt-1 overflow-y-auto bg-white rounded-md shadow-lg max-h-96">
 
                                         @if ($userActions != '')
                                             {{-- Actions --}}
@@ -152,13 +152,13 @@ new class extends Component {
                                                 <div class="flex flex-col gap-1 sm:gap-2">
                                                     @foreach ($userActions as $action)
                                                         <a href="{{ $action['link'] }}"
-                                                            class="flex items-center gap-2 p-1 sm:p-2 border-b border-gray-200 hover:bg-gray-100 transition-colors">
+                                                            class="flex items-center gap-2 p-1 transition-colors border-b border-gray-200 sm:p-2 hover:bg-gray-100">
                                                           <div>
-                                                            <x-mary-icon name='o-user' class='p-2 rounded-full w-11 h-11 bg-black' />
+                                                            <x-mary-icon name='o-user' class='p-2 bg-black rounded-full w-11 h-11' />
                                                           </div>
-                                                            <div class="min-w-0 flex-1">
+                                                            <div class="flex-1 min-w-0">
                                                                 <h4
-                                                                    class="text-xs sm:text-sm font-bold text-gray-800 truncate">
+                                                                    class="text-xs font-bold text-gray-800 truncate sm:text-sm">
                                                                     {{ $action['name'] }}</h4>
                                                                 <p class="text-xs text-gray-500 truncate">
                                                                     {{ $action['description'] }}</p>
@@ -175,12 +175,12 @@ new class extends Component {
                                             <div class="flex flex-col gap-1 sm:gap-2">
                                                 @foreach ($result as $item)
                                                     <a href="{{ $item->link }}"
-                                                        class="flex items-center gap-2 p-1 sm:p-2 border-b border-gray-200 hover:bg-gray-100 transition-colors">
+                                                        class="flex items-center gap-2 p-1 transition-colors border-b border-gray-200 sm:p-2 hover:bg-gray-100">
                                                         <img src="{{ $item->avatar }}" alt="{{ $item->name }}"
-                                                            class="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover">
-                                                        <div class="min-w-0 flex-1">
+                                                            class="object-cover w-8 h-8 rounded-full sm:w-10 sm:h-10">
+                                                        <div class="flex-1 min-w-0">
                                                             <h4
-                                                                class="text-xs sm:text-sm font-bold text-gray-800 truncate">
+                                                                class="text-xs font-bold text-gray-800 truncate sm:text-sm">
                                                                 {{ $item->name }}</h4>
                                                             <p class="text-xs text-gray-500 truncate">
                                                                 {{ $item->email }}</p>
