@@ -22,16 +22,21 @@ state(['count' => 10]);
 state(['transactions' => fn() => Auth::user()->role == 'creative' ? Transaction::where('user_id', '=', Auth::id())->paginate($this->count)->reverse() : '']);
 state(['purchases' => fn() => Auth::user()->role == 'user' ? Purchase::where('buyer_id', '=', Auth::id())->with('product')->paginate($this->count)->reverse() : '']);
 state(['withdrawalModal' => false]);
+state(['addFundModal' => false]);
 state('amount');
 state(['commission' => AdminSetting::first()->value('commission_fee')]);
 state(['processing_time' => AdminSetting::first()->value('withdrawal_time')]);
 
 $addFunds = function () {
-    redirect(
-        route('add.funds', [
-            'id' => Auth::user()->id,
-        ]),
-    );
+      $validator = $this->validate(
+        [
+            'amount' => ['required', 'numeric'],
+        ],
+        [
+            'amount.required' => 'Add the amount you want to withdraw',
+            'amount.numeric' => 'Wrong Amount',
+        ]);
+    $this->redirect( route('fund.wallet'));
 };
 
 $generateReferenceNumber = function () {
@@ -106,9 +111,7 @@ $withdraw = function () {
 };
 
 ?>
-<div class="pb-5 bg-white px-7 md:px-20" x-data="{
-    current: true
-}">
+<div class="pb-5 bg-white px-7 md:px-20">
     <header class="">
         <h2 class="pt-2 text-3xl font-extrabold text-gray-500">
             {{ __('Wallet') }}
@@ -135,38 +138,7 @@ $withdraw = function () {
             @endif
         </div>
     </div>
-    <div x-cloak="display:hidden" wire:show='withdrawalModal'
-        class="w-screen h-screen bg-black/30 backdrop-blur-sm inset-0 absolute z-[999]">
-        <div class="flex justify-center md:px-20 lg:px-[30%] mt-[20%]">
-            <x-bladewind.card class=" lg:w-full">
 
-                <div class="flex flex-col justify-center">
-                    <div class="grid ">
-                        <div class="flex justify-end">
-                            <x-mary-button icon="o-x-mark"
-                                class="justify btn-dark hover:bg-navy-blue btn-sm btn-circle left-0"
-                                wire:click='withdrawalModal = false' />
-                        </div>
-                        <x-input-label class="text-md">Amount</x-input-label>
-
-
-
-                        <div class="grid justify-between space-y-2 lg:flex w-100">
-                            <x-text-input wire:model="amount" />
-                            <x-mary-button label="Withdraw"
-                                class="bg-[#001f54] text-white hover:bg-golden hover:border-golden h-12"
-                                wire:click="withdraw" spinner />
-                        </div>
-                        <x-input-error :messages="$errors->get('amount')" />
-
-                    </div>
-                    <p class="text-black w-[80%]"><b>Note:</b> <em class="text-sm">A withdrawal charge is applied to all
-                            withdrawal</em></p>
-
-                </div>
-            </x-bladewind.card>
-        </div>
-    </div>
     <h1 class="px-5 py-2 mt-5 md:mt-3 text-2xl font-extrabold text-left  text-gray-500 bg-gray-100 rounded-t-[14px]">
         Trasaction History
 
@@ -510,6 +482,69 @@ $withdraw = function () {
                     <span class="sm:hidden">&rarr;</span>
                 </button>
             @endif
+        </div>
+    </div>
+
+      <div x-cloak="display:hidden" wire:show='withdrawalModal'
+        class="w-screen h-screen bg-black/30 backdrop-blur-sm inset-0 absolute z-[999]">
+        <div class="flex justify-center md:px-20 lg:px-[30%] mt-[15%]">
+            <x-bladewind.card class=" lg:w-full">
+
+                <div class="flex flex-col justify-center">
+                    <div class="grid ">
+                        <div class="flex justify-end">
+                            <x-mary-button icon="o-x-mark"
+                                class="justify btn-dark hover:bg-navy-blue btn-sm btn-circle left-0"
+                                wire:click='withdrawalModal = false' />
+                        </div>
+                        <x-input-label class="text-md">Amount</x-input-label>
+
+
+
+                        <div class="grid justify-between space-y-2 lg:flex w-100">
+                            <x-text-input wire:model="amount" />
+                            <x-mary-button label="Withdraw"
+                                class="bg-[#001f54] text-white hover:bg-golden hover:border-golden h-12"
+                                wire:click="withdraw" spinner />
+                        </div>
+                        <x-input-error :messages="$errors->get('amount')" />
+
+                    </div>
+                    <p class="text-black w-[80%]"><b>Note:</b> <em class="text-sm">A withdrawal charge is applied to all
+                            withdrawal</em></p>
+
+                </div>
+            </x-bladewind.card>
+        </div>
+    </div>
+
+      <div x-cloak="display:hidden" wire:show='addFundModal'
+        class="w-screen h-screen bg-black/30 backdrop-blur-sm inset-0 absolute z-[999]">
+        <div class="flex justify-center md:px-20 lg:px-[30%] mt-[15%]">
+            <x-bladewind.card class=" lg:w-full">
+
+                <div class="flex flex-col justify-center">
+                    <div class="grid ">
+                        <div class="flex justify-end">
+                            <x-mary-button icon="o-x-mark"
+                                class="justify btn-dark hover:bg-navy-blue btn-sm btn-circle left-0"
+                                wire:click='addFundModal = false' />
+                        </div>
+                        <x-input-label class="text-md">Amount</x-input-label>
+
+
+
+                        <div class="grid justify-between space-y-2 lg:flex w-100">
+                            <x-text-input name="amount" wire:model="amount" />
+                            <x-mary-button label="Fund"
+                                class="bg-[#001f54] text-white hover:bg-golden hover:border-golden h-12"
+                                wire:click="addFund" spinner />
+                        </div>
+                        <x-input-error :messages="$errors->get('amount')" />
+
+                    </div>
+                </div>
+            </x-bladewind.card>
         </div>
     </div>
 

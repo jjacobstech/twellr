@@ -17,7 +17,6 @@ state(['perPage' => 5]);
 state('viewData');
 state(['viewCard' => false]);
 
-mount(function () {});
 
 with([
     'orders' => fn() => Purchase::orderBy('created_at', $this->dateSort)

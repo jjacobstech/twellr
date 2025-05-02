@@ -20,9 +20,11 @@ Route::middleware(['auth', 'verified','IsAdmin'])->group(function () {
 
     Volt::route('admin/orders', 'pages.admin.orders')->name(name: 'admin.orders');
 
-
     Volt::route('admin/withdrawals', 'pages.admin.withdrawal')->name('admin.withdrawal');
 
+    Volt::route('admin/blog', 'pages.admin.blog.blog-post')->name(name: 'admin.blog.post');
+
+    Volt::route('admin/blog/upload', 'pages.admin.blog.blog-post-upload')->name(name: 'admin.blog.post.upload');
 
 
 

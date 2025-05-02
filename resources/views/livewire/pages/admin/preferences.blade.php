@@ -46,10 +46,10 @@ state(['editShippingFeeLocation' => '']);
 state(['shippingFee' => '']);
 state(['shippingFeeLocation' => '']);
 state(['successMessage' => '']);
-state(['editMaterialName' => '']);
+state(['materialPrice' => '']);
 state(['editMaterialPrice' => '']);
-state(['editMaterial' => '']);
 state(['material' => '']);
+state(['editMaterialName' => '']);
 state(['showSuccessMessage' => false]);
 
 mount(function () {
@@ -292,9 +292,10 @@ $addMaterial = function () {
         'newMaterialPrice' => 'required|numeric|min:0',
     ]);
 
-    Material::create(['name' => $this->newMaterial]);
+    Material::create(['name' => $this->newMaterial, 'price' => $this->newMaterialPrice]);
     $this->materials = Material::all();
     $this->newMaterial = '';
+      $this->newMaterialPrice = '';
 
     $this->success('Material added successfully.');
 };
@@ -309,19 +310,24 @@ $deleteMaterial = function ($material_id) {
 
 $startEditMaterial = function ($material_id) {
     $this->editingMaterial = $material_id;
-    $this->editMaterialName = Material::find($material_id)->name;
+    $material =  Material::find($material_id);
+
+    $this->editMaterialName =$material->name;
+     $this->editMaterialPrice = $material->price;
 };
 
 $saveEditMaterial = function () {
-    $this->validate(['editMaterialName' => 'required|min:3|max:50']);
+    $this->validate(['editMaterialName' => 'required|min:3|max:50','editMaterialPrice' => 'required|min:3|max:50']);
 
     $material = Material::findOrFail($this->editingMaterial);
     $material->name = $this->editMaterialName;
+    $material->price = $this->editMaterialPrice;
     $material->save();
 
     $this->materials = Material::all();
     $this->editingMaterial = null;
     $this->editMaterialName = '';
+    $this->editMaterialPrice = '';
 
     $this->success('Material updated successfully.');
 };
@@ -329,6 +335,7 @@ $saveEditMaterial = function () {
 $cancelEditMaterial = function () {
     $this->editingMaterial = null;
     $this->editMaterialName = '';
+     $this->editMaterialPrice = '';
 };
 
 ?>

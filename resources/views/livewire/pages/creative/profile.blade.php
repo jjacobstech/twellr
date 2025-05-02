@@ -37,9 +37,6 @@ mount(function ()
     }
 });
 
-$setRating = function( $b){
-dd($b);
-};
 
 /**
  * Toggle follow status for this creator

@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id
  * @property string $title
  * @property string $content
+ * @property string $image
  * @property int $category
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
@@ -28,10 +29,11 @@ class BlogPost extends Model
     protected $fillable = [
         'title',
         'content',
+        'image',
         'category'
     ];
 
-    public function blog_category()
+    public function category()
     {
         return $this->belongsTo(BlogCategory::class, 'category', 'id');
     }
