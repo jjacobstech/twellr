@@ -129,7 +129,7 @@ $withdraw = function () {
                 {{ AdminSetting::value('currency_symbol') . $balance }}</p>
         </div>
         <div class="flex justify-center gap-5 font-bold md:justify-end md:w-1/2">
-            <button wire:click="addFunds"
+            <button wire:click="addFundModal = true"
                 class="px-5 py-2 duration-500 bg-golden text-neutral-600 hover:scale-110 rounded-xl">Add
                 Funds</button>
             @if (Auth::user()->isCreative())
