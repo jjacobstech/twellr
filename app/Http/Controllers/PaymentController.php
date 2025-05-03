@@ -79,7 +79,7 @@ try{
         }
 
 
-      //  return $transaction;
+       return $transaction;
         // if ($transaction->data->status === 'success') {
             // Update your database records
             // $payment = Payment::where('reference', $reference)->first();
