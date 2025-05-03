@@ -57,17 +57,17 @@ class PaymentController extends Controller
     public function confirmPayment(Request $request)
     {
         // Verify the event
-        $payload = $request->all();
+        $data = $request->all();
 
-        if ($payload['event'] !== 'charge.success') {
-            return response()->json(['status' => 'error']);
-        }
+        // if ($payload['event'] !== 'charge.success') {
+        //     return response()->json(['status' => 'error']);
+        // }
 
         // Retrieve the transaction data
-        $data = $payload['data'];
+        // $data = $payload['data'];
         $reference = $data['reference'];
-        $status = $data['status'];
-        $amount = $data['amount'];
+        // $status = $data['status'];
+        $amount = $data['trx_ref'];
 
         // Verify the transaction with Paystack API (recommended)
         $paystack = new Paystack(env('PAYSTACK_SECRET_KEY'));
