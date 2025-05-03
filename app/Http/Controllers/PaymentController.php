@@ -58,7 +58,7 @@ class PaymentController extends Controller
     {
         // Verify the event
        
-
+try{
 
         // if ($payload['event'] !== 'charge.success') {
         //     return response()->json(['status' => 'error']);
@@ -73,9 +73,13 @@ class PaymentController extends Controller
         // Verify the transaction with Paystack API (recommended)
         $paystack = new Paystack(config('services.paystack.secret_key'));
         $transaction = $paystack->transaction->verify([$reference]);
+     } catch (\Yabacon\Paystack\Exception\ApiException $e) {
+            print_r($e->getResponseObject());
+            die($e->getMessage());
+        }
 
 
-        return $transaction;
+      //  return $transaction;
         // if ($transaction->data->status === 'success') {
             // Update your database records
             // $payment = Payment::where('reference', $reference)->first();
