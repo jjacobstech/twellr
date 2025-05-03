@@ -72,7 +72,7 @@ try{
 
         // Verify the transaction with Paystack API (recommended)
         $paystack = new Paystack(config('services.paystack.secret_key'));
-        $transaction = $paystack->transaction->verify([$reference]);
+        $transaction = $paystack->transaction->verify(['reference' => $reference]);
      } catch (\Yabacon\Paystack\Exception\ApiException $e) {
             print_r($e->getResponseObject());
             die($e->getMessage());
