@@ -67,9 +67,9 @@ class PaymentController extends Controller
 
         // Retrieve the transaction data
         // $data = $payload['data'];
-        $reference = $data['reference'];
+        $reference = $data->reference;
         // $status = $data['status'];
-        $amount = $data['trx_ref'];
+        $amount = $data->trx_ref;
 
         // Verify the transaction with Paystack API (recommended)
         $paystack = new Paystack(env('PAYSTACK_SECRET_KEY'));
