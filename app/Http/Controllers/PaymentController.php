@@ -36,7 +36,7 @@ class PaymentController extends Controller
             die($e->getMessage());
         }
 
-        $registerTransaction = Transaction::create([
+        $transaction = Transaction::create([
             'user_id' => Auth::id(),
             'buyer_id' => Auth::id(),
             'amount' => $amount,
@@ -45,8 +45,21 @@ class PaymentController extends Controller
             'ref_no' => $reference,
         ]);
 
-        if ($registerTransaction) {
-            return redirect($transaction->data->authorization_url);
+        if ($transaction) {
+
+            $deposit = Deposit::create([
+                'user_id' => Auth::id(),
+                'transaction_id' => $transaction->id,
+                'ref_no' => $reference,
+                'amount' => $amount,
+                'status' => 'pending',
+            ]);
+
+            if ($deposit) {
+                return redirect($transaction->data->authorization_url);
+            } else {
+                return redirect()->back()->with('error', 'Failed to create deposit. Please try again.');
+            }
         } else {
             return redirect()->back()->with('error', 'Payment initialization failed. Please try again.');
         }
@@ -56,7 +69,7 @@ class PaymentController extends Controller
      * Obtain Paystack payment information
      * @return void
      */
-        public function confirmPayment(Request $request)
+    public function confirmPayment(Request $request)
     {
 
         try {
