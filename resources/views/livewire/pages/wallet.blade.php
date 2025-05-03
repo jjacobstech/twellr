@@ -119,7 +119,7 @@ $withdraw = function () {
 @endsession
 
 @session('success')
-{{ $this->error(session('success'),timeout: 5000) }}
+{{ $this->success(session('success'),timeout: 5000) }}
 @endsession
 
     <header class="">
