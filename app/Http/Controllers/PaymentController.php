@@ -27,7 +27,7 @@ class PaymentController extends Controller
                 "email" => Auth::user()->email,
             );
 
-            $paystack = new Paystack(env('PAYSTACK_SECRET_KEY'));
+            $paystack = new Paystack(config('services.paystack.secret_key'));
             $transaction = $paystack->transaction->initialize($data);
         } catch (\Yabacon\Paystack\Exception\ApiException $e) {
             print_r($e->getResponseObject());
