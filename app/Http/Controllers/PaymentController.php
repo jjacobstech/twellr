@@ -113,7 +113,7 @@ class PaymentController extends Controller
 
                     // Update the user's account balance or perform any other necessary actions
                     $fund = User::find(Auth::id());
-                    $fund->wallet_balance = $fund->wallet_balance +($amount / 100); // Assuming the amount is in kobo
+                    $fund->wallet_balance = $fund->wallet_balance + ($amount / 100); // Assuming the amount is in kobo
                     $funded =  $fund->save();
 
                     if (!$funded) {
@@ -137,6 +137,33 @@ class PaymentController extends Controller
             } else {
                 return redirect(route('wallet'))->with('error', 'Transaction not found.');
             }
+        } else {
+            $payment = Transaction::where('ref_no', $trxref)->first();
+
+            if ($payment) {
+                $payment->update([
+                    'user_id' => Auth::id(),
+                    'buyer_id' => Auth::id(),
+                    'transaction_type' => 'funding',
+                    'status' => 'failed',
+                    'ref_no' => $trxref,
+                ]);
+
+                $deposit = Deposit::update([
+                    'user_id' => Auth::id(),
+                    'transaction_id' => $transaction->id,
+                    'ref_no' => $trxref,
+                    'status' => 'pending',
+                ]);
+
+                if ($deposit) {
+                    return redirect(route('wallet'))->with('error', 'Payment failed. Please try again.');
+                } else {
+                    return redirect(route('wallet'))->with('error', 'Failed to update deposit status. Please try again.');
+                }
+            }
+
+            return redirect(route('wallet'))->with('error', 'Payment failed. Please try again.');
         }
     }
     public function generateReference()
