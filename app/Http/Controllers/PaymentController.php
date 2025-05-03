@@ -71,10 +71,10 @@ class PaymentController extends Controller
         $amount = $request->trx_ref;
 
         // Verify the transaction with Paystack API (recommended)
-        $paystack = new Paystack(env('PAYSTACK_SECRET_KEY'));
+        $paystack = new Paystack(config('services.paystack.secret_key'));
         $transaction = $paystack->transaction->verify($reference);
 
-        
+
         return $transaction;
         // if ($transaction->data->status === 'success') {
             // Update your database records
