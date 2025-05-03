@@ -54,15 +54,41 @@ class PaymentController extends Controller
      * Obtain Paystack payment information
      * @return void
      */
-    public function confirmPayment(Request $request): array
+    public function confirmPayment(Request $request)
     {
-        return $request->all();
-        // $paymentDetails = Paystack::getPaymentData();
+        // Verify the event
+        $payload = $request->all();
 
-        // dd($paymentDetails);
-        // Now you have the payment details,
-        // you can store the authorization_code in your db to allow for recurrent subscriptions
-        // you can then redirect or do whatever you want
+        if ($payload['event'] !== 'charge.success') {
+            return response()->json(['status' => 'error']);
+        }
+
+        // Retrieve the transaction data
+        $data = $payload['data'];
+        $reference = $data['reference'];
+        $status = $data['status'];
+        $amount = $data['amount'];
+
+        // Verify the transaction with Paystack API (recommended)
+        $paystack = new Paystack(env('PAYSTACK_SECRET_KEY'));
+        $transaction = $paystack->transaction->verify([$reference]);
+
+        return $transaction;
+        // if ($transaction->data->status === 'success') {
+            // Update your database records
+            // $payment = Payment::where('reference', $reference)->first();
+            // if ($payment) {
+            //     $payment->update([
+            //         'status' => 'completed',
+            //         'paid_at' => now(),
+            //         'gateway_response' => $data['gateway_response']
+            //     ]);
+            // }
+
+            // You might want to trigger other actions like sending email confirmations
+        // }
+
+      //  return response()->json(['status' => 'success']);
     }
     public function generateReference()
     {
