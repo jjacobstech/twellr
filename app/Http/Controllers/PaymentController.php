@@ -61,7 +61,7 @@ class PaymentController extends Controller
 
         try {
 
-            $trxref = $request->trx_ref;
+            $trxref = $request->data->trx_ref;
             $data = ['reference' => $trxref];
 
             $paystack = new Paystack(config('services.paystack.secret_key'));
