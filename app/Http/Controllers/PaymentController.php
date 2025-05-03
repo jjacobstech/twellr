@@ -113,7 +113,7 @@ class PaymentController extends Controller
 
                     // Update the user's account balance or perform any other necessary actions
                     $fund = User::find(Auth::id());
-                    $fund->balance += $amount / 100; // Assuming the amount is in kobo
+                    $fund->wallet_balance = $fund->wallet_balance +($amount / 100); // Assuming the amount is in kobo
                     $funded =  $fund->save();
 
                     if (!$funded) {
