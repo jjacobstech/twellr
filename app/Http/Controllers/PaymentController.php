@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Yabacon\Paystack;
+use App\Models\User;
 
+use Yabacon\Paystack;
 use App\Http\Requests;
+use App\Models\Deposit;
 use App\Models\Transaction;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -54,47 +56,76 @@ class PaymentController extends Controller
      * Obtain Paystack payment information
      * @return void
      */
-    public function confirmPayment(Request $request)
+        public function confirmPayment(Request $request)
     {
-        // Verify the event
-       
-try{
 
-        // if ($payload['event'] !== 'charge.success') {
-        //     return response()->json(['status' => 'error']);
-        // }
+        try {
 
-        // Retrieve the transaction data
-        // $data = $payload['data'];
-        $reference = $request->reference;
-        // $status = $request['status'];
-        $amount = $request->trx_ref;
+            $trxref = $request->trx_ref;
+            $data = ['reference' => $trxref];
 
-        // Verify the transaction with Paystack API (recommended)
-        $paystack = new Paystack(config('services.paystack.secret_key'));
-        $transaction = $paystack->transaction->verify(['reference' => $reference]);
-     } catch (\Yabacon\Paystack\Exception\ApiException $e) {
+            $paystack = new Paystack(config('services.paystack.secret_key'));
+            $transaction = $paystack->transaction->verify($data);
+        } catch (\Yabacon\Paystack\Exception\ApiException $e) {
             print_r($e->getResponseObject());
             die($e->getMessage());
         }
 
 
-       return $transaction;
-        // if ($transaction->data->status === 'success') {
-            // Update your database records
-            // $payment = Payment::where('reference', $reference)->first();
-            // if ($payment) {
-            //     $payment->update([
-            //         'status' => 'completed',
-            //         'paid_at' => now(),
-            //         'gateway_response' => $data['gateway_response']
-            //     ]);
-            // }
+        if ($transaction->data->status === 'success') {
 
-            // You might want to trigger other actions like sending email confirmations
-        // }
+            $amount = $transaction->data->amount;
+            $reference = $transaction->data->reference;
+            $payment = Transaction::where('ref_no', $reference)->first();
 
-      //  return response()->json(['status' => 'success']);
+            if ($payment) {
+                $payment->update([
+                    'user_id' => Auth::id(),
+                    'buyer_id' => Auth::id(),
+                    'amount' => $amount,
+                    'transaction_type' => 'funding',
+                    'status' => 'completed',
+                    'ref_no' => $reference,
+                ]);
+
+                $deposit = Deposit::where('ref_no', $reference)->first();
+
+                if ($deposit) {
+                    $deposit->update([
+                        'user_id' => Auth::id(),
+                        'transaction_id' => $payment->id,
+                        'ref_no' => $reference,
+                        'amount' => $amount,
+                        'status' => 'completed',
+                    ]);
+
+                    // Update the user's account balance or perform any other necessary actions
+                    $fund = User::find(Auth::id());
+                    $fund->balance += $amount / 100; // Assuming the amount is in kobo
+                    $funded =  $fund->save();
+
+                    if (!$funded) {
+                        return redirect()->back()->with('error', 'Failed to fund your account. Please try again.');
+                    } else {
+                        return redirect()->back()->with('success', 'Payment successful. Your account has been funded.');
+                    }
+                } else {
+
+                    $payment->update([
+                        'user_id' => Auth::id(),
+                        'buyer_id' => Auth::id(),
+                        'amount' => $amount,
+                        'transaction_type' => 'funding',
+                        'status' => 'failed',
+                        'ref_no' => $reference,
+                    ]);
+
+                    return redirect()->back()->with('error', 'Deposit not found.');
+                }
+            } else {
+                return redirect()->back()->with('error', 'Transaction not found.');
+            }
+        }
     }
     public function generateReference()
     {

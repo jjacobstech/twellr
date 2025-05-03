@@ -115,7 +115,11 @@ $withdraw = function () {
 <div class="pb-5 bg-white px-7 md:px-20">
 
 @session('error')
-{{ $this->error('Payment initialization failed. Please try again.',timeout: 5000) }}
+{{ $this->error(session('error'),timeout: 5000) }}
+@endsession
+
+@session('success')
+{{ $this->error(session('success'),timeout: 5000) }}
 @endsession
 
     <header class="">
