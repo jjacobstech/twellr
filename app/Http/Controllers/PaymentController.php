@@ -72,7 +72,7 @@ class PaymentController extends Controller
 
         // Verify the transaction with Paystack API (recommended)
         $paystack = new Paystack(config('services.paystack.secret_key'));
-        $transaction = $paystack->transaction->verify($reference);
+        $transaction = $paystack->transaction->verify([$reference]);
 
 
         return $transaction;
