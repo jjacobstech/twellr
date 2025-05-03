@@ -30,7 +30,7 @@ class PaymentController extends Controller
             );
 
             $paystack = new Paystack(config('services.paystack.secret_key'));
-            $transaction = $paystack->transaction->initialize($data);
+            $transactionInit = $paystack->transaction->initialize($data);
         } catch (\Yabacon\Paystack\Exception\ApiException $e) {
             print_r($e->getResponseObject());
             die($e->getMessage());
@@ -56,7 +56,7 @@ class PaymentController extends Controller
             ]);
 
             if ($deposit) {
-                return redirect($transaction->data->authorization_url);
+                return redirect($transactionInit->data->authorization_url);
             } else {
                 return redirect()->back()->with('error', 'Failed to create deposit. Please try again.');
             }
