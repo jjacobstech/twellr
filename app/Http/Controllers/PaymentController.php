@@ -71,7 +71,7 @@ class PaymentController extends Controller
             die($e->getMessage());
         }
 
-
+return $transaction;
         if ($transaction->data->status === 'success') {
 
             $amount = $transaction->data->amount;
