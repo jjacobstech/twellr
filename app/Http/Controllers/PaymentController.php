@@ -54,12 +54,11 @@ class PaymentController extends Controller
      * Obtain Paystack payment information
      * @return void
      */
-    public function confirmPayment(Request $request): array
+    public function confirmPayment(Request $request)
     {
         // Verify the event
-        $data = $request->all();
+       
 
-        return $data;
 
         // if ($payload['event'] !== 'charge.success') {
         //     return response()->json(['status' => 'error']);
@@ -67,9 +66,9 @@ class PaymentController extends Controller
 
         // Retrieve the transaction data
         // $data = $payload['data'];
-        $reference = $data->reference;
-        // $status = $data['status'];
-        $amount = $data->trx_ref;
+        $reference = $request->reference;
+        // $status = $request['status'];
+        $amount = $request->trx_ref;
 
         // Verify the transaction with Paystack API (recommended)
         $paystack = new Paystack(env('PAYSTACK_SECRET_KEY'));
