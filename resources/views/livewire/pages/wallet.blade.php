@@ -27,16 +27,17 @@ state('amount');
 state(['commission' => AdminSetting::first()->value('commission_fee')]);
 state(['processing_time' => AdminSetting::first()->value('withdrawal_time')]);
 
-$addFunds = function () {
+$addFund = function () {
       $validator = $this->validate(
         [
             'amount' => ['required', 'numeric'],
         ],
         [
-            'amount.required' => 'Add the amount you want to withdraw',
+            'amount.required' => 'Add the amount you want to fund',
             'amount.numeric' => 'Wrong Amount',
         ]);
-    $this->redirect( route('fund.wallet'));
+
+    $this->redirect( route('fund.wallet',['amount' => $validator['amount']]));
 };
 
 $generateReferenceNumber = function () {
@@ -112,6 +113,11 @@ $withdraw = function () {
 
 ?>
 <div class="pb-5 bg-white px-7 md:px-20">
+
+@session('error')
+{{ $this->error('Payment initialization failed. Please try again.',timeout: 5000) }}
+@endsession
+
     <header class="">
         <h2 class="pt-2 text-3xl font-extrabold text-gray-500">
             {{ __('Wallet') }}

@@ -18,33 +18,45 @@ class PaymentController extends Controller
 
     public function initPayment()
     {
-        return request()->amount;
         try {
             $reference = $this->generateReference();
+            $amount = request('amount') * 100;
             $data = array(
-                //"amount" => 700 * 100,
+                "amount" => $amount,
                 "reference" => "$reference",
                 "email" => Auth::user()->email,
             );
 
             $paystack = new Paystack(env('PAYSTACK_SECRET_KEY'));
             $transaction = $paystack->transaction->initialize($data);
-
         } catch (\Yabacon\Paystack\Exception\ApiException $e) {
-           print_r($e->getResponseObject());
-           die($e->getMessage());
+            print_r($e->getResponseObject());
+            die($e->getMessage());
         }
-      //  $paystack->save_last_transaction_reference($transaction->data->reference);
 
-      return redirect($transaction->data->authorization_url);
+        $registerTransaction = Transaction::create([
+            'user_id' => Auth::id(),
+            'buyer_id' => Auth::id(),
+            'amount' => $amount,
+            'transaction_type' => 'funding',
+            'status' => 'pending',
+            'ref_no' => $reference,
+        ]);
+
+        if ($registerTransaction) {
+            return redirect($transaction->data->authorization_url);
+        } else {
+            return redirect()->back()->with('error', 'Payment initialization failed. Please try again.');
+        }
     }
 
     /**
      * Obtain Paystack payment information
      * @return void
      */
-    public function confirmPayment()
+    public function confirmPayment(Request $request): array
     {
+        return $request->all();
         // $paymentDetails = Paystack::getPaymentData();
 
         // dd($paymentDetails);
@@ -52,16 +64,17 @@ class PaymentController extends Controller
         // you can store the authorization_code in your db to allow for recurrent subscriptions
         // you can then redirect or do whatever you want
     }
-   public function generateReference () {
-    $prefix = 'TRX';
-    do {
-        $timestamp = now()->format('YmdHis');
-        $randomString = strtoupper(Str::random(6));
-        $reference_no = $prefix . $timestamp . $randomString . Auth::id();
+    public function generateReference()
+    {
+        $prefix = 'TRX';
+        do {
+            $timestamp = now()->format('YmdHis');
+            $randomString = strtoupper(Str::random(6));
+            $reference_no = $prefix . $timestamp . $randomString . Auth::id();
 
-        $exists = Transaction::where('ref_no', '=', $reference_no)->first();
-    } while ($exists);
+            $exists = Transaction::where('ref_no', '=', $reference_no)->first();
+        } while ($exists);
 
-    return $reference_no;
-}
+        return $reference_no;
+    }
 }
