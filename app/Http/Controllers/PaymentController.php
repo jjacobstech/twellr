@@ -74,6 +74,7 @@ class PaymentController extends Controller
         $paystack = new Paystack(env('PAYSTACK_SECRET_KEY'));
         $transaction = $paystack->transaction->verify($reference);
 
+        
         return $transaction;
         // if ($transaction->data->status === 'success') {
             // Update your database records
