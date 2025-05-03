@@ -117,9 +117,9 @@ class PaymentController extends Controller
                     $funded =  $fund->save();
 
                     if (!$funded) {
-                        return redirect()->back()->with('error', 'Failed to fund your account. Please try again.');
+                        return redirect(route('wallet'))->with('error', 'Failed to fund your account. Please try again.');
                     } else {
-                        return redirect()->back()->with('success', 'Payment successful. Your account has been funded.');
+                        return redirect(route('wallet'))->with('success', 'Payment successful. Your account has been funded.');
                     }
                 } else {
 
@@ -132,10 +132,10 @@ class PaymentController extends Controller
                         'ref_no' => $reference,
                     ]);
 
-                    return redirect()->back()->with('error', 'Deposit not found.');
+                    return redirect(route('wallet'))->with('error', 'Deposit not found.');
                 }
             } else {
-                return redirect()->back()->with('error', 'Transaction not found.');
+                return redirect(route('wallet'))->with('error', 'Transaction not found.');
             }
         }
     }
