@@ -40,7 +40,12 @@
 
 
         <!-- Page Content -->
-        <main class="mt-2 h-screen md:h-full">
+        <main class="mt-2 h-screen md:h-full" x-data="{ show: false }"
+     x-init="setTimeout(() => show = true, 50)"
+     x-show="show"
+     x-transition:enter="transition ease-in-out duration-500"
+     x-transition:enter-start="opacity-0 scale-95"
+     x-transition:enter-end="opacity-100 scale-100">
             {{ $slot }}
         </main>
     </div>

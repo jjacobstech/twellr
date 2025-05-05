@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedInteger('user_id')->index();
             $table->string('name');
             $table->decimal('price', 10);
-            $table->string('category');
+            $table->unsignedInteger('category_id');
             $table->text('description');
             $table->string('print_stack');
             $table->string('print_stack_mime', 50)->nullable();

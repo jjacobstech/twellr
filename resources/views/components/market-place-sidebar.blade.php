@@ -1,3 +1,4 @@
+@props(['locations'])
 <div id="sidebar"
     class="relative hidden transition-transform duration-300 ease-in-out bg-white shadow-xl sm:hidden md:h-100 md:block md:w-[28%] lg:w-[20%]">
     <div class="flex px-5 py-3 space-y-6 text-2xl font-bold border-b-2 justify-left md:space-y-10 text-golden">
@@ -126,12 +127,12 @@
     <div class="pl-5 lg:pl-5 lg:px-10 mt-10 font-bold text-gray-500 text-md">
         <div class="">
             <p> Select Location:</p>
-            <select class="mt-1 border-gray-500 rounded-md md:w-44 lg:w-52">
-                <option value="">All Nigerian</option>
-                <option value=""></option>
-                <option value=""></option>
-                <option value=""></option>
-                <option value=""></option>
+            <select wire:model='location' class="mt-1 border-gray-500 rounded-md md:w-44 lg:w-52">
+                @forelse ($locations as $location )
+                <option value="{{ $location->id }}">{{ $location->name }}</option>
+                @empty
+                    <option value="">. . .</option>
+                @endforelse
             </select>
 
         </div>

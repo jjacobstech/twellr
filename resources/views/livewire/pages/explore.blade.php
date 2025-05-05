@@ -1,30 +1,33 @@
 <?php
 
 use App\Models\User;
+use App\Models\Contest;
 use App\Models\Product;
 use Livewire\Volt\Component;
+use App\Models\ContestWinner;
 use Illuminate\Support\Facades\Auth;
-use function Livewire\Volt\{state, layout, mount};
+use function Livewire\Volt\{state, layout};
 
 layout('layouts.app');
 
 state(['latestDesigns' => fn() => Product::latest()->take(7)->get()]);
 state(['pickedForYous' => fn() => auth()->user()->pickedForYou()]);
-state(['whoRockedItBest' => fn() => Product::latest()->take(7)->get()]);
-state(['trendingDesigns' => fn() => Product::latest()->take(7)->get()]);
-state(['designersOfTheWeek' => fn() => Product::latest()->take(7)->get()]);
-state(['featuredDesign' => fn() => Product::latest()->take(7)->get()]);
+state(['whoRockedItBests' => fn() => Contest::where('type','=','who_rocked_it_best')->latest()->take(7)->get()]);
+state(['trendingDesigns' => fn() => Product::daily()->take(7)->get()]);
+state(['designersOfTheWeek' => fn() => ContestWinner::weekly()->take(7)->get()]);
+state(['featuredDesigns' => fn() => Product::inRandomOrder()->take(7)->get()]);
 
 ?>
 
 <div>
     <div class="flex gap-1 w-[100%]  h-screen pb-2">
-        <div class="bg-white px-8 md:px-16 py-8  w-[100%]  pb-20 overflow-y-scroll mb-16">
-            <h1 class="text-3xl w-full  font-extrabold text-gray-500 md:hidden">Explore</h1>
+
+        <div class="bg-white px-8 md:px-16 py-8  w-[100%]  pb-20 overflow-y-scroll mb-16 scrollbar-none">
+            <h1 class="w-full text-3xl font-extrabold text-gray-500 md:hidden">Explore</h1>
             <div class="flex justify-between w-full my-3 text-lg">
                 <p class="font-extrabold text-gray-400 text-[21px]">Latest Designs</p>
 
-                <h1 class="text-3xl font-extrabold text-gray-400 hidden md:block">Explore</h1>
+                <h1 class="hidden text-3xl font-extrabold text-gray-400 md:block">Explore</h1>
                 <a href="marketplace/latest-designs">
                     <p class="flex justify-between font-extrabold text-golden">See all
                         <svg class="w-[14px] h-[14px] my-2 ml-1" xmlns="http://www.w3.org/2000/svg"
@@ -37,7 +40,7 @@ state(['featuredDesign' => fn() => Product::latest()->take(7)->get()]);
             </div>
 
             <div
-                class="relative hidden  md:grid w-full gap-3 md:px-5 py-3 bg-gray-100 grid-col-4 md:grid-cols-7 sm:grid-cols-2 rounded-2xl">
+                class="relative hidden w-full gap-1 py-2 bg-gray-100 md:grid md:px-2 grid-col-4 md:grid-cols-7 sm:grid-cols-2 rounded-2xl">
                 @forelse ($latestDesigns as $latestDesign)
                     <x-explore-card wire:navigate :product="$latestDesign" />
 
@@ -59,7 +62,7 @@ state(['featuredDesign' => fn() => Product::latest()->take(7)->get()]);
                 </a>
             </div>
             <div
-                class="relative md:hidden flex justify-center w-full gap-3 md:px-5 py-3 md:bg-gray-100 grid-col-4 md:grid-cols-7 sm:grid-cols-2 rounded-2xl">
+                class="relative flex justify-center w-full gap-3 py-3 md:hidden md:px-5 md:bg-gray-100 grid-col-4 md:grid-cols-7 sm:grid-cols-2 rounded-2xl">
                 @forelse ($pickedForYous as $pickedForYou)
                     <x-explore-card wire:navigate :product="$pickedForYou" />
 
@@ -70,7 +73,7 @@ state(['featuredDesign' => fn() => Product::latest()->take(7)->get()]);
 
             </div>
             <div
-                class="relative hidden  md:grid w-full gap-3 md:px-5 py-3 bg-gray-100 grid-col-4 md:grid-cols-7 sm:grid-cols-2 rounded-2xl">
+                class="relative hidden w-full gap-3 py-3 bg-gray-100 md:grid md:px-5 grid-col-4 md:grid-cols-7 sm:grid-cols-2 rounded-2xl">
                 @forelse ($pickedForYous as $pickedForYou)
                     <x-explore-card wire:navigate :product="$pickedForYou" />
 
@@ -91,25 +94,29 @@ state(['featuredDesign' => fn() => Product::latest()->take(7)->get()]);
                     </p>
                 </a>
             </div>
-             <div
-                class="relative md:hidden flex justify-center w-full gap-3 md:px-5 py-3 md:bg-gray-100 grid-col-4 md:grid-cols-7 sm:grid-cols-2 rounded-2xl">
-                @forelse ($latestDesigns as $latestDesign)
-                    <x-explore-card wire:navigate :product="$latestDesign" />
+            <div
+                class="relative flex justify-center w-full gap-3 py-3 md:hidden md:px-5 md:bg-gray-100 grid-col-4 md:grid-cols-7 sm:grid-cols-2 rounded-2xl">
+                @forelse ($whoRockedItBests as $whoRockedItBest)
+                    <div class=" rounded-xl">
+                        <img class="w-full h-full rounded-xl md:h-20 md:w-28 lg:h-32 lg:w-40 aspect-square"
+                            src='{{ asset("uploads/contest/".$whoRockedItBest->photo) }}' alt="">
+                    </div>
 
 
                 @empty
-                    <p class="text-gray-400">No Latest Designs</p>
+                    <p class="text-gray-400">No Designs</p>
                 @endforelse
 
             </div>
             <div
-                class="relative hidden  md:grid w-full gap-3 md:px-5 py-3 bg-gray-100 grid-col-4 md:grid-cols-7 sm:grid-cols-2 rounded-2xl">
-                @forelse ($latestDesigns as $latestDesign)
-                    <x-explore-card wire:navigate :product="$latestDesign" />
-
-
+                class="relative hidden w-full gap-3 py-3 bg-gray-100 md:grid md:px-5 grid-col-4 md:grid-cols-7 sm:grid-cols-2 rounded-2xl">
+                       @forelse ($whoRockedItBests as $whoRockedItBest)
+                <div class=" rounded-xl">
+                        <img class="w-full h-full rounded-xl md:h-20 md:w-28 lg:h-32 lg:w-40 aspect-square"
+                            src='{{ asset("uploads/contest/".$whoRockedItBest->photo) }}' alt="">
+                    </div>
                 @empty
-                    <p class="text-gray-400">No Latest Designs</p>
+                    <p class="text-gray-400">No Designs</p>
                 @endforelse
             </div>
             <div class="flex justify-between w-full my-3 text-lg">
@@ -125,24 +132,24 @@ state(['featuredDesign' => fn() => Product::latest()->take(7)->get()]);
                 </a>
             </div>
             <div
-                class="relative md:hidden flex justify-center w-full gap-3 md:px-5 py-3 md:bg-gray-100 grid-col-4 md:grid-cols-7 sm:grid-cols-2 rounded-2xl">
-                @forelse ($latestDesigns as $latestDesign)
-                    <x-explore-card wire:navigate :product="$latestDesign" />
+                class="relative flex justify-center w-full gap-3 py-3 md:hidden md:px-5 md:bg-gray-100 grid-col-4 md:grid-cols-7 sm:grid-cols-2 rounded-2xl">
+                @forelse ($trendingDesigns as $trendingDesign)
+                    <x-explore-card wire:navigate :product="$trendingDesign" />
 
 
                 @empty
-                    <p class="text-gray-400">No Latest Designs</p>
+                    <p class="text-gray-400">No Trending Designs</p>
                 @endforelse
 
             </div>
             <div
-                class="relative hidden  md:grid w-full gap-3 md:px-5 py-3 bg-gray-100 grid-col-4 md:grid-cols-7 sm:grid-cols-2 rounded-2xl">
-                @forelse ($latestDesigns as $latestDesign)
-                    <x-explore-card wire:navigate :product="$latestDesign" />
+                class="relative hidden w-full gap-3 py-3 bg-gray-100 md:grid md:px-5 grid-col-4 md:grid-cols-7 sm:grid-cols-2 rounded-2xl">
+                @forelse ($trendingDesigns as $trendingDesign)
+                    <x-explore-card wire:navigate :product="$trendingDesign" />
 
 
                 @empty
-                    <p class="text-gray-400">No Latest Designs</p>
+                    <p class="text-gray-400">No Trending Designs</p>
                 @endforelse
             </div>
             <div class="flex justify-between w-full my-3 text-lg">
@@ -157,25 +164,25 @@ state(['featuredDesign' => fn() => Product::latest()->take(7)->get()]);
                     </p>
                 </a>
             </div>
-             <div
-                class="relative md:hidden flex justify-center w-full gap-3 md:px-5 py-3 md:bg-gray-100 grid-col-4 md:grid-cols-7 sm:grid-cols-2 rounded-2xl">
-                @forelse ($latestDesigns as $latestDesign)
-                    <x-explore-card wire:navigate :product="$latestDesign" />
+            <div
+                class="relative flex justify-center w-full gap-3 py-3 md:hidden md:px-5 md:bg-gray-100 grid-col-4 md:grid-cols-7 sm:grid-cols-2 rounded-2xl">
+                @forelse ($designersOfTheWeek as $designWeekly)
+                    <x-explore-card wire:navigate :product="$designWeekly" />
 
 
                 @empty
-                    <p class="text-gray-400">No Latest Designs</p>
+                    <p class="text-gray-400">No Weekly Designs</p>
                 @endforelse
 
             </div>
             <div
-                class="relative hidden  md:grid w-full gap-3 md:px-5 py-3 bg-gray-100 grid-col-4 md:grid-cols-7 sm:grid-cols-2 rounded-2xl">
-                @forelse ($latestDesigns as $latestDesign)
-                    <x-explore-card wire:navigate :product="$latestDesign" />
+                class="relative hidden w-full gap-3 py-3 bg-gray-100 md:grid md:px-5 grid-col-4 md:grid-cols-7 sm:grid-cols-2 rounded-2xl">
+                @forelse ($designersOfTheWeek as $designWeekly)
+                    <x-explore-card wire:navigate :product="$designWeekly" />
 
 
                 @empty
-                    <p class="text-gray-400">No Latest Designs</p>
+                    <p class="text-gray-400">No Weekly Designs</p>
                 @endforelse
             </div>
             <div class="flex justify-between w-full my-3 text-lg">
@@ -191,24 +198,23 @@ state(['featuredDesign' => fn() => Product::latest()->take(7)->get()]);
                 </a>
             </div>
             <div
-                class="relative md:hidden flex justify-center w-full gap-3 md:px-5 py-3 md:bg-gray-100 grid-col-4 md:grid-cols-7 sm:grid-cols-2 rounded-2xl">
-                @forelse ($latestDesigns as $latestDesign)
-                    <x-explore-card wire:navigate :product="$latestDesign" />
+                class="relative flex justify-center w-full gap-3 py-3 md:hidden md:px-5 md:bg-gray-100 grid-col-4 md:grid-cols-7 sm:grid-cols-2 rounded-2xl">
+                @forelse ($featuredDesigns as $design)
+                    <x-explore-card wire:navigate :product="$design" />
 
 
                 @empty
-                    <p class="text-gray-400">No Latest Designs</p>
+                    <p class="text-gray-400">No Featured Designs</p>
                 @endforelse
 
             </div>
             <div
-                class="relative hidden  md:grid w-full gap-3 md:px-5 py-3 bg-gray-100 grid-col-4 md:grid-cols-7 sm:grid-cols-2 rounded-2xl">
-                @forelse ($latestDesigns as $latestDesign)
-                    <x-explore-card wire:navigate :product="$latestDesign" />
-
+                class="relative hidden w-full gap-3 py-3 bg-gray-100 md:grid md:px-5 grid-col-4 md:grid-cols-7 sm:grid-cols-2 rounded-2xl">
+                @forelse ($featuredDesigns as $design)
+                    <x-explore-card wire:navigate :product="$design" />
 
                 @empty
-                    <p class="text-gray-400">No Latest Designs</p>
+                    <p class="text-gray-400">No Featured Designs</p>
                 @endforelse
             </div>
         </div>

@@ -34,6 +34,8 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @package App\Models
  */
+
+
 class Product extends Model
 {
     protected $table = 'products';
@@ -48,7 +50,7 @@ class Product extends Model
         'name',
         'type',
         'price',
-        'category',
+        'category_id',
         'front_view',
         'front_view_mime',
         'front_view_extension',
@@ -72,11 +74,24 @@ class Product extends Model
     public function designer(){
         return $this->belongsTo(User::class,'user_id', 'id');
     }
+
+    public static function  daily()
+    {
+        $startOfDay = Carbon::now()->startOfDay();
+        $endOfDay = Carbon::now()->endOfDay();
+
+        return static::whereBetween('created_at', [$startOfDay, $endOfDay]);
+    }
     /**
      * Get the comments for this product.
      */
     public function comments(){
         return $this->hasMany(Comment::class);
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class, 'category_id', 'id');
     }
 
     /**

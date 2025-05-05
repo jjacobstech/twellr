@@ -56,23 +56,24 @@ new class extends Component {
     // Database search
     public function users(string $search = '')
     {
-      return User::query()
-    ->where('role', 'creative')
-    ->where(function ($query) use ($search) {
-        $query->where('firstname', 'like', "%$search%")
-            ->orWhere('lastname', 'like', "%$search%")
-            ->orWhere('instagram', 'like', "%$search%");
-    })
-    ->take(5)
-    ->get()
-    ->map(function (User $user) {
-        return (object) [
-            'avatar' => $user->avatar ? asset('uploads/avatar/' . $user->avatar) : asset('assets/icons-user.png'),
-            'name' => "$user->firstname $user->lastname",
-            'email' => $user->email,
-            'link' => "/$user->firstname$user->lastname?creator=$user->referral_link",
-        ];
-    });
+        return User::query()
+            ->where('role', 'creative')
+            ->where(function ($query) use ($search) {
+                $query
+                    ->where('firstname', 'like', "%$search%")
+                    ->orWhere('lastname', 'like', "%$search%")
+                    ->orWhere('instagram', 'like', "%$search%");
+            })
+            ->take(5)
+            ->get()
+            ->map(function (User $user) {
+                return (object) [
+                    'avatar' => $user->avatar ? asset('uploads/avatar/' . $user->avatar) : asset('assets/icons-user.png'),
+                    'name' => "$user->firstname $user->lastname",
+                    'email' => $user->email,
+                    'link' => "/$user->firstname$user->lastname?creator=$user->referral_link",
+                ];
+            });
     }
 
     // Static search, but it could come from a database
@@ -119,7 +120,7 @@ new class extends Component {
         $notification->save();
         $this->success('Success');
         $this->mount();
-       // $this->redirectIntended($this->redirection, true);
+        // $this->redirectIntended($this->redirection, true);
     }
 
     /**
@@ -179,31 +180,31 @@ new class extends Component {
                                 <span class="sr-only">Search</span>
                             </span>
 
-                            @if ($result != '' )
+                            @if ($result != '')
                                 <div class="absolute top-full left-0 w-full z-[9999]">
-                                    <div  x-transition:enter="transition ease-out duration-200"
+                                    <div x-transition:enter="transition ease-out duration-200"
                                         x-transition:enter-start="opacity-0 transform scale-95"
                                         x-transition:enter-end="opacity-100 transform scale-100"
                                         class="mt-1 overflow-y-auto bg-white rounded-md shadow-lg max-h-96">
                                         <div class="w-full p-2 sm:p-3">
                                             <div class="flex flex-col gap-1 sm:gap-2">
                                                 @forelse ($result as $item)
-                                                        <a href="{{ $item->link }}"
-                                                            class="flex items-center gap-2 p-1 transition-colors border-b border-gray-200 sm:p-2 hover:bg-gray-100">
-                                                            <img src="{{ $item->avatar }}" alt="{{ $item->name }}"
-                                                                class="object-cover w-8 h-8 rounded-full sm:w-10 sm:h-10">
-                                                            <div class="flex-1 min-w-0">
-                                                                <h4
-                                                                    class="text-xs font-bold text-gray-800 truncate sm:text-sm">
-                                                                    {{ $item->name }}</h4>
-                                                                <p class="text-xs text-gray-500 truncate">
-                                                                    {{ $item->email }}</p>
-                                                            </div>
-                                                        </a>
-                                                    @empty
-                                                        <p class="font-bold text-black text-md">Opps! Nothing
-                                                            Found</p>
-                                                    @endforelse
+                                                    <a href="{{ $item->link }}"
+                                                        class="flex items-center gap-2 p-1 transition-colors border-b border-gray-200 sm:p-2 hover:bg-gray-100">
+                                                        <img src="{{ $item->avatar }}" alt="{{ $item->name }}"
+                                                            class="object-cover w-8 h-8 rounded-full sm:w-10 sm:h-10">
+                                                        <div class="flex-1 min-w-0">
+                                                            <h4
+                                                                class="text-xs font-bold text-gray-800 truncate sm:text-sm">
+                                                                {{ $item->name }}</h4>
+                                                            <p class="text-xs text-gray-500 truncate">
+                                                                {{ $item->email }}</p>
+                                                        </div>
+                                                    </a>
+                                                @empty
+                                                    <p class="font-bold text-black text-md">Opps! Nothing
+                                                        Found</p>
+                                                @endforelse
                                             </div>
                                         </div>
                                     </div>
@@ -259,33 +260,15 @@ new class extends Component {
                             <x-dropdown-link x-show="$wire.isCreative" class="hidden text-bold sm:block"
                                 :href="route('creative.upload')">
                                 <span>
-                                    <svg class="inline-block w-5 h-5 fill-navy-blue " version="1.1" id="Capa_1"
-                                        xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                                        viewBox="0 0 384.97 384.97" xml:space="preserve">
-                                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round">
-                                        </g>
-                                        <g id="SVGRepo_iconCarrier">
-                                            <g>
-                                                <g id="Upload">
-                                                    <path
-                                                        d="M372.939,264.641c-6.641,0-12.03,5.39-12.03,12.03v84.212H24.061v-84.212c0-6.641-5.39-12.03-12.03-12.03 S0,270.031,0,276.671v96.242c0,6.641,5.39,12.03,12.03,12.03h360.909c6.641,0,12.03-5.39,12.03-12.03v-96.242 C384.97,270.019,379.58,264.641,372.939,264.641z">
-                                                    </path>
-                                                    <path
-                                                        d="M117.067,103.507l63.46-62.558v235.71c0,6.641,5.438,12.03,12.151,12.03c6.713,0,12.151-5.39,12.151-12.03V40.95 l63.46,62.558c4.74,4.704,12.439,4.704,17.179,0c4.74-4.704,4.752-12.319,0-17.011l-84.2-82.997 c-4.692-4.656-12.584-4.608-17.191,0L99.888,86.496c-4.752,4.704-4.74,12.319,0,17.011 C104.628,108.211,112.327,108.211,117.067,103.507z">
-                                                    </path>
-                                                </g>
-                                                <g> </g>
-                                                <g> </g>
-                                                <g> </g>
-                                                <g> </g>
-                                                <g> </g>
-                                                <g> </g>
-                                            </g>
-                                        </g>
-                                    </svg>
+                                    @svg('solar-upload-bold', ['class' => 'inline-block w-6 h-6 fill-current text-navy-blue'])
                                 </span>
                                 {{ __('Upload') }}
+                            </x-dropdown-link>
+                            <x-dropdown-link class="hidden text-bold sm:block" :href="route('design.contest')">
+                                <span>
+                                    @svg('solar-t-shirt-bold-duotone', ['class' => 'inline-block w-6 h-6 fill-current text-navy-blue'])
+                                </span>
+                                {{ __('Design Contest') }}
                             </x-dropdown-link>
 
                             <x-dropdown-link class='hidden sm:block' :href="route('explore')" :active="request()->routeIs('explore')" wire:navigate>
@@ -375,52 +358,47 @@ new class extends Component {
                     </span>
                 </div>
 
-                <div wire:show='drawer' x-cloak="display:hidden" x-transition:enter="500ms" x-transition.opacity
-                    class="fixed inset-0 w-screen h-full ease-in-out bg-black/40 backdrop-blur-sm z-[9999]">
-                    <div class="fixed right-0 grid lg:w-[40%] h-screen  bg-white rounded-none ">
-                        <div class="flex justify-between w-full px-4 py-4">
-                            <div class='text-xl font-bold text-black '>
-                                Notification
-                            </div>
+                <div x-data="{ show: @entangle('drawer') }" x-show="show" x-cloak
+                    x-transition:enter="transition ease-in-out duration-300" x-transition:enter-start="opacity-0"
+                    x-transition:enter-end="opacity-100"
+                    class="fixed inset-0 z-[9999] w-screen h-screen bg-black/40 backdrop-blur-sm">
+                    <!-- Slide-in panel -->
+                    <div class="fixed right-0 h-full w-full sm:w-[80%] lg:w-[40%] bg-white shadow-xl"
+                        @click.outside="$wire.drawer = false">
+                        <!-- Header -->
+                        <div class="flex justify-between w-full px-4 py-4 border-b">
+                            <div class="text-xl font-bold text-black">Notification</div>
                             <x-mary-button icon="o-x-mark"
                                 class="justify btn-dark hover:bg-navy-blue btn-sm btn-circle"
-                                wire:click="drawer = false" />
+                                wire:click="$set('drawer', false)" />
                         </div>
-                        <x-bladewind.dropmenu-item class="p-0 overflow-y-scroll bg-white" hover="false"
-                            padded="false" transparent="false">
 
-                            <x-bladewind.list-view class="w-full py-2 bg-white" compact="true">
+                        <!-- Content -->
+                        <x-bladewind.dropmenu-item class="p-0 overflow-y-scroll bg-white scrollbar-none"
+                            hover="false" padded="false" transparent="false">
+                            <x-bladewind.list-view class="w-full py-2 bg-white scrollbar-none" compact="true">
                                 @forelse ($notifications as $notification)
                                     <x-bladewind.list-item
                                         class="flex justify-between w-full bg-white hover:bg-gray-100">
                                         <div class="pt-1 mx-1">
-                                            <div class="text-sm">
-                                                <span class="font-medium text-slate-900">
-                                                    {{ $notification->message }}
-
-                                                </span>
-
-                                                <div class="text-xs">
-                                                    {{ Carbon::parse($notification->created_at)->format('D-M-Y') }}
-                                                </div>
+                                            <div class="text-sm font-medium text-slate-900">
+                                                {{ $notification->message }}
+                                            </div>
+                                            <div class="text-xs text-gray-500">
+                                                {{ \Carbon\Carbon::parse($notification->created_at)->format('D-M-Y') }}
                                             </div>
                                         </div>
                                         <x-bladewind.button wire:click="markAsRead('{{ $notification->id }}')"
                                             class="ml-20 hover:bg-navy-blue" type="bg-golden"
                                             button_text_css="text-white" size="small">
-                                            <span>
-                                                Mark As Read
-                                            </span>
+                                            Mark As Read
                                         </x-bladewind.button>
                                     </x-bladewind.list-item>
                                 @empty
                                     <x-bladewind.list-item class="w-full bg-white hover:bg-gray-100">
                                         <div class="grid text-left">
-                                            <h3 class="text-lg font-extrabold text-gray-700">No
-                                                Notifications
-                                            </h3>
-                                            <p class="mt-1 text-sm text-gray-500">You're all
-                                                caught up!</p>
+                                            <h3 class="text-lg font-extrabold text-gray-700">No Notifications</h3>
+                                            <p class="mt-1 text-sm text-gray-500">You're all caught up!</p>
                                         </div>
                                     </x-bladewind.list-item>
                                 @endforelse
@@ -428,6 +406,7 @@ new class extends Component {
                         </x-bladewind.dropmenu-item>
                     </div>
                 </div>
+
 
             </div>
 
@@ -485,31 +464,21 @@ new class extends Component {
                             </x-dropdown-link>
                             <x-dropdown-link class="text-bold " :href="route('wallet')" x-show="admin" wire:navigate>
                                 <span>
-                                    <svg class="inline-block w-5 h-5 fill-current" xmlns="http://www.w3.org/2000/svg"
-                                        viewBox="0 0 512 512">
-                                        <path fill="#001f54"
-                                            d="M64 32C28.7 32 0 60.7 0 96L0 416c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-224c0-35.3-28.7-64-64-64L80 128c-8.8 0-16-7.2-16-16s7.2-16 16-16l368 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L64 32zM416 272a32 32 0 1 1 0 64 32 32 0 1 1 0-64z" />
-                                    </svg>
+                                    @svg('solar-wallet-2-bold', ['class' => 'inline-block w-6 h-6 fill-current text-navy-blue'])
                                 </span>
 
                                 <span class="mt-2"> {{ __('Wallet') }}</span>
                             </x-dropdown-link>
                             <x-dropdown-link class=" text-bold" :href="route('cart')" x-show="admin" wire:navigate>
                                 <span>
-                                    @svg('eva-shopping-cart', 'w-6 h-6 text-navy-blue inline-block fill-current')
+                                    @svg('solar-cart-bold', 'w-6 h-6 text-navy-blue inline-block fill-current')
                                 </span>
                                 {{ __('Cart') }}
                             </x-dropdown-link>
 
                             <x-dropdown-link class="text-bold" :href="route('settings')" wire:navigate>
-                                <span>
-                                    <svg class="inline-block w-5 h-5 fill-current text-navy-blue"
-                                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="settings">
-                                        <path fill="none" d="M0 0h24v24H0V0z"></path>
-                                        <path
-                                            d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z">
-                                        </path>
-                                    </svg>
+                                   <span>
+                                    @svg('solar-settings-bold', ['class' => 'inline-block w-6 h-6 fill-current text-navy-blue'])
                                 </span>
                                 {{ __('Settings') }}
                             </x-dropdown-link>
@@ -518,23 +487,8 @@ new class extends Component {
                             <button wire:click="logout" class="w-full text-start">
                                 <x-dropdown-link>
                                     <span>
-                                        <svg class='inline-block w-5 h-5 fill-current text-navy-blue'
-                                            viewBox="0 0 24 24" width='10' height='10' fill="none"
-                                            xmlns="http://www.w3.org/2000/svg">
-                                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round"
-                                                stroke-linejoin="round">
-                                            </g>
-                                            <g id="SVGRepo_iconCarrier">
-                                                <path
-                                                    d="M17.2929 14.2929C16.9024 14.6834 16.9024 15.3166 17.2929 15.7071C17.6834 16.0976 18.3166 16.0976 18.7071 15.7071L21.6201 12.7941C21.6351 12.7791 21.6497 12.7637 21.6637 12.748C21.87 12.5648 22 12.2976 22 12C22 11.7024 21.87 11.4352 21.6637 11.252C21.6497 11.2363 21.6351 11.2209 21.6201 11.2059L18.7071 8.29289C18.3166 7.90237 17.6834 7.90237 17.2929 8.29289C16.9024 8.68342 16.9024 9.31658 17.2929 9.70711L18.5858 11H13C12.4477 11 12 11.4477 12 12C12 12.5523 12.4477 13 13 13H18.5858L17.2929 14.2929Z"
-                                                    fill="navy-blue"></path>
-                                                <path
-                                                    d="M5 2C3.34315 2 2 3.34315 2 5V19C2 20.6569 3.34315 22 5 22H14.5C15.8807 22 17 20.8807 17 19.5V16.7326C16.8519 16.647 16.7125 16.5409 16.5858 16.4142C15.9314 15.7598 15.8253 14.7649 16.2674 14H13C11.8954 14 11 13.1046 11 12C11 10.8954 11.8954 10 13 10H16.2674C15.8253 9.23514 15.9314 8.24015 16.5858 7.58579C16.7125 7.4591 16.8519 7.35296 17 7.26738V4.5C17 3.11929 15.8807 2 14.5 2H5Z"
-                                                    fill="navy-blue"></path>
-                                            </g>
-                                        </svg>
-                                    </span>
+                                    @svg('solar-logout-2-bold', ['class' => 'inline-block w-6 h-6 fill-current text-navy-blue'])
+                                </span>
                                     {{ __('Log Out') }}
                                 </x-dropdown-link>
                             </button>
@@ -573,11 +527,7 @@ new class extends Component {
                             <x-dropdown-link class="hidden text-bold md:block" :href="route('wallet')" x-show="admin"
                                 wire:navigate>
                                 <span>
-                                    <svg class="inline-block w-5 h-5 fill-current" xmlns="http://www.w3.org/2000/svg"
-                                        viewBox="0 0 512 512">
-                                        <path fill="#001f54"
-                                            d="M64 32C28.7 32 0 60.7 0 96L0 416c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-224c0-35.3-28.7-64-64-64L80 128c-8.8 0-16-7.2-16-16s7.2-16 16-16l368 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L64 32zM416 272a32 32 0 1 1 0 64 32 32 0 1 1 0-64z" />
-                                    </svg>
+                                    @svg('solar-wallet-2-bold', ['class' => 'inline-block w-6 h-6 fill-current text-navy-blue'])
                                 </span>
 
                                 <span class="mt-2"> {{ __('Wallet') }}</span>
@@ -585,20 +535,14 @@ new class extends Component {
                             <x-dropdown-link class="hidden text-bold md:block" :href="route('cart')" x-show="admin"
                                 wire:navigate>
                                 <span>
-                                    @svg('eva-shopping-cart', 'w-6 h-6 text-navy-blue inline-block fill-current')
+                                    @svg('solar-cart-bold', 'w-6 h-6 text-navy-blue inline-block fill-current')
                                 </span>
                                 {{ __('Cart') }}
                             </x-dropdown-link>
 
                             <x-dropdown-link class="hidden text-bold md:block" :href="route('settings')" wire:navigate>
-                                <span>
-                                    <svg class="inline-block w-5 h-5 fill-current text-navy-blue"
-                                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="settings">
-                                        <path fill="none" d="M0 0h24v24H0V0z"></path>
-                                        <path
-                                            d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z">
-                                        </path>
-                                    </svg>
+                               <span>
+                                    @svg('solar-settings-bold', ['class' => 'inline-block w-6 h-6 fill-current text-navy-blue'])
                                 </span>
                                 {{ __('Settings') }}
                             </x-dropdown-link>
@@ -606,24 +550,9 @@ new class extends Component {
                             <!-- Logout Button -->
                             <button wire:click="logout" class="w-full text-start">
                                 <x-dropdown-link class='hidden md:block'>
-                                    <span>
-                                        <svg class='inline-block w-5 h-5 fill-current text-navy-blue'
-                                            viewBox="0 0 24 24" width='10' height='10' fill="none"
-                                            xmlns="http://www.w3.org/2000/svg">
-                                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round"
-                                                stroke-linejoin="round">
-                                            </g>
-                                            <g id="SVGRepo_iconCarrier">
-                                                <path
-                                                    d="M17.2929 14.2929C16.9024 14.6834 16.9024 15.3166 17.2929 15.7071C17.6834 16.0976 18.3166 16.0976 18.7071 15.7071L21.6201 12.7941C21.6351 12.7791 21.6497 12.7637 21.6637 12.748C21.87 12.5648 22 12.2976 22 12C22 11.7024 21.87 11.4352 21.6637 11.252C21.6497 11.2363 21.6351 11.2209 21.6201 11.2059L18.7071 8.29289C18.3166 7.90237 17.6834 7.90237 17.2929 8.29289C16.9024 8.68342 16.9024 9.31658 17.2929 9.70711L18.5858 11H13C12.4477 11 12 11.4477 12 12C12 12.5523 12.4477 13 13 13H18.5858L17.2929 14.2929Z"
-                                                    fill="navy-blue"></path>
-                                                <path
-                                                    d="M5 2C3.34315 2 2 3.34315 2 5V19C2 20.6569 3.34315 22 5 22H14.5C15.8807 22 17 20.8807 17 19.5V16.7326C16.8519 16.647 16.7125 16.5409 16.5858 16.4142C15.9314 15.7598 15.8253 14.7649 16.2674 14H13C11.8954 14 11 13.1046 11 12C11 10.8954 11.8954 10 13 10H16.2674C15.8253 9.23514 15.9314 8.24015 16.5858 7.58579C16.7125 7.4591 16.8519 7.35296 17 7.26738V4.5C17 3.11929 15.8807 2 14.5 2H5Z"
-                                                    fill="navy-blue"></path>
-                                            </g>
-                                        </svg>
-                                    </span>
+                                     <span>
+                                    @svg('solar-logout-2-bold', ['class' => 'inline-block w-6 h-6 fill-current text-navy-blue'])
+                                </span>
                                     {{ __('Log Out') }}
                                 </x-dropdown-link>
                             </button>
@@ -748,6 +677,12 @@ new class extends Component {
                         {{ __('More') }}
                     </x-responsive-nav-link>
                     <div class="px-5 transition-all duration-500 bg-gray-200" x-show="more">
+                        <x-responsive-nav-link class="text-bold" :href="route('design.contest')">
+                            <span>
+                                @svg('solar-t-shirt-bold-duotone', ['class' => 'inline-block w-6 h-6 fill-current text-navy-blue'])
+                            </span>
+                            {{ __('Design Contest') }}
+                        </x-responsive-nav-link>
                         <x-responsive-nav-link :href="route('market.place')" wire:navigate>
                             <span>
                                 <svg class="inline-block w-5 h-5 fill-current" fill="#000000" height="200px"
@@ -774,23 +709,17 @@ new class extends Component {
                             </span>
                             {{ __('Marketplace') }}
                         </x-responsive-nav-link>
-                        <x-responsive-nav-link :href="route('wallet')" x-show="admin" wire:navigate>
+                        <x-responsive-nav-link :href="route('creative.upload')" wire:navigate>
                             <span>
-
-                                <svg class="inline-block w-5 h-5 fill-navy-blue" xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 512 512">
-                                    <path fill="#001f54"
-                                        d="M64 32C28.7 32 0 60.7 0 96L0 416c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-224c0-35.3-28.7-64-64-64L80 128c-8.8 0-16-7.2-16-16s7.2-16 16-16l368 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L64 32zM416 272a32 32 0 1 1 0 64 32 32 0 1 1 0-64z" />
-                                </svg>
+                                @svg('solar-upload-bold', 'w-6 h-6 text-navy-blue inline-block fill-current')
                             </span>
-                            {{ __('Wallet') }}
-
+                            {{ __('Upload') }}
                         </x-responsive-nav-link>
                         <x-responsive-nav-link :href="route('cart')" x-show="admin" wire:navigate>
 
                             <span>
-                                @svg('eva-shopping-cart', 'w-6 h-6 text-navy-blue inline-block fill-current')
-                            </span>
+                                    @svg('solar-cart-bold', 'w-6 h-6 text-navy-blue inline-block fill-current')
+                                </span>
                             {{ __('Cart') }}
                         </x-responsive-nav-link>
                         <x-responsive-nav-link x-show="$wire.isCreative" x-show="admin" :href="route('creative.upload')">
@@ -857,17 +786,19 @@ new class extends Component {
 
                         </x-responsive-nav-link>
                     </div>
+                    <x-responsive-nav-link :href="route('wallet')" x-show="admin" wire:navigate>
+                        <span>
+                                    @svg('solar-wallet-2-bold', ['class' => 'inline-block w-6 h-6 fill-current text-navy-blue'])
+                                </span>
+                        {{ __('Wallet') }}
+
+                    </x-responsive-nav-link>
 
                     <x-responsive-nav-link :href="route('settings')" wire:navigate>
                         <span>
-                            <svg class="inline-block w-5 h-5 fill-current text-navy-blue"
-                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="settings">
-                                <path fill="none" d="M0 0h24v24H0V0z"></path>
-                                <path
-                                    d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z">
-                                </path>
-                            </svg>
-                        </span>
+                           <span>
+                                    @svg('solar-settings-bold', ['class' => 'inline-block w-6 h-6 fill-current text-navy-blue'])
+                                </span>
                         {{ __('Settings') }}
                     </x-responsive-nav-link>
 
@@ -875,22 +806,9 @@ new class extends Component {
                     <button wire:click="logout" class="w-full text-start text-navy-blue">
                         <x-responsive-nav-link>
 
-                            <span class="">
-                                <svg class='inline-block w-5 h-5 fill-navy-blue' viewBox="0 0 24 24" width='10'
-                                    height='10' fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round">
-                                    </g>
-                                    <g id="SVGRepo_iconCarrier">
-                                        <path
-                                            d="M17.2929 14.2929C16.9024 14.6834 16.9024 15.3166 17.2929 15.7071C17.6834 16.0976 18.3166 16.0976 18.7071 15.7071L21.6201 12.7941C21.6351 12.7791 21.6497 12.7637 21.6637 12.748C21.87 12.5648 22 12.2976 22 12C22 11.7024 21.87 11.4352 21.6637 11.252C21.6497 11.2363 21.6351 11.2209 21.6201 11.2059L18.7071 8.29289C18.3166 7.90237 17.6834 7.90237 17.2929 8.29289C16.9024 8.68342 16.9024 9.31658 17.2929 9.70711L18.5858 11H13C12.4477 11 12 11.4477 12 12C12 12.5523 12.4477 13 13 13H18.5858L17.2929 14.2929Z">
-                                        </path>
-                                        <path
-                                            d="M5 2C3.34315 2 2 3.34315 2 5V19C2 20.6569 3.34315 22 5 22H14.5C15.8807 22 17 20.8807 17 19.5V16.7326C16.8519 16.647 16.7125 16.5409 16.5858 16.4142C15.9314 15.7598 15.8253 14.7649 16.2674 14H13C11.8954 14 11 13.1046 11 12C11 10.8954 11.8954 10 13 10H16.2674C15.8253 9.23514 15.9314 8.24015 16.5858 7.58579C16.7125 7.4591 16.8519 7.35296 17 7.26738V4.5C17 3.11929 15.8807 2 14.5 2H5Z">
-                                        </path>
-                                    </g>
-                                </svg>
-                            </span>
+                             <span>
+                                    @svg('solar-logout-2-bold', ['class' => 'inline-block w-6 h-6 fill-current text-navy-blue'])
+                                </span>
                             {{ __('Log Out') }}
                         </x-responsive-nav-link>
                     </button>

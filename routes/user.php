@@ -19,6 +19,8 @@ Route::middleware(['auth', 'verified'])->group(
         Volt::route('/{slug}', 'pages.creative.profile')->name(name: 'creative.profile');
         Route::get('/fund/wallet', [PaymentController::class, 'initPayment'])->name('fund.wallet');
         Route::get('/payment/confirm', [PaymentController::class, 'confirmPayment'])->name('confirm.payment');
+        Volt::route('/design/contests', 'pages.contest')->name(name: 'design.contest');
+
     }
 
 

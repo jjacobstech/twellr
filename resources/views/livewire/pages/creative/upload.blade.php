@@ -75,7 +75,7 @@ new #[Layout('layouts.app')] class extends Component {
             'user_id' => auth()->user()->id,
             'name' => $product->name,
             'price' => $product->price,
-            'category' => $product->category,
+            'category_id' => $product->category,
             'description' => $product->description,
             'front_view' => $frontViewData->name,
             'front_view_mime' => $frontViewData->mime,
@@ -104,6 +104,7 @@ new #[Layout('layouts.app')] class extends Component {
            $contest = Contest::create([
                 'user_id' => Auth::id(),
                 'product_id' => $productSaved->id,
+                'category_id' => $product->category,
                 'type' => 'design_fest'
             ]);
 
@@ -114,7 +115,12 @@ new #[Layout('layouts.app')] class extends Component {
             else{
                      $this->cleanupOldUploads();
 
+ if ($this->designFest === true) {
+           session()->flash('designFest', 'true');
+ }
+
         session()->flash('status', 'true');
+
         $this->redirectIntended(route('creative.upload'), true);
             }
 
@@ -132,12 +138,14 @@ new #[Layout('layouts.app')] class extends Component {
     backButton: false,
 }" x-on:livewire-upload-error="$wire.error('Upload Failed')"
     x-on:livewire-upload-finish="$wire.success('Upload Successful')"
-    class="font-sans h-screen overflow-y-scroll pb-20 md:pb-0">
+    class="h-screen pb-20 overflow-y-scroll font-sans md:pb-0 scrollbar-none">
 
     @session('status')
-        {{ $this->success('Product Upload Successful', 'Check Marketplace to view product') }}
+        {{ $this->success('Design Upload Successful', 'Check Marketplace to view design') }}
     @endsession
-
+   @session('designFest')
+        {{ $this->success('Design Entered Into Design Fest', 'Check Contest Page to view Design') }}
+    @endsession
     <!-- Error notifications -->
     @error('printUpload')
         {{ $this->error('Print File Upload Error', 'Upload Print File') }}
@@ -172,15 +180,15 @@ new #[Layout('layouts.app')] class extends Component {
     @enderror
 
     <!-- Main Layout: Sidebar + Content -->
-    <div class="flex flex-col bg-gray-100 md:flex-row md:gap-1 h-screen">
+    <div class="flex flex-col h-screen bg-gray-100 md:flex-row md:gap-1 scrollbar-none">
         <!-- Sidebar - Adjusts width proportionally -->
         <x-creative-sidebar class="w-full md:w-[12%] md:min-h-screen" />
 
         <!-- Main Content Area - Takes remaining space -->
-        <div class="w-full md:w-[87%] px-2 sm:px-4 py-2.5 text-xl bg-white h-screen md:h-full">
+        <div class="w-full md:w-[87%] px-2 sm:px-4 py-2.5 text-xl bg-white h-screen md:h-full scrollbar-none">
             <!-- Background Container - Height adapts to content -->
             <div style="background-image: url('{{ asset('assets/blurred.png') }}')"
-                class="relative flex justify-center text-white bg-no-repeat bg-cover rounded-lg min-h-[500px] h-100">
+                class="relative flex justify-center text-white bg-no-repeat bg-cover rounded-lg min-h-[500px] h-100 scrollbar-none">
 
                 <!-- Back Button - Positioned consistently across screens -->
                 <div class="absolute z-10 top-2 sm:top-4 left-2 sm:left-4">
@@ -199,7 +207,7 @@ new #[Layout('layouts.app')] class extends Component {
 
                     <!-- Main Form View -->
                     <div x-show="form" x-transition:enter.duration.700ms>
-                        <div class="flex flex-col h-full px-3 sm:px-6 md:px-10 py-4 sm:py-6 md:py-10">
+                        <div class="flex flex-col h-full px-3 py-4 sm:px-6 md:px-10 sm:py-6 md:py-10">
 
                             <!-- Name and Price Row - Always stack on mobile, side by side on larger screens -->
                             <div class="flex flex-col sm:flex-row sm:gap-4 md:gap-6">
@@ -250,8 +258,8 @@ new #[Layout('layouts.app')] class extends Component {
                                         class="text-gray-500 font-extrabold text-[15px] sm:text-[17px]"
                                         for="description" />
                                     <x-textarea-input wire:model.live="description" :class="$errors->get('description')
-                                        ? 'w-full ring-1 border-0 ring-red-600 px-2 py-1 mt-1 sm:mt-2 bg-[#bebebe] rounded-xl text-black h-20 sm:h-24 md:h-28'
-                                        : 'w-full px-2 py-1 mt-1 sm:mt-2 bg-[#bebebe] border-0 rounded-xl text-black h-20 sm:h-24 md:h-28'"
+                                        ? 'w-full ring-1 border-0 ring-red-600 px-2 py-1 mt-1 sm:mt-2 bg-[#bebebe] rounded-xl text-black h-20 sm:h-24 md:h-28 scrollbar-none'
+                                        : 'w-full px-2 py-1 mt-1 sm:mt-2 bg-[#bebebe] border-0 rounded-xl text-black h-20 sm:h-24 md:h-28 scrollbar-none'"
                                         id="description"></x-textarea-input>
                                 </div>
 
@@ -276,15 +284,15 @@ new #[Layout('layouts.app')] class extends Component {
                         <div class="border-t-2 border-[#bebebe] w-full"></div>
 
                         <!-- Submit Button -->
-                        <div class="grid space-y-2 justify-center py-4 sm:py-4">
-                            <div class="flex gap-1 justify-center">
+                        <div class="grid justify-center py-4 space-y-2 sm:py-4">
+                            <div class="flex justify-center gap-1">
                                 <span wire:click="toggleDesignFest"
                                     class="{{ $designFest ? 'bg-navy-blue hover:bg-navy-blue' : 'bg-gray-300 hover:bg-gray-400' }} relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none">
                                     <span class="sr-only">Submit To Design Fest</span>
                                     <span
                                         class="{{ $designFest ? 'translate-x-6' : 'translate-x-1' }} inline-block w-4 h-4 transform bg-white rounded-full transition-transform"></span>
                                 </span>
-                                <span class="text-gray-500 text-sm">Submit To Design Fest</span>
+                                <span class="text-sm text-gray-500">Submit To Design Fest</span>
                             </div>
                             <x-mary-button label="MONETIZE DESIGN"
                                 class="btn hover:bg-navy-blue hover:text-white active:bg-navy-blue bg-[#f7aa10] text-neutral-900 px-4 sm:px-6 py-3 sm:py-4 rounded-lg sm:rounded-xl font-bold uppercase text-[12px] sm:text-[13px] focus:ring-0 focus:bg-navy-blue focus:text-white border-0"
@@ -300,12 +308,12 @@ new #[Layout('layouts.app')] class extends Component {
                         class="py-6 sm:py-8 md:py-16 lg:py-[124.5px]">
                         <!-- Responsive Grid Layout for Uploads -->
                         <div
-                            class="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8 px-2 sm:px-4 md:px-8 lg:px-16">
+                            class="grid grid-cols-1 gap-4 px-2 xs:grid-cols-2 lg:grid-cols-4 sm:gap-6 md:gap-8 sm:px-4 md:px-8 lg:px-16">
 
                             <!-- Front View Upload -->
-                            <div class="grid content-start justify-center space-y-1 sm:space-y-2 text-center">
+                            <div class="grid content-start justify-center space-y-1 text-center sm:space-y-2">
                                 <x-mary-file omit-error="true"
-                                    class="grid items-center relative w-24 h-24 xs:w-28 xs:h-28 sm:w-32 sm:h-32 md:w-36 md:h-36 lg:w-40 lg:h-40 mx-auto group"
+                                    class="relative grid items-center w-24 h-24 mx-auto xs:w-28 xs:h-28 sm:w-32 sm:h-32 md:w-36 md:h-36 lg:w-40 lg:h-40 group"
                                     change-text="Upload Front View" wire:model.live="frontView"
                                     accept="image/png, image/jpeg, image/jpg">
                                     <!-- Responsive Image Container -->
@@ -324,10 +332,10 @@ new #[Layout('layouts.app')] class extends Component {
                             </div>
 
                             <!-- Back View Upload -->
-                            <div class="grid content-start justify-center space-y-1 sm:space-y-2 text-center">
+                            <div class="grid content-start justify-center space-y-1 text-center sm:space-y-2">
 
                                 <x-mary-file omit-error="true"
-                                    class="grid items-center relative w-24 h-24 xs:w-28 xs:h-28 sm:w-32 sm:h-32 md:w-36 md:h-36 lg:w-40 lg:h-40 mx-auto group"
+                                    class="relative grid items-center w-24 h-24 mx-auto xs:w-28 xs:h-28 sm:w-32 sm:h-32 md:w-36 md:h-36 lg:w-40 lg:h-40 group"
                                     change-text="Upload Back View" wire:model.live="backView"
                                     accept="image/png, image/jpeg, image/jpg">
 
@@ -345,9 +353,9 @@ new #[Layout('layouts.app')] class extends Component {
                             </div>
 
                             <!-- Side View Upload -->
-                            <div class="grid content-start justify-center space-y-1 sm:space-y-2 text-center">
+                            <div class="grid content-start justify-center space-y-1 text-center sm:space-y-2">
                                 <x-mary-file  omit-error="true"
-                                    class="grid items-center relative w-24 h-24 xs:w-28 xs:h-28 sm:w-32 sm:h-32 md:w-36 md:h-36 lg:w-40 lg:h-40 mx-auto group"
+                                    class="relative grid items-center w-24 h-24 mx-auto xs:w-28 xs:h-28 sm:w-32 sm:h-32 md:w-36 md:h-36 lg:w-40 lg:h-40 group"
                                     change-text="Upload Side View" wire:model="sideView"
                                     accept="image/png, image/jpeg, image/jpg">
                                     <img class="object-cover w-full h-full rounded-xl"
@@ -364,14 +372,14 @@ new #[Layout('layouts.app')] class extends Component {
                             </div>
 
                             <!-- Printable Stack Upload -->
-                            <div class="grid content-start justify-center space-y-1 sm:space-y-2 text-center">
+                            <div class="grid content-start justify-center space-y-1 text-center sm:space-y-2">
                                 <label
                                     title="Upload Print file ({{ config('twellr.printable_stack_format', 'Allowed Formats') }})">
                                     <input class="hidden" type="file" accept="*"
                                         wire:model.live="printUpload" name="printable_stack" id="printable_stack">
 
                                     <div
-                                        class="relative w-24 h-24 xs:w-28 xs:h-28 sm:w-32 sm:h-32 md:w-36 md:h-36 lg:w-40 lg:h-40 mx-auto group">
+                                        class="relative w-24 h-24 mx-auto xs:w-28 xs:h-28 sm:w-32 sm:h-32 md:w-36 md:h-36 lg:w-40 lg:h-40 group">
                                         <div class="relative z-40 flex items-center justify-center w-full h-full p-2 transition-all duration-150 bg-white cursor-pointer group-hover:scale-110 group-hover:shadow-xl rounded-xl"
                                             id="printable-container">
                                             <!-- Display file icon or placeholder -->

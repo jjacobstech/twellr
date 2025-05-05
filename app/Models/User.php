@@ -84,7 +84,7 @@ class User extends Authenticatable
         'notify_purchase',
         'remember_token',
         'referred_by',
-        'withdrawal_threshold'
+        'discount'
     ];
 
     public function isCreative()

@@ -8,6 +8,7 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 /**
  * Class ContestWinner
@@ -38,4 +39,26 @@ class ContestWinner extends Model
         'rating_id',
         'type'
     ];
+
+    public static function  weekly()
+    {
+        $startOfWeek = Carbon::now()->startOfWeek();
+        $endOfWeek = Carbon::now()->endOfWeek();
+
+        return ContestWinner::whereBetween('created_at', [$startOfWeek, $endOfWeek]);
+    }
+    public function monthly(Builder $query): Builder
+    {
+        $startOfMonth = Carbon::now()->startOfMonth();
+        $endOfMonth = Carbon::now()->endOfMonth();
+
+        return $query->whereBetween('created_at', [$startOfMonth, $endOfMonth]);
+    }
+    public function user(){
+        return $this->belongsTo(User::class, 'user_id');
+    }
+    public function product()
+    {
+        return $this->belongsTo(Product::class, 'product_id');
+    }
 }

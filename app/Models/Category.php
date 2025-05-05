@@ -26,4 +26,8 @@ class Category extends Model
     protected $fillable = [
         'name'
     ];
+
+    public function name(){
+     return $this->belongsTo(Category::class,'name');
+    }
 }

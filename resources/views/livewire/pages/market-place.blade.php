@@ -17,49 +17,41 @@ use App\Models\Notification;
 use Livewire\Volt\Component;
 use App\Models\PlatformEarning;
 use Illuminate\Support\Facades\Auth;
-use function Livewire\Volt\{state, layout, mount, uses};
+use function Livewire\Volt\{state, layout, mount, uses,with};
 
 layout('layouts.app');
 uses(Toast::class);
 state([
-    'products' => null,
-    'productCategory' => '',
-    'productFilter' => '',
+    'productCategory' =>  request()->slug,
+    'productFilter' => request()->filter,
     'modal' => false,
     'marketplace' => true,
     'checkout' => false,
-    'order' => null,
-    'address' => null,
+    'order' => [],
+    'address' => auth()->user()->address,
     'size' => '',
     'owner' => false,
     'added' => null,
     'exists' => null,
-    'materials' => null,
+    'materials' => fn() => Material::all(),
     'material' => '',
     'totalPrice' => 0,
     'shipping_fee' => 0,
     'quantity' => 1,
-    'subTotal' => null,
-    'itemTotal' => null,
-    'newPrice' => null,
-    'oldPrice' => null,
-    'phone_no' => null,
+    'subTotal' => 0,
+    'itemTotal' => 0,
+    'newPrice' => 0,
+    'oldPrice' => 0,
+    'phone_no' => auth()->user()->phone_no,
     'referral_link' => '',
     'commentInput' => '',
     'comments' => [],
-    'shipping_rates' => null,
-    'location' => null,
+    'shipping_rates' => fn() => ShippingFee::all(),
+    'locations' => fn() => State::where('country_id','=',2)->get(),
 ]);
 
-mount(function () {
-    $this->productCategory = request()->slug;
-    $this->address = auth()->user()->address;
-    $this->phone_no = auth()->user()->phone_no;
-    $this->productFilter = request()->filter;
-    $this->products = Product::all();
-    $this->materials = Material::all();
-    $this->shipping_rates = ShippingFee::all();
-});
+
+with(['products' => fn() => Product::with('category', 'designer')->get()]);
 $incrementQuantity = function () {
     $this->quantity++;
     $this->subTotal = $this->itemTotal * $this->quantity;
@@ -170,6 +162,15 @@ $orderProduct = function () {
     $this->totalPrice = $this->subTotal + $this->shipping_fee;
 };
 
+$closeOrderProduct = function(){
+     $this->marketplace = true;
+    $this->checkout = false;
+    $this->itemTotal = 0;
+    $this->subTotal = 0;
+    $this->totalPrice = 0;
+     $this->shipping_fee = 0;
+};
+
 $completeCheckout = function () {
     if (empty(Auth::user()->phone_no)) {
         session()->put('was_redirected', true);
@@ -177,9 +178,9 @@ $completeCheckout = function () {
     } else {
         $orderInfo = (object) $this->validate([
             'size' => ['required'],
-            'material' => ['required','not_in:0'],
+            'material' => ['required', 'not_in:0'],
             'address' => ['required', 'min:10'],
-            'phone_no' => ['required','min:10'],
+            'phone_no' => ['required', 'min:10'],
             'location' => ['required', 'not_in:0'],
         ]);
 
@@ -190,7 +191,7 @@ $completeCheckout = function () {
             $transaction = Transaction::create([
                 'user_id' => $this->order->user_id,
                 'buyer_id' => Auth::id(),
-                'amount' => ($this->order->price * $this->quantity),
+                'amount' => $this->order->price * $this->quantity,
                 'transaction_type' => 'sales',
                 'ref_no' => $ref_no,
                 'status' => 'pending',
@@ -260,7 +261,7 @@ $completeCheckout = function () {
             }
 
             $creative = User::where('id', '=', $this->order->user_id)->first();
-            $creative->wallet_balance = $creative->wallet_balance + ($this->order->price*$this->quantity);
+            $creative->wallet_balance = $creative->wallet_balance + $this->order->price * $this->quantity;
             $deposited = $creative->save();
 
             if (!$deposited) {
@@ -294,7 +295,7 @@ $completeCheckout = function () {
                 return $this->error('Transaction Error - Notification Service', 'An error has occured, but we are working on it');
             }
 
-             $ref_no = $this->generateReferenceNumber();
+            $ref_no = $this->generateReferenceNumber();
 
             $transaction = Transaction::create([
                 'buyer_id' => Auth::id(),
@@ -328,7 +329,7 @@ $completeCheckout = function () {
 };
 ?>
 
-<div class="w-screen h-full">
+<div class="w-screen h-screen scrollbar-thin scrollbar-track-white scrollbar-thumb-navy-blue">
 
     @error('material')
         {{ $this->warning('Material Not Selected') }}
@@ -352,10 +353,11 @@ $completeCheckout = function () {
 
 
     <!-- Marketplace -->
-    <div wire:show="marketplace" class="flex w-screen h-full space-x-1">
+    <div wire:show="marketplace" class="flex w-screen h-full  space-x-1">
 
-        <x-market-place-sidebar />
-        <div class="relative bg-white w-screen pb-8 md:pb-0 md:w-[72%] lg:w-[80%] md:h-screen py-4 overflow-y-scroll">
+        <x-market-place-sidebar :locations="$locations" />
+        <div
+            class="relative bg-white w-screen pb-8 md:pb-0 md:w-[72%] lg:w-[80%] md:h-screen py-4 overflow-y-scroll scrollbar-none ">
             <div x-cloak="display:hidden"
                 class="relative grid w-full gap-5 px-5 pt-1 mb-16 overflow-y-scroll md:h-screen lg:hidden md:grid-cols-2 sm:grid-cols-2">
                 @foreach ($products as $product)
@@ -363,8 +365,7 @@ $completeCheckout = function () {
                 @endforeach
             </div>
 
-            <div x-cloak="display:hidden"
-                class="relative hidden w-full lg:h-screen gap-5 px-5 pt-1 lg:overflow-y-scroll lg:grid md:grid-cols-4 mb-[115px]">
+            <div x-cloak="display:hidden" class="relative hidden w-full  gap-5 px-5   lg:grid md:grid-cols-4 mb-[90px]">
                 @foreach ($products as $product)
                     <x-product-card :$product />
                 @endforeach
@@ -374,47 +375,58 @@ $completeCheckout = function () {
                 class="fixed inset-0 z-50 w-screen h-full px-5 py-16 sm:py-12 md:py-12 md:px-20 lg:py-12 bg-black/40 backdrop-blur-sm pb-26">
                 <div class="grid h-full lg:flex justify-evenly rounded-xl md:flex-row"
                     @click.away="$wire.modal = false">
-                    <div class=" object-fit-contain lg:w-[75%] carousel rounded-t-xl md:rounded-none lg:rounded-l-xl">
-                        <div class="relative w-full carousel-item" id="front-view">
-                            <img src="@if ($order) {{ asset('uploads/products/design-stack/' . $order->front_view) }} @endif"
-                                alt="shopping image" class="object-cover w-full h-full ">
+                    <div class="object-fit-contain lg:w-[75%] carousel rounded-t-xl md:rounded-none lg:rounded-l-xl">
+                        <div
+                            class="w-full  h-64 lg:h-full bg-gray-100 overflow-y-auto scrollbar-none carousel">
+                            <div class="carousel w-full h-full">
+                                <!-- FRONT VIEW -->
+                                <div class="carousel-item relative w-full h-full over bg-black" id="front-view">
+                                    <img src="@if ($order) {{ asset('uploads/products/design-stack/' . $order->front_view) }} @endif"
+                                        alt="product front view" class="w-full h-full object-contain aspect-[4/3]">
+                                    <div
+                                        class="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
+                                        <a href="#side-view"
+                                            class="text-white bg-transparent border-white btn btn-circle hover:bg-navy-blue">❮</a>
+                                        <a href="#back-view"
+                                            class="text-white bg-transparent border-white btn btn-circle hover:bg-navy-blue">❯</a>
+                                    </div>
+                                </div>
 
-                            <div
-                                class="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
-                                <a href="#side-view"
-                                    class="text-white bg-transparent border-white btn btn-circle hover:bg-navy-blue">❮</a>
-                                <a href="#back-view"
-                                    class="text-white bg-transparent border-white btn btn-circle hover:bg-navy-blue">❯</a>
-                            </div>
-                        </div>
-                        <div class="relative w-full carousel-item" id="back-view">
-                            <img src="@if ($order) {{ asset('uploads/products/design-stack/' . $order->back_view) }} @endif"
-                                alt="shopping image" class="object-cover w-full h-full ">
-                            <div
-                                class="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
-                                <a href="#front-view"
-                                    class="text-white bg-transparent border-white btn btn-circle hover:bg-navy-blue">❮</a>
-                                <a href="#side-view"
-                                    class="text-white bg-transparent border-white btn btn-circle hover:bg-navy-blue">❯</a>
-                            </div>
-                        </div>
-                        <div class="relative w-full carousel-item" id="side-view">
-                            <img src="@if ($order) {{ asset('uploads/products/design-stack/' . $order->side_view) }} @endif"
-                                alt="shopping image" class="object-cover w-full h-full ">
-                            <div
-                                class="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
-                                <a href="#back-view"
-                                    class="text-white bg-transparent border-white btn btn-circle hover:bg-navy-blue">❮</a>
-                                <a href="#front-view"
-                                    class="text-white bg-transparent border-white btn btn-circle hover:bg-navy-blue">❯</a>
+                                <!-- BACK VIEW -->
+                                <div class="carousel-item relative w-full h-full bg-black" id="back-view">
+                                    <img src="@if ($order) {{ asset('uploads/products/design-stack/' . $order->back_view) }} @endif"
+                                        alt="product back view" class="w-full h-full object-contain aspect-[4/3]">
+                                    <div
+                                        class="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
+                                        <a href="#front-view"
+                                            class="text-white bg-transparent border-white btn btn-circle hover:bg-navy-blue">❮</a>
+                                        <a href="#side-view"
+                                            class="text-white bg-transparent border-white btn btn-circle hover:bg-navy-blue">❯</a>
+                                    </div>
+                                </div>
+
+                                <!-- SIDE VIEW -->
+                                <div class="carousel-item relative w-full h-full bg-black" id="side-view">
+                                    <img src="@if ($order) {{ asset('uploads/products/design-stack/' . $order->side_view) }} @endif"
+                                        alt="product side view" class="w-full h-full object-contain aspect-[4/3]">
+                                    <div
+                                        class="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
+                                        <a href="#back-view"
+                                            class="text-white bg-transparent border-white btn btn-circle hover:bg-navy-blue">❮</a>
+                                        <a href="#front-view"
+                                            class="text-white bg-transparent border-white btn btn-circle hover:bg-navy-blue">❯</a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     <div
-                        class="lg:w-[25%] px-6 md:px-10 lg:px-6 bg-white lg:rounded-r-xl space-y-3 overflow-y-scroll py-5">
+                        class="lg:w-[25%] px-6 md:px-10 lg:px-6 bg-white lg:rounded-r-xl space-y-3 overflow-y-scroll py-5 scrollbar-none">
                         <!-- design info -->
+
                         <div class="flex flex-wrap ">
+
                             <h1 class="flex-auto text-xl font-semibold text-black">
                                 @if ($order)
                                     {{ $order->name }}
@@ -422,12 +434,12 @@ $completeCheckout = function () {
                             </h1>
                             <div class="text-xl font-semibold text-black">
                                 @if ($order)
-                                    {{ $order->price }}
+                                    {{ App\Models\AdminSetting::first()->value('currency_symbol') . $order->price }}
                                 @endif
                             </div>
                             <div class="flex-none w-full mt-2 font-extrabold text-black text-md ">
                                 @if ($order)
-                                    {{ $order->category }}
+                                    {{ $order->category->name }}
                                 @endif
                             </div>
                         </div>
@@ -482,51 +494,66 @@ $completeCheckout = function () {
 
                         <!-- Comment Section -->
                         @if ($order)
-                            <div class="flex flex-wrap gap-3">
-                                <div class="grid w-full">
-                                    <x-text-input id="commentInput" placeholder="Write a Comment" :class="$errors->get('commentInput')
-                                        ? 'block w-full mt-2 ring-1 border-0 ring-red-600 text-white bg-[#bebebe] rounded-xl'
-                                        : 'block border-0 text-white w-full mt-2 bg-[#bebebe] rounded-xl'"
-                                        wire:model.live="commentInput" type="text" name="commentInput" autofocus
-                                        autocomplete="commentInput" />
-                                    <x-input-error class="absolute pt-1 mt-12" :messages="$errors->get('commentInput') ? 'Comment Cannot Be Empty' : ''" />
+                            @if (auth()->user()->isFollowing($order->designer->id))
+                                <div class="flex flex-wrap gap-3">
+                                    <div class="grid w-full">
+                                        <x-text-input id="commentInput" placeholder="Write a Comment" :class="$errors->get('commentInput')
+                                            ? 'block w-full mt-2 ring-1 border-0 ring-red-600 text-white bg-[#bebebe] rounded-xl'
+                                            : 'block border-0 text-white w-full mt-2 bg-[#bebebe] rounded-xl'"
+                                            wire:model.live="commentInput" type="text" name="commentInput" autofocus
+                                            autocomplete="commentInput" />
+                                        <x-input-error class="absolute pt-1 mt-12" :messages="$errors->get('commentInput') ? 'Comment Cannot Be Empty' : ''" />
+                                    </div>
+                                    <x-mary-button
+                                        class="bg-[#001f54] text-white hover:bg-golden hover:border-golden mt-2"
+                                        wire:click="commentDesign({{ $order->id }})" spinner>
+                                        @svg('eva-message-circle', ['class' => 'w-5 h-5'])
+                                        Comment
+                                    </x-mary-button>
+
                                 </div>
-                                <x-mary-button class="bg-[#001f54] text-white hover:bg-golden hover:border-golden mt-2"
-                                    wire:click="commentDesign({{ $order->id }})" spinner>
-                                    @svg('eva-message-circle', ['class' => 'w-5 h-5'])
-                                    Comment
-                                </x-mary-button>
-
-                            </div>
-                            <div class="grid overflow-y-scroll">
 
 
-                                <div class="h-full">
-                                    @forelse ($comments as $comment)
-                                        <div class="chat chat-start">
-                                            <div class="chat-image avatar">
-                                                <div class="w-10 rounded-full">
-                                                    <img alt="Tailwind CSS chat bubble component"
-                                                        src="{{ asset('uploads/avatar/' . $comment->user->avatar) }}" />
+                                @forelse ($comments as $comment)
+                                    <div class="grid overflow-y-scroll">
+
+                                        <div
+                                            class="h-full scrollbar-thin scrollbar-track-white scrollbar-thumb-navy-blue">
+                                            <div class="chat chat-start">
+                                                <div class="chat-image avatar">
+                                                    <div class="w-10 rounded-full">
+                                                        <img alt="Tailwind CSS chat bubble component"
+                                                            src="{{ asset('uploads/avatar/' . $comment->user->avatar) }}" />
+                                                    </div>
                                                 </div>
+                                                <div class="chat-header">
+                                                    <span
+                                                        class="text-gray-500">{{ $comment->user->firstname . ' ' . $comment->user->lastname }}</span>
+                                                    <time class="text-xs opacity-50">
+                                                        {{ Carbon::parse($comment->created_at)->format('D-M-Y') }}</time>
+                                                </div>
+                                                <div class="chat-bubble"> {{ $comment->content }}</div>
                                             </div>
-                                            <div class="chat-header">
-                                                <span
-                                                    class="text-gray-500">{{ $comment->user->firstname . ' ' . $comment->user->lastname }}</span>
-                                                <time class="text-xs opacity-50">
-                                                    {{ Carbon::parse($comment->created_at)->format('D-M-Y') }}</time>
-                                            </div>
-                                            <div class="chat-bubble"> {{ $comment->content }}</div>
-                                            < </div>
 
-                                            @empty
-                                                <p class="text-black">No Comments</p>
-                                    @endforelse
-                                </div>
-                            </div>
+                                        </div>
+                                    </div>
+                                @empty
+                                    <p class="text-black scrollbar-none">No Comments</p>
+                                @endforelse
+
                     </div>
+                @else
+                    <p class="text-black scrollbar-none">Follow
+                        {{ $order->designer->firstname . ' ' . $order->designer->lastname }} to be able to Comment </p>
                     @endif
 
+                    @endif
+
+                </div>
+                <div class="flex justify-end">
+                    <span wire:click='modal = false' class="cursor-pointer absolute right-5 top-3">
+                        @svg('heroicon-o-x-mark', ['class' => 'justify btn-dark hover:bg-red-500 bg-golden hover:text-white border-navy-blue text-white btn-sm btn-circle'])
+                    </span>
                 </div>
             </div>
         </div>
@@ -535,7 +562,8 @@ $completeCheckout = function () {
 
 
     <!-- Checkout -->
-    <div wire:show="checkout" class="w-full h-screen pb-20 overflow-y-scroll bg-gray-100">
+    <div wire:show="checkout"
+        class="w-full h-screen pb-20 overflow-y-scroll bg-gray-100 scrollbar-thin scrollbar-track-white scrollbar-thumb-navy-blue">
         <!-- Main Container -->
         <div class="px-4 py-4 mx-auto max-w-20xl sm:px-6 lg:px-4 md:flex md:gap-3">
 
@@ -565,7 +593,7 @@ $completeCheckout = function () {
                                     <!-- Product Details -->
                                     <div class="flex-grow ml-4">
                                         <h3 class="text-lg font-semibold text-gray-800">{{ $order->name }}</h3>
-                                        <p class="mt-1 text-sm text-red-500">{{ strtoupper($order->size) }}</p>
+                                        {{-- <p class="mt-1 text-sm text-red-500">{{ strtoupper($order->size) }}</p> --}}
                                         <p class="mt-1 text-base font-medium text-gray-700">
                                             ${{ $order->price }}</p>
                                     </div>
@@ -768,7 +796,7 @@ $completeCheckout = function () {
 
                     <!-- Continue Shopping Button -->
                     <div class="p-4 border-t sm:p-6">
-                        <span class="inline-flex items-center font-medium text-navy-blue hover:text-golden">
+                        <span class="inline-flex items-center font-medium text-navy-blue hover:text-golden" wire:click='closeOrderProduct'>
                             @svg('eva-arrow-back', 'w-4 h-4 mr-2')
                             Continue Shopping
                         </span>

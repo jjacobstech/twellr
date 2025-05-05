@@ -15,11 +15,11 @@ uses(Toast::class);
 
 state([
     'user' => fn() => User::where('referral_link','=',request()->creator)->first(),
-    'firstname' => User::where('referral_link','=',request()->creator)->value('firstname'),
-    'lastname' => User::where('referral_link','=',request()->creator)->value('lastname'),
-    'email' => User::where('referral_link','=',request()->creator)->value('email'),
-    'rating' => User::where('referral_link','=',request()->creator)->value('rating'),
-    'referral_link' => config('app.url')."/r/".User::where('referral_link','=',request()->creator)->value('referral_link'),
+    'firstname' => fn()=> User::where('referral_link','=',request()->creator)->value('firstname'),
+    'lastname' => fn()=> User::where('referral_link','=',request()->creator)->value('lastname'),
+    'email' => fn()=> User::where('referral_link','=',request()->creator)->value('email'),
+    'rating' => fn()=> User::where('referral_link','=',request()->creator)->value('rating'),
+    'referral_link' => fn()=> config('app.url')."/r/".User::where('referral_link','=',request()->creator)->value('referral_link'),
     'designs' => [],
     'isFollowing' => false,
 ]);
@@ -29,6 +29,9 @@ state([
  */
 mount(function ()
 {
+    if(!request()->has('creator')) {
+        return redirect()->route('dashboard');
+    }
     $this->designs = Product::where('user_id', $this->user->id)->get();
 
     // Check if the current user is following this creator
@@ -68,9 +71,10 @@ $toggleFollow = action( function() {
 });
 
 ?>
-<div class="w-[100%] overflow-y-scroll px-8 md:px-16 mb-20 h-screen bg-gray-100">
+<div class="w-[100%] overflow-y-scroll px-8 md:px-16 mb-20 h-screen bg-gray-100 scrollbar-none">
     <header class="flex items-center justify-between w-full">
         <h2 class="py-4 text-4xl font-extrabold text-gray-500">
+
             {{ __('Profile') }}
         </h2>
 
@@ -116,9 +120,9 @@ $toggleFollow = action( function() {
         </div>
 
 
-        <div class="justify-between px-5 py-10 my-10 bg-white shadow-sm md:px-10 md:gap-6 md:flex w-100 rounded-xl">
+        <div class="justify-between px-5 py-10 my-10 bg-white shadow-sm md:px-10 md:gap-6 md:flex w-100 rounded-xl scrollbar-none">
             <div x-cloak="display:hidden"
-                class="relative grid w-full h-full gap-5 px-5 pt-1 mb-1 overflow-y-scroll md:h-screen lg:hidden md:grid-cols-2 sm:grid-cols-2">
+                class="relative grid w-full h-full gap-5 px-5 pt-1 mb-1 overflow-y-scroll md:h-screen lg:hidden md:grid-cols-2 sm:grid-cols-2 scrollbar-none">
                 @forelse ($designs as $design)
                     <x-product-card :product="$design" />
                 @empty
@@ -127,7 +131,7 @@ $toggleFollow = action( function() {
             </div>
 
             <div x-cloak="display:hidden"
-                class="relative hidden w-full lg:h-screen gap-5 px-5 pt-1 lg:overflow-y-scroll lg:grid md:grid-cols-4 mb-[115px]">
+                class="relative hidden w-full lg:h-screen gap-5 px-5 pt-1 lg:overflow-y-scroll lg:grid md:grid-cols-4 mb-[115px] scrollbar-none">
                 @forelse ($designs as $design)
                     <x-product-card :product="$design" />
                 @empty

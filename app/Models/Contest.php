@@ -35,7 +35,31 @@ class Contest extends Model
     protected $fillable = [
         'user_id',
         'product_id',
+        'category_id',
         'rating_id',
+        'name',
+        'description',
+        'photo',
         'type'
     ];
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class, 'product_id', 'id');
+    }
+
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class, 'category_id', 'id');
+    }
+
+    public function frontView(){
+        return $this->hasOne(Product::class, 'id', 'product_id')->select('id', 'front_view', 'front_view_mime', 'front_view_extension', 'front_view_size');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }
