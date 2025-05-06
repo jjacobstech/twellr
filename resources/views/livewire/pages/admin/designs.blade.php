@@ -33,7 +33,7 @@ with([
                 $designer->where('name', 'like', "%{$this->keyword}%");
             });
         })
-        ->where('category', 'like', "%{$this->categoryFilter}%")
+        ->where('category_id', 'like', "%{$this->categoryFilter}%")
         ->with('designer')
         ->get()),
 ]);
