@@ -27,8 +27,7 @@ new #[Layout('layouts.guest')] class extends Component {
 
     public function mount()
     {
-        //  $this->user = session()->get('user');
-        $this->user = User::find(2);
+        $this->user = session()->get('user');
         if ($this->user) {
             $this->firstname = $this->user->firstname;
             $this->countries = Country::all();
