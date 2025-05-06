@@ -47,7 +47,7 @@ state([
     'commentInput' => '',
     'comments' => [],
     'shipping_rates' => fn() => ShippingFee::all(),
-    'locations' => fn() => State::where('country_id', '=', 2)->get(),
+    'locations' => fn() => State::all(),
     'location' => '',
 ]);
 
