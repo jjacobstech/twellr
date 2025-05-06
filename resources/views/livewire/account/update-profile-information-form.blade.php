@@ -1,6 +1,8 @@
 <?php
-use Mary\Traits\Toast;
 use App\Models\User;
+use App\Models\State;
+use Mary\Traits\Toast;
+use App\Models\Country;
 use App\Helpers\FileHelper;
 use Livewire\Volt\Component;
 use Livewire\WithFileUploads;
@@ -28,7 +30,10 @@ new class extends Component {
     public ?string $whatsapp;
     public ?string $x;
     public ?string $instagram;
-    public $withdrawalThreshold;
+    public $states;
+    public $state;
+    public $countries;
+    public $country;
     public $cropConfig = [
         'width' => 50,
         'height' => 50,
@@ -81,6 +86,10 @@ new class extends Component {
         $this->facebook = Auth::user()->facebook;
         $this->instagram = Auth::user()->instagram;
         $this->withdrawalThreshold = Auth::user()->withdrawal_threshold;
+        $this->states = State::all();
+        $this->countries = Country::all();
+        $this->state = Auth::user()->state_id ?? '';
+        $this->country = Auth::user()->country_id ?? "";
     }
 
     /**
@@ -105,7 +114,8 @@ new class extends Component {
             'facebook' => ['string', 'max:255'],
             'whatsapp' => ['string', 'max:255'],
             'instagram' => ['string', 'max:255'],
-            'withdrawalThreshold' => ['numeric'],
+            'state' => ['numeric'],
+            'country' => ['numeric'],
         ]));
 
         $avatar = $userInfo->avatarUpload;
@@ -139,6 +149,8 @@ new class extends Component {
                 'facebook' => $userInfo->facebook,
                 'whatsapp' => $userInfo->whatsapp,
                 'instagram' => $userInfo->instagram,
+                'country_id' => $userInfo->country,
+                'state_id' => $userInfo->state,
             ]);
         } elseif ($this->avatarUpload == null) {
             $user->fill([
@@ -155,7 +167,8 @@ new class extends Component {
                 'facebook' => $userInfo->facebook,
                 'whatsapp' => $userInfo->whatsapp,
                 'instagram' => $userInfo->instagram,
-
+                   'country_id' => $userInfo->country,
+                'state_id' => $userInfo->state,
             ]);
         } elseif ($this->coverUpload == null) {
             $user->fill([
@@ -172,6 +185,8 @@ new class extends Component {
                 'facebook' => $userInfo->facebook,
                 'whatsapp' => $userInfo->whatsapp,
                 'instagram' => $userInfo->instagram,
+                   'country_id' => $userInfo->country,
+                'state_id' => $userInfo->state,
             ]);
         } else {
             $user->fill([
@@ -189,6 +204,8 @@ new class extends Component {
                 'facebook' => $userInfo->facebook,
                 'whatsapp' => $userInfo->whatsapp,
                 'instagram' => $userInfo->instagram,
+                   'country_id' => $userInfo->country,
+                'state_id' => $userInfo->state,
             ]);
         }
 
@@ -200,11 +217,10 @@ new class extends Component {
         if (session()->has('was_redirected')) {
             $this->redirectIntended(route('market.place'), true);
         } else {
-
             $this->dispatch('profile-updated', name: $user->name);
         }
         $this->mount();
-       // $this->redirectIntended(route('settings'), true);
+        // $this->redirectIntended(route('settings'), true);
     }
 
     /**
@@ -227,19 +243,17 @@ new class extends Component {
 }; ?>
 
 <!--Profile Form content -->
-<div class="w-full " x-data="{ remove: true }"
-x-on:livewire-upload-error="$wire.error('Upload Failed')"
-x-on:livewire-upload-finish="$wire.success('Upload Successful')"
->
-    <div class="overflow-hidden bg-white rounded-lg shadow-md shadow-neutral-700">
+<div class="w-full" x-data="{ remove: true }" x-on:livewire-upload-error="$wire.error('Upload Failed')"
+    x-on:livewire-upload-finish="$wire.success('Upload Successful')">
+    <div class="overflow-hidden bg-white rounded-lg shadow-md shadow-neutral-700 scrollbar-none">
         <div class="px-4 py-4 sm:px-6 bg-navy-blue">
             <h3 class="text-lg font-medium leading-6 text-gray-100">Profile Information</h3>
             <p class="mt-1 text-sm text-gray-100">
                 Update your account's profile information and email address.
             </p>
         </div>
-        <div class="border-t border-gray-400">
-            <form wire:submit="updateProfileInformation" class="px-4 py-5 space-y-6 bg-gray-100 sm:p-6">
+        <div class="border-t border-gray-400 ">
+            <form wire:submit="updateProfileInformation" class="px-4 py-5 space-y-6 bg-gray-100 sm:p-6 ">
                 <div class="grid justify-between md:flex md:gap-10">
                     <div class="space-y-5 md:w-1/2">
                         {{-- Name and Email --}}
@@ -284,19 +298,57 @@ x-on:livewire-upload-finish="$wire.success('Upload Successful')"
                                     Address
                                 </label>
                                 <div class="mt-1">
-                                    <input type="text" wire:model.live="address" id="address" autocomplete="address"
-                                        required
+                                    <input type="text" wire:model.live="address" id="address"
+                                        autocomplete="address" required
                                         class="shadow-sm text-gray-700 focus:ring-navy-blue focus:border-navy-blue block w-full sm:text-sm border-gray-300 rounded-md @error('address') border-red-500 @enderror">
                                 </div>
                             </div>
+
+                            <div class="col-span-12 md:col-span-3">
+                                <label for="state" class="block text-sm font-medium text-gray-700">
+                                    State
+                                </label>
+                                <div class="mt-1">
+
+                                    <select wire:model.live="state" id="state"
+                                         class="shadow-sm text-gray-700 focus:ring-navy-blue focus:border-navy-blue block w-full sm:text-sm border-gray-300 rounded-md @error('address') border-red-500 @enderror">
+                                        <option value="">Select State</option>
+                                        @forelse ($states as $state)
+                                            <option
+                                                value="{{ $state->id }}">{{ $state->name }}</option>
+                                        @empty
+                                            <option value="">. . .</option>
+                                        @endforelse
+                                    </select>
+                                </div>
+                            </div>
+                             <div class="col-span-12 md:col-span-3">
+                                <label for="country" class="block text-sm font-medium text-gray-700">
+                                    Country
+                                </label>
+                                <div class="mt-1">
+
+                                    <select wire:model.live="country" id="country"
+                                         class="shadow-sm text-gray-700 focus:ring-navy-blue focus:border-navy-blue block w-full sm:text-sm border-gray-300 rounded-md @error('address') border-red-500 @enderror">
+                                        <option value="">Select Country</option>
+                                        @forelse ($countries as $country)
+                                            <option
+                                                value="{{ $country->id }}">{{ $country->name }}</option>
+                                        @empty
+                                            <option value="">. . .</option>
+                                        @endforelse
+                                    </select>
+                                </div>
+                            </div>
+
 
                             <div class="col-span-12 md:col-span-3">
                                 <label for="phone_no" class="block text-sm font-medium text-gray-700">
                                     Phone No
                                 </label>
                                 <div class="mt-1">
-                                    <input type="text" wire:model.live="phone_no" id="phone_no" autocomplete="number"
-                                        required
+                                    <input type="text" wire:model.live="phone_no" id="phone_no"
+                                        autocomplete="number" required
                                         class="shadow-sm text-gray-700 focus:ring-navy-blue focus:border-navy-blue block w-full sm:text-sm border-gray-300 rounded-md @error('phone_no') border-red-500 @enderror">
                                 </div>
                             </div>
@@ -317,8 +369,8 @@ x-on:livewire-upload-finish="$wire.success('Upload Successful')"
                                     Account No
                                 </label>
                                 <div class="mt-1">
-                                    <input type="text" wire:model.live="account_no" id="account_no" autocomplete="number"
-                                        required
+                                    <input type="text" wire:model.live="account_no" id="account_no"
+                                        autocomplete="number" required
                                         class="shadow-sm text-gray-700 focus:ring-navy-blue focus:border-navy-blue block w-full sm:text-sm border-gray-300 @error('account_no') border-red-500 @enderror rounded-md">
 
 
@@ -362,7 +414,8 @@ x-on:livewire-upload-finish="$wire.success('Upload Successful')"
                                     </svg></label>
                                 <div class="mt-1">
 
-                                    <input type="text" wire:model.live="x" id="x" autocomplete="social-media"
+                                    <input type="text" wire:model.live="x" id="x"
+                                        autocomplete="social-media"
                                         class="shadow-sm text-gray-700 focus:ring-navy-blue focus:border-navy-blue block w-full sm:text-sm border-gray-300 rounded-md @error('x')
                                             border-red-500
                                         @enderror">

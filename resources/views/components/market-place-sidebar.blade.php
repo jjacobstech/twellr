@@ -124,10 +124,11 @@
             </span>Designers of the week</p>
 
     </div>
-    <div class="pl-5 lg:pl-5 lg:px-10 mt-10 font-bold text-gray-500 text-md">
+    <div class="pl-5 mt-10 font-bold text-gray-500 lg:pl-5 lg:px-10 text-md">
         <div class="">
             <p> Select Location:</p>
-            <select wire:model='location' class="mt-1 border-gray-500 rounded-md md:w-44 lg:w-52">
+            <select wire:model.live='location' class="mt-1 border-gray-500 rounded-md md:w-44 lg:w-52">
+                 <option value="">. . .</option>
                 @forelse ($locations as $location )
                 <option value="{{ $location->id }}">{{ $location->name }}</option>
                 @empty
@@ -137,15 +138,34 @@
 
         </div>
         <div class="mt-4">
-            <p> Sort By:</p>
-            <select class="mt-1 border-gray-500 rounded-md md:w-44 lg:w-52">
-                <option value="">Most Popular</option>
-                <option value=""></option>
-                <option value=""></option>
-                <option value=""></option>
-                <option value=""></option>
-            </select>
+              <x-bladewind.button  id="customer_support"
+                                color="w-full px-4 py-3 font-bold uppercase transition duration-200 bg-navy-blue rounded text-white hover:bg-golden hover:border-golden hover:text-white">
+                                Contact Our In-House Designer
+                            </x-bladewind.button>
 
         </div>
     </div>
+     <!--Start of Tawk.to Script
+    -->
+        <script type="text/javascript">
+            let customerSupport = document.getElementById('customer_support');
+
+
+            customerSupport.addEventListener('click', () => {
+                var Tawk_API = Tawk_API || {},
+                    Tawk_LoadStart = new Date();
+
+                (function() {
+                    var s1 = document.createElement("script"),
+                        s0 = document.getElementsByTagName("script")[0];
+                    s1.async = true;
+                    s1.src = 'https://embed.tawk.to/67db0589c029cf190fdd8e20/1imnor8sp';
+                    s1.charset = 'UTF-8';
+                    s1.setAttribute('crossorigin', '*');
+                    s0.parentNode.insertBefore(s1, s0);
+
+                })();
+            });
+        </script>
+        <!--End of Tawk.to Script-->
 </div>

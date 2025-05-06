@@ -17,12 +17,12 @@ use App\Models\Notification;
 use Livewire\Volt\Component;
 use App\Models\PlatformEarning;
 use Illuminate\Support\Facades\Auth;
-use function Livewire\Volt\{state, layout, mount, uses,with};
+use function Livewire\Volt\{state, layout, mount, uses, with};
 
 layout('layouts.app');
 uses(Toast::class);
 state([
-    'productCategory' =>  request()->slug,
+    'productCategory' => request()->slug,
     'productFilter' => request()->filter,
     'modal' => false,
     'marketplace' => true,
@@ -47,11 +47,18 @@ state([
     'commentInput' => '',
     'comments' => [],
     'shipping_rates' => fn() => ShippingFee::all(),
-    'locations' => fn() => State::where('country_id','=',2)->get(),
+    'locations' => fn() => State::where('country_id', '=', 2)->get(),
+    'location' => '',
 ]);
 
-
-with(['products' => fn() => Product::with('category', 'designer')->get()]);
+with([
+    'products' => fn() => Product::orderBy('created_at', 'desc')
+        ->whereHas('designer', function ($query) {
+            $query->where('state_id', 'like', "%{$this->location}%");
+        })
+        ->with('category', 'designer')
+        ->get(),
+]);
 $incrementQuantity = function () {
     $this->quantity++;
     $this->subTotal = $this->itemTotal * $this->quantity;
@@ -162,13 +169,13 @@ $orderProduct = function () {
     $this->totalPrice = $this->subTotal + $this->shipping_fee;
 };
 
-$closeOrderProduct = function(){
-     $this->marketplace = true;
+$closeOrderProduct = function () {
+    $this->marketplace = true;
     $this->checkout = false;
     $this->itemTotal = 0;
     $this->subTotal = 0;
     $this->totalPrice = 0;
-     $this->shipping_fee = 0;
+    $this->shipping_fee = 0;
 };
 
 $completeCheckout = function () {
@@ -358,6 +365,7 @@ $completeCheckout = function () {
         <x-market-place-sidebar :locations="$locations" />
         <div
             class="relative bg-white w-screen pb-8 md:pb-0 md:w-[72%] lg:w-[80%] md:h-screen py-4 overflow-y-scroll scrollbar-none ">
+            {{ $location }}
             <div x-cloak="display:hidden"
                 class="relative grid w-full gap-5 px-5 pt-1 mb-16 overflow-y-scroll md:h-screen lg:hidden md:grid-cols-2 sm:grid-cols-2">
                 @foreach ($products as $product)
@@ -376,8 +384,7 @@ $completeCheckout = function () {
                 <div class="grid h-full lg:flex justify-evenly rounded-xl md:flex-row"
                     @click.away="$wire.modal = false">
                     <div class="object-fit-contain lg:w-[75%] carousel rounded-t-xl md:rounded-none lg:rounded-l-xl">
-                        <div
-                            class="w-full  h-64 lg:h-full bg-gray-100 overflow-y-auto scrollbar-none carousel">
+                        <div class="w-full  h-64 lg:h-full bg-gray-100 overflow-y-auto scrollbar-none carousel">
                             <div class="carousel w-full h-full">
                                 <!-- FRONT VIEW -->
                                 <div class="carousel-item relative w-full h-full over bg-black" id="front-view">
@@ -796,7 +803,8 @@ $completeCheckout = function () {
 
                     <!-- Continue Shopping Button -->
                     <div class="p-4 border-t sm:p-6">
-                        <span class="inline-flex items-center font-medium text-navy-blue hover:text-golden" wire:click='closeOrderProduct'>
+                        <span class="inline-flex items-center font-medium text-navy-blue hover:text-golden"
+                            wire:click='closeOrderProduct'>
                             @svg('eva-arrow-back', 'w-4 h-4 mr-2')
                             Continue Shopping
                         </span>

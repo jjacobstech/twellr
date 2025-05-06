@@ -17,7 +17,7 @@ Route::fallback(function () {
 });
 
 Route::middleware(['IsCreative', 'IsUser'])->group(function () {
-    Route::view('dashboard', 'dashboard')
+    Volt::route('dashboard', 'dashboard')
         ->middleware(['auth', 'verified', 'referred'])
         ->name('dashboard');
 

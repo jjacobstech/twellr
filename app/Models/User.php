@@ -84,7 +84,9 @@ class User extends Authenticatable
         'notify_purchase',
         'remember_token',
         'referred_by',
-        'discount'
+        'discount',
+        'country_id',
+        'state_id'
     ];
 
     public function isCreative()
