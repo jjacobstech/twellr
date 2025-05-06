@@ -140,8 +140,8 @@ new #[Layout('layouts.guest')] class extends Component {
                         type="text" name="country" required>
                         <option selected>Select a Country</option>
                         @forelse ($countries as $country)
-                            <option @click="$wire.getStates({{ $country->id }})"
-                                value="{{ $country->id }}">{{ $country->name }}</option>
+                            <option @click="$wire.getStates({{ $country->id }})" value="{{ $country->id }}">
+                                {{ $country->name }}</option>
                         @empty
                             <option value="">. . . </option>
                         @endforelse
@@ -151,24 +151,35 @@ new #[Layout('layouts.guest')] class extends Component {
                 </div>
             </div>
 
-                <div class="relative pr-2 mt-2 w-100">
-                <x-input-label class="absolute z-50 px-1 mt-4 ml-3 font-extrabold bg-white" for="country"
-                    :value="__('State')" />
+            <div class="flex w-full justify-evenly mt-20 pt-1">
+                <div class="w-1/2 pr-2">
+                    <x-input-label class="absolute z-50 px-1 mt-3 ml-3 font-extrabold bg-white" for="state"
+                        :value="__('State')" />
 
-                <div class="absolute w-full mt-1">
-                    <select wire:model.live="state" id="state"
-                        class="block w-full mt-5 border-gray-500 text-black focus:border-navy-bluefocus:ring-navy-blue rounded-md shadow-sm"
-                        type="text" name="state" required>
-                        <option selected>Select a Country</option>
-                        @forelse ($states as $state)
-                            <option
-                                value="{{ $state->id }}">{{ $state->name }}</option>
-                        @empty
-                            <option value="">. . . </option>
-                        @endforelse
-                    </select>
+                    <div class="relative mt-4">
+                        <select wire:model="state" id="state" name="state" required
+                            class="block w-full mt-5 border-gray-500 text-black focus:border-navy-blue focus:ring-navy-blue rounded-md shadow-sm">
+                            <option selected>Select a State</option>
+                            @forelse ($states as $state)
+                                <option value="{{ $state->id }}">{{ $state->name }}</option>
+                            @empty
+                                <option value="">. .</option>
+                            @endforelse
+                        </select>
+                        <x-input-error :messages="$errors->get('state')" class="mt-1 absolute" />
+                    </div>
+                </div>
 
-                    <x-input-error :messages="$errors->get('state')" class="mt-1 absolute" />
+
+                <div class="w-1/2 ml-2 ">
+                    <x-input-label class="absolute z-50 px-1 mt-3 ml-3 font-extrabold bg-white" for="address"
+                        :value="__('Address')" />
+
+                    <div class="relative mt-4">
+                        <x-text-input wire:model="address" id="address" class="block w-full mt-5 border-5"
+                            type="text" name="address" required />
+                        <x-input-error :messages="$errors->get('address')" class="z-50 mt-2" />
+                    </div>
                 </div>
             </div>
 
