@@ -64,7 +64,7 @@ new #[Layout('layouts.guest')] class extends Component {
                 'phone_no.min' => 'Phone No must be 10 digits above',
             ],
         );
-        dd($validated);
+
         $newUser = $this->user->id;
 
         if ($newUser) {
