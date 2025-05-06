@@ -20,6 +20,7 @@
         "mkocansey/bladewind": "^2.9",
         "predis/predis": "^2.3",
         "robsontenorio/mary": "^2.2",
+        "tzsk/otp": "^9.0",
         "yabacon/paystack-php": "^2.2"
     },
     "require-dev": {
