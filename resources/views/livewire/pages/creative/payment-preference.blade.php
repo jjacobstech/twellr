@@ -135,12 +135,12 @@ new #[Layout('layouts.guest')] class extends Component {
                     :value="__('Country')" />
 
                 <div class="absolute w-full mt-1">
-                    <select wire:model.live="country" id="country"
+                    <select wire:model="country" id="country" @change="$wire.getStates(event.target.value)"
                         class="block w-full mt-5 border-gray-500 text-black focus:border-navy-bluefocus:ring-navy-blue rounded-md shadow-sm"
                         type="text" name="country" required>
                         <option selected>Select a Country</option>
                         @forelse ($countries as $country)
-                            <option @click="$wire.getStates({{ $country->id }})" value="{{ $country->id }}">
+                            <option  value="{{ $country->id }}">
                                 {{ $country->name }}</option>
                         @empty
                             <option value="">. . . </option>
