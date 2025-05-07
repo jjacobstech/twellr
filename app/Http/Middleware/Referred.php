@@ -23,7 +23,7 @@ class Referred
                 ->update([
                     'status' => 'converted',
                     'converted_at' => now(),
-                    'reward_points' => 1
+                    'reward_points' => 2
                 ]);
 
             if ($referral) {

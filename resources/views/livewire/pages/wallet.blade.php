@@ -19,8 +19,8 @@ state(['dateSort' => 'desc']);
 state('paginator');
 state(['user' => Auth::user()->id]);
 state(['count' => 10]);
-state(['transactions' => fn() => Auth::user()->role == 'creative' ? Transaction::where('user_id', '=', Auth::id())->paginate($this->count)->reverse() : '']);
-state(['purchases' => fn() => Auth::user()->role == 'user' ? Purchase::where('buyer_id', '=', Auth::id())->with('product')->paginate($this->count)->reverse() : '']);
+state(['transactions' => fn() => Transaction::where('user_id', '=', Auth::id())->paginate($this->count)->reverse()]);
+state(['purchases' => fn() => Purchase::where('buyer_id', '=', Auth::id())->with('product')->paginate($this->count)->reverse()]);
 state(['withdrawalModal' => false]);
 state(['addFundModal' => false]);
 state('amount');
@@ -28,16 +28,17 @@ state(['commission' => fn() => AdminSetting::first()->value('commission_fee')]);
 state(['processing_time' => fn() => AdminSetting::first()->value('withdrawal_time')]);
 
 $addFund = function () {
-      $validator = $this->validate(
+    $validator = $this->validate(
         [
             'amount' => ['required', 'numeric'],
         ],
         [
             'amount.required' => 'Add the amount you want to fund',
             'amount.numeric' => 'Wrong Amount',
-        ]);
+        ],
+    );
 
-    $this->redirect( route('fund.wallet',['amount' => $validator['amount']]));
+    $this->redirect(route('fund.wallet', ['amount' => $validator['amount']]));
 };
 
 $generateReferenceNumber = function () {
@@ -68,11 +69,11 @@ $withdraw = function () {
 
     $withdrawal = Withdrawal::create([
         'user_id' => Auth::id(),
-        'amount' => ($validator['amount'] * $this->commission) + $validator['amount'],
+        'amount' => $validator['amount'] * $this->commission + $validator['amount'],
         'account_name' => Auth::user()->account_name,
         'account_no' => Auth::user()->account_no,
         'bank_name' => Auth::user()->bank_name,
-        'status'=> 'pending',
+        'status' => 'pending',
         'transaction_reference' => $ref_no,
     ]);
 
@@ -84,7 +85,7 @@ $withdraw = function () {
     $transaction = Transaction::create([
         'user_id' => Auth::id(),
         'buyer_id' => Auth::id(),
-        'amount' => ($validator['amount'] * $this->commission) + $validator['amount'],
+        'amount' => $validator['amount'] * $this->commission + $validator['amount'],
         'transaction_type' => 'withdrawal',
         'status' => 'pending',
         'ref_no' => $ref_no,
@@ -96,7 +97,7 @@ $withdraw = function () {
         return $this->error('Withdrawal Error', 'An error has occured, but we are working on it');
     }
     $user = User::where('id', '=', Auth::id())->first();
-    $user->wallet_balance = $user->wallet_balance - (($validator['amount'] * $this->commission) + $validator['amount']);
+    $user->wallet_balance = $user->wallet_balance - ($validator['amount'] * $this->commission + $validator['amount']);
     $withdrawalDeducted = $user->save();
 
     if (!$withdrawalDeducted) {
@@ -108,19 +109,19 @@ $withdraw = function () {
     }
 
     $this->withdrawalModal = false;
-    $this->success('Withdrawal Succesful', 'Your withdrawal request has been sent and will be processed within '.$this->processing_time, timeout: 5000);
+    $this->success('Withdrawal Succesful', 'Your withdrawal request has been sent and will be processed within ' . $this->processing_time, timeout: 5000);
 };
 
 ?>
-<div class="pb-5 bg-white px-7 md:px-20">
+<div class="pb-5 bg-white px-7 md:px-20" x-data="{transactions: true, purchases: false}">
 
-@session('error')
-{{ $this->error(session('error'),timeout: 5000) }}
-@endsession
+    @session('error')
+        {{ $this->error(session('error'), timeout: 5000) }}
+    @endsession
 
-@session('success')
-{{ $this->success(session('success'),timeout: 5000) }}
-@endsession
+    @session('success')
+        {{ $this->success(session('success'), timeout: 5000) }}
+    @endsession
 
     <header class="">
         <h2 class="pt-2 text-3xl font-extrabold text-gray-500">
@@ -148,213 +149,145 @@ $withdraw = function () {
             @endif
         </div>
     </div>
+<div class="flex">
 
-    <h1 class="px-5 py-2 mt-5 md:mt-3 text-2xl font-extrabold text-left  text-gray-500 bg-gray-100 rounded-t-[14px]">
-        Trasaction History
+    <h1 x-show="transactions" :class="transactions ? 'border-b border-navy-blue' : '' " class="px-5 py-2 mt-5 md:mt-3 text-2xl font-extrabold text-left  text-gray-500 bg-gray-100 rounded-t-[14px]">
+        Trasactions
 
     </h1>
 
+     <h1 x-show="purchases" :class="purchases ? 'border-b border-navy-blue' : '' " class="px-5 py-2 mt-5 md:mt-3 text-2xl font-extrabold text-left  text-gray-500 bg-gray-100 rounded-t-[14px]">
+        Purchases
+
+    </h1>
+</div>
+
     <div class="relative overflow-x-auto  shadow-md sm:rounded-b-[14px] h-72 bg-gray-100 scrollbar-none">
-        @if (Auth::user()->isCreative())
 
-
-            <div class="w-full overflow-x-auto rounded-lg shadow-sm">
-                @if ($transactions == null || $transactions->isEmpty())
-                    <div class="flex items-center justify-center p-8 bg-white">
-                        <div class="text-center">
-                            <p class="font-medium text-gray-500">No Transactions Found</p>
-                            <p class="mt-1 text-sm text-gray-400">Your transaction history will appear here</p>
-                        </div>
+        <div x-show="transactions" x-transition:enter.duration.500ms x-cloak="display:none"  class="w-full overflow-x-auto rounded-lg shadow-sm">
+            @if ($transactions == null || $transactions->isEmpty())
+                <div class="flex items-center justify-center p-8 bg-white">
+                    <div class="text-center">
+                        <p class="font-medium text-gray-500">No Transactions Found</p>
+                        <p class="mt-1 text-sm text-gray-400">Your transaction history will appear here</p>
                     </div>
-                @else
-                    <table class="w-full text-sm text-left text-gray-500 scrollbar-none">
-                        <thead class="sticky top-0 text-xs text-gray-700 uppercase bg-gray-100">
-                            <tr>
-                                <th scope="col" class="px-4 py-3 text-center">
-                                    Transaction
-                                </th>
+                </div>
+            @else
+                <table class="w-full text-sm text-left text-gray-500 scrollbar-none">
+                    <thead class="sticky top-0 text-xs text-gray-700 uppercase bg-gray-100">
+                        <tr>
+                            <th scope="col" class="px-4 py-3 text-center">
+                                Transaction
+                            </th>
 
-                                <th scope="col" class="px-4 py-3 text-center">
-                                    Amount
-                                </th>
-                                <th scope="col" class="px-4 py-3 text-center">
-                                    Status
-                                </th>
-                                <th scope="col" class="px-4 py-3 text-center">
-                                    Date
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                            @foreach ($transactions as $transaction)
-                                <tr class="transition-colors hover:bg-gray-50">
-                                    <th scope="row"
-                                        class="px-4 py-3 font-medium text-center text-gray-900 capitalize whitespace-nowrap">
-                                        {{ $transaction->transaction_type }}
-                                    </th>
-                                    <td
-                                        class="px-4 py-3 text-center font-medium {{ $transaction->amount > 0 ? 'text-green-600' : 'text-red-600' }}">
-                                        ${{ $transaction->amount }}
-                                    </td>
-                                    <td class="px-4 py-3 text-center">
-                                        <span
-                                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
-                                            {{ $transaction->status === 'pending' ? 'bg-yellow-100 text-yellow-800' : '' }}
-                                            {{ $transaction->status === 'processing' ? 'bg-blue-100 text-blue-800' : '' }}
-                                            {{ $transaction->status === 'completed' ? 'bg-green-100 text-green-800' : '' }}
-                                            {{ $transaction->status === 'rejected' ? 'bg-red-100 text-red-800' : '' }}">
-                                            {{ ucfirst($transaction->status) }}
-                                        </span>
-                                    </td>
-                                    <td class="px-4 py-3 text-center text-gray-500">
-                                        {{ Carbon::parse($transaction->created_at)->format('d/m/Y') }}
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                @endif
-            </div>
-
-            <!-- Responsive version for small screens (hidden on md and above) -->
-            <div class="mt-4 md:hidden scrollbar-none">
-                @if ($transactions == null || $transactions->isEmpty())
-                    <div class="p-6 text-center bg-white rounded-lg">
-                        <p class="text-gray-500">No transactions found</p>
-                    </div>
-                @else
-                    <div class="space-y-3">
+                            <th scope="col" class="px-4 py-3 text-center">
+                                Amount
+                            </th>
+                            <th scope="col" class="px-4 py-3 text-center">
+                                Status
+                            </th>
+                            <th scope="col" class="px-4 py-3 text-center">
+                                Date
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
                         @foreach ($transactions as $transaction)
-                            <div class="p-4 bg-white rounded-lg shadow-sm">
-                                <div class="flex items-center justify-between mb-2">
-                                    <span
-                                        class="font-medium capitalize">{{ $transaction->transaction_type }}hghgh</span>
+                            <tr class="transition-colors hover:bg-gray-50">
+                                <th scope="row"
+                                    class="px-4 py-3 font-medium text-center text-gray-900 capitalize whitespace-nowrap">
+                                    {{ $transaction->transaction_type }}
+                                </th>
+                                <td
+                                    class="px-4 py-3 text-center font-medium {{ $transaction->amount > 0 ? 'text-green-600' : 'text-red-600' }}">
+                                    ${{ $transaction->amount }}
+                                </td>
+                                <td class="px-4 py-3 text-center">
                                     <span
                                         class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
                                             {{ $transaction->status === 'pending' ? 'bg-yellow-100 text-yellow-800' : '' }}
                                             {{ $transaction->status === 'processing' ? 'bg-blue-100 text-blue-800' : '' }}
-                                            {{ $transaction->status === 'shipped' ? 'bg-indigo-100 text-indigo-800' : '' }}
-                                            {{ $transaction->status === 'delivered' ? 'bg-green-100 text-green-800' : '' }}
-                                            {{ $transaction->status === 'cancelled' ? 'bg-red-100 text-red-800' : '' }}">
+                                            {{ $transaction->status === 'completed' ? 'bg-green-100 text-green-800' : '' }}
+                                            {{ $transaction->status === 'rejected' ? 'bg-red-100 text-red-800' : '' }}">
                                         {{ ucfirst($transaction->status) }}
                                     </span>
-                                </div>
-                                <div class="flex items-center justify-between">
-                                    <span
-                                        class="font-medium {{ $transaction->amount > 0 ? 'text-green-600' : 'text-red-600' }}">
-                                        ${{ $transaction->amount }}
-                                    </span>
-                                    <span class="text-xs text-gray-500">
-                                        {{ Carbon::parse($transaction->created_at)->format('d/m/Y') }}
-                                    </span>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-                @endif
-            </div>
-        @endif
-
-        @if (!Auth::user()->isCreative())
-
-            <div class="w-full overflow-x-auto rounded-lg shadow-sm scrollbar-none">
-                @if ($purchases == null || $purchases->isEmpty())
-                    <div class="flex items-center justify-center p-8 bg-white">
-                        <div class="text-center">
-                            <p class="font-medium text-gray-500">No Purchases Found</p>
-                            <p class="mt-1 text-sm text-gray-400">Your purchase history will appear here</p>
-                        </div>
-                    </div>
-                @else
-                    <table class="w-full text-sm text-left text-gray-500 scrollbar-none">
-                        <thead class="sticky top-0 text-xs text-gray-700 uppercase bg-gray-100">
-                            <tr>
-                                <th scope="col" class="px-4 py-3 text-center">
-                                    Transaction
-                                </th>
-                                <th scope="col" class="px-4 py-3 text-center">
-                                    Item
-                                </th>
-                                <th scope="col" class="px-4 py-3 text-center">
-                                    Price
-                                </th>
-                                <th scope="col" class="px-4 py-3 text-center">
-                                    Material
-                                </th>
-                                <th scope="col" class="px-4 py-3 text-center">
-                                    Quantity
-                                </th>
-                                <th scope="col" class="px-4 py-3 text-center">
-                                    Amount
-                                </th>
-                                <th scope="col" class="px-4 py-3 text-center">
-                                    Delivery Status
-                                </th>
-                                <th scope="col" class="px-4 py-3 text-center">
-                                    Date
-                                </th>
+                                </td>
+                                <td class="px-4 py-3 text-center text-gray-500">
+                                    {{ Carbon::parse($transaction->created_at)->format('d/m/Y') }}
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200 scrollbar-none">
-                            @foreach ($purchases as $purchase)
-                                <tr class="transition-colors hover:bg-gray-50">
-                                    <th scope="row"
-                                        class="px-4 py-3 font-medium text-center text-gray-900 capitalize whitespace-nowrap">
-                                        purchase
-                                    </th>
-                                    <th scope="row"
-                                        class="px-4 py-3 font-medium text-center text-gray-900 capitalize whitespace-nowrap">
-                                        {{ $purchase->product->name }}
-                                    </th>
-                                    <th scope="row"
-                                        class="px-4 py-3 font-medium text-center text-gray-900 capitalize whitespace-nowrap">
-                                        {{ $purchase->product->price }}
-                                    </th>
-                                    <th scope="row"
-                                        class="px-4 py-3 font-medium text-center text-gray-900 capitalize whitespace-nowrap">
-                                        {{ $purchase->material->price }}
-                                    </th>
-                                    <th scope="row"
-                                        class="px-4 py-3 font-medium text-center text-gray-900 capitalize whitespace-nowrap">
-                                        {{ $purchase->quantity }}
-                                    </th>
-                                    <td
-                                        class="px-4 py-3 text-center font-medium {{ $purchase->product->price > 0 ? 'text-green-600' : 'text-red-600' }}">
-                                        ${{ $purchase->amount }}
-                                    </td>
-                                    <td class="px-4 py-3 text-center">
-                                        <span
-                                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
-                                            {{ $purchase->delivery_status === 'pending' ? 'bg-yellow-100 text-yellow-800' : '' }}
-                                            {{ $purchase->delivery_status === 'processing' ? 'bg-blue-100 text-blue-800' : '' }}
-                                            {{ $purchase->delivery_status === 'shipped' ? 'bg-indigo-100 text-indigo-800' : '' }}
-                                            {{ $purchase->delivery_status === 'delivered' ? 'bg-green-100 text-green-800' : '' }}
-                                            {{ $purchase->delivery_status === 'cancelled' ? 'bg-red-100 text-red-800' : '' }}">
-                                            {{ ucfirst($purchase->delivery_status) }}
-                                        </span>
-                                    </td>
-                                    <td class="px-4 py-3 text-center text-gray-500">
-                                        {{ Carbon::parse($purchase->created_at)->format('d/m/Y') }}
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                @endif
-            </div>
+                        @endforeach
+                    </tbody>
+                </table>
+            @endif
+        </div>
 
-            <!-- Responsive version for small screens (hidden on md and above) -->
-            <div class="hidden mt-4 scrollbar-none">
-                @if ($purchases == null || $purchases->isEmpty())
-                    <div class="p-6 text-center bg-white rounded-lg">
-                        <p class="text-gray-500">No purchases found</p>
+        <div x-show="purchases" x-transition:enter.duration.500ms x-cloak="display:none" class="w-full overflow-x-auto rounded-lg shadow-sm scrollbar-none">
+            @if ($purchases == null || $purchases->isEmpty())
+                <div class="flex items-center justify-center p-8 bg-white">
+                    <div class="text-center">
+                        <p class="font-medium text-gray-500">No Purchases Found</p>
+                        <p class="mt-1 text-sm text-gray-400">Your purchase history will appear here</p>
                     </div>
-                @else
-                    <div class="space-y-3 scrollbar-none">
+                </div>
+            @else
+                <table class="w-full text-sm text-left text-gray-500 scrollbar-none">
+                    <thead class="sticky top-0 text-xs text-gray-700 uppercase bg-gray-100">
+                        <tr>
+                            <th scope="col" class="px-4 py-3 text-center">
+                                Transaction
+                            </th>
+                            <th scope="col" class="px-4 py-3 text-center">
+                                Item
+                            </th>
+                            <th scope="col" class="px-4 py-3 text-center">
+                                Price
+                            </th>
+                            <th scope="col" class="px-4 py-3 text-center">
+                                Material
+                            </th>
+                            <th scope="col" class="px-4 py-3 text-center">
+                                Quantity
+                            </th>
+                            <th scope="col" class="px-4 py-3 text-center">
+                                Amount
+                            </th>
+                            <th scope="col" class="px-4 py-3 text-center">
+                                Delivery Status
+                            </th>
+                            <th scope="col" class="px-4 py-3 text-center">
+                                Date
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200 scrollbar-none">
                         @foreach ($purchases as $purchase)
-                            <div class="p-4 bg-white rounded-lg shadow-sm">
-                                <div class="flex items-center justify-between mb-2">
-                                    <span class="font-medium capitalize">{{ $purchase->transaction_type }}</span>
+                            <tr class="transition-colors hover:bg-gray-50">
+                                <th scope="row"
+                                    class="px-4 py-3 font-medium text-center text-gray-900 capitalize whitespace-nowrap">
+                                    purchase
+                                </th>
+                                <th scope="row"
+                                    class="px-4 py-3 font-medium text-center text-gray-900 capitalize whitespace-nowrap">
+                                    {{ $purchase->product->name }}
+                                </th>
+                                <th scope="row"
+                                    class="px-4 py-3 font-medium text-center text-gray-900 capitalize whitespace-nowrap">
+                                    {{ $purchase->product->price }}
+                                </th>
+                                <th scope="row"
+                                    class="px-4 py-3 font-medium text-center text-gray-900 capitalize whitespace-nowrap">
+                                    {{ $purchase->material->price }}
+                                </th>
+                                <th scope="row"
+                                    class="px-4 py-3 font-medium text-center text-gray-900 capitalize whitespace-nowrap">
+                                    {{ $purchase->quantity }}
+                                </th>
+                                <td
+                                    class="px-4 py-3 text-center font-medium {{ $purchase->product->price > 0 ? 'text-green-600' : 'text-red-600' }}">
+                                    ${{ $purchase->amount }}
+                                </td>
+                                <td class="px-4 py-3 text-center">
                                     <span
                                         class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
                                             {{ $purchase->delivery_status === 'pending' ? 'bg-yellow-100 text-yellow-800' : '' }}
@@ -364,36 +297,25 @@ $withdraw = function () {
                                             {{ $purchase->delivery_status === 'cancelled' ? 'bg-red-100 text-red-800' : '' }}">
                                         {{ ucfirst($purchase->delivery_status) }}
                                     </span>
-                                </div>
-                                <div class="flex items-center justify-between">
-                                    <span
-                                        class="font-medium {{ $purchase->amount > 0 ? 'text-green-600' : 'text-red-600' }}">
-                                        ${{ $purchase->amount }}
-                                    </span>
-                                    <span class="text-xs text-gray-500">
-                                        {{ Carbon::parse($purchase->created_at)->format('d/m/Y') }}
-                                    </span>
-                                </div>
-                            </div>
+                                </td>
+                                <td class="px-4 py-3 text-center text-gray-500">
+                                    {{ Carbon::parse($purchase->created_at)->format('d/m/Y') }}
+                                </td>
+                            </tr>
                         @endforeach
-                    </div>
-                @endif
-            </div>
-        @endif
+                    </tbody>
+                </table>
+            @endif
+        </div>
+
     </div>
-    <div class="flex justify-between py-2 bg-white">
+
+    {{-- Tranaction Paginator --}}
+    <div x-show="transactions" x-transition:enter.duration.500ms x-cloak="display:none"  class="flex justify-between py-2 bg-white">
 
         @php
-            if (Auth::user()->isCreative()) {
-                $paginator = Transaction::where('user_id', '=', Auth::id())->paginate($count);
-            } else {
-                $paginator = Purchase::where('buyer_id', '=', Auth::id())->with('product')->paginate($count);
-            }
+            $paginator = Transaction::where('user_id', '=', Auth::id())->paginate($count);
         @endphp
-
-
-
-
 
         <div class="justify-start text-sm text-black">Showing {{ $paginator->firstItem() ?? 0 }} to
             {{ $paginator->lastItem() ?? 0 }} of
@@ -494,8 +416,118 @@ $withdraw = function () {
             @endif
         </div>
     </div>
+    {{-- Transaction Paginator End --}}
 
-      <div x-cloak="display:hidden" wire:show='withdrawalModal'
+
+    {{-- Purchase Paginator --}}
+    <div x-show="purchases" x-transition:enter.duration.500ms x-cloak="display:none"  class="flex justify-between py-2 bg-white">
+
+        @php
+            $paginator = Purchase::where('buyer_id', '=', Auth::id())->with('product')->paginate($count);
+        @endphp
+
+        <div class="justify-start text-sm text-black">Showing {{ $paginator->firstItem() ?? 0 }} to
+            {{ $paginator->lastItem() ?? 0 }} of
+            {{ $paginator->total() }} results
+        </div>
+
+        <div class="flex flex-wrap items-center justify-end gap-1">
+            {{-- Previous Page Link --}}
+            @if ($paginator->onFirstPage())
+                <button disabled
+                    class="px-2 py-1 text-xs font-medium text-gray-400 bg-white border border-gray-300 rounded-md cursor-not-allowed">
+                    <span class="hidden sm:inline">Previous</span>
+                    <span class="sm:hidden">&larr;</span>
+                </button>
+            @else
+                <a href="{{ $paginator->previousPageUrl() }}" wire:navigate>
+                    <button
+                        class="px-2 py-1 text-xs font-medium text-gray-700 transition duration-150 ease-in-out bg-white border border-gray-300 rounded-md hover:bg-golden hover:text-white focus:outline-none focus:ring ring-blue-300 focus:border-blue-300 active:bg-gray-100">
+                        <span class="hidden sm:inline">Previous</span>
+                        <span class="sm:hidden">&larr;</span>
+                    </button>
+                </a>
+            @endif
+
+            <div class="items-center hidden gap-1 sm:flex">
+                {{-- Pagination Elements - Desktop --}}
+                @php
+                    $start = max(1, $paginator->currentPage() - 1);
+                    $end = min($start + 2, $paginator->lastPage());
+                    if ($end - $start < 2 && $start > 1) {
+                        $start = max(1, $end - 2);
+                    }
+                @endphp
+
+                @if ($start > 1)
+                    <a href="{{ $paginator->url(1) }}" wire:navigate>
+                        <button
+                            class="px-2 py-1 text-xs font-medium text-gray-700 transition duration-150 ease-in-out bg-white border border-gray-300 rounded-md hover:bg-golden hover:text-white focus:outline-none focus:ring ring-blue-300 focus:border-blue-300 active:bg-gray-100">
+                            1
+                        </button>
+                    </a>
+                    @if ($start > 2)
+                        <span class="px-1 py-1 text-xs text-gray-500">...</span>
+                    @endif
+                @endif
+
+                @for ($i = $start; $i <= $end; $i++)
+                    @if ($paginator->currentPage() == $i)
+                        <button aria-current="page" disabled
+                            class="relative px-2 py-1 text-xs font-bold text-white border rounded-md bg-golden border-golden">
+                            {{ $i }}
+                            <span
+                                class="absolute w-1 h-1 transform -translate-x-1/2 rounded-full -bottom-1 left-1/2 bg-golden"></span>
+                        </button>
+                    @else
+                        <a href="{{ $paginator->url($i) }}" wire:navigate>
+                            <button
+                                class="px-2 py-1 text-xs font-medium text-gray-700 transition duration-150 ease-in-out bg-white border border-gray-300 rounded-md hover:bg-golden hover:text-white focus:outline-none focus:ring ring-blue-300 focus:border-blue-300 active:bg-gray-100">
+                                {{ $i }}
+                            </button>
+                        </a>
+                    @endif
+                @endfor
+
+                @if ($end < $paginator->lastPage())
+                    @if ($end < $paginator->lastPage() - 1)
+                        <span class="px-1 py-1 text-xs text-gray-500">...</span>
+                    @endif
+                    <a href="{{ $paginator->url($paginator->lastPage()) }}" wire:navigate>
+                        <button
+                            class="px-2 py-1 text-xs font-medium text-gray-700 transition duration-150 ease-in-out bg-white border border-gray-300 rounded-md hover:bg-golden hover:text-white focus:outline-none focus:ring ring-blue-300 focus:border-blue-300 active:bg-gray-100">
+                            {{ $paginator->lastPage() }}
+                        </button>
+                    </a>
+                @endif
+            </div>
+
+            {{-- Mobile Page Indicator --}}
+            <span class="px-2 py-1 text-xs font-medium sm:hidden">
+                Page {{ $paginator->currentPage() }} of {{ $paginator->lastPage() }}
+            </span>
+
+            {{-- Next Page Link --}}
+            @if ($paginator->hasMorePages())
+                <a href="{{ $paginator->nextPageUrl() }}" wire:navigate>
+                    <button
+                        class="px-2 py-1 text-xs font-medium text-gray-700 transition duration-150 ease-in-out bg-white border border-gray-300 rounded-md hover:bg-golden hover:text-white focus:outline-none focus:ring ring-blue-300 focus:border-blue-300 active:bg-gray-100">
+                        <span class="hidden sm:inline">Next</span>
+                        <span class="sm:hidden">&rarr;</span>
+                    </button>
+                </a>
+            @else
+                <button disabled
+                    class="px-2 py-1 text-xs font-medium text-gray-400 bg-white border border-gray-300 rounded-md cursor-not-allowed">
+                    <span class="hidden sm:inline">Next</span>
+                    <span class="sm:hidden">&rarr;</span>
+                </button>
+            @endif
+        </div>
+    </div>
+    {{-- Purchase Paginator End --}}
+
+    <div x-transition:enter.duration.500ms x-cloak="display:none"  x-cloak="display:hidden" wire:show='withdrawalModal'
         class="w-screen h-screen bg-black/30 backdrop-blur-sm inset-0 absolute z-[999]">
         <div class="flex justify-center md:px-20 lg:px-[30%] mt-[15%]">
             <x-bladewind.card class=" lg:w-full">
@@ -504,7 +536,7 @@ $withdraw = function () {
                     <div class="grid ">
                         <div class="flex justify-end">
                             <x-mary-button icon="o-x-mark"
-                                class="justify btn-dark hover:bg-navy-blue btn-sm btn-circle left-0"
+                                class="left-0 justify btn-dark hover:bg-navy-blue btn-sm btn-circle"
                                 wire:click='withdrawalModal = false' />
                         </div>
                         <x-input-label class="text-md">Amount</x-input-label>
@@ -520,7 +552,8 @@ $withdraw = function () {
                         <x-input-error :messages="$errors->get('amount')" />
 
                     </div>
-                    <p class="text-black w-[80%]"><b>Note:</b> <em class="text-sm">A withdrawal charge is applied to all
+                    <p class="text-black w-[80%]"><b>Note:</b> <em class="text-sm">A withdrawal charge is applied to
+                            all
                             withdrawal</em></p>
 
                 </div>
@@ -528,7 +561,7 @@ $withdraw = function () {
         </div>
     </div>
 
-      <div x-cloak="display:hidden" wire:show='addFundModal'
+    <div x-transition:enter.duration.500ms x-cloak="display:none"  x-cloak="display:hidden" wire:show='addFundModal'
         class="w-screen h-screen bg-black/30 backdrop-blur-sm inset-0 absolute z-[999]">
         <div class="flex justify-center md:px-20 lg:px-[30%] mt-[15%]">
             <x-bladewind.card class=" lg:w-full">
@@ -537,7 +570,7 @@ $withdraw = function () {
                     <div class="grid ">
                         <div class="flex justify-end">
                             <x-mary-button icon="o-x-mark"
-                                class="justify btn-dark hover:bg-navy-blue btn-sm btn-circle left-0"
+                                class="left-0 justify btn-dark hover:bg-navy-blue btn-sm btn-circle"
                                 wire:click='addFundModal = false' />
                         </div>
                         <x-input-label class="text-md">Amount</x-input-label>
