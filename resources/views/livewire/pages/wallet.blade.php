@@ -151,12 +151,12 @@ $withdraw = function () {
     </div>
 <div class="flex">
 
-    <h1 x-show="transactions" :class="transactions ? 'border-b border-navy-blue' : '' " class="px-5 py-2 mt-5 md:mt-3 text-2xl font-extrabold text-left  text-gray-500 bg-gray-100 rounded-t-[14px]">
+    <h1  :class="transactions ? 'border-b border-navy-blue' : '' " class="px-5 py-2 mt-5 md:mt-3 text-2xl font-extrabold text-left  text-gray-500 bg-gray-100 rounded-t-[14px]">
         Trasactions
 
     </h1>
 
-     <h1 x-show="purchases" :class="purchases ? 'border-b border-navy-blue' : '' " class="px-5 py-2 mt-5 md:mt-3 text-2xl font-extrabold text-left  text-gray-500 bg-gray-100 rounded-t-[14px]">
+     <h1  :class="purchases ? 'border-b border-navy-blue' : '' " class="px-5 py-2 mt-5 md:mt-3 text-2xl font-extrabold text-left  text-gray-500 bg-gray-100 rounded-t-[14px]">
         Purchases
 
     </h1>
