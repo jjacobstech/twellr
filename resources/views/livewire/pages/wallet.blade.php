@@ -113,7 +113,7 @@ $withdraw = function () {
 };
 
 ?>
-<div class="pb-5 bg-white px-7 md:px-20" x-data="{
+<div class="h-screen pb-5 bg-white px-7 md:px-20"  x-data="{
 transactions: true,
 purchases: false,
 setTab() {
@@ -401,7 +401,7 @@ setTab() {
             </div>
 
             {{-- Mobile Page Indicator --}}
-            <span class="px-2 py-1 text-xs font-medium sm:hidden">
+            <span class="px-2 py-1 text-xs font-medium text-black sm:hidden">
                 Page {{ $paginator->currentPage() }} of {{ $paginator->lastPage() }}
             </span>
 
@@ -510,7 +510,7 @@ setTab() {
             </div>
 
             {{-- Mobile Page Indicator --}}
-            <span class="px-2 py-1 text-xs font-medium sm:hidden">
+            <span class="px-2 py-1 text-xs font-medium text-black sm:hidden">
                 Page {{ $paginator->currentPage() }} of {{ $paginator->lastPage() }}
             </span>
 
