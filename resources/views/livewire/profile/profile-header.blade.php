@@ -60,7 +60,7 @@ new class extends Component {
     }
 };
 ?>
-<div class="w-[100%] overflow-y-scroll px-8 md:px-16 mb-20">
+<div class="w-[100%] overflow-y-scroll px-8 md:px-16 mb-20 scrollbar-none">
     <header class="flex items-center justify-between w-full">
         <h2 class="py-4 text-4xl font-extrabold text-gray-500">
             {{ __('Profile') }}
