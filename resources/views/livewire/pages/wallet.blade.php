@@ -113,7 +113,7 @@ $withdraw = function () {
 };
 
 ?>
-<div class="pb-5 bg-white px-7 md:px-20" x-data="{transactions: true, purchases: false, setTab: ()=>{
+<div class="pb-5 bg-white px-7 md:px-20" x-data="{transactions: true, purchases: false, setTab()=>{
     this.transactions = !this.transactions;
     this.purchases = !this.purchases;
     }}">
