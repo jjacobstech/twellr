@@ -1,5 +1,5 @@
 <div
-    class="w-full max-w-sm overflow-hidden transition-shadow duration-300 shadow-md rounded-xl hover:shadow-lg aspect-square">
+    class="w-full  max-w-sm md:overflow-hidden transition-shadow duration-300 shadow-md rounded-xl hover:shadow-lg aspect-square">
     <!-- Product Image Container with fixed aspect ratio -->
     <div class="relative group aspect-square">
         <img class="object-cover aspect-square w-full h-full rounded-t-xl lg:rounded-t-none"
@@ -34,14 +34,14 @@
         </div>
     </div>
 
-    <!-- Product Info - Always visible on mobile/tablet, customized for desktop -->
+    {{-- <!-- Product Info - Always visible on mobile/tablet, customized for desktop --> --}}
     <div class="px-3 py-3 sm:px-4 sm:py-4 lg:px-5 lg:hidden">
         <!-- Mobile & Tablet View -->
         <div class="lg:hidden">
             <div class="flex items-start justify-between">
                 <div class="flex-1">
                     <!-- Product name with truncation for long names -->
-                    <h3 class="mb-1 text-lg sm:text-xl font-bold text-gray-800 truncate">{{ $product->name }}</h3>
+                    <h3 class="mb-1 text-lg sm:text-xl font-bold text-gray-800 truncate w-28">{{ $product->name }}</h3>
 
                     <!-- Stock status -->
                     <div class="flex items-center mb-2">
@@ -71,7 +71,8 @@
             <!-- Category and Buy Now button -->
             <div class="flex items-center justify-between mt-2 mb-2 gap-2">
                 <div class="flex-shrink-0 max-w-[65%]">
-                    <span class="inline-block px-2 py-1 text-xs font-medium text-gray-800 bg-gray-100 rounded-md truncate">
+                    <span
+                        class="inline-block px-2 py-1 text-xs font-medium text-gray-800 bg-gray-100 rounded-md truncate">
                         {{ $product->category->name }}
                     </span>
                 </div>
@@ -79,7 +80,8 @@
                 @if ($product->user_id != Auth::id() && Auth::user()->role != 'admin')
                     <div class="flex-shrink-0">
                         <x-bladewind.button wire:click="orderModal({{ $product->id }})" size="tiny" radius="small"
-                            type="bg-navy-blue hover:bg-golden focus:ring-0" button_text_css="text-white" class="w-full">
+                            type="bg-navy-blue hover:bg-golden focus:ring-0" button_text_css="text-white"
+                            class="w-full">
                             Buy Now
                         </x-bladewind.button>
                     </div>
@@ -88,7 +90,8 @@
 
             <!-- Brief description if available -->
             @if (isset($product->description))
-                <p class="mt-1 text-xs sm:text-sm text-gray-600 line-clamp-2">{{ $product->description }}</p>
+                <p class="mt-1 text-xs sm:text-sm text-gray-600 line-clamp-2 h-10 truncate">{{ $product->description }}
+                </p>
             @endif
         </div>
 

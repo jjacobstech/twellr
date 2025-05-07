@@ -29,6 +29,10 @@ state([
     'name' => '',
     'description' => '',
     'photo' => null,
+    'designFest' => true,
+    'whoRockedItBest' => false,
+    'whoRockedItBestView' => false,
+    'whoRockedItBestEntry' => false,
 ]);
 
 with([
@@ -55,6 +59,26 @@ with([
         ->with('user')
         ->paginate($this->perPage),
 ]);
+
+mount(function () {
+    if (request()->has('filter')) {
+        $filter = request('filter');
+        session(['filter' => $filter]);
+
+        // Redirect to same page without the query parameter
+        redirect()->route('design.contest');
+    }
+
+    if (session('filter') === 'who-rocked-it-best') {
+        $this->designFest = false;
+        $this->whoRockedItBest = true;
+        $this->whoRockedItBestView = true;
+        $this->whoRockedItBestEntry = false;
+    }
+    if (!request()->has('filter')) {
+        session()->flash('filter');
+    }
+});
 
 $resetFilters = function () {
     $this->searchTerm = '';
@@ -86,7 +110,6 @@ $closeModal = function () {
     $this->entryModal = false;
     $this->view = null;
 };
-
 
 $closeEntryModal = function () {
     $this->entryModal = false;
@@ -144,11 +167,10 @@ $submitEntry = function () {
 
 ?>
 <div class="h-screen pb-20 overflow-y-scroll bg-gray-50 scrollbar-none" x-data="{
-    designFest: true,
-    whoRockedItBest: false,
-    whoRockedItBestView: false,
-    whoRockedItBestEntry: false,
-    photo: null,
+    designFest: $wire.designFest,
+    whoRockedItBest: $wire.whoRockedItBest,
+    whoRockedItBestView: $wire.whoRockedItBestView,
+    whoRockedItBestEntry: $wire.whoRockedItBestEntry,
     setTab() {
         this.designFest = !this.designFest;
         this.whoRockedItBest = !this.whoRockedItBest;
@@ -171,12 +193,12 @@ $submitEntry = function () {
                 Who Rocked It Best
             </button>
 
-            <div x-transition:enter.duration.500ms x-cloak="display:none" x-show="!designFest" class="flex justify-end w-1/2 gap-5">
+            <div x-transition:enter.duration.500ms x-cloak="display:none" x-show="!designFest"
+                class="flex justify-end w-1/2 gap-5">
 
-                  <!-- Search -->
+                <!-- Search -->
                 <div class="relative w-full md:w-auto">
-                    <input type="text" wire:model.live="search"
-                        placeholder="Search Name/Description"
+                    <input type="text" wire:model.live="search" placeholder="Search Name/Description"
                         class="w-full py-2 pl-4 pr-10 text-gray-700 bg-white border border-indigo-200 rounded-full md:w-64 focus:outline-none focus:ring-2 focus:ring-indigo-400">
                     <button class="absolute right-3 top-2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-indigo-400" fill="none"
@@ -308,8 +330,8 @@ $submitEntry = function () {
                         x-cloak='display:none' x-transition.opacity
                         class="fixed inset-0 z-50 w-screen h-full px-5 py-16 sm:py-12 md:py-12 md:px-20 lg:py-12 bg-black/40 backdrop-blur-sm pb-26">
                         <div x-show="$wire.voteModal" x-cloak x-transition:enter="transition ease-out duration-500"
-                            x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
-                            @click.away="$wire.voteModal = false"
+                            x-transition:enter-start="opacity-0 scale-95"
+                            x-transition:enter-end="opacity-100 scale-100" @click.away="$wire.voteModal = false"
                             class="fixed inset-0 z-50 flex items-center justify-center px-4 py-6 bg-black/40 backdrop-blur-sm">
 
                             <div
@@ -431,38 +453,38 @@ $submitEntry = function () {
             <!-- Design Exhibits - Main scrollable content -->
             <div class="pb-24 space-y-6 sm:space-y-8">
 
-                    <div x-show='$wire.entryModal' x-transition:enter.duration.500ms x-cloak='display:none'
-                        x-transition.opacity
-                        class="fixed inset-0 z-50 w-screen h-full px-5 py-16 sm:py-12 md:py-12 md:px-20 lg:py-10 bg-black/40 backdrop-blur-sm pb-26">
-                        <div class="grid h-full lg:flex justify-evenly rounded-xl md:flex-row">
-                            <div x-transition:enter="transition ease-out duration-300"
-                                x-transition:enter-start="opacity-0 scale-95"
-                                x-transition:enter-end="opacity-100 scale-100" @click.away="$wire.modal = false"
-                                class="relative w-full max-w-7xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden h-[80vh] md:h-[85vh] lg:h-[90vh] flex items-center justify-center">
+                <div x-show='$wire.entryModal' x-transition:enter.duration.500ms x-cloak='display:none'
+                    x-transition.opacity
+                    class="fixed inset-0 z-50 w-screen h-full px-5 py-16 sm:py-12 md:py-12 md:px-20 lg:py-10 bg-black/40 backdrop-blur-sm pb-26">
+                    <div class="grid h-full lg:flex justify-evenly rounded-xl md:flex-row">
+                        <div x-transition:enter="transition ease-out duration-300"
+                            x-transition:enter-start="opacity-0 scale-95"
+                            x-transition:enter-end="opacity-100 scale-100" @click.away="$wire.modal = false"
+                            class="relative w-full max-w-7xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden h-[80vh] md:h-[85vh] lg:h-[90vh] flex items-center justify-center">
 
-                                <div class="w-full h-full bg-black carousel">
+                            <div class="w-full h-full bg-black carousel">
 
 
 
-                                    <div class="relative w-full h-full carousel-item" >
-                                        <div class="flex items-center justify-center w-full h-full">
-                                            <img src="@if ($entry) {{ asset('uploads/contest/' . $entry->photo) }} @endif"
-                                                alt="entry image" class="object-contain max-w-full max-h-full" />
-                                        </div>
+                                <div class="relative w-full h-full carousel-item">
+                                    <div class="flex items-center justify-center w-full h-full">
+                                        <img src="@if ($entry) {{ asset('uploads/contest/' . $entry->photo) }} @endif"
+                                            alt="entry image" class="object-contain max-w-full max-h-full" />
                                     </div>
-
-
                                 </div>
 
-                                <!-- Close Button -->
-                                <span class="absolute z-50 cursor-pointer top-4 right-4" wire:click='closeEntryModal'>
-                                    @svg('heroicon-o-x-mark', ['class' => 'justify btn-dark hover:bg-navy-blue btn-sm btn-circle'])
-                                </span>
+
                             </div>
 
-
+                            <!-- Close Button -->
+                            <span class="absolute z-50 cursor-pointer top-4 right-4" wire:click='closeEntryModal'>
+                                @svg('heroicon-o-x-mark', ['class' => 'justify btn-dark hover:bg-navy-blue btn-sm btn-circle'])
+                            </span>
                         </div>
+
+
                     </div>
+                </div>
 
                 @forelse ($entries as $entry)
                     <div
@@ -488,7 +510,7 @@ $submitEntry = function () {
 
 
 
-<button wire:click='viewEntry({{ $entry->id }})'
+                            <button wire:click='viewEntry({{ $entry->id }})'
                                 class="inline-block px-4 py-2 text-sm font-medium text-white transition duration-200 rounded cursor-pointer bg-navy-blue hover:bg-golden sm:px-6 sm:text-base">VIEW
                                 EXHIBIT</button>
                             <button wire:click=''

@@ -167,12 +167,12 @@ new class extends Component {
                             <input type="text" id="search-dropdown" x-model="term" x-on:keydown="$wire.search(term)"
                                 x-on:keyup="$wire.search(term)"
                                 class="font-bold block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-200 rounded-lg border-0 active:border-0 hover:ring-1 hover:ring-gray-400 focus:border-0 focus:ring-0 border-navy-blue "
-                                placeholder="Search by: Creator, Design, Location, Ratings"
-                                alt="Search by: Creator, Design, Location, Ratings"
-                                title='Search by: Creator, Design, Location, Ratings' />
+                                placeholder="Search by: Creator"
+                                alt="Search by: Creator"
+                                title='Search by: Creator' />
                             <span
-                                class="top-0 end-0 p-2.5 text-sm font-medium text-white bg-gray-200 border-0 rounded-e-lg  absolute z-20 mt-2.5 lg:mt-3.5 focus:ring-0 focus:outline-none ">
-                                <svg class="w-4 h-4 text-[#fbaa0d]" aria-hidden="true"
+                                class="top-0 end-0 p-2.5 text-sm font-medium  bg-transparent border-0 rounded-e-lg  absolute z-20 mt-2.5 lg:mt-3.5 focus:ring-0 focus:outline-none ">
+                                <svg class="w-4 h-4 text-[#665d4c]" aria-hidden="true"
                                     xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
                                         stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
@@ -336,7 +336,7 @@ new class extends Component {
                 </div>
 
 
-                <div x-show="admin" class="justify-center hidden pl-3 md:flex">
+                <div x-show="admin" class="justify-center hidden pl-3 sm:flex">
                     <a class="my-2 " href="{{ route('support') }}">
                         <span class="py-3 w-100">
                             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -360,7 +360,8 @@ new class extends Component {
 
                 <div x-data="{ show: @entangle('drawer') }" x-show="show" x-cloak
                     x-transition:enter="transition ease-in-out duration-300" x-transition:enter-start="opacity-0"
-                    x-transition:enter-end="opacity-100"
+                    x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in-out duration-300"
+                    x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
                     class="fixed inset-0 z-[9999] w-screen h-screen bg-black/40 backdrop-blur-sm">
                     <!-- Slide-in panel -->
                     <div class="fixed right-0 h-full w-full sm:w-[80%] lg:w-[40%] bg-white shadow-xl"
@@ -477,7 +478,7 @@ new class extends Component {
                             </x-dropdown-link>
 
                             <x-dropdown-link class="text-bold" :href="route('settings')" wire:navigate>
-                                   <span>
+                                <span>
                                     @svg('solar-settings-bold', ['class' => 'inline-block w-6 h-6 fill-current text-navy-blue'])
                                 </span>
                                 {{ __('Settings') }}
@@ -487,8 +488,8 @@ new class extends Component {
                             <button wire:click="logout" class="w-full text-start">
                                 <x-dropdown-link>
                                     <span>
-                                    @svg('solar-logout-2-bold', ['class' => 'inline-block w-6 h-6 fill-current text-navy-blue'])
-                                </span>
+                                        @svg('solar-logout-2-bold', ['class' => 'inline-block w-6 h-6 fill-current text-navy-blue'])
+                                    </span>
                                     {{ __('Log Out') }}
                                 </x-dropdown-link>
                             </button>
@@ -541,7 +542,7 @@ new class extends Component {
                             </x-dropdown-link>
 
                             <x-dropdown-link class="hidden text-bold md:block" :href="route('settings')" wire:navigate>
-                               <span>
+                                <span>
                                     @svg('solar-settings-bold', ['class' => 'inline-block w-6 h-6 fill-current text-navy-blue'])
                                 </span>
                                 {{ __('Settings') }}
@@ -550,9 +551,9 @@ new class extends Component {
                             <!-- Logout Button -->
                             <button wire:click="logout" class="w-full text-start">
                                 <x-dropdown-link class='hidden md:block'>
-                                     <span>
-                                    @svg('solar-logout-2-bold', ['class' => 'inline-block w-6 h-6 fill-current text-navy-blue'])
-                                </span>
+                                    <span>
+                                        @svg('solar-logout-2-bold', ['class' => 'inline-block w-6 h-6 fill-current text-navy-blue'])
+                                    </span>
                                     {{ __('Log Out') }}
                                 </x-dropdown-link>
                             </button>
@@ -718,8 +719,8 @@ new class extends Component {
                         <x-responsive-nav-link :href="route('cart')" x-show="admin" wire:navigate>
 
                             <span>
-                                    @svg('solar-cart-bold', 'w-6 h-6 text-navy-blue inline-block fill-current')
-                                </span>
+                                @svg('solar-cart-bold', 'w-6 h-6 text-navy-blue inline-block fill-current')
+                            </span>
                             {{ __('Cart') }}
                         </x-responsive-nav-link>
                         <x-responsive-nav-link x-show="$wire.isCreative" x-show="admin" :href="route('creative.upload')">
@@ -788,27 +789,27 @@ new class extends Component {
                     </div>
                     <x-responsive-nav-link :href="route('wallet')" x-show="admin" wire:navigate>
                         <span>
-                                    @svg('solar-wallet-2-bold', ['class' => 'inline-block w-6 h-6 fill-current text-navy-blue'])
-                                </span>
+                            @svg('solar-wallet-2-bold', ['class' => 'inline-block w-6 h-6 fill-current text-navy-blue'])
+                        </span>
                         {{ __('Wallet') }}
 
                     </x-responsive-nav-link>
 
                     <x-responsive-nav-link :href="route('settings')" wire:navigate>
                         <span>
-                           <span>
-                                    @svg('solar-settings-bold', ['class' => 'inline-block w-6 h-6 fill-current text-navy-blue'])
-                                </span>
-                        {{ __('Settings') }}
+                            <span>
+                                @svg('solar-settings-bold', ['class' => 'inline-block w-6 h-6 fill-current text-navy-blue'])
+                            </span>
+                            {{ __('Settings') }}
                     </x-responsive-nav-link>
 
                     <!-- Authentication -->
                     <button wire:click="logout" class="w-full text-start text-navy-blue">
                         <x-responsive-nav-link>
 
-                             <span>
-                                    @svg('solar-logout-2-bold', ['class' => 'inline-block w-6 h-6 fill-current text-navy-blue'])
-                                </span>
+                            <span>
+                                @svg('solar-logout-2-bold', ['class' => 'inline-block w-6 h-6 fill-current text-navy-blue'])
+                            </span>
                             {{ __('Log Out') }}
                         </x-responsive-nav-link>
                     </button>

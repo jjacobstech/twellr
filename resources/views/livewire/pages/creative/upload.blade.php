@@ -46,7 +46,7 @@ new #[Layout('layouts.app')] class extends Component {
             'frontView' => ['required', 'file', 'mimes:' . config('twellr.design_stack_format')],
             'description' => 'required|string',
             'category' => 'required|string',
-            'price' => 'required|numeric',
+            'price' => 'required|numeric|min:1',
             'name' => 'required|string',
         ]));
 
@@ -98,37 +98,31 @@ new #[Layout('layouts.app')] class extends Component {
 
         if (!$productSaved) {
             $this->error('Product Upload Failed', 'Something happened but we are working on it');
-        }
-        else{
-              if ($this->designFest === true) {
-           $contest = Contest::create([
-                'user_id' => Auth::id(),
-                'product_id' => $productSaved->id,
-                'category_id' => $product->category,
-                'type' => 'design_fest'
-            ]);
+        } else {
+            if ($this->designFest === true) {
+                $contest = Contest::create([
+                    'user_id' => Auth::id(),
+                    'product_id' => $productSaved->id,
+                    'category_id' => $product->category,
+                    'type' => 'design_fest',
+                ]);
 
-            if(!$contest){
-                $productSaved->delete();
-                 $this->error('Product Upload Failed', 'Unable to enter Design Fest');
+                if (!$contest) {
+                    $productSaved->delete();
+                    $this->error('Product Upload Failed', 'Unable to enter Design Fest');
+                } else {
+                    $this->cleanupOldUploads();
+
+                    if ($this->designFest === true) {
+                        session()->flash('designFest', 'true');
+                    }
+                }
             }
-            else{
-                     $this->cleanupOldUploads();
-
- if ($this->designFest === true) {
-           session()->flash('designFest', 'true');
- }
-
+        }
+        $this->cleanupOldUploads();
         session()->flash('status', 'true');
 
         $this->redirectIntended(route('creative.upload'), true);
-            }
-
-        }
-
-
-        }
-            $this->cleanupOldUploads();
     }
 }; ?>
 
@@ -143,7 +137,7 @@ new #[Layout('layouts.app')] class extends Component {
     @session('status')
         {{ $this->success('Design Upload Successful', 'Check Marketplace to view design') }}
     @endsession
-   @session('designFest')
+    @session('designFest')
         {{ $this->success('Design Entered Into Design Fest', 'Check Contest Page to view Design') }}
     @endsession
     <!-- Error notifications -->
@@ -243,7 +237,7 @@ new #[Layout('layouts.app')] class extends Component {
                                     <x-slot name="options">
                                         <option class="text-black" disabled value="">Select a category</option>
                                         @foreach ($categories as $category)
-                                            <option class="text-black"  value="{{ $category->id }}">
+                                            <option class="text-black" value="{{ $category->id }}">
                                                 {{ $category->name }}
                                             </option>
                                         @endforeach
@@ -354,7 +348,7 @@ new #[Layout('layouts.app')] class extends Component {
 
                             <!-- Side View Upload -->
                             <div class="grid content-start justify-center space-y-1 text-center sm:space-y-2">
-                                <x-mary-file  omit-error="true"
+                                <x-mary-file omit-error="true"
                                     class="relative grid items-center w-24 h-24 mx-auto xs:w-28 xs:h-28 sm:w-32 sm:h-32 md:w-36 md:h-36 lg:w-40 lg:h-40 group"
                                     change-text="Upload Side View" wire:model="sideView"
                                     accept="image/png, image/jpeg, image/jpg">
@@ -394,7 +388,7 @@ new #[Layout('layouts.app')] class extends Component {
 
                                 </label>
                                 <p class="text-sm">
-                                     @error('printUpload')
+                                    @error('printUpload')
                                         <span class="block text-xs text-red-500">Invalid File Format</span>
                                     @enderror
                                     <span>Upload Printable Stack</span>

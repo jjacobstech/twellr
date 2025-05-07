@@ -27,12 +27,14 @@ class Rating extends Model
 
     protected $casts = [
         'user_id' => 'int',
-        'product_id' => 'int'
+        'product_id' => 'int',
+        'rate' => 'int'
     ];
 
     protected $fillable = [
         'user_id',
+        'designer_id',
         'product_id',
-        'type'
+        'rate'
     ];
 }

@@ -1,0 +1,37 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('admin_settings', function (Blueprint $table) {
+            $table->increments('id');
+            $table->char('currency_symbol', 10)->nullable();
+            $table->string('currency_code', 20)->nullable();
+            $table->decimal('commission_fee', 10)->unsigned()->default(0);
+            $table->string('logo', 100)->nullable();
+            $table->string('logo_2', 100)->nullable();
+            $table->string('withdrawal_time', 100)->nullable();
+            $table->string('favicon', 100)->nullable();
+            $table->enum('maintenance_mode', ['on', 'off'])->default('off');
+            $table->decimal('vat', 10)->unsigned()->default(0);
+            $table->boolean('advertisement_status')->default(true);
+            $table->unsignedInteger('withdrawal_threshold')->nullable()->default(0);
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('admin_settings');
+    }
+};

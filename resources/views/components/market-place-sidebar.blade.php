@@ -1,171 +1,66 @@
-@props(['locations'])
+@props(['locations', 'categories', 'filterTerm'])
+
+<!-- Desktop Sidebar -->
 <div id="sidebar"
-    class="relative hidden transition-transform duration-300 ease-in-out bg-white shadow-xl sm:hidden md:h-100 md:block md:w-[28%] lg:w-[20%]">
-    <div class="flex px-5 py-3 space-y-6 text-2xl font-bold border-b-2 justify-left md:space-y-10 text-golden">
+     class="relative hidden transition-transform duration-300 ease-in-out bg-white shadow-xl sm:hidden md:block md:w-[28%] lg:w-[20%] h-full">
+    <div class="px-5 py-3 text-2xl font-bold border-b-2 text-golden">
         All Categories
     </div>
-    <div class="justify-center px-10 mt-10 space-y-3 font-bold text-gray-500 md:space-y-3 text-md ">
-        <p class="flex gap-2">
-            <span>
-                <svg class="w-5 h-5" viewBox="0 -3.5 29 29" version="1.1" xmlns="http://www.w3.org/2000/svg"
-                    xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns"
-                    fill="#000000" stroke="#000000">
-                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round">
-                    </g>
-                    <g id="SVGRepo_iconCarrier">
-                        <title>bullet-list</title>
-                        <desc>Created with Sketch Beta.</desc>
-                        <defs></defs>
-                        <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"
-                            sketch:type="MSPage">
-                            <g id="Icon-Set-Filled" sketch:type="MSLayerGroup"
-                                transform="translate(-571.000000, -210.000000)" fill="#888a85">
-                                <path
-                                    d="M598,227 L582,227 C580.896,227 580,227.896 580,229 C580,230.104 580.896,231 582,231 L598,231 C599.104,231 600,230.104 600,229 C600,227.896 599.104,227 598,227 L598,227 Z M598,219 L582,219 C580.896,219 580,219.896 580,221 C580,222.104 580.896,223 582,223 L598,223 C599.104,223 600,222.104 600,221 C600,219.896 599.104,219 598,219 L598,219 Z M582,215 L598,215 C599.104,215 600,214.104 600,213 C600,211.896 599.104,211 598,211 L582,211 C580.896,211 580,211.896 580,213 C580,214.104 580.896,215 582,215 L582,215 Z M574,226 C572.343,226 571,227.343 571,229 C571,230.657 572.343,232 574,232 C575.657,232 577,230.657 577,229 C577,227.343 575.657,226 574,226 L574,226 Z M574,218 C572.343,218 571,219.343 571,221 C571,222.657 572.343,224 574,224 C575.657,224 577,222.657 577,221 C577,219.343 575.657,218 574,218 L574,218 Z M574,210 C572.343,210 571,211.343 571,213 C571,214.657 572.343,216 574,216 C575.657,216 577,214.657 577,213 C577,211.343 575.657,210 574,210 L574,210 Z"
-                                    id="bullet-list" sketch:type="MSShapeGroup"></path>
-                            </g>
-                        </g>
-                    </g>
-                </svg>
-            </span>Trending design
-        </p>
-        <p class="flex gap-2"><span>
-                <svg class="w-5 h-5" viewBox="0 -3.5 29 29" version="1.1" xmlns="http://www.w3.org/2000/svg"
-                    xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns"
-                    fill="#000000" stroke="#000000">
-                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round">
-                    </g>
-                    <g id="SVGRepo_iconCarrier">
-                        <title>bullet-list</title>
-                        <desc>Created with Sketch Beta.</desc>
-                        <defs></defs>
-                        <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"
-                            sketch:type="MSPage">
-                            <g id="Icon-Set-Filled" sketch:type="MSLayerGroup"
-                                transform="translate(-571.000000, -210.000000)" fill="#888a85">
-                                <path
-                                    d="M598,227 L582,227 C580.896,227 580,227.896 580,229 C580,230.104 580.896,231 582,231 L598,231 C599.104,231 600,230.104 600,229 C600,227.896 599.104,227 598,227 L598,227 Z M598,219 L582,219 C580.896,219 580,219.896 580,221 C580,222.104 580.896,223 582,223 L598,223 C599.104,223 600,222.104 600,221 C600,219.896 599.104,219 598,219 L598,219 Z M582,215 L598,215 C599.104,215 600,214.104 600,213 C600,211.896 599.104,211 598,211 L582,211 C580.896,211 580,211.896 580,213 C580,214.104 580.896,215 582,215 L582,215 Z M574,226 C572.343,226 571,227.343 571,229 C571,230.657 572.343,232 574,232 C575.657,232 577,230.657 577,229 C577,227.343 575.657,226 574,226 L574,226 Z M574,218 C572.343,218 571,219.343 571,221 C571,222.657 572.343,224 574,224 C575.657,224 577,222.657 577,221 C577,219.343 575.657,218 574,218 L574,218 Z M574,210 C572.343,210 571,211.343 571,213 C571,214.657 572.343,216 574,216 C575.657,216 577,214.657 577,213 C577,211.343 575.657,210 574,210 L574,210 Z"
-                                    id="bullet-list" sketch:type="MSShapeGroup"></path>
-                            </g>
-                        </g>
-                    </g>
-                </svg>
-            </span>Latest design</p>
-        <p class="flex gap-2"><span>
-                <svg class="w-5 h-5" viewBox="0 -3.5 29 29" version="1.1" xmlns="http://www.w3.org/2000/svg"
-                    xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns"
-                    fill="#000000" stroke="#000000">
-                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round">
-                    </g>
-                    <g id="SVGRepo_iconCarrier">
-                        <title>bullet-list</title>
-                        <desc>Created with Sketch Beta.</desc>
-                        <defs></defs>
-                        <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"
-                            sketch:type="MSPage">
-                            <g id="Icon-Set-Filled" sketch:type="MSLayerGroup"
-                                transform="translate(-571.000000, -210.000000)" fill="#888a85">
-                                <path
-                                    d="M598,227 L582,227 C580.896,227 580,227.896 580,229 C580,230.104 580.896,231 582,231 L598,231 C599.104,231 600,230.104 600,229 C600,227.896 599.104,227 598,227 L598,227 Z M598,219 L582,219 C580.896,219 580,219.896 580,221 C580,222.104 580.896,223 582,223 L598,223 C599.104,223 600,222.104 600,221 C600,219.896 599.104,219 598,219 L598,219 Z M582,215 L598,215 C599.104,215 600,214.104 600,213 C600,211.896 599.104,211 598,211 L582,211 C580.896,211 580,211.896 580,213 C580,214.104 580.896,215 582,215 L582,215 Z M574,226 C572.343,226 571,227.343 571,229 C571,230.657 572.343,232 574,232 C575.657,232 577,230.657 577,229 C577,227.343 575.657,226 574,226 L574,226 Z M574,218 C572.343,218 571,219.343 571,221 C571,222.657 572.343,224 574,224 C575.657,224 577,222.657 577,221 C577,219.343 575.657,218 574,218 L574,218 Z M574,210 C572.343,210 571,211.343 571,213 C571,214.657 572.343,216 574,216 C575.657,216 577,214.657 577,213 C577,211.343 575.657,210 574,210 L574,210 Z"
-                                    id="bullet-list" sketch:type="MSShapeGroup"></path>
-                            </g>
-                        </g>
-                    </g>
-                </svg>
-            </span>Featured designs</p>
-        <p class="flex gap-2"><span>
-                <svg class="w-5 h-5" viewBox="0 -3.5 29 29" version="1.1" xmlns="http://www.w3.org/2000/svg"
-                    xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns"
-                    fill="#000000" stroke="#000000">
-                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round">
-                    </g>
-                    <g id="SVGRepo_iconCarrier">
-                        <title>bullet-list</title>
-                        <desc>Created with Sketch Beta.</desc>
-                        <defs></defs>
-                        <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"
-                            sketch:type="MSPage">
-                            <g id="Icon-Set-Filled" sketch:type="MSLayerGroup"
-                                transform="translate(-571.000000, -210.000000)" fill="#888a85">
-                                <path
-                                    d="M598,227 L582,227 C580.896,227 580,227.896 580,229 C580,230.104 580.896,231 582,231 L598,231 C599.104,231 600,230.104 600,229 C600,227.896 599.104,227 598,227 L598,227 Z M598,219 L582,219 C580.896,219 580,219.896 580,221 C580,222.104 580.896,223 582,223 L598,223 C599.104,223 600,222.104 600,221 C600,219.896 599.104,219 598,219 L598,219 Z M582,215 L598,215 C599.104,215 600,214.104 600,213 C600,211.896 599.104,211 598,211 L582,211 C580.896,211 580,211.896 580,213 C580,214.104 580.896,215 582,215 L582,215 Z M574,226 C572.343,226 571,227.343 571,229 C571,230.657 572.343,232 574,232 C575.657,232 577,230.657 577,229 C577,227.343 575.657,226 574,226 L574,226 Z M574,218 C572.343,218 571,219.343 571,221 C571,222.657 572.343,224 574,224 C575.657,224 577,222.657 577,221 C577,219.343 575.657,218 574,218 L574,218 Z M574,210 C572.343,210 571,211.343 571,213 C571,214.657 572.343,216 574,216 C575.657,216 577,214.657 577,213 C577,211.343 575.657,210 574,210 L574,210 Z"
-                                    id="bullet-list" sketch:type="MSShapeGroup"></path>
-                            </g>
-                        </g>
-                    </g>
-                </svg>
-            </span>Best selling designs</p>
-        <p class="flex gap-2"><span>
-                <svg class="w-5 h-5" viewBox="0 -3.5 29 29" version="1.1" xmlns="http://www.w3.org/2000/svg"
-                    xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns"
-                    fill="#000000" stroke="#000000">
-                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round">
-                    </g>
-                    <g id="SVGRepo_iconCarrier">
-                        <title>bullet-list</title>
-                        <desc>Created with Sketch Beta.</desc>
-                        <defs></defs>
-                        <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"
-                            sketch:type="MSPage">
-                            <g id="Icon-Set-Filled" sketch:type="MSLayerGroup"
-                                transform="translate(-571.000000, -210.000000)" fill="#888a85">
-                                <path
-                                    d="M598,227 L582,227 C580.896,227 580,227.896 580,229 C580,230.104 580.896,231 582,231 L598,231 C599.104,231 600,230.104 600,229 C600,227.896 599.104,227 598,227 L598,227 Z M598,219 L582,219 C580.896,219 580,219.896 580,221 C580,222.104 580.896,223 582,223 L598,223 C599.104,223 600,222.104 600,221 C600,219.896 599.104,219 598,219 L598,219 Z M582,215 L598,215 C599.104,215 600,214.104 600,213 C600,211.896 599.104,211 598,211 L582,211 C580.896,211 580,211.896 580,213 C580,214.104 580.896,215 582,215 L582,215 Z M574,226 C572.343,226 571,227.343 571,229 C571,230.657 572.343,232 574,232 C575.657,232 577,230.657 577,229 C577,227.343 575.657,226 574,226 L574,226 Z M574,218 C572.343,218 571,219.343 571,221 C571,222.657 572.343,224 574,224 C575.657,224 577,222.657 577,221 C577,219.343 575.657,218 574,218 L574,218 Z M574,210 C572.343,210 571,211.343 571,213 C571,214.657 572.343,216 574,216 C575.657,216 577,214.657 577,213 C577,211.343 575.657,210 574,210 L574,210 Z"
-                                    id="bullet-list" sketch:type="MSShapeGroup"></path>
-                            </g>
-                        </g>
-                    </g>
-                </svg>
-            </span>Designers of the week</p>
 
+    <div class="px-10 mt-6 space-y-3 font-semibold text-gray-600 text-md">
+        @foreach ($categories as $category)
+            <span wire:click="filter('{{ $category->filter }}')"
+                  class="flex items-center gap-2 capitalize transition cursor-pointer hover:text-navy-blue">
+                @svg('eva-list', ['class' => 'w-5 h-5 text-gray-500'])
+                {{ $category->title }}
+            </span>
+        @endforeach
     </div>
-    <div class="pl-5 mt-10 font-bold text-gray-500 lg:pl-5 lg:px-10 text-md">
-        <div class="">
-            <p> Select Location:</p>
-            <select wire:model.live='location' class="mt-1 border-gray-500 rounded-md md:w-44 lg:w-52">
-                 <option value="">. . .</option>
-                @forelse ($locations as $location )
+
+    <!-- Location Filter -->
+    <div class="pl-5 pr-6 mt-10 font-semibold text-gray-600 text-md">
+        <p class="mb-2">Select Location:</p>
+        <select wire:model="location"
+                class="w-full p-2 border border-gray-400 rounded-md focus:ring-navy-blue focus:border-navy-blue">
+            <option value="">All Locations</option>
+            @forelse ($locations as $location)
                 <option value="{{ $location->id }}">{{ $location->name }}</option>
-                @empty
-                    <option value="">. . .</option>
-                @endforelse
-            </select>
-
-        </div>
-        <div class="mt-4">
-              <x-bladewind.button  id="customer_support"
-                                color="w-full px-4 py-3 font-bold uppercase transition duration-200 bg-navy-blue rounded text-white hover:bg-golden hover:border-golden hover:text-white">
-                                Contact Our In-House Designer
-                            </x-bladewind.button>
-
-        </div>
+            @empty
+                <option value="">No Locations</option>
+            @endforelse
+        </select>
     </div>
-     <!--Start of Tawk.to Script
-    -->
-        <script type="text/javascript">
-            let customerSupport = document.getElementById('customer_support');
 
+    <!-- Contact Button -->
+    <div class="px-5 mt-6">
+        <x-bladewind.button id="customer_support"
+            color="w-full px-4 py-3 font-bold uppercase transition duration-200 bg-navy-blue text-white hover:bg-golden hover:border-golden">
+            Contact Our In-House Designer
+        </x-bladewind.button>
+    </div>
+</div>
 
-            customerSupport.addEventListener('click', () => {
-                var Tawk_API = Tawk_API || {},
-                    Tawk_LoadStart = new Date();
+<!-- Mobile Bar -->
+<div id="mobilebar"
+     class="z-10 grid items-center justify-between grid-cols-3 gap-3 px-4 py-3 bg-white shadow-sm md:hidden">
+    <select wire:model="filterTerm"
+            class="px-3 py-2 text-sm text-gray-700 border border-gray-400 rounded-md focus:ring-navy-blue focus:border-navy-blue">
+        <option value="">Filter by Category</option>
+        @foreach ($categories as $category)
+            <option value="{{ $category->filter }}">{{ ucfirst($category->title) }}</option>
+        @endforeach
+    </select>
 
-                (function() {
-                    var s1 = document.createElement("script"),
-                        s0 = document.getElementsByTagName("script")[0];
-                    s1.async = true;
-                    s1.src = 'https://embed.tawk.to/67db0589c029cf190fdd8e20/1imnor8sp';
-                    s1.charset = 'UTF-8';
-                    s1.setAttribute('crossorigin', '*');
-                    s0.parentNode.insertBefore(s1, s0);
+    <select wire:model="location"
+            class="px-3 py-2 text-sm text-gray-700 border border-gray-400 rounded-md focus:ring-navy-blue focus:border-navy-blue">
+        <option value="">Location</option>
+        @foreach ($locations as $location)
+            <option value="{{ $location->id }}">{{ $location->name }}</option>
+        @endforeach
+    </select>
 
-                })();
-            });
-        </script>
-        <!--End of Tawk.to Script-->
+    <x-bladewind.button id="customer_support"
+        color="w-full px-3 py-2 font-bold uppercase transition duration-200 bg-navy-blue text-white hover:bg-golden hover:border-golden text-sm">
+        Designer Support
+    </x-bladewind.button>
 </div>

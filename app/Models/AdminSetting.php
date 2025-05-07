@@ -59,7 +59,7 @@ class AdminSetting extends Model
         'currency_code',
         'commission_fee',
         'shipping_fee',
-        'logo',
+        'minimum_rating',
         'logo_2',
         'text_logo',
         'favicon',

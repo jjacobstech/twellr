@@ -14,12 +14,13 @@ layout('layouts.app');
 uses(Toast::class);
 
 state([
-    'user' => fn() => User::where('referral_link','=',request()->creator)->first(),
-    'firstname' => fn()=> User::where('referral_link','=',request()->creator)->value('firstname'),
-    'lastname' => fn()=> User::where('referral_link','=',request()->creator)->value('lastname'),
-    'email' => fn()=> User::where('referral_link','=',request()->creator)->value('email'),
-    'rating' => fn()=> User::where('referral_link','=',request()->creator)->value('rating'),
-    'referral_link' => fn()=> config('app.url')."/r/".User::where('referral_link','=',request()->creator)->value('referral_link'),
+    'user' => fn() => User::where('referral_link', '=', request()->creator)->first(),
+    'firstname' => '',
+    'lastname' => '',
+    'email' => '',
+    'rating' => '',
+    'referral_link' => '',
+    'designer' => '',
     'designs' => [],
     'isFollowing' => false,
 ]);
@@ -27,9 +28,8 @@ state([
 /**
  * Mount the component.
  */
-mount(function ()
-{
-    if(!request()->has('creator')) {
+mount(function () {
+    if (!request()->has('creator')) {
         return redirect()->route('dashboard');
     }
     $this->designs = Product::where('user_id', $this->user->id)->get();
@@ -38,13 +38,18 @@ mount(function ()
     if (Auth::check()) {
         $this->isFollowing = Auth::user()->following()->where('following_id', $this->user->id)->exists();
     }
+    $this->firstname = $this->user->firstname;
+    $this->lastname = $this->user->lastname;
+    $this->email = $this->user->email;
+    $this->rating = $this->user->rating;
+    $this->referral_link = config('app.url') . '/r/' . $this->user->referral_link;
+    $this->designer = $this->user->id;
 });
-
 
 /**
  * Toggle follow status for this creator
  */
-$toggleFollow = action( function() {
+$toggleFollow = action(function () {
     if (!Auth::check()) {
         $this->warning('Please login to follow creators');
         return redirect()->route('login');
@@ -72,21 +77,7 @@ $toggleFollow = action( function() {
 
 ?>
 <div class="w-[100%] overflow-y-scroll px-8 md:px-16 mb-20 h-screen bg-gray-100 scrollbar-none">
-    <header class="flex items-center justify-between w-full">
-        <h2 class="py-4 text-4xl font-extrabold text-gray-500">
 
-            {{ __('Profile') }}
-        </h2>
-
-        <a href="{{ route('settings') }}">
-            <svg class="text-gray-500 h-7 w-7" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round">
-                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-            </svg>
-        </a>
-    </header>
     <div class="w-full">
         <div style="background-image: url('@if (empty($user->cover)) {{ asset('assets/pexels-solliefoto-298863.jpg') }}@else{{ asset('uploads/cover/' . $user->cover) }} @endif')"
             class="rounded-[14px] bg-no-repeat bg-cover justify-center items-center w-full min-h-[250px]">
@@ -100,40 +91,58 @@ $toggleFollow = action( function() {
             <div
                 class="mt-24 md:py-9 w-100 bg-white rounded-[14px] md:mt-[12rem] text-center items-center justify-center grid">
                 <span class="mt-12 md:mt-16">
-                    <x-bladewind.rating rating="{{ $rating }}" name="{{ $user->id }}" functional size="medium" class="text-golden"
-                        name="creative-rating" />
+                    <x-bladewind.rating rating="{{ $rating }}" name="{{ $user->id }}" functional
+                        size="medium" class="text-golden" name="creative-rating" />
                 </span>
                 <h1 class="my-2 text-lg font-bold text-gray-500 md:text-3xl">{{ $user->firstname }}
                     {{ $user->lastname }}</h1>
 
                 <!-- Follow Button -->
                 @if (Auth::check() && Auth::id() !== $user->id)
-                <div class="mt-2 mb-4">
-                    <button
-                        wire:click="toggleFollow"
-                        class="px-6 py-2 transition-all duration-300 rounded-full {{ $isFollowing ? 'bg-gray-200 text-gray-700' : 'bg-golden text-white' }} hover:opacity-90">
-                        {{ $isFollowing ? 'Following' : 'Follow' }}
-                    </button>
-                </div>
+                    <div class="mt-2 mb-4">
+                        <button wire:click="toggleFollow"
+                            class="px-6 py-2 transition-all duration-300 rounded-full {{ $isFollowing ? 'bg-gray-200 text-gray-700' : 'bg-golden text-white' }} hover:opacity-90">
+                            {{ $isFollowing ? 'Following' : 'Follow' }}
+                        </button>
+                    </div>
                 @endif
             </div>
         </div>
 
 
-        <div class="justify-between px-5 py-10 my-10 bg-white shadow-sm md:px-10 md:gap-6 md:flex w-100 rounded-xl scrollbar-none">
+        <div
+            class="justify-between px-5 py-10 my-10 bg-white shadow-sm md:px-10 md:gap-6 md:flex w-100 rounded-xl scrollbar-none">
             <div x-cloak="display:hidden"
-                class="relative grid w-full h-full gap-5 px-5 pt-1 mb-1 overflow-y-scroll md:h-screen lg:hidden md:grid-cols-2 sm:grid-cols-2 scrollbar-none">
+                class="relative grid w-full h-full gap-5 px-5 pt-1 mb-1 overflow-y-scroll md:h-screen lg:hidden md:grid-cols-4 sm:grid-cols-4 scrollbar-none">
                 @forelse ($designs as $design)
-                    <x-product-card :product="$design" />
+                    <a href="{{ route('market.place') }}"
+                        class="w-full  max-w-sm md:overflow-hidden transition-shadow duration-300 shadow-md rounded-xl hover:shadow-lg aspect-square">
+                        <!-- Product Image Container with fixed aspect ratio -->
+                        <div class="relative group aspect-square">
+                            <img class="object-cover aspect-square w-full h-full rounded-t-xl lg:rounded-t-none"
+                                src="{{ asset('uploads/products/design-stack/' . $design->front_view) }}"
+                                alt="{{ $design->name }}">
+                        </div>
+                    </a>
+
                 @empty
                     <h1 class="text-gray-500">No Designs Available</h1>
                 @endforelse
             </div>
 
             <div x-cloak="display:hidden"
-                class="relative hidden w-full lg:h-screen gap-5 px-5 pt-1 lg:overflow-y-scroll lg:grid md:grid-cols-4 mb-[115px] scrollbar-none">
+                class="relative hidden w-full gap-5 px-5 pt-1 lg:overflow-y-scroll lg:grid md:grid-cols-8 mb-[115px] scrollbar-none">
                 @forelse ($designs as $design)
-                    <x-product-card :product="$design" />
+                    <div
+                        class="w-full  max-w-sm md:overflow-hidden transition-shadow duration-300 shadow-md rounded-xl hover:shadow-lg aspect-square">
+                        <!-- Product Image Container with fixed aspect ratio -->
+                        <a href="{{ route('market.place') }}"
+                            class="relative group aspect-square">
+                            <img class="object-cover aspect-square w-full h-full rounded-t-xl lg:rounded-t-none"
+                                src="{{ asset('uploads/products/design-stack/' . $design->front_view) }}"
+                                alt="{{ $design->name }}">
+                        </a>
+                    </div>
                 @empty
                     <h1 class="text-gray-500">No Designs Available</h1>
                 @endforelse
@@ -141,4 +150,3 @@ $toggleFollow = action( function() {
         </div>
     </div>
 </div>
-

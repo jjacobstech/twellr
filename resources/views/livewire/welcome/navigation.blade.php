@@ -119,7 +119,7 @@ new class extends Component {
 
             <div class="w-full sm:-my-px sm:ms-10 sm:flex">
                 {{-- Search Bar --}}
-                <form class="w-full px-3 sm:px-5 md:px-9">
+                <form class="w-full px-3 mt-1.5 sm:px-5 md:px-9">
                     <div class="flex justify-between w-full">
                         <div class="relative flex w-full py-2 md:py-3">
                             <input type="text" id="search-dropdown" x-model="term" x-on:keydown="$wire.search(term)"

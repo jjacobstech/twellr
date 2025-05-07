@@ -13,11 +13,8 @@
     <link rel="shortcut icon" href="{{ asset('assets/twellr.svg') }}" type="image/x-icon">
 
     <!-- Styles -->
-    <link href="{{ asset('vendor/bladewind/css/animate.min.css') }}" rel="stylesheet" />
-    <link href="{{ asset('vendor/bladewind/css/bladewind-ui.min.css') }}" rel="stylesheet" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-</>
 
 <body class="h-screen overflow-hidden font-sans bg-gray-100">
 

@@ -156,8 +156,7 @@ class User extends Authenticatable
 
         // Return products where the user_id is in the following list
         return Product::whereIn('user_id', $followingIds)
-            ->latest()->take(7)  // Order by most recent first
-            ->get();
+            ->latest()->take(7);  // Order by most recent first
     }
 
     /**
