@@ -24,8 +24,8 @@ state(['purchases' => fn() => Auth::user()->role == 'user' ? Purchase::where('bu
 state(['withdrawalModal' => false]);
 state(['addFundModal' => false]);
 state('amount');
-state(['commission' => AdminSetting::first()->value('commission_fee')]);
-state(['processing_time' => AdminSetting::first()->value('withdrawal_time')]);
+state(['commission' => fn() => AdminSetting::first()->value('commission_fee')]);
+state(['processing_time' => fn() => AdminSetting::first()->value('withdrawal_time')]);
 
 $addFund = function () {
       $validator = $this->validate(
@@ -154,7 +154,7 @@ $withdraw = function () {
 
     </h1>
 
-    <div class="relative overflow-x-auto  shadow-md sm:rounded-b-[14px] h-72 bg-gray-100">
+    <div class="relative overflow-x-auto  shadow-md sm:rounded-b-[14px] h-72 bg-gray-100 scrollbar-none">
         @if (Auth::user()->isCreative())
 
 
@@ -167,7 +167,7 @@ $withdraw = function () {
                         </div>
                     </div>
                 @else
-                    <table class="w-full text-sm text-left text-gray-500">
+                    <table class="w-full text-sm text-left text-gray-500 scrollbar-none">
                         <thead class="sticky top-0 text-xs text-gray-700 uppercase bg-gray-100">
                             <tr>
                                 <th scope="col" class="px-4 py-3 text-center">
@@ -217,7 +217,7 @@ $withdraw = function () {
             </div>
 
             <!-- Responsive version for small screens (hidden on md and above) -->
-            <div class="mt-4 md:hidden">
+            <div class="mt-4 md:hidden scrollbar-none">
                 @if ($transactions == null || $transactions->isEmpty())
                     <div class="p-6 text-center bg-white rounded-lg">
                         <p class="text-gray-500">No transactions found</p>
@@ -257,7 +257,7 @@ $withdraw = function () {
 
         @if (!Auth::user()->isCreative())
 
-            <div class="w-full overflow-x-auto rounded-lg shadow-sm ">
+            <div class="w-full overflow-x-auto rounded-lg shadow-sm scrollbar-none">
                 @if ($purchases == null || $purchases->isEmpty())
                     <div class="flex items-center justify-center p-8 bg-white">
                         <div class="text-center">
@@ -266,7 +266,7 @@ $withdraw = function () {
                         </div>
                     </div>
                 @else
-                    <table class="w-full text-sm text-left text-gray-500">
+                    <table class="w-full text-sm text-left text-gray-500 scrollbar-none">
                         <thead class="sticky top-0 text-xs text-gray-700 uppercase bg-gray-100">
                             <tr>
                                 <th scope="col" class="px-4 py-3 text-center">
@@ -295,7 +295,7 @@ $withdraw = function () {
                                 </th>
                             </tr>
                         </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
+                        <tbody class="bg-white divide-y divide-gray-200 scrollbar-none">
                             @foreach ($purchases as $purchase)
                                 <tr class="transition-colors hover:bg-gray-50">
                                     <th scope="row"
@@ -344,13 +344,13 @@ $withdraw = function () {
             </div>
 
             <!-- Responsive version for small screens (hidden on md and above) -->
-            <div class="hidden mt-4">
+            <div class="hidden mt-4 scrollbar-none">
                 @if ($purchases == null || $purchases->isEmpty())
                     <div class="p-6 text-center bg-white rounded-lg">
                         <p class="text-gray-500">No purchases found</p>
                     </div>
                 @else
-                    <div class="space-y-3">
+                    <div class="space-y-3 scrollbar-none">
                         @foreach ($purchases as $purchase)
                             <div class="p-4 bg-white rounded-lg shadow-sm">
                                 <div class="flex items-center justify-between mb-2">

@@ -71,6 +71,7 @@ class Purchase extends Model
         return $this->belongsTo(Product::class, 'product_id', 'id');
     }
 
+
     public function material()
     {
         return $this->belongsTo(Material::class, 'material_id', 'id');
