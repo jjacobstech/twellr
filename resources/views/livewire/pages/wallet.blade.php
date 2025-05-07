@@ -113,7 +113,10 @@ $withdraw = function () {
 };
 
 ?>
-<div class="pb-5 bg-white px-7 md:px-20" x-data="{transactions: true, purchases: false}">
+<div class="pb-5 bg-white px-7 md:px-20" x-data="{transactions: true, purchases: false, setTab: ()=>{
+    this.transactions = !this.transactions;
+    this.purchases = !this.purchases;
+    }}">
 
     @session('error')
         {{ $this->error(session('error'), timeout: 5000) }}
@@ -164,7 +167,7 @@ $withdraw = function () {
 
     <div class="relative overflow-x-auto  shadow-md sm:rounded-b-[14px] h-72 bg-gray-100 scrollbar-none">
 
-        <div x-show="transactions" x-transition:enter.duration.500ms x-cloak="display:none"  class="w-full overflow-x-auto rounded-lg shadow-sm">
+        <div x-show="transactions" @click="setTab()" x-transition:enter.duration.500ms x-cloak="display:none"  class="w-full overflow-x-auto rounded-lg shadow-sm">
             @if ($transactions == null || $transactions->isEmpty())
                 <div class="flex items-center justify-center p-8 bg-white">
                     <div class="text-center">
@@ -222,7 +225,7 @@ $withdraw = function () {
             @endif
         </div>
 
-        <div x-show="purchases" x-transition:enter.duration.500ms x-cloak="display:none" class="w-full overflow-x-auto rounded-lg shadow-sm scrollbar-none">
+        <div x-show="purchases" @click="setTab()" x-transition:enter.duration.500ms x-cloak="display:none" class="w-full overflow-x-auto rounded-lg shadow-sm scrollbar-none">
             @if ($purchases == null || $purchases->isEmpty())
                 <div class="flex items-center justify-center p-8 bg-white">
                     <div class="text-center">
