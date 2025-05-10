@@ -30,11 +30,12 @@ class BlogPost extends Model
         'title',
         'content',
         'image',
-        'category'
+        'category_id'
     ];
 
     public function category()
     {
-        return $this->belongsTo(BlogCategory::class, 'category', 'id');
+        return $this->belongsTo(BlogCategory::class, 'category_id', 'id');
     }
+
 }

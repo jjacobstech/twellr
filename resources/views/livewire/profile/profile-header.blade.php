@@ -24,6 +24,14 @@ new class extends Component {
     public $total_rewards = 0;
     public $recent_referrals;
     public $designs = null;
+    public $rating_status = '';
+    public $statuses = [
+        '1' => 'Rookie',
+        '2' => 'Notched',
+        '3' => 'Dazzler',
+        '4' => 'Boss',
+        '5' => 'Jagaban',
+    ];
 
     /**
      * Mount the component.
@@ -122,12 +130,46 @@ new class extends Component {
             </div>
             <div
                 class="mt-24 md:py-9 w-100 bg-white rounded-[14px] md:mt-[12rem] text-center items-center justify-center grid">
-                <span class="mt-12 md:mt-16">
-                    <x-bladewind.rating rating="{{ $rating }}" size="medium" class="text-golden"
-                        name="creative-rating" />
-                </span>
-                <h1 class="my-2 text-lg font-bold text-gray-500 md:text-3xl">{{ Auth::user()->firstname }}
+                @if (Auth::user()->isCreative())
+                    <div class="mt-12 md:mt-16 flex flex-col items-center justify-center space-y-2">
+                        <x-bladewind.rating rating="{{ $rating }}" size="medium" class="text-golden"
+                            name="creative-rating" />
+
+                        <span
+                            class="px-2 inline-flex text-sm leading-5 font-semibold rounded-full bg-navy-blue text-white text-center">
+                            @switch($rating)
+                                @case(1)
+                                    {{ $statuses[$rating] }}
+                                @break
+
+                                @case(2)
+                                    {{ $statuses[$rating] }}
+                                @break
+
+                                @case(3)
+                                    {{ $statuses[$rating] }}
+                                @break
+
+                                @case(4)
+                                    {{ $statuses[$rating] }}
+                                @break
+
+                                @case(5)
+                                    {{ $statuses[$rating] }}
+                                @break
+
+                                @default
+                            @endswitch
+                        </span>
+                    </div>
+                      <h1 class="my-2 text-lg font-bold text-gray-500 md:text-3xl">{{ Auth::user()->firstname }}
                     {{ Auth::user()->lastname }}</h1>
+                @else
+                     <h1 class="mt-20 text-lg font-bold text-gray-500 md:text-3xl">{{ Auth::user()->firstname }}
+                    {{ Auth::user()->lastname }}</h1>
+                @endif
+
+
             </div>
         </div>
 

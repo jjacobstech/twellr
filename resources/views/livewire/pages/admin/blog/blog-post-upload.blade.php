@@ -34,7 +34,7 @@ $uploadPost = function () {
         'title' => $post->title,
         'content' => $post->content,
         'image' => $postImageData->name,
-        'category' => $post->category,
+        'category_id' => $post->category,
     ]);
 
     if(!$blogPost){

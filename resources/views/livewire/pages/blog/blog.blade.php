@@ -16,8 +16,9 @@ state(['categoryFilter' => '']);
 state(['dateSort' => 'desc']);
 state(['currentPage' => 1]);
 state(['perPage' => 5]);
-state('viewData');
-state(['viewCard' => false]);
+state(['postView' => null]);
+state(['postCategory' => '']);
+state(['view' => false]);
 state(['categories' => fn() => BlogCategory::all()]);
 
 with([
@@ -27,7 +28,7 @@ with([
                 $category->where('content', 'like', "%{$this->searchTerm}%");
             });
         })
-        ->where('category', 'like', "%{$this->categoryFilter}%")
+        ->where('category_id', 'like', "%{$this->categoryFilter}%")
         ->paginate($this->perPage),
 ]);
 
@@ -47,12 +48,23 @@ $toggleCategory = function ($id) {
     return $this->categoryFilter = $id;
 };
 
+$readMore = function ($id) {
+    $this->postView = BlogPost::where('id', '=', $id)->first();
+    $this->postCategory = BlogCategory::where('id',$this->postView->category_id)->first();
+    $this->view = true;
+};
+
+$close = function () {
+    $this->postView = null;
+    $this->view = false;
+};
+
 ?>
-<div class=" pb-20 h-screen bg-white overflow-y-scroll">
+<div class=" pb-20 h-screen bg-white overflow-y-scroll scrollbar-none">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 h-screen pb-24">
 
-    <!-- Categories and Search - Sticky on mobile, fixed on desktop -->
-        <div
+        <!-- Categories and Search - Sticky on mobile, fixed on desktop -->
+        <div wire:show='!view'
             class="bg-gray-100 p-3 sm:p-4 rounded-lg flex flex-col md:flex-row justify-between items-center mb-6 sm:mb-8 top-14 z-10">
             <!-- Categories - Scrollable on small screens -->
             <div class="flex space-x-2 mb-4 md:mb-0 overflow-x-auto pb-2 w-full md:w-auto whitespace-nowrap">
@@ -64,10 +76,10 @@ $toggleCategory = function ($id) {
                 @empty
                     No Categories
                 @endforelse
- <button wire:click="resetFilters"
-                        class="@if (url()->current() == route('blog')) bg-white @endif text-gray-600 px-3 py-1 rounded-full text-sm shadow-sm border border-gray-200 hover:bg-gray-50 flex-shrink-0">
-                       Reset
-                    </button>
+                <button wire:click="resetFilters"
+                    class="@if (url()->current() == route('blog')) bg-white @endif text-gray-600 px-3 py-1 rounded-full text-sm shadow-sm border border-gray-200 hover:bg-gray-50 flex-shrink-0">
+                    Reset
+                </button>
             </div>
 
             <!-- Search -->
@@ -86,7 +98,7 @@ $toggleCategory = function ($id) {
         </div>
 
         <!-- Blog Posts - Main scrollable content -->
-        <div class="space-y-6 sm:space-y-8 pb-24 ">
+        <div wire:show='!view' class="space-y-6 sm:space-y-8 pb-24 ">
 
             @forelse ($posts as $post)
                 <div
@@ -103,9 +115,9 @@ $toggleCategory = function ($id) {
                         <p class="text-gray-500 mb-4 sm:mb-5 text-sm sm:text-base">
                             {{ $post->content }}
                         </p>
-                        <a href="#"
+                        <button wire:click='readMore({{ $post->id }})'
                             class="inline-block bg-yellow-400 hover:bg-yellow-500 text-white font-medium px-4 sm:px-6 py-2 rounded transition duration-200 text-sm sm:text-base">READ
-                            MORE</a>
+                            MORE</button>
                     </div>
                 </div>
             @empty
@@ -120,5 +132,46 @@ $toggleCategory = function ($id) {
 
 
         </div>
+
+        <!-- Blog Posts View - Individual Blog Post -->
+        @if ($postView)
+            <div class="min-h-screen bg-white pb-20">
+                <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+                    <!-- Back Button -->
+                    <div class="mb-6">
+                        <button wire:click='close'
+                            class="inline-flex items-center text-sm font-medium text-gray-600 hover:text-yellow-500 transition">
+                            ← Back to Blog
+                        </button>
+                    </div>
+
+                    <!-- Featured Image -->
+                    <div class="w-full h-64 sm:h-96 bg-amber-100 overflow-hidden rounded-lg shadow-sm mb-8">
+                        <img src="{{ asset('uploads/blog/' . $postView->image) }}" alt="{{ $postView->title }}"
+                            class="w-full h-full object-cover" />
+                    </div>
+
+                    <!-- Post Title -->
+                    <h1 class="text-2xl sm:text-4xl font-bold text-gray-800 mb-4">
+                        {{ $postView->title }}
+                    </h1>
+
+                    <!-- Meta Info -->
+                    <div class="text-sm text-gray-500 mb-6">
+                        {{ $postView->created_at->format('F j, Y') }}
+                        @if ($postCategory)
+                            • {{ $postCategory->name }}
+                        @endif
+                    </div>
+
+                    <!-- Post Content -->
+                    <div class="prose prose-sm sm:prose lg:prose-lg max-w-none text-gray-700">
+                        {!! nl2br(e($postView->content)) !!}
+                    </div>
+                </div>
+            </div>
+
+        @endif
+
     </div>
 </div>

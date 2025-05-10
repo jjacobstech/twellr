@@ -58,8 +58,11 @@ new class extends Component {
     {
         return User::query()
             ->where('role', 'creative')
+             ->where('id', '!=', Auth::id())
             ->where(function ($query) use ($search) {
                 $query
+                ->where('firstname','!=', Auth::user()->firstname)
+                 ->where('lastname','!=', Auth::user()->lastname)
                     ->where('firstname', 'like', "%$search%")
                     ->orWhere('lastname', 'like', "%$search%")
                     ->orWhere('instagram', 'like', "%$search%");

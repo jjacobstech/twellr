@@ -13,7 +13,7 @@ Route::middleware(['auth', 'verified'])->group(
         Volt::route('/explore', 'pages.explore')->name(name: 'explore');
         Route::get('/support', fn() => view('livewire.pages.support'))->name('support');
         Volt::route('/wallet', 'pages.wallet')->name('wallet');
-        Volt::route('/blog', 'pages.blog')->name('blog');
+        Volt::route('/blog', 'pages.blog.blog')->name('blog');
         Volt::route('settings', 'pages.settings')->name('settings');
         Volt::route('cart', 'pages.cart')->name('cart');
         Volt::route('/{slug}', 'pages.creative.profile')->name(name: 'creative.profile');

@@ -9,7 +9,6 @@ use App\Http\Controllers\UserController;
 Route::get('/', fn() => view('welcome'))->name('home');
 
 Route::middleware('guest')->get('/r/{slug?}', [UserController::class, "referral"]);
-Volt::route('creator/{slug}/design/{design}','livewire.pages.design')->middleware('guest');
 
 
 Route::fallback(function () {
