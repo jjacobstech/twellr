@@ -1,7 +1,7 @@
 @props(['locations', 'categories', 'filterTerm'])
 
 <!-- Desktop Sidebar -->
-<div id="sidebar"
+<div id="sidebar" x-cloak="display: none"
      class="relative hidden transition-transform duration-300 ease-in-out bg-white shadow-xl sm:hidden md:block md:w-[28%] lg:w-[20%] h-full">
     <div class="px-5 py-3 text-2xl font-bold border-b-2 text-golden">
         All Categories

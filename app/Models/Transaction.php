@@ -29,6 +29,7 @@ class Transaction extends Model
     protected $casts = [
         'user_id' => 'int',
         'amount' => 'float',
+        'charge' => 'float',
         'created_at' => 'date:d-m-Y'
     ];
 
@@ -36,6 +37,7 @@ class Transaction extends Model
         'user_id',
         "buyer_id",
         'amount',
+        'charge',
         'transaction_type',
         'status',
         'ref_no'

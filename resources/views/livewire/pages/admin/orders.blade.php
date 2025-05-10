@@ -221,7 +221,7 @@ $view = function ($id) {
         <!-- Sidebar component -->
         <x-admin-sidebar />
         <!-- Main content -->
-        <div class="w-full px-1 pb-2 mb-16 overflow-y-scroll bg-white">
+        <div class="w-full px-1 pb-2 mb-16 overflow-y-scroll bg-white scrollbar-thin scrollbar-thumb-navy-blue scrollbar-track-gray-100">
             <header class="flex items-center justify-between w-full px-5 mb-1 bg-white">
                 <h2 class="py-4 text-3xl font-extrabold text-gray-500 capitalize">
                     {{ __('Orders') }}
@@ -283,9 +283,9 @@ $view = function ($id) {
                 {{ $orders->links() }}
             </div>
             <!-- Orders table -->
-            <div class="w-full px-5 overflow-x-scroll">
-                <div class="overflow-hidden border-b border-gray-200 shadow sm:rounded-lg">
-                    <table class="min-w-full divide-y divide-gray-200">
+            <div class="w-full px-5 l  scrollbar-thin scrollbar-thumb-navy-blue scrollbar-track-gray-100">
+                <div class="overflow-hidden border-b border-gray-200 shadow sm:rounded-lg scrollbar-thin scrollbar-thumb-navy-blue scrollbar-track-gray-100">
+                    <table class="min-w-full divide-y divide-gray-200 scrollbar-thin scrollbar-thumb-navy-blue scrollbar-track-gray-100">
                         <thead class="bg-gray-50">
                             <tr>
                                 <th scope="col"
@@ -322,7 +322,7 @@ $view = function ($id) {
                                 </th>
                             </tr>
                         </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
+                        <tbody class="bg-white divide-y divide-gray-200 ">
                             @forelse($orders as $order)
                                 <tr>
                                     <td class="px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">

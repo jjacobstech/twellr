@@ -281,7 +281,7 @@ $checkout = function () {
 };
 ?>
 
-<div class="w-full h-screen pb-20 overflow-y-scroll bg-gray-100">
+<div class="w-full h-screen pb-44 lg:pb-20 scrollbar-none overflow-y-scroll bg-gray-100">
 
     @error('address')
         {{ $this->warning('Address Not Selected') }}
@@ -297,7 +297,7 @@ $checkout = function () {
 
     {{-- <form wire:submit.prevent='checkout'> --}}
     <!-- Main Container -->
-    <div class="px-4 py-4 mx-auto max-w-20xl sm:px-6 lg:px-4">
+    <div class="px-4 py-4 mx-auto max-w-20xl sm:px-6 lg:px-4 ">
         <h1 class="mb-6 text-3xl font-bold text-gray-700">Shopping Cart</h1>
 
         <!-- Cart Container -->

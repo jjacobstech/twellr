@@ -119,7 +119,7 @@ $toggleFollow = action(function () {
                         class="w-full  max-w-sm md:overflow-hidden transition-shadow duration-300 shadow-md rounded-xl hover:shadow-lg aspect-square">
                         <!-- Product Image Container with fixed aspect ratio -->
                         <div class="relative group aspect-square">
-                            <img class="object-cover aspect-square w-full h-full rounded-t-xl lg:rounded-t-none"
+                            <img class="object-cover aspect-square w-full h-full rounded-xl lg:rounded-t-none"
                                 src="{{ asset('uploads/products/design-stack/' . $design->front_view) }}"
                                 alt="{{ $design->name }}">
                         </div>
@@ -138,7 +138,7 @@ $toggleFollow = action(function () {
                         <!-- Product Image Container with fixed aspect ratio -->
                         <a href="{{ route('market.place') }}"
                             class="relative group aspect-square">
-                            <img class="object-cover aspect-square w-full h-full rounded-t-xl lg:rounded-t-none"
+                            <img class="object-cover aspect-square w-full h-full rounded-xl lg:rounded-t-none"
                                 src="{{ asset('uploads/products/design-stack/' . $design->front_view) }}"
                                 alt="{{ $design->name }}">
                         </a>

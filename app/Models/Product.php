@@ -85,6 +85,17 @@ class Product extends Model
             ;
     }
 
+    public function inDesignFest(){
+       $inDesignFest = $this->belongsTo(Contest::class,'id','product_id')->first();
+       if($inDesignFest){
+        return true;
+       }
+       else{
+        return false;
+       }
+
+    }
+
 
     public static function  daily()
     {

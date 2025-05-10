@@ -106,8 +106,8 @@ $toggleSort = function () {
         </div>
     </div>
     <x-admin-sidebar />
-    <div class="w-screen h-screen p-6 pb-20 overflow-y-scroll bg-white rounded-lg shadow-lg">
-        <h2 class=" text-2xl font-bold text-gray-700">Uploaded Designs</h2>
+    <div class="w-screen h-screen p-6 pb-20 overflow-y-scroll bg-white rounded-lg shadow-lg scrollbar-thin scrollbar-thumb-navy-blue scrollbar-track-gray-100">
+        <h2 class=" text-2xl font-bold text-gray-700 ">Uploaded Designs</h2>
 
             <div class="relative flex justify-evenly w-full py-2 md:py-3 gap-4">
                 <input type="text" id="search-dropdown" wire:model.live="keyword"
@@ -196,11 +196,11 @@ $toggleSort = function () {
                                         Download Design
                                     </button>
 
-                                    <button wire:click="deleteDesign({{ $design->id }})"
+                                    {{-- <button wire:click="deleteDesign({{ $design->id }})"
                                         class="px-3 py-1 text-sm text-white bg-red-600 rounded hover:bg-red-700"
                                         onclick="return confirm('Are you sure you want to delete this design?')">
                                         Delete
-                                    </button>
+                                    </button> --}}
                                 </div>
                             </div>
                         </div>

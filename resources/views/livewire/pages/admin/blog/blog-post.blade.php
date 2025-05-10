@@ -83,7 +83,7 @@ if(!$blogPost){
         <!-- Sidebar component -->
         <x-admin-sidebar />
         <!-- Main content -->
-        <div class="w-full px-1 pb-2 mb-16 overflow-y-scroll bg-white">
+        <div class="w-full px-1 pb-2 mb-16 overflow-y-scroll bg-white scrollbar-thin scrollbar-thumb-navy-blue scrollbar-track-gray-100">
             <header class="flex items-center justify-between w-full px-5 mb-1 bg-white">
                 <h2 class="py-4 text-3xl font-extrabold text-gray-500 capitalize">
                     {{ __('Blog Posts') }}

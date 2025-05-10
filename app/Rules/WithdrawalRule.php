@@ -2,7 +2,7 @@
 
 namespace App\Rules;
 
-use App\Models\Base\AdminSetting;
+use App\Models\AdminSetting;
 use Closure;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;

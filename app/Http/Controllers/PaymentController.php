@@ -22,6 +22,7 @@ class PaymentController extends Controller
     {
         try {
             $reference = $this->generateReference();
+            $funding_amount = request('amount');
             $amount = request('amount') * 100;
             $data = array(
                 "amount" => $amount,
@@ -39,7 +40,7 @@ class PaymentController extends Controller
         $transaction = Transaction::create([
             'user_id' => Auth::id(),
             'buyer_id' => Auth::id(),
-            'amount' => $amount,
+            'amount' => $funding_amount,
             'transaction_type' => 'funding',
             'status' => 'pending',
             'ref_no' => $reference,
@@ -51,7 +52,7 @@ class PaymentController extends Controller
                 'user_id' => Auth::id(),
                 'transaction_id' => $transaction->id,
                 'ref_no' => $reference,
-                'amount' => $amount,
+                'amount' => $funding_amount,
                 'status' => 'pending',
             ]);
 
@@ -86,7 +87,7 @@ class PaymentController extends Controller
 
         if ($transaction->data->status === 'success') {
 
-            $amount = $transaction->data->amount;
+            $amount = $transaction->data->amount/100;
             $reference = $transaction->data->reference;
             $payment = Transaction::where('ref_no', $reference)->first();
 
@@ -102,6 +103,7 @@ class PaymentController extends Controller
 
                 $deposit = Deposit::where('ref_no', $reference)->first();
 
+
                 if ($deposit) {
                     $deposit->update([
                         'user_id' => Auth::id(),
@@ -113,7 +115,7 @@ class PaymentController extends Controller
 
                     // Update the user's account balance or perform any other necessary actions
                     $fund = User::find(Auth::id());
-                    $fund->wallet_balance = $fund->wallet_balance + ($amount / 100); // Assuming the amount is in kobo
+                    $fund->wallet_balance = $fund->wallet_balance + $amount ; // Assuming the amount is in kobo
                     $funded =  $fund->save();
 
                     if (!$funded) {

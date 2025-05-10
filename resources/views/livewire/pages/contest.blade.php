@@ -1,4 +1,5 @@
 <?php
+use App\Models\Vote;
 use Mary\Traits\Toast;
 use App\Models\Contest;
 use App\Models\Product;
@@ -22,6 +23,7 @@ state(['perPage' => 3]);
 state(['categories' => fn() => Category::all()]);
 state(['modal' => false]);
 state(['voteModal' => false]);
+state(['voted' => false]);
 state(['entryModal' => false]);
 state(['designFest' => true]);
 state(['whoRockedItBest' => false]);
@@ -33,6 +35,7 @@ state([
     'whoRockedItBest' => false,
     'whoRockedItBestView' => false,
     'whoRockedItBestEntry' => false,
+    'votingActive' => false,
 ]);
 
 with([
@@ -57,7 +60,7 @@ with([
         ->where('name', 'like', "%{$this->search}%")
         ->where('description', 'like', "%{$this->search}%")
         ->with('user')
-        ->paginate($this->perPage),
+        ->paginate($this->perPage)
 ]);
 
 mount(function () {
@@ -99,6 +102,10 @@ $viewDesign = function ($id) {
     $this->modal = true;
 };
 
+$votingInactive = function(){
+$this->warning('Vote Submission Is Closed');
+};
+
 $viewEntry = function ($id) {
     $this->entry = Contest::find($id);
     $this->entryModal = true;
@@ -117,13 +124,49 @@ $closeEntryModal = function () {
 };
 
 $vote = function ($id) {
-    $this->view = Product::find($id);
+    $this->view = Product::with('designer')->find($id);
+    $designer = $this->view->designer;
+
+    if ($designer) {
+        $vote = Vote::where('user_id', Auth::id())->where('contestant_id', $designer->id)->where('product_id', $this->view->id)->exists();
+
+        $this->voted = ($vote) ? true : false;
+
+    } else {
+        $this->voted = false;
+    }
     $this->voteModal = true;
 };
 
-$castVote = function ($id) {
-    $this->voteModal = false;
-    $this->view = null;
+$castVote = function () {
+    $exists = Vote::where('user_id', Auth::id())
+        ->where('contestant_id', $this->view->designer->id)
+        ->where('product_id', $this->view->id)
+        ->first();
+
+    if (!$exists) {
+        $voted = Vote::create([
+            'user_id' => Auth::id(),
+            'contestant_id' => $this->view->designer->id,
+            'product_id' => $this->view->id,
+        ]);
+
+        if ($voted) {
+            $this->success('Vote Casted');
+        }
+
+        $this->voted = true;
+        $this->voteModal = false;
+        $this->view = null;
+    } else{
+       $deleted = $exists->delete();
+         if ($deleted) {
+            $this->success('Vote Removed');
+             $this->voted = false;
+        }else {
+        $this->error('Failed to remove vote');
+    }
+    }
 };
 $setTab = function () {
     $this->designFest = !$this->designFest;
@@ -171,35 +214,45 @@ $submitEntry = function () {
     whoRockedItBest: $wire.whoRockedItBest,
     whoRockedItBestView: $wire.whoRockedItBestView,
     whoRockedItBestEntry: $wire.whoRockedItBestEntry,
-    setTab() {
-        this.designFest = !this.designFest;
-        this.whoRockedItBest = !this.whoRockedItBest;
-        this.whoRockedItBestView = !this.whoRockedItBestView;
+    setTab(view) {
+        if (view === 'designFest') {
+            this.designFest = true;
+            this.whoRockedItBest = false;
+            this.whoRockedItBestView = false;
+            this.whoRockedItBestEntry = false;
+        }
+        if (view === 'whoRockedItBest') {
+            this.designFest = false;
+            this.whoRockedItBest = true;
+            this.whoRockedItBestView = true;
+            this.whoRockedItBestEntry = false;
+        }
     }
-}" x-init=" $dispatch('scroll-to-top');
- }">
-    <div class="h-screen px-4 py-6 pb-24 mx-auto max-w-7xl sm:px-6 lg:px-8 sm:py-8">
-        <!-- Flat Tabs with Bottom Border -->
-        <div class="flex mb-4 space-x-6 w-50">
-            <button @click="setTab()" class="w-1/4 pb-2 font-bold transition-all duration-300 text-md focus:outline-none"
+}" x-init="$dispatch('scroll-to-top');">
+    <div class="min-h-screen px-3 py-4 pb-24 mx-auto max-w-7xl sm:px-6 lg:px-8 sm:py-6">
+        <!-- Responsive Tabs -->
+        <div class="flex flex-wrap mb-4 space-x-4 sm:space-x-6">
+            <button @click="setTab('designFest')"
+                class="py-3 text-sm font-bold transition-all duration-300 sm:text-md focus:outline-none"
                 :class="designFest ? 'text-navy-blue border-b-2 border-navy-blue' :
                     'text-gray-500 hover:text-navy-blue border-b-2 border-transparent'">
                 Design Fest
             </button>
 
-            <button @click="setTab()" class="w-1/4 pb-2 font-bold transition-all duration-300 text-md focus:outline-none"
+            <button @click="setTab('whoRockedItBest')"
+                class="py-3 text-sm font-bold transition-all duration-300 sm:text-md focus:outline-none"
                 :class="whoRockedItBest ? 'text-navy-blue border-b-2 border-navy-blue' :
                     'text-gray-500 hover:text-navy-blue border-b-2 border-transparent'">
                 Who Rocked It Best
             </button>
 
-            <div x-transition:enter.duration.500ms x-cloak="display:none" x-show="!designFest"
-                class="flex justify-end w-1/2 gap-5">
+            <div x-transition:enter.duration.500ms x-cloak x-show="!designFest"
+                class="flex flex-col w-full gap-3 sm:flex-row sm:justify-end sm:ml-auto sm:w-auto">
 
-                <!-- Search -->
-                <div class="relative w-full md:w-auto">
+                <!-- Search - Full width on mobile, auto width on larger screens -->
+                <div class="relative w-full sm:w-auto">
                     <input type="text" wire:model.live="search" placeholder="Search Name/Description"
-                        class="w-full py-2 pl-4 pr-10 text-gray-700 bg-white border border-indigo-200 rounded-full md:w-64 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+                        class="w-full py-2 pl-4 pr-10 text-gray-700 bg-white border border-indigo-200 rounded-full sm:w-48 md:w-64 focus:outline-none focus:ring-2 focus:ring-indigo-400">
                     <button class="absolute right-3 top-2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-indigo-400" fill="none"
                             viewBox="0 0 24 24" stroke="currentColor">
@@ -209,30 +262,33 @@ $submitEntry = function () {
                     </button>
                 </div>
 
+                <!-- Upload Button - Full width on mobile -->
                 <button
                     @click="whoRockedItBestEntry = !whoRockedItBestEntry, whoRockedItBestView = !whoRockedItBestView"
-                    class="flex-shrink-0 px-3 py-1 text-sm transition-all duration-300 scale-100 border rounded-full shadow-sm "
+                    class="w-full px-3 py-1 text-sm transition-all duration-300 border rounded-full shadow-sm sm:w-auto"
                     :class="whoRockedItBestEntry ?
-                        'text-white bg-navy-blue border-navy-blue hover:bg-white hover:text-navy-blue ' :
+                        'text-white bg-navy-blue border-navy-blue hover:bg-white hover:text-navy-blue' :
                         'bg-white text-navy-blue border-indigo-200 hover:bg-indigo-50'">
                     Upload Your Outfit
                 </button>
             </div>
         </div>
-        <div x-transition:enter.duration.500ms x-cloak="display:none" x-show="designFest">
 
-            <!-- Categories and Search - Sticky on mobile, fixed on desktop -->
+        <!-- Design Fest Section -->
+        <div x-transition:enter.duration.500ms x-cloak x-show="designFest">
+            <!-- Categories and Search - Stacked on mobile, side by side on desktop -->
             <div
-                class="z-10 flex flex-col items-center justify-between p-3 mb-6 rounded-lg bg-indigo-50 sm:p-4 md:flex-row sm:mb-8 top-14">
-                <!-- Categories - Scrollable on small screens -->
-                <div class="flex w-full pb-2 mb-4 space-x-2 overflow-x-auto md:mb-0 md:w-auto whitespace-nowrap">
+                class="z-10 flex flex-col items-start justify-between p-3 mb-4 rounded-lg bg-indigo-50 sm:p-4 md:flex-row sm:mb-6">
+                <!-- Categories - Scrollable horizontally -->
+                <div
+                    class="flex w-full pb-3 mb-3 space-x-2 overflow-x-auto md:mb-0 md:pb-0 whitespace-nowrap scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
                     @forelse ($categories as $category)
                         <button wire:click="toggleCategory({{ $category->id }})"
-                            class="@if ($categoryFilter == $category->id) focus:bg-white @endif text-navy-blue px-3 py-1 rounded-full text-sm shadow-sm border border-indigo-200 hover:bg-indigo-50 flex-shrink-0">
+                            class="@if ($categoryFilter == $category->id) bg-white @endif text-navy-blue px-3 py-1 rounded-full text-sm shadow-sm border border-indigo-200 hover:bg-indigo-50 flex-shrink-0">
                             {{ $category->name }}
                         </button>
                     @empty
-                        No Design Categories
+                        <div class="px-3 py-1 text-sm text-gray-500">No Design Categories</div>
                     @endforelse
                     <button wire:click="resetFilters"
                         class="flex-shrink-0 px-3 py-1 text-sm bg-white border border-indigo-200 rounded-full shadow-sm text-navy-blue hover:bg-indigo-50">
@@ -240,12 +296,10 @@ $submitEntry = function () {
                     </button>
                 </div>
 
-
-                <!-- Search -->
+                <!-- Search - Full width on mobile -->
                 <div class="relative w-full md:w-auto">
-                    <input type="text" wire:model.live="searchTerm" @keypress="$wire.searchTerm = event.target.value"
-                        placeholder="Search designers/exhibitions"
-                        class="w-full py-2 pl-4 pr-10 text-gray-700 bg-white border border-indigo-200 rounded-full md:w-64 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+                    <input type="text" wire:model.live="searchTerm" placeholder="Search designers/exhibitions"
+                        class="w-full py-2 pl-4 pr-10 text-gray-700 bg-white border border-indigo-200 rounded-full md:w-48 lg:w-64 focus:outline-none focus:ring-2 focus:ring-indigo-400">
                     <button class="absolute right-3 top-2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-indigo-400" fill="none"
                             viewBox="0 0 24 24" stroke="currentColor">
@@ -256,180 +310,185 @@ $submitEntry = function () {
                 </div>
             </div>
 
-            <!-- Design Exhibits - Main scrollable content -->
-            <div class="pb-24 space-y-6 sm:space-y-8">
-
+            <!-- Design Exhibits - Main content -->
+            <div class="pb-16 space-y-4 sm:pb-20 sm:space-y-6">
+                <!-- Modal container - Position absolute with fixed positioning when active -->
                 <div class="absolute">
-                    <div x-show='$wire.modal' x-transition:enter.duration.500ms x-cloak='display:none'
-                        x-transition.opacity
-                        class="fixed inset-0 z-50 w-screen h-full px-5 py-16 sm:py-12 md:py-12 md:px-20 lg:py-10 bg-black/40 backdrop-blur-sm pb-26">
-                        <div class="grid h-full lg:flex justify-evenly rounded-xl md:flex-row">
-                            <div x-transition:enter="transition ease-out duration-300"
-                                x-transition:enter-start="opacity-0 scale-95"
-                                x-transition:enter-end="opacity-100 scale-100" @click.away="$wire.modal = false"
-                                class="relative w-full max-w-7xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden h-[80vh] md:h-[85vh] lg:h-[90vh] flex items-center justify-center">
+                    <!-- Design View Modal -->
+                    <div x-show='$wire.modal' x-transition:enter.duration.500ms x-cloak x-transition.opacity
+                        class="fixed inset-0 z-50 flex items-center justify-center w-screen h-full px-2 py-8 sm:py-12 md:px-6 lg:px-20 bg-black/40 backdrop-blur-sm">
+                        <div x-transition:enter="transition ease-out duration-300"
+                            x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+                            @click.away="$wire.modal = false"
+                            class="relative w-full max-w-7xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden h-[85vh] sm:h-[85vh] md:h-[90vh] flex items-center justify-center">
 
-                                <div class="w-full h-full bg-black carousel">
-                                    <!-- FRONT VIEW -->
-                                    <div class="relative w-full h-full carousel-item" id="front-view">
-                                        <div class="flex items-center justify-center w-full h-full">
-                                            <img src="@if ($view) {{ asset('uploads/products/design-stack/' . $view->front_view) }} @endif"
-                                                alt="front view" class="object-contain max-w-full max-h-full " />
-                                        </div>
-                                        <div
-                                            class="absolute flex justify-between transform -translate-y-1/2 inset-y-1/2 left-5 right-5">
-                                            <a href="#side-view"
-                                                class="text-white bg-transparent border-white btn btn-circle hover:bg-navy-blue">❮</a>
-                                            <a href="#back-view"
-                                                class="text-white bg-transparent border-white btn btn-circle hover:bg-navy-blue">❯</a>
-                                        </div>
+                            <div class="w-full h-full bg-black carousel">
+                                <!-- FRONT VIEW -->
+                                <div class="relative w-full h-full carousel-item" id="front-view">
+                                    <div class="flex items-center justify-center w-full h-full">
+                                        <img src="@if ($view) {{ asset('uploads/products/design-stack/' . $view->front_view) }} @endif"
+                                            alt="front view" class="object-contain max-w-full max-h-full" />
                                     </div>
-
-                                    <!-- BACK VIEW -->
-                                    <div class="relative w-full h-full carousel-item" id="back-view">
-                                        <div class="flex items-center justify-center w-full h-full">
-                                            <img src="@if ($view) {{ asset('uploads/products/design-stack/' . $view->back_view) }} @endif"
-                                                alt="back view" class="object-contain max-w-full max-h-full" />
-                                        </div>
-                                        <div
-                                            class="absolute flex justify-between transform -translate-y-1/2 inset-y-1/2 left-5 right-5">
-                                            <a href="#front-view"
-                                                class="text-white bg-transparent border-white btn btn-circle hover:bg-navy-blue">❮</a>
-                                            <a href="#side-view"
-                                                class="text-white bg-transparent border-white btn btn-circle hover:bg-navy-blue">❯</a>
-                                        </div>
-                                    </div>
-
-                                    <!-- SIDE VIEW -->
-                                    <div class="relative w-full h-full carousel-item" id="side-view">
-                                        <div class="flex items-center justify-center w-full h-full">
-                                            <img src="@if ($view) {{ asset('uploads/products/design-stack/' . $view->side_view) }} @endif"
-                                                alt="side view" class="object-contain max-w-full max-h-full" />
-                                        </div>
-                                        <div
-                                            class="absolute flex justify-between transform -translate-y-1/2 inset-y-1/2 left-5 right-5">
-                                            <a href="#back-view"
-                                                class="text-white bg-transparent border-white btn btn-circle hover:bg-navy-blue">❮</a>
-                                            <a href="#front-view"
-                                                class="text-white bg-transparent border-white btn btn-circle hover:bg-navy-blue">❯</a>
-                                        </div>
+                                    <div
+                                        class="absolute flex justify-between transform -translate-y-1/2 inset-y-1/2 left-2 right-2 sm:left-5 sm:right-5">
+                                        <a href="#side-view"
+                                            class="text-white bg-transparent border-white btn btn-circle hover:bg-navy-blue">❮</a>
+                                        <a href="#back-view"
+                                            class="text-white bg-transparent border-white btn btn-circle hover:bg-navy-blue">❯</a>
                                     </div>
                                 </div>
 
-                                <!-- Close Button -->
-                                <span class="absolute z-50 cursor-pointer top-4 right-4" wire:click='closeModal'>
-                                    @svg('heroicon-o-x-mark', ['class' => 'justify btn-dark hover:bg-navy-blue btn-sm btn-circle'])
-                                </span>
+                                <!-- BACK VIEW -->
+                                <div class="relative w-full h-full carousel-item" id="back-view">
+                                    <div class="flex items-center justify-center w-full h-full">
+                                        <img src="@if ($view) {{ asset('uploads/products/design-stack/' . $view->back_view) }} @endif"
+                                            alt="back view" class="object-contain max-w-full max-h-full" />
+                                    </div>
+                                    <div
+                                        class="absolute flex justify-between transform -translate-y-1/2 inset-y-1/2 left-2 right-2 sm:left-5 sm:right-5">
+                                        <a href="#front-view"
+                                            class="text-white bg-transparent border-white btn btn-circle hover:bg-navy-blue">❮</a>
+                                        <a href="#side-view"
+                                            class="text-white bg-transparent border-white btn btn-circle hover:bg-navy-blue">❯</a>
+                                    </div>
+                                </div>
+
+                                <!-- SIDE VIEW -->
+                                <div class="relative w-full h-full carousel-item" id="side-view">
+                                    <div class="flex items-center justify-center w-full h-full">
+                                        <img src="@if ($view) {{ asset('uploads/products/design-stack/' . $view->side_view) }} @endif"
+                                            alt="side view" class="object-contain max-w-full max-h-full" />
+                                    </div>
+                                    <div
+                                        class="absolute flex justify-between transform -translate-y-1/2 inset-y-1/2 left-2 right-2 sm:left-5 sm:right-5">
+                                        <a href="#back-view"
+                                            class="text-white bg-transparent border-white btn btn-circle hover:bg-navy-blue">❮</a>
+                                        <a href="#front-view"
+                                            class="text-white bg-transparent border-white btn btn-circle hover:bg-navy-blue">❯</a>
+                                    </div>
+                                </div>
                             </div>
 
-
+                            <!-- Close Button - Better positioning for all screens -->
+                            <span class="absolute z-50 cursor-pointer top-2 right-2 sm:top-4 sm:right-4"
+                                wire:click='closeModal'>
+                                @svg('heroicon-o-x-mark', ['class' => 'justify btn-dark hover:bg-navy-blue btn-sm btn-circle'])
+                            </span>
                         </div>
                     </div>
 
+                    <!-- Vote Modal -->
                     <div x-show='$wire.voteModal' x-transition:enter.duration.500ms x-transition:leave.duration.500ms
-                        x-cloak='display:none' x-transition.opacity
-                        class="fixed inset-0 z-50 w-screen h-full px-5 py-16 sm:py-12 md:py-12 md:px-20 lg:py-12 bg-black/40 backdrop-blur-sm pb-26">
-                        <div x-show="$wire.voteModal" x-cloak x-transition:enter="transition ease-out duration-500"
-                            x-transition:enter-start="opacity-0 scale-95"
-                            x-transition:enter-end="opacity-100 scale-100" @click.away="$wire.voteModal = false"
-                            class="fixed inset-0 z-50 flex items-center justify-center px-4 py-6 bg-black/40 backdrop-blur-sm">
+                        x-cloak x-transition.opacity
+                        class="fixed inset-0 z-50 flex items-center justify-center w-screen h-full px-2 py-8 sm:py-12 md:px-6 lg:px-20 bg-black/40 backdrop-blur-sm">
+                        <div x-transition:enter="transition ease-out duration-500"
+                            x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+                            @click.away="$wire.voteModal = false"
+                            class="relative w-full max-w-6xl h-[90vh]  rounded-xl shadow-lg mt-40 sm:mt-0 overflow-hidden flex flex-col lg:flex-row">
+                            @if ($view)
+                                <!-- Left: Image Section -->
+                                <div
+                                    class="w-full h-64 overflow-y-scroll bg-gray-100 sm:h-80 scrollbar-none lg:h-full lg:w-3/4">
+                                    <div class="scrollbar-none relative flex items-center justify-center w-full bg-black min-h-full ">
+                                        <img src="{{ asset('uploads/products/design-stack/' . $view->side_view) }}"
+                                            alt="{{ $view->name }}" class="object-cover max-w-full scrollbar-none max-h-full" />
+                                    </div>
+                                </div>
 
-                            <div
-                                class="relative w-full max-w-6xl h-[90vh] bg-white rounded-xl shadow-lg overflow-hidden flex flex-col lg:flex-row">
-                                @if ($view)
-                                    <!-- Left: Image Section (Always Scrollable with Visible Scrollbar) -->
-                                    <div
-                                        class="w-full h-64 overflow-y-scroll bg-gray-100 lg:w-3/4 lg:h-full scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-200">
-                                        <div class="relative flex items-center justify-center w-full min-h-full">
-                                            <img src="{{ asset('uploads/products/design-stack/' . $view->side_view) }}"
-                                                alt="{{ $view->name }}"
-                                                class="object-contain max-w-full max-h-full" />
+                                <!-- Right: Details -->
+                                <div
+                                    class="w-full h-64 px-4 py-4 rounded-b-lg lg:rounded-none space-y-4 overflow-y-auto bg-white sm:h-auto lg:h-full sm:px-6 sm:py-5 sm:space-y-6 lg:w-1/4">
+                                    <!-- Close Button -->
+                                    <div class="flex justify-end">
+                                        <span wire:click='closeModal' class="cursor-pointer">
+                                            @svg('heroicon-o-x-mark', ['class' => 'justify btn-dark hover:bg-navy-blue hover:text-white border-navy-blue text-black btn-sm btn-circle'])
+                                        </span>
+                                    </div>
+
+                                    <!-- Design Info -->
+                                    <div>
+                                        <h1 class="text-lg font-semibold text-black sm:text-xl">{{ $view->name }}
+                                        </h1>
+                                        <div
+                                            class="inline-block px-3 py-1 mt-2 text-sm font-bold bg-gray-200 rounded-full text-navy-blue">
+                                            {{ $view->category->name }}
                                         </div>
                                     </div>
 
-                                    <!-- Right: Details -->
-                                    <div class="w-full h-full px-6 py-5 space-y-6 overflow-y-auto bg-white lg:w-1/4">
-                                        <!-- Close Button -->
-                                        <div class="flex justify-end">
-                                            <span wire:click='closeModal' class="cursor-pointer">
-                                                @svg('heroicon-o-x-mark', ['class' => 'justify btn-dark hover:bg-navy-blue hover:text-white border-navy-blue text-black btn-sm btn-circle'])
-                                            </span>
-                                        </div>
-
-                                        <!-- Design Info -->
-                                        <div>
-                                            <h1 class="text-xl font-semibold text-black">{{ $view->name }}</h1>
-                                            <div
-                                                class="inline-block px-3 py-1 mt-2 text-sm font-bold bg-gray-200 rounded-full text-navy-blue">
-                                                {{ $view->category->name }}
-                                            </div>
-                                        </div>
-
-                                        <!-- Vote Button -->
-                                        <div class="mt-4">
-                                            @if (Auth::user()->isCreative())
-                                                <x-mary-button disabled label="Vote"
-                                                    class="w-full bg-[#001f54] text-white hover:bg-golden hover:border-golden" />
-                                            @else
-                                                <x-mary-button label="Vote"
+                                    <!-- Vote Button -->
+                                    <div class="mt-3 sm:mt-4">
+                                        @if (Auth::user()->isCreative() || Auth::user()->role === 'admin')
+                                            <x-mary-button disabled label="Vote"
+                                                class="w-full bg-[#001f54] text-white hover:bg-golden hover:border-golden" />
+                                        @else
+                                       @if ($voted)
+                                             <x-mary-button label="Voted"
                                                     class="w-full bg-[#001f54] text-white hover:bg-golden hover:border-golden"
                                                     wire:click="castVote" spinner />
-                                            @endif
-                                        </div>
+                                       @else
+                                             <x-mary-button label="Vote"
+                                                    class="w-full bg-[#001f54] text-white hover:bg-golden hover:border-golden"
+                                                    wire:click="castVote" spinner />
+                                       @endif
+
+                                        @endif
                                     </div>
-                                @endif
-                            </div>
+                                </div>
+                            @endif
                         </div>
-
                     </div>
-
                 </div>
 
-
-
+                <!-- Design Cards - Improved responsiveness -->
                 @forelse ($designs as $design)
                     <div
                         class="flex flex-col overflow-hidden transition duration-200 bg-white border border-indigo-100 rounded-lg shadow-sm md:flex-row hover:shadow-md">
-                        <div class="w-full h-56 md:w-1/3 sm:h-64 md:h-auto">
+                        <!-- Image container - Fixed height on mobile, auto on desktop -->
+                        <div class="w-full h-48 sm:h-56 md:w-1/3 md:h-auto">
                             <div class="w-full h-full bg-indigo-100">
                                 <img src="{{ asset('uploads/products/design-stack/' . $design->product->front_view) }}"
-                                    alt="{{ $design->product->name }}"
-                                    class="w-full aspect-[4/3] h-full object-cover" />
+                                    alt="{{ $design->product->name }}" class="object-cover w-full h-full" />
                             </div>
                         </div>
-                        <div class="w-full p-4 bg-white md:w-2/3 sm:p-6">
-                            <div class="flex items-start justify-between mb-2">
-                                <h2 class="mb-2 text-xl font-medium text-gray-800 sm:text-2xl sm:mb-3">
+                        <!-- Content container - Better spacing -->
+                        <div class="w-full p-3 bg-white sm:p-4 md:p-5 md:w-2/3">
+                            <div class="flex flex-wrap items-start justify-between gap-2 mb-2">
+                                <h2 class="text-lg font-medium text-gray-800 sm:text-xl md:text-2xl">
                                     {{ $design->product->name }}
                                 </h2>
                                 <span class="px-2 py-1 text-xs bg-indigo-100 rounded-full text-navy-blue">
                                     {{ $design->category->name }}
                                 </span>
                             </div>
-                            <p class="mb-2 text-sm text-gray-600">Designer: <span
+                            <p class="mb-1 text-sm text-gray-600 sm:mb-2">Designer: <span
                                     class="font-medium">{{ $design->user->firstname . ' ' . $design->user->lastname }}</span>
                             </p>
-                            <p class="mb-4 text-sm text-gray-500 sm:mb-5 sm:text-base">
+                            <p class="mb-3 text-sm text-gray-500 sm:mb-4 line-clamp-3 sm:line-clamp-none">
                                 {{ $design->product->description }}
                             </p>
 
-                            <button wire:click='viewDesign({{ $design->product->id }})'
-                                class="inline-block px-4 py-2 text-sm font-medium text-white transition duration-200 rounded cursor-pointer bg-navy-blue hover:bg-golden sm:px-6 sm:text-base">VIEW
-                                EXHIBIT</button>
-                            <button wire:click='vote({{ $design->product->id }})'
-                                class="inline-block px-4 py-2 text-sm font-medium text-white transition duration-200 rounded cursor-pointer bg-navy-blue hover:bg-golden sm:px-6 sm:text-base">VOTE</button>
+                            <!-- Action buttons - Better spacing and touch targets -->
+                            <div class="flex flex-wrap gap-2 sm:gap-3">
+                                <button wire:click='viewDesign({{ $design->product->id }})'
+                                    class="px-3 py-2 text-sm font-medium text-white transition duration-200 rounded cursor-pointer sm:px-4 bg-navy-blue hover:bg-golden">VIEW
+                                    EXHIBIT</button>
+                                <button wire:click='vote({{ $design->product->id }})'
+                                    class="px-3 py-2 text-sm font-medium text-white transition duration-200 rounded cursor-pointer sm:px-4 bg-navy-blue hover:bg-golden">VOTE</button>
+                            </div>
                         </div>
                     </div>
                 @empty
+                    <!-- Empty state - Consistent padding -->
                     <div
                         class="flex flex-col overflow-hidden bg-white border border-gray-100 rounded-lg shadow-sm md:flex-row">
-                        <div class="w-full p-8 text-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-16 h-16 mx-auto mb-4 text-indigo-200"
-                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <div class="w-full p-6 text-center sm:p-8">
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                class="w-12 h-12 mx-auto mb-3 text-indigo-200 sm:w-16 sm:h-16 sm:mb-4" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                             </svg>
-                            <h2 class="mb-2 text-xl font-medium text-gray-700">No Designs Found</h2>
+                            <h2 class="mb-2 text-lg font-medium text-gray-700 sm:text-xl">No Designs Found</h2>
                             <p class="mb-4 text-gray-500">Try adjusting your search or filter criteria</p>
                             <button wire:click="resetFilters"
                                 class="font-medium text-indigo-600 hover:text-indigo-800">
@@ -441,92 +500,87 @@ $submitEntry = function () {
 
                 <!-- Pagination -->
                 @if ($designs->hasPages())
-                    <div class="mt-6">
+                    <div class="mt-4 sm:mt-6">
                         {{ $designs->links() }}
                     </div>
                 @endif
             </div>
         </div>
 
-        <div x-transition:enter.duration.500ms x-cloak="display:none" x-show="whoRockedItBestView">
+        <!-- Who Rocked It Best View -->
+        <div x-transition:enter.duration.500ms x-cloak x-show="whoRockedItBestView">
+            <!-- Entries content -->
+            <div class="pb-16 space-y-4 sm:pb-20 sm:space-y-6">
+                <!-- Entry Modal -->
+                <div x-show='$wire.entryModal' x-transition:enter.duration.500ms x-cloak x-transition.opacity
+                    class="fixed inset-0 z-50 flex items-center justify-center w-screen h-full px-2 py-8 sm:py-12 md:px-6 lg:px-20 bg-black/40 backdrop-blur-sm">
+                    <div x-transition:enter="transition ease-out duration-300"
+                        x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+                        @click.away="$wire.entryModal = false"
+                        class="relative w-full max-w-7xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden h-[85vh] sm:h-[85vh] md:h-[90vh] flex items-center justify-center">
 
-            <!-- Design Exhibits - Main scrollable content -->
-            <div class="pb-24 space-y-6 sm:space-y-8">
-
-                <div x-show='$wire.entryModal' x-transition:enter.duration.500ms x-cloak='display:none'
-                    x-transition.opacity
-                    class="fixed inset-0 z-50 w-screen h-full px-5 py-16 sm:py-12 md:py-12 md:px-20 lg:py-10 bg-black/40 backdrop-blur-sm pb-26">
-                    <div class="grid h-full lg:flex justify-evenly rounded-xl md:flex-row">
-                        <div x-transition:enter="transition ease-out duration-300"
-                            x-transition:enter-start="opacity-0 scale-95"
-                            x-transition:enter-end="opacity-100 scale-100" @click.away="$wire.modal = false"
-                            class="relative w-full max-w-7xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden h-[80vh] md:h-[85vh] lg:h-[90vh] flex items-center justify-center">
-
-                            <div class="w-full h-full bg-black carousel">
-
-
-
-                                <div class="relative w-full h-full carousel-item">
-                                    <div class="flex items-center justify-center w-full h-full">
-                                        <img src="@if ($entry) {{ asset('uploads/contest/' . $entry->photo) }} @endif"
-                                            alt="entry image" class="object-contain max-w-full max-h-full" />
-                                    </div>
+                        <div class="w-full h-full bg-black carousel">
+                            <div class="relative w-full h-full carousel-item">
+                                <div class="flex items-center justify-center w-full h-full">
+                                    <img src="@if ($entry) {{ asset('uploads/contest/' . $entry->photo) }} @endif"
+                                        alt="entry image" class="object-contain max-w-full max-h-full" />
                                 </div>
-
-
                             </div>
-
-                            <!-- Close Button -->
-                            <span class="absolute z-50 cursor-pointer top-4 right-4" wire:click='closeEntryModal'>
-                                @svg('heroicon-o-x-mark', ['class' => 'justify btn-dark hover:bg-navy-blue btn-sm btn-circle'])
-                            </span>
                         </div>
 
-
+                        <!-- Close Button -->
+                        <span class="absolute z-50 cursor-pointer top-2 right-2 sm:top-4 sm:right-4"
+                            wire:click='closeEntryModal'>
+                            @svg('heroicon-o-x-mark', ['class' => 'justify btn-dark hover:bg-navy-blue btn-sm btn-circle'])
+                        </span>
                     </div>
                 </div>
 
+                <!-- Entry Cards -->
                 @forelse ($entries as $entry)
                     <div
                         class="flex flex-col overflow-hidden transition duration-200 bg-white border border-indigo-100 rounded-lg shadow-sm md:flex-row hover:shadow-md">
-                        <div class="w-full h-56 md:w-1/3 sm:h-64 md:h-auto">
+                        <!-- Image container - Fixed height on mobile, auto on desktop -->
+                        <div class="w-full h-48 sm:h-56 md:w-1/3 md:h-auto">
                             <div class="w-full h-full bg-indigo-100">
                                 <img src="{{ asset('uploads/contest/' . $entry->photo) }}" alt="{{ $entry->name }}"
-                                    class="w-full aspect-[4/3] h-full object-cover" />
+                                    class="object-cover w-full h-full" />
                             </div>
                         </div>
-                        <div class="w-full p-4 bg-white md:w-2/3 sm:p-6">
+                        <!-- Content container -->
+                        <div class="w-full p-3 bg-white sm:p-4 md:p-5 md:w-2/3">
                             <div class="flex items-start justify-between mb-2">
-                                <h2 class="mb-2 text-xl font-medium text-gray-800 sm:text-2xl sm:mb-3">
+                                <h2 class="text-lg font-medium text-gray-800 sm:text-xl md:text-2xl">
                                     {{ $entry->name }}
                                 </h2>
-
                             </div>
 
-                            <p class="mb-4 text-sm text-gray-500 sm:mb-5 sm:text-base">
+                            <p class="mb-3 text-sm text-gray-500 sm:mb-4 line-clamp-3 sm:line-clamp-none">
                                 {{ $entry->description }}
-                                {{ $entry->id }}
                             </p>
 
-
-
-                            <button wire:click='viewEntry({{ $entry->id }})'
-                                class="inline-block px-4 py-2 text-sm font-medium text-white transition duration-200 rounded cursor-pointer bg-navy-blue hover:bg-golden sm:px-6 sm:text-base">VIEW
-                                EXHIBIT</button>
-                            <button wire:click=''
-                                class="inline-block px-4 py-2 text-sm font-medium text-white transition duration-200 rounded cursor-pointer bg-navy-blue hover:bg-golden sm:px-6 sm:text-base">VOTE</button>
+                            <!-- Action buttons -->
+                            <div class="flex flex-wrap gap-2 sm:gap-3">
+                                <button wire:click='viewEntry({{ $entry->id }})'
+                                    class="px-3 py-2 text-sm font-medium text-white transition duration-200 rounded cursor-pointer sm:px-4 bg-navy-blue hover:bg-golden">VIEW
+                                    EXHIBIT</button>
+                                <button wire:click=''
+                                    class="px-3 py-2 text-sm font-medium text-white transition duration-200 rounded cursor-pointer sm:px-4 bg-navy-blue hover:bg-golden">VOTE</button>
+                            </div>
                         </div>
                     </div>
                 @empty
+                    <!-- Empty state -->
                     <div
                         class="flex flex-col overflow-hidden bg-white border border-gray-100 rounded-lg shadow-sm md:flex-row">
-                        <div class="w-full p-8 text-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-16 h-16 mx-auto mb-4 text-indigo-200"
-                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <div class="w-full p-6 text-center sm:p-8">
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                class="w-12 h-12 mx-auto mb-3 text-indigo-200 sm:w-16 sm:h-16 sm:mb-4" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                             </svg>
-                            <h2 class="mb-2 text-xl font-medium text-gray-700">No Entries Found</h2>
+                            <h2 class="mb-2 text-lg font-medium text-gray-700 sm:text-xl">No Entries Found</h2>
                             <p class="mb-4 text-gray-500">Try adjusting your search or filter criteria</p>
                             <button wire:click="resetFilters"
                                 class="font-medium text-indigo-600 hover:text-indigo-800">
@@ -538,33 +592,29 @@ $submitEntry = function () {
 
                 <!-- Pagination -->
                 @if ($entries->hasPages())
-                    <div class="mt-6">
+                    <div class="mt-4 sm:mt-6">
                         {{ $entries->links() }}
                     </div>
                 @endif
             </div>
         </div>
 
-        <div x-transition:enter.duration.500ms x-cloak="display:none" x-show='whoRockedItBestEntry'
-            class="max-w-4xl mx-auto mt-8 overflow-hidden bg-white border border-indigo-100 rounded-lg shadow-sm pb-36">
-            <div class="px-6 py-8">
-                <h2 class="mb-4 text-2xl font-semibold text-gray-800">Enter the Style Contest</h2>
-                <p class="mb-6 text-gray-600">
+        <!-- Entry Form -->
+        <div x-transition:enter.duration.500ms x-cloak x-show='whoRockedItBestEntry'
+            class="max-w-4xl pb-20 mx-auto mt-4 overflow-hidden bg-white border border-indigo-100 rounded-lg shadow-sm sm:mt-6 sm:pb-24">
+            <div class="px-4 py-6 sm:px-6 sm:py-8">
+                <h2 class="mb-3 text-xl font-semibold text-gray-800 sm:text-2xl">Enter the Style Contest</h2>
+                <p class="mb-4 text-gray-600 sm:mb-6">
                     Upload pictures of the outfit you rocked and stand a chance to win amazing prizes!
                 </p>
 
-                <form wire:submit.prevent="submitEntry" class="space-y-6">
+                <form wire:submit.prevent="submitEntry" class="space-y-4 sm:space-y-6">
                     <!-- Name -->
                     <div>
                         <label for="name" class="block text-sm font-medium text-gray-700">Your Name</label>
                         <input type="text" id="name" wire:model.defer="name"
-                            class="block w-full text-gray-700 mt-1 border border-gray-300 rounded-md shadow-sm @error('name')
-                            ring-red-500 ring-2
-
-                            @enderror focus:ring-navy-blue focus:border-navy-blue sm:text-sm">
-                        {{-- @error('name')
-                            <span class="text-sm text-red-500">{{ $message }}</span>
-                        @enderror --}}
+                            class="block w-full mt-1 text-gray-700 border border-gray-300 rounded-md shadow-sm focus:ring-navy-blue focus:border-navy-blue sm:text-sm
+                            @error('name') ring-red-500 ring-2 @enderror">
                     </div>
 
                     <!-- Outfit Description -->
@@ -572,12 +622,8 @@ $submitEntry = function () {
                         <label for="description" class="block text-sm font-medium text-gray-700">Outfit
                             Description</label>
                         <textarea id="description" rows="3" wire:model.defer="description"
-                            class="block w-full mt-1 text-gray-700 border border-gray-300 rounded-md shadow-sm @error('description')
-                                ring-red-500 ring-2
-                            @enderror focus:ring-navy-blue focus:border-navy-blue sm:text-sm"></textarea>
-                        {{-- @error('description')
-                            <span class="text-sm text-red-500">{{ $message }}</span>
-                        @enderror --}}
+                            class="block w-full mt-1 text-gray-700 border border-gray-300 rounded-md shadow-sm focus:ring-navy-blue focus:border-navy-blue sm:text-sm
+                            @error('description') ring-red-500 ring-2 @enderror"></textarea>
                     </div>
 
                     <!-- Image Upload -->
@@ -585,11 +631,9 @@ $submitEntry = function () {
                         <label for="photo" class="block mb-1 text-sm font-medium text-gray-700">Upload Your Outfit
                             Photo</label>
                         <x-mary-file omit-error="true" wire:model.defer="photo" accept="image/*">
-                            <img class="object-cover w-32 h-32 border border-gray-300 rounded-md shadow-sm @error('photo')
-                                ring-red-500 ring-2
-                            @enderror focus:ring-navy-blue focus:border-navy-blue sm:text-sm"
+                            <img class="object-cover w-24 h-24 sm:w-32 sm:h-32 border border-gray-300 rounded-md shadow-sm
+                                @error('photo') ring-red-500 ring-2 @enderror"
                                 src="{{ asset('assets/pexels-godisable-jacob-226636-794064.jpg') }}" />
-
                         </x-mary-file>
 
                         @error('photo')
@@ -607,6 +651,5 @@ $submitEntry = function () {
                 </form>
             </div>
         </div>
-
-
     </div>
+</div>

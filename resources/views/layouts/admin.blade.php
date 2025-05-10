@@ -33,7 +33,7 @@
         <livewire:layout.admin.navigation />
 
         <!-- Page Content -->
-        <main class="p-0 border-0 bg-gray-100 w-screen">
+        <main class="p-0 border-0 bg-gray-100 w-screen ">
             {{ $slot }}
         </main>
     </div>

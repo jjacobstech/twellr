@@ -376,7 +376,7 @@ $cancelEditMaterial = function () {
         <!-- Sidebar component -->
         <x-admin-sidebar />
         {{-- settings --}}
-        <div class="overflow-y-scroll mb-16 pb-2 w-full px-1">
+        <div class="overflow-y-scroll mb-16 pb-2 w-full px-1 scrollbar-thin scrollbar-thumb-navy-blue scrollbar-track-gray-100">
             <!-- Shipping Settings Section -->
             <div class="bg-white shadow rounded-lg p-6 mb-6">
                 <h2 class="text-xl font-semibold mb-4 text-gray-700 ">Shipping & Commission Settings</h2>

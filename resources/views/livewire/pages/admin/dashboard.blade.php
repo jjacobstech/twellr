@@ -12,11 +12,34 @@ use function Livewire\Volt\{state, computed, mount, rules, layout};
 
 layout('layouts.admin');
 
-state(['weeklySignups' => 0]);
-state(['weeklySignupsGrowth' => 0]);
+state([
+    // Weekly stats
+    'weeklySignups' => 0,
+    'weeklySignupGrowth' => 0,
+    'weeklyDesigns' => 0,
+    'weeklyDesignsGrowth' => 0,
+    'weeklyIncome' => 0,
+    'weeklyIncomeGrowth' => 0,
+    'weeklyPurchases' => 0,
+    'weeklyPurchasesGrowth' => 0,
 
-state(['weeklySignups' => 0]);
-state(['weeklySignupsGrowth' => 0]);
+    // Monthly and Annual stats
+    'monthlySignups' => 0,
+    'annualSignups' => 0,
+    'monthlyDesigns' => 0,
+    'annualDesigns' => 0,
+    'monthlyIncome' => 0,
+    'annualIncome' => 0,
+    'monthlyPurchases' => 0,
+    'annualPurchases' => 0,
+
+    // All-time stats
+    'totalDesignerSignups' => 0,
+    'totalUserSignups' => 0,
+    'totalDesignerIncome' => 0,
+    'totalShirtsPurchased' => 0,
+]);
+
 
 
 
@@ -27,7 +50,7 @@ state(['weeklySignupsGrowth' => 0]);
     <x-admin-sidebar />
 
 
-    <div class="w-full p-4 bg-white shadow-sm overflow-y-scroll">
+    <div class="w-full p-4 bg-white shadow-sm overflow-y-scroll mb-16 scrollbar-thin scrollbar-thumb-navy-blue scrollbar-track-gray-100">
         <!-- Weekly Stats Section -->
         <div class="mb-6">
             <h2 class="text-xl font-bold mb-4 text-gray-800 border-b pb-2">Weekly Performance</h2>
@@ -155,13 +178,7 @@ state(['weeklySignupsGrowth' => 0]);
             </div>
         </div>
 
-        <!-- Main Chart Section -->
-        <div class="mb-6">
-            <h2 class="text-xl font-bold mb-4 text-gray-800 border-b pb-2">Performance Overview</h2>
-            <div class="bg-white p-4 rounded-xl border shadow">
-                <livewire:pages.admin.charts.main-overview />
-            </div>
-        </div>
+
 
         <!-- Footer -->
         <footer class="mt-8 border-t pt-4">

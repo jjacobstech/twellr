@@ -38,10 +38,10 @@
     <div class="px-3 py-3 sm:px-4 sm:py-4 lg:px-5 lg:hidden">
         <!-- Mobile & Tablet View -->
         <div class="lg:hidden">
-            <div class="flex items-start justify-between">
-                <div class="flex-1">
+            <div class="flex justify-between">
+                <div class="grid">
                     <!-- Product name with truncation for long names -->
-                    <h3 class="mb-1 text-lg sm:text-xl font-bold text-gray-800 truncate w-28">{{ $product->name }}</h3>
+                    <h3 class="mb-1 text-lg sm:text-xl font-bold text-gray-800 truncate w-20">{{ $product->name }}</h3>
 
                     <!-- Stock status -->
                     <div class="flex items-center mb-2">
@@ -69,19 +69,21 @@
             </div>
 
             <!-- Category and Buy Now button -->
-            <div class="flex items-center justify-between mt-2 mb-2 gap-2">
-                <div class="flex-shrink-0 max-w-[65%]">
-                    <span
-                        class="inline-block px-2 py-1 text-xs font-medium text-gray-800 bg-gray-100 rounded-md truncate">
-                        {{ $product->category->name }}
-                    </span>
-                </div>
+            <div class="flex items-center justify-between mt-2 mb-2 gap-1">
 
                 @if ($product->user_id != Auth::id() && Auth::user()->role != 'admin')
                     <div class="flex-shrink-0">
                         <x-bladewind.button wire:click="orderModal({{ $product->id }})" size="tiny" radius="small"
-                            type="bg-navy-blue hover:bg-golden focus:ring-0" button_text_css="text-white"
-                            class="w-full">
+                            type="bg-navy-blue hover:bg-golden focus:ring-0 px-1" button_text_css="text-white"
+                            class="md:w-full">
+                            Buy Now
+                        </x-bladewind.button>
+                    </div>
+                    @else
+                    <div class="flex-shrink-0">
+                        <x-bladewind.button disabled wire:click="orderModal({{ $product->id }})" size="tiny" radius="small"
+                            type="bg-navy-blue hover:bg-golden focus:ring-0 px-1" button_text_css="text-white"
+                            class="md:w-full">
                             Buy Now
                         </x-bladewind.button>
                     </div>

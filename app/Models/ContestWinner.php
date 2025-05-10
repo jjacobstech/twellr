@@ -30,14 +30,13 @@ class ContestWinner extends Model
     protected $casts = [
         'user_id' => 'int',
         'product_id' => 'int',
-        'rating_id' => 'int'
     ];
 
     protected $fillable = [
         'user_id',
         'product_id',
-        'rating_id',
-        'type'
+        'contest_type',
+        'won_at'
     ];
 
     public static function  weekly()
