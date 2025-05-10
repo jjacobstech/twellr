@@ -28,7 +28,7 @@ return new class extends Migration
             $table->string('instagram')->nullable();
             $table->string('whatsapp')->nullable();
             $table->string('password');
-            $table->integer('rating')->default(0);
+            $table->decimal('rating', 10)->default(0);
             $table->string('referral_link')->nullable()->unique();
             $table->integer('referral_rewards')->default(0);
             $table->unsignedBigInteger('referred_by')->nullable()->index('users_referred_by_foreign');

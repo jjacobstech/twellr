@@ -20,6 +20,7 @@ return new class extends Migration
             $table->enum('status', ['failed', 'successful', 'pending', 'processing', 'approved', 'shipping', 'rejected', 'completed']);
             $table->timestamps();
             $table->string('ref_no');
+            $table->float('charge')->nullable()->default(0);
         });
     }
 

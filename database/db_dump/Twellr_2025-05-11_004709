@@ -42,7 +42,7 @@ CREATE TABLE `admin_settings` (
 --
 
 /*!40000 ALTER TABLE `admin_settings` DISABLE KEYS */;
-INSERT INTO `admin_settings` VALUES (1,'$','NGN',0.05,'24','off',0.05,1,10000,0000000000);
+INSERT INTO `admin_settings` VALUES (1,'$','NGN',0.05,'24 Hours','off',0.05,1,10000,0000000000);
 /*!40000 ALTER TABLE `admin_settings` ENABLE KEYS */;
 
 --
@@ -80,13 +80,13 @@ CREATE TABLE `blog_posts` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `title` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `content` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
-  `category` bigint unsigned NOT NULL,
+  `category_id` bigint unsigned NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `image` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `blog_posts_category_foreign` (`category`),
-  CONSTRAINT `blog_posts_category_foreign` FOREIGN KEY (`category`) REFERENCES `blog_categories` (`id`)
+  KEY `blog_posts_category_foreign` (`category_id`),
+  CONSTRAINT `blog_posts_category_foreign` FOREIGN KEY (`category_id`) REFERENCES `blog_categories` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -118,7 +118,7 @@ CREATE TABLE `cache` (
 --
 
 /*!40000 ALTER TABLE `cache` DISABLE KEYS */;
-INSERT INTO `cache` VALUES ('356a192b7913b04c54574d18c28d46e6395428ab','i:2;',1746463055),('356a192b7913b04c54574d18c28d46e6395428ab:timer','i:1746463054;',1746463055),('da4b9237bacccdf19c0760cab7aec4a8359010b0','i:4;',1746558699),('da4b9237bacccdf19c0760cab7aec4a8359010b0:timer','i:1746558699;',1746558699);
+INSERT INTO `cache` VALUES ('17ba0791499db908433b80f37c5fbc89b870084b','i:1;',1746906347),('17ba0791499db908433b80f37c5fbc89b870084b:timer','i:1746906347;',1746906347),('356a192b7913b04c54574d18c28d46e6395428ab','i:2;',1746463055),('356a192b7913b04c54574d18c28d46e6395428ab:timer','i:1746463054;',1746463055),('a0a3e9d508a8fa973a8cc808dd565b49','s:40:\"66eb8d833ba1209060e352869951979f994cdb03\";',1746913587),('da4b9237bacccdf19c0760cab7aec4a8359010b0','i:4;',1746558699),('da4b9237bacccdf19c0760cab7aec4a8359010b0:timer','i:1746558699;',1746558699);
 /*!40000 ALTER TABLE `cache` ENABLE KEYS */;
 
 --
@@ -168,7 +168,7 @@ CREATE TABLE `carts` (
 --
 
 /*!40000 ALTER TABLE `carts` DISABLE KEYS */;
-INSERT INTO `carts` VALUES (75,3,1,1,NULL,'2025-05-01 22:58:05','2025-05-01 22:58:05',NULL),(76,1,14,1,NULL,'2025-05-04 16:30:10','2025-05-04 16:30:10',NULL),(77,1,12,1,NULL,'2025-05-07 18:49:50','2025-05-07 18:49:50',NULL);
+INSERT INTO `carts` VALUES (75,3,1,1,NULL,'2025-05-01 22:58:05','2025-05-01 22:58:05',NULL),(76,1,14,1,'1','2025-05-04 16:30:10','2025-05-10 14:15:09',NULL),(77,1,12,1,'1','2025-05-07 18:49:50','2025-05-10 14:15:18',NULL);
 /*!40000 ALTER TABLE `carts` ENABLE KEYS */;
 
 --
@@ -240,8 +240,8 @@ CREATE TABLE `contest_winners` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int unsigned DEFAULT NULL,
   `product_id` int unsigned DEFAULT NULL,
-  `rating_id` int unsigned DEFAULT NULL,
-  `type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `won_at` timestamp NULL DEFAULT NULL,
+  `contest_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
@@ -275,7 +275,7 @@ CREATE TABLE `contests` (
   `photo` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -283,7 +283,7 @@ CREATE TABLE `contests` (
 --
 
 /*!40000 ALTER TABLE `contests` DISABLE KEYS */;
-INSERT INTO `contests` VALUES (1,2,29,2,0,'design_fest','2025-05-03 21:13:16','2025-05-03 21:13:18',NULL,NULL,NULL),(2,2,28,2,0,'design_fest','2025-05-03 21:13:55','2025-05-03 21:13:58',NULL,NULL,NULL),(3,2,NULL,NULL,NULL,'who_rocked_it_best','2025-05-05 20:06:27','2025-05-05 20:06:27','Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ','1746479187jacobsjoshua25svwxurzGcckzGwq8Uy6ksYQgo.jpg','Demigod'),(4,2,NULL,NULL,NULL,'who_rocked_it_best','2025-05-05 20:08:11','2025-05-05 20:08:11','Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ','1746479291jacobsjoshua25MEeOrRCVshnzVMMJbUHjh7DNc.jpg','Demigod'),(5,2,NULL,NULL,NULL,'who_rocked_it_best','2025-05-05 20:08:42','2025-05-05 20:08:42','Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ','1746479322jacobsjoshua25703huVSfUiV0kq9K3T6mQ2FSW.jpg','Demigod'),(6,2,NULL,NULL,NULL,'who_rocked_it_best','2025-05-05 20:09:48','2025-05-05 20:09:48','Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ','1746479388jacobsjoshua25n76ixLRdQyl67dkM4GzfMmwKi.jpg','Demigod'),(7,2,32,4,NULL,'design_fest','2025-05-05 21:15:47','2025-05-05 21:15:47',NULL,NULL,NULL),(8,2,33,2,NULL,'design_fest','2025-05-05 21:19:54','2025-05-05 21:19:54',NULL,NULL,NULL);
+INSERT INTO `contests` VALUES (1,2,29,2,0,'design_fest','2025-05-03 21:13:16','2025-05-03 21:13:18',NULL,NULL,NULL),(3,2,NULL,NULL,NULL,'who_rocked_it_best','2025-05-05 20:06:27','2025-05-05 20:06:27','Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ','1746479187jacobsjoshua25svwxurzGcckzGwq8Uy6ksYQgo.jpg','Demigod'),(4,2,NULL,NULL,NULL,'who_rocked_it_best','2025-05-05 20:08:11','2025-05-05 20:08:11','Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ','1746479291jacobsjoshua25MEeOrRCVshnzVMMJbUHjh7DNc.jpg','Demigod'),(5,2,NULL,NULL,NULL,'who_rocked_it_best','2025-05-05 20:08:42','2025-05-05 20:08:42','Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ','1746479322jacobsjoshua25703huVSfUiV0kq9K3T6mQ2FSW.jpg','Demigod'),(6,2,NULL,NULL,NULL,'who_rocked_it_best','2025-05-05 20:09:48','2025-05-05 20:09:48','Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ','1746479388jacobsjoshua25n76ixLRdQyl67dkM4GzfMmwKi.jpg','Demigod'),(7,2,32,4,NULL,'design_fest','2025-05-05 21:15:47','2025-05-05 21:15:47',NULL,NULL,NULL),(8,2,33,2,NULL,'design_fest','2025-05-05 21:19:54','2025-05-05 21:19:54',NULL,NULL,NULL),(9,2,23,1,NULL,'design_fest','2025-05-09 18:34:07','2025-05-09 18:34:07',NULL,NULL,NULL),(13,2,28,2,NULL,'design_fest','2025-05-10 11:38:43','2025-05-10 11:38:43',NULL,NULL,NULL);
 /*!40000 ALTER TABLE `contests` ENABLE KEYS */;
 
 --
@@ -330,7 +330,7 @@ CREATE TABLE `deposits` (
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `deposits_ref_no_unique` (`ref_no`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -338,6 +338,7 @@ CREATE TABLE `deposits` (
 --
 
 /*!40000 ALTER TABLE `deposits` DISABLE KEYS */;
+INSERT INTO `deposits` VALUES (1,2,149,'TRX20250510161839ZU3XQU2',1000000,'pending','2025-05-10 15:18:47','2025-05-10 15:18:47'),(2,1,152,'TRX202505101735597DVS4U1',1000000,'pending','2025-05-10 16:36:00','2025-05-10 16:36:00'),(3,1,153,'TRX202505101743374AFLK31',10000,'pending','2025-05-10 16:43:39','2025-05-10 16:43:39');
 /*!40000 ALTER TABLE `deposits` ENABLE KEYS */;
 
 --
@@ -490,7 +491,7 @@ CREATE TABLE `migrations` (
   `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `batch` int NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=94 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=104 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -498,7 +499,7 @@ CREATE TABLE `migrations` (
 --
 
 /*!40000 ALTER TABLE `migrations` DISABLE KEYS */;
-INSERT INTO `migrations` VALUES (1,'0001_01_01_000000_create_users_table',1),(2,'0001_01_01_000001_create_cache_table',1),(3,'0001_01_01_000002_create_jobs_table',1),(5,'2025_02_22_213354_create_products_table',1),(6,'2025_02_22_213644_create_purchases_table',1),(7,'2025_03_11_153859_create_transactions_table',1),(8,'2025_03_20_120125_create_notifications_table',1),(9,'2025_03_26_142811_create_categories_table',1),(10,'2025_04_02_125017_create_carts_table',2),(11,'2025_04_08_164547_create_referrals_table',3),(12,'2025_04_09_210553_create_withdrawal_requests_table',4),(15,'2025_04_14_115840_create_countries_table',5),(16,'2025_04_14_115848_create_states_table',5),(17,'2025_04_14_120601_add_country_state_to_user',6),(19,'2025_02_22_184152_create_admin_settings_table',7),(20,'2025_04_14_223044_create_blog_categories_table',8),(21,'2025_04_18_230110_create_blog_posts_table',9),(22,'2025_04_20_112428_create_materials_table',10),(23,'2025_04_09_210553_create_withdrawal_table',11),(24,'2025_04_26_003707_create_followers_table',12),(33,'2025_04_26_004954_create_comments_table',13),(34,'2025_04_26_005006_create_questions_table',13),(35,'2025_04_26_143356_create_shipping_fees_table',13),(36,'2025_04_28_225208_create_platform_earnings_table',14),(44,'2025_05_01_174324_create_contest_winners_table',16),(45,'2025_05_01_174932_create_ratings_table',17),(48,'2025_05_03_160906_create_deposits_table',18),(49,'2025_04_30_124029_create_contests_table',19),(50,'2025_05_05_165956_add_to_contests_table',20),(51,'2025_05_07_133147_create_admin_settings_table',0),(52,'2025_05_07_133147_create_blog_categories_table',0),(53,'2025_05_07_133147_create_blog_posts_table',0),(54,'2025_05_07_133147_create_cache_table',0),(55,'2025_05_07_133147_create_cache_locks_table',0),(56,'2025_05_07_133147_create_carts_table',0),(57,'2025_05_07_133147_create_categories_table',0),(58,'2025_05_07_133147_create_comments_table',0),(59,'2025_05_07_133147_create_contest_winners_table',0),(60,'2025_05_07_133147_create_contests_table',0),(61,'2025_05_07_133147_create_countries_table',0),(62,'2025_05_07_133147_create_deposits_table',0),(63,'2025_05_07_133147_create_failed_jobs_table',0),(64,'2025_05_07_133147_create_followers_table',0),(65,'2025_05_07_133147_create_job_batches_table',0),(66,'2025_05_07_133147_create_jobs_table',0),(67,'2025_05_07_133147_create_materials_table',0),(68,'2025_05_07_133147_create_notifications_table',0),(69,'2025_05_07_133147_create_password_reset_tokens_table',0),(70,'2025_05_07_133147_create_platform_earnings_table',0),(71,'2025_05_07_133147_create_products_table',0),(72,'2025_05_07_133147_create_purchases_table',0),(73,'2025_05_07_133147_create_question_answers_table',0),(74,'2025_05_07_133147_create_questions_table',0),(75,'2025_05_07_133147_create_referrals_table',0),(76,'2025_05_07_133147_create_sessions_table',0),(77,'2025_05_07_133147_create_shipping_fees_table',0),(78,'2025_05_07_133147_create_states_table',0),(79,'2025_05_07_133147_create_transactions_table',0),(80,'2025_05_07_133147_create_users_table',0),(81,'2025_05_07_133147_create_withdrawals_table',0),(82,'2025_05_07_133150_add_foreign_keys_to_blog_posts_table',0),(83,'2025_05_07_133150_add_foreign_keys_to_comments_table',0),(84,'2025_05_07_133150_add_foreign_keys_to_followers_table',0),(85,'2025_05_07_133150_add_foreign_keys_to_notifications_table',0),(86,'2025_05_07_133150_add_foreign_keys_to_question_answers_table',0),(87,'2025_05_07_133150_add_foreign_keys_to_questions_table',0),(88,'2025_05_07_133150_add_foreign_keys_to_referrals_table',0),(89,'2025_05_07_133150_add_foreign_keys_to_states_table',0),(90,'2025_05_07_133150_add_foreign_keys_to_users_table',0),(91,'2025_05_07_133150_add_foreign_keys_to_withdrawals_table',0),(93,'2025_05_07_133327_create_ratings_table',21);
+INSERT INTO `migrations` VALUES (1,'0001_01_01_000000_create_users_table',1),(2,'0001_01_01_000001_create_cache_table',1),(3,'0001_01_01_000002_create_jobs_table',1),(5,'2025_02_22_213354_create_products_table',1),(6,'2025_02_22_213644_create_purchases_table',1),(7,'2025_03_11_153859_create_transactions_table',1),(8,'2025_03_20_120125_create_notifications_table',1),(9,'2025_03_26_142811_create_categories_table',1),(10,'2025_04_02_125017_create_carts_table',2),(11,'2025_04_08_164547_create_referrals_table',3),(12,'2025_04_09_210553_create_withdrawal_requests_table',4),(15,'2025_04_14_115840_create_countries_table',5),(16,'2025_04_14_115848_create_states_table',5),(17,'2025_04_14_120601_add_country_state_to_user',6),(19,'2025_02_22_184152_create_admin_settings_table',7),(20,'2025_04_14_223044_create_blog_categories_table',8),(21,'2025_04_18_230110_create_blog_posts_table',9),(22,'2025_04_20_112428_create_materials_table',10),(23,'2025_04_09_210553_create_withdrawal_table',11),(24,'2025_04_26_003707_create_followers_table',12),(33,'2025_04_26_004954_create_comments_table',13),(34,'2025_04_26_005006_create_questions_table',13),(35,'2025_04_26_143356_create_shipping_fees_table',13),(36,'2025_04_28_225208_create_platform_earnings_table',14),(44,'2025_05_01_174324_create_contest_winners_table',16),(45,'2025_05_01_174932_create_ratings_table',17),(48,'2025_05_03_160906_create_deposits_table',18),(49,'2025_04_30_124029_create_contests_table',19),(50,'2025_05_05_165956_add_to_contests_table',20),(51,'2025_05_07_133147_create_admin_settings_table',0),(52,'2025_05_07_133147_create_blog_categories_table',0),(53,'2025_05_07_133147_create_blog_posts_table',0),(54,'2025_05_07_133147_create_cache_table',0),(55,'2025_05_07_133147_create_cache_locks_table',0),(56,'2025_05_07_133147_create_carts_table',0),(57,'2025_05_07_133147_create_categories_table',0),(58,'2025_05_07_133147_create_comments_table',0),(59,'2025_05_07_133147_create_contest_winners_table',0),(60,'2025_05_07_133147_create_contests_table',0),(61,'2025_05_07_133147_create_countries_table',0),(62,'2025_05_07_133147_create_deposits_table',0),(63,'2025_05_07_133147_create_failed_jobs_table',0),(64,'2025_05_07_133147_create_followers_table',0),(65,'2025_05_07_133147_create_job_batches_table',0),(66,'2025_05_07_133147_create_jobs_table',0),(67,'2025_05_07_133147_create_materials_table',0),(68,'2025_05_07_133147_create_notifications_table',0),(69,'2025_05_07_133147_create_password_reset_tokens_table',0),(70,'2025_05_07_133147_create_platform_earnings_table',0),(71,'2025_05_07_133147_create_products_table',0),(72,'2025_05_07_133147_create_purchases_table',0),(73,'2025_05_07_133147_create_question_answers_table',0),(74,'2025_05_07_133147_create_questions_table',0),(75,'2025_05_07_133147_create_referrals_table',0),(76,'2025_05_07_133147_create_sessions_table',0),(77,'2025_05_07_133147_create_shipping_fees_table',0),(78,'2025_05_07_133147_create_states_table',0),(79,'2025_05_07_133147_create_transactions_table',0),(80,'2025_05_07_133147_create_users_table',0),(81,'2025_05_07_133147_create_withdrawals_table',0),(82,'2025_05_07_133150_add_foreign_keys_to_blog_posts_table',0),(83,'2025_05_07_133150_add_foreign_keys_to_comments_table',0),(84,'2025_05_07_133150_add_foreign_keys_to_followers_table',0),(85,'2025_05_07_133150_add_foreign_keys_to_notifications_table',0),(86,'2025_05_07_133150_add_foreign_keys_to_question_answers_table',0),(87,'2025_05_07_133150_add_foreign_keys_to_questions_table',0),(88,'2025_05_07_133150_add_foreign_keys_to_referrals_table',0),(89,'2025_05_07_133150_add_foreign_keys_to_states_table',0),(90,'2025_05_07_133150_add_foreign_keys_to_users_table',0),(91,'2025_05_07_133150_add_foreign_keys_to_withdrawals_table',0),(102,'2025_05_07_133327_create_ratings_table',21),(103,'2025_05_08_162023_create_votes_table',21);
 /*!40000 ALTER TABLE `migrations` ENABLE KEYS */;
 
 --
@@ -573,7 +574,7 @@ CREATE TABLE `platform_earnings` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -581,7 +582,7 @@ CREATE TABLE `platform_earnings` (
 --
 
 /*!40000 ALTER TABLE `platform_earnings` DISABLE KEYS */;
-INSERT INTO `platform_earnings` VALUES (1,45,109,2,3000.00,6000.00,'material sales',NULL,'2025-04-28 22:37:18','2025-04-28 22:37:18'),(2,46,110,4,3000.00,12000.00,'material sales',NULL,'2025-04-28 22:37:19','2025-04-28 22:37:19'),(3,47,111,2,3000.00,6000.00,'material sales',NULL,'2025-04-28 22:40:21','2025-04-28 22:40:21'),(4,48,112,4,3000.00,12000.00,'material sales',NULL,'2025-04-28 22:40:22','2025-04-28 22:40:22'),(5,49,113,2,3000.00,6000.00,'material sales',NULL,'2025-04-28 23:02:08','2025-04-28 23:02:08'),(6,50,114,4,3000.00,12000.00,'material sales',NULL,'2025-04-28 23:02:09','2025-04-28 23:02:09'),(7,51,116,2,3000.00,6000.00,'material sales',NULL,'2025-04-28 23:09:31','2025-04-28 23:09:31'),(8,52,117,2,3000.00,6000.00,'material sales',NULL,'2025-04-28 23:09:32','2025-04-28 23:09:32'),(9,NULL,118,1,5555.00,5555.00,'shipping fee',NULL,'2025-04-28 23:09:33','2025-04-28 23:09:33'),(10,56,122,2,3000.00,6000.00,'material sales',NULL,'2025-04-29 22:14:54','2025-04-29 22:14:54'),(11,57,123,1,3000.00,3000.00,'material sales',NULL,'2025-04-29 22:18:50','2025-04-29 22:18:50'),(12,NULL,124,1,0.09,0.09,'shipping fee',NULL,'2025-04-29 22:18:50','2025-04-29 22:18:50'),(13,58,125,1,3000.00,3000.00,'material sales',NULL,'2025-04-29 22:21:18','2025-04-29 22:21:18'),(14,58,126,1,0.09,0.09,'shipping fee',NULL,'2025-04-29 22:21:18','2025-04-29 22:21:18'),(15,59,127,2,3000.00,6000.00,'material sales',NULL,'2025-04-30 11:28:32','2025-04-30 11:28:32'),(16,59,128,1,0.09,0.09,'shipping fee',NULL,'2025-04-30 11:28:33','2025-04-30 11:28:33'),(17,60,129,2,3000.00,6000.00,'material sales',NULL,'2025-04-30 11:33:09','2025-04-30 11:33:09'),(18,60,130,1,0.09,0.09,'shipping fee',NULL,'2025-04-30 11:33:10','2025-04-30 11:33:10'),(19,61,131,2,3000.00,6000.00,'material sales',NULL,'2025-04-30 11:36:06','2025-04-30 11:36:06'),(20,61,132,1,0.09,0.09,'shipping fee',NULL,'2025-04-30 11:36:07','2025-04-30 11:36:07'),(21,62,133,4,3000.00,12000.00,'material sales',NULL,'2025-04-30 11:37:05','2025-04-30 11:37:05'),(22,62,134,1,0.09,0.09,'shipping fee',NULL,'2025-04-30 11:37:06','2025-04-30 11:37:06'),(23,63,141,2,2000.00,4000.00,'material sales',NULL,'2025-05-04 16:48:39','2025-05-04 16:48:39'),(24,63,142,1,5555.00,5555.00,'shipping fee',NULL,'2025-05-04 16:48:39','2025-05-04 16:48:39');
+INSERT INTO `platform_earnings` VALUES (1,45,109,2,3000.00,6000.00,'material sales',NULL,'2025-04-28 22:37:18','2025-04-28 22:37:18'),(2,46,110,4,3000.00,12000.00,'material sales',NULL,'2025-04-28 22:37:19','2025-04-28 22:37:19'),(3,47,111,2,3000.00,6000.00,'material sales',NULL,'2025-04-28 22:40:21','2025-04-28 22:40:21'),(4,48,112,4,3000.00,12000.00,'material sales',NULL,'2025-04-28 22:40:22','2025-04-28 22:40:22'),(5,49,113,2,3000.00,6000.00,'material sales',NULL,'2025-04-28 23:02:08','2025-04-28 23:02:08'),(6,50,114,4,3000.00,12000.00,'material sales',NULL,'2025-04-28 23:02:09','2025-04-28 23:02:09'),(7,51,116,2,3000.00,6000.00,'material sales',NULL,'2025-04-28 23:09:31','2025-04-28 23:09:31'),(8,52,117,2,3000.00,6000.00,'material sales',NULL,'2025-04-28 23:09:32','2025-04-28 23:09:32'),(9,NULL,118,1,5555.00,5555.00,'shipping fee',NULL,'2025-04-28 23:09:33','2025-04-28 23:09:33'),(10,56,122,2,3000.00,6000.00,'material sales',NULL,'2025-04-29 22:14:54','2025-04-29 22:14:54'),(11,57,123,1,3000.00,3000.00,'material sales',NULL,'2025-04-29 22:18:50','2025-04-29 22:18:50'),(12,NULL,124,1,0.09,0.09,'shipping fee',NULL,'2025-04-29 22:18:50','2025-04-29 22:18:50'),(13,58,125,1,3000.00,3000.00,'material sales',NULL,'2025-04-29 22:21:18','2025-04-29 22:21:18'),(14,58,126,1,0.09,0.09,'shipping fee',NULL,'2025-04-29 22:21:18','2025-04-29 22:21:18'),(15,59,127,2,3000.00,6000.00,'material sales',NULL,'2025-04-30 11:28:32','2025-04-30 11:28:32'),(16,59,128,1,0.09,0.09,'shipping fee',NULL,'2025-04-30 11:28:33','2025-04-30 11:28:33'),(17,60,129,2,3000.00,6000.00,'material sales',NULL,'2025-04-30 11:33:09','2025-04-30 11:33:09'),(18,60,130,1,0.09,0.09,'shipping fee',NULL,'2025-04-30 11:33:10','2025-04-30 11:33:10'),(19,61,131,2,3000.00,6000.00,'material sales',NULL,'2025-04-30 11:36:06','2025-04-30 11:36:06'),(20,61,132,1,0.09,0.09,'shipping fee',NULL,'2025-04-30 11:36:07','2025-04-30 11:36:07'),(21,62,133,4,3000.00,12000.00,'material sales',NULL,'2025-04-30 11:37:05','2025-04-30 11:37:05'),(22,62,134,1,0.09,0.09,'shipping fee',NULL,'2025-04-30 11:37:06','2025-04-30 11:37:06'),(23,63,141,2,2000.00,4000.00,'material sales',NULL,'2025-05-04 16:48:39','2025-05-04 16:48:39'),(24,63,142,1,5555.00,5555.00,'shipping fee',NULL,'2025-05-04 16:48:39','2025-05-04 16:48:39'),(25,NULL,143,1,500.00,500.00,'withdrawal_charge',NULL,'2025-05-10 14:53:06','2025-05-10 14:53:06'),(26,NULL,144,1,500.00,500.00,'withdrawal_charge',NULL,'2025-05-10 14:55:52','2025-05-10 14:55:52'),(27,NULL,145,1,500.00,500.00,'withdrawal_charge',NULL,'2025-05-10 14:56:14','2025-05-10 14:56:14'),(28,NULL,146,1,500.00,500.00,'withdrawal_charge',NULL,'2025-05-10 14:56:31','2025-05-10 14:56:31'),(29,NULL,147,1,500.00,500.00,'withdrawal_charge',NULL,'2025-05-10 14:58:06','2025-05-10 14:58:06'),(30,NULL,148,1,500.00,500.00,'withdrawal_charge',NULL,'2025-05-10 15:01:31','2025-05-10 15:01:31'),(31,NULL,150,1,500.00,500.00,'withdrawal_charge',NULL,'2025-05-10 15:19:17','2025-05-10 15:19:17'),(32,NULL,151,1,500.00,500.00,'withdrawal_charge',NULL,'2025-05-10 15:48:26','2025-05-10 15:48:26');
 /*!40000 ALTER TABLE `platform_earnings` ENABLE KEYS */;
 
 --
@@ -668,7 +669,7 @@ CREATE TABLE `purchases` (
 --
 
 /*!40000 ALTER TABLE `purchases` DISABLE KEYS */;
-INSERT INTO `purchases` VALUES (49,113,2,1,2,'pending','07059579655','Pinnacle Estate, Ifesowapo',10000,3,'xs','2025-04-28 23:02:07','2025-04-28 23:02:07','Fair Lady','Afro','1',2),(50,114,2,1,3,'pending','07059579655','Pinnacle Estate, Ifesowapo',20000,3,'xs','2025-04-28 23:02:09','2025-04-28 23:02:09','Fair Lady','Afro','1',4),(51,116,2,1,12,'pending','07059579655','Pinnacle Estate, Ifesowapo',6010,3,'xs','2025-04-28 23:09:30','2025-04-28 23:09:30','TexR','Nature','1',2),(52,117,2,1,14,'pending','07059579655','Pinnacle Estate, Ifesowapo',6006,3,'xs','2025-04-28 23:09:32','2025-04-28 23:09:32','TedXR','War','1',2),(56,122,2,1,1,'pending','07059579655','Pinnacle Estate, Ifesowapo',15555,3,'m','2025-04-29 22:14:54','2025-04-29 22:14:54','Fair Lady','Afro','1',2),(57,123,4,1,12,'pending','07059579655','Pinnacle Estate, Ifesowapo',3005.09,4,'m','2025-04-29 22:18:49','2025-04-29 22:18:49','TexR','Nature','1',1),(58,125,4,1,13,'pending','07059579655','Pinnacle Estate, Ifesowapo',3005.09,4,'s','2025-04-29 22:21:17','2025-04-29 22:21:17','TexR','Nature','1',1),(59,127,4,1,12,'pending','07059579655','Pinnacle Estate, Ifesowapo',6010.09,4,'xl','2025-04-30 11:28:32','2025-04-30 11:28:32','TexR','Nature','1',2),(60,129,4,1,12,'pending','07059579655','Pinnacle Estate, Ifesowapo',6010.09,4,'s','2025-04-30 11:33:09','2025-04-30 11:33:09','TexR','Nature','1',2),(61,131,4,1,12,'pending','07059579655','Pinnacle Estate, Ifesowapo',6010.09,4,'s','2025-04-30 11:36:06','2025-04-30 11:36:06','TexR','Nature','1',2),(62,133,4,1,13,'pending','07059579655','Pinnacle Estate, Ifesowapo',12020.1,4,'s','2025-04-30 11:37:05','2025-04-30 11:37:05','TexR','Nature','1',4),(63,141,4,1,13,'pending','07059579655','Pinnacle Estate, Ifesowapo',9565,3,'s','2025-05-04 16:48:38','2025-05-04 16:48:38','TexR','{\"id\":3,\"name\":\"Nature\",\"created_at\":\"2025-04-14T19:41:47.000000Z\",\"updated_at\":\"2025-04-14T19:41:47.000000Z\"}','2',2);
+INSERT INTO `purchases` VALUES (51,116,2,1,12,'pending','07059579655','Pinnacle Estate, Ifesowapo',6010,3,'xs','2025-04-28 23:09:30','2025-04-28 23:09:30','TexR','Nature','1',2),(52,117,2,1,14,'pending','07059579655','Pinnacle Estate, Ifesowapo',6006,3,'xs','2025-04-28 23:09:32','2025-04-28 23:09:32','TedXR','War','1',2),(57,123,4,1,12,'pending','07059579655','Pinnacle Estate, Ifesowapo',3005.09,4,'m','2025-04-29 22:18:49','2025-04-29 22:18:49','TexR','Nature','1',1),(58,125,4,1,13,'pending','07059579655','Pinnacle Estate, Ifesowapo',3005.09,4,'s','2025-04-29 22:21:17','2025-04-29 22:21:17','TexR','Nature','1',1),(59,127,4,1,12,'pending','07059579655','Pinnacle Estate, Ifesowapo',6010.09,4,'xl','2025-04-30 11:28:32','2025-04-30 11:28:32','TexR','Nature','1',2),(60,129,4,1,12,'pending','07059579655','Pinnacle Estate, Ifesowapo',6010.09,4,'s','2025-04-30 11:33:09','2025-04-30 11:33:09','TexR','Nature','1',2),(61,131,4,1,12,'pending','07059579655','Pinnacle Estate, Ifesowapo',6010.09,4,'s','2025-04-30 11:36:06','2025-04-30 11:36:06','TexR','Nature','1',2),(62,133,4,1,13,'pending','07059579655','Pinnacle Estate, Ifesowapo',12020.1,4,'s','2025-04-30 11:37:05','2025-04-30 11:37:05','TexR','Nature','1',4),(63,141,4,1,13,'pending','07059579655','Pinnacle Estate, Ifesowapo',9565,3,'s','2025-05-04 16:48:38','2025-05-04 16:48:38','TexR','{\"id\":3,\"name\":\"Nature\",\"created_at\":\"2025-04-14T19:41:47.000000Z\",\"updated_at\":\"2025-04-14T19:41:47.000000Z\"}','2',2);
 /*!40000 ALTER TABLE `purchases` ENABLE KEYS */;
 
 --
@@ -751,7 +752,7 @@ CREATE TABLE `ratings` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -759,7 +760,6 @@ CREATE TABLE `ratings` (
 --
 
 /*!40000 ALTER TABLE `ratings` DISABLE KEYS */;
-INSERT INTO `ratings` VALUES (13,1,2,37,5,'2025-05-07 15:11:35','2025-05-07 15:11:35'),(14,1,2,36,4,'2025-05-07 15:20:09','2025-05-07 15:20:09'),(15,1,2,35,3,'2025-05-07 18:49:09','2025-05-07 18:49:09'),(16,1,4,13,5,'2025-05-07 18:49:45','2025-05-07 18:49:45'),(17,1,4,12,4,'2025-05-07 18:50:01','2025-05-07 18:50:01'),(18,1,4,11,4,'2025-05-07 18:50:25','2025-05-07 18:50:25');
 /*!40000 ALTER TABLE `ratings` ENABLE KEYS */;
 
 --
@@ -792,7 +792,7 @@ CREATE TABLE `referrals` (
 --
 
 /*!40000 ALTER TABLE `referrals` DISABLE KEYS */;
-INSERT INTO `referrals` VALUES (5,2,11,'JAJO1489','converted',1,'2025-04-09 21:08:12','2025-04-09 19:53:28','2025-04-09 21:08:12');
+INSERT INTO `referrals` VALUES (5,2,11,'JAJO1489','converted',2,'2025-05-10 18:45:54','2025-04-09 19:53:28','2025-05-10 18:45:54');
 /*!40000 ALTER TABLE `referrals` ENABLE KEYS */;
 
 --
@@ -820,7 +820,7 @@ CREATE TABLE `sessions` (
 --
 
 /*!40000 ALTER TABLE `sessions` DISABLE KEYS */;
-INSERT INTO `sessions` VALUES ('wHe3hpoXIyOvcjmzZ4DvZwV3fRpjoZx3W6QbXfmU',1,'127.0.0.1','Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36','YTo3OntzOjY6Il90b2tlbiI7czo0MDoicExacUhPZ295aVloeEdYSnZuZ0NQVEdocGFva1JybXFEWXAxdEZ5TiI7czozOiJ1cmwiO2E6MDp7fXM6OToiX3ByZXZpb3VzIjthOjE6e3M6MzoidXJsIjtzOjUxOiJodHRwOi8vbG9jYWxob3N0OjgwMDAvSmFjb2JzSm9zaHVhP2NyZWF0b3I9SkFKTzE0ODkiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjUwOiJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToxO3M6NDoibWFyeSI7YToxOntzOjU6InRvYXN0IjthOjA6e319czo2OiJmaWx0ZXIiO3M6ODoiSkFKTzE0ODkiO30=',1746652174);
+INSERT INTO `sessions` VALUES ('71ylwMyvKwLg1tZFZHVMFBF0Hmbr3U0NiR9LwpTm',2,'127.0.0.1','Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1','YTo2OntzOjY6Il90b2tlbiI7czo0MDoiYzVnc2MwV2ZucVJTMEM5U2RlcGZSVE1MTjlrbm8yVXpMZDRWNDBIZCI7czozOiJ1cmwiO2E6MDp7fXM6OToiX3ByZXZpb3VzIjthOjE6e3M6MzoidXJsIjtzOjQ0OiJodHRwOi8vbG9jYWxob3N0OjgwMDAvbGFyYXZlbC1jb25zb2xlL2ZvcmdldCI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6NDoibWFyeSI7YToxOntzOjU6InRvYXN0IjthOjA6e319czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6Mjt9',1746920545);
 /*!40000 ALTER TABLE `sessions` ENABLE KEYS */;
 
 --
@@ -895,10 +895,11 @@ CREATE TABLE `transactions` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `ref_no` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `charge` float DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `transactions_user_id_index` (`user_id`),
   KEY `transactions_buyer_id_index` (`buyer_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=143 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=154 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -906,7 +907,7 @@ CREATE TABLE `transactions` (
 --
 
 /*!40000 ALTER TABLE `transactions` DISABLE KEYS */;
-INSERT INTO `transactions` VALUES (113,2,1,10000.00,'sales','pending','2025-04-28 23:02:07','2025-04-28 23:02:07','TRX20250429000207LZCMVW1'),(114,2,1,20000.00,'sales','pending','2025-04-28 23:02:09','2025-04-28 23:02:09','TRX20250429000208ZM2CC11'),(115,NULL,1,5555.00,'shipping_fee','successful','2025-04-28 23:02:10','2025-04-28 23:02:10','TRX20250429000210L4RK2C1'),(116,2,1,6010.00,'sales','pending','2025-04-28 23:09:30','2025-04-28 23:09:30','TRX20250429000930Z9FCAP1'),(117,2,1,6006.00,'sales','pending','2025-04-28 23:09:32','2025-04-28 23:09:32','TRX20250429000931EHWL291'),(118,NULL,1,5555.00,'shipping_fee','successful','2025-04-28 23:09:33','2025-04-28 23:09:33','TRX20250429000933WUZ6MZ1'),(122,2,1,2000.00,'sales','pending','2025-04-29 22:14:53','2025-04-29 22:14:53','TRX20250429231453EO0DCI1'),(123,4,1,5.00,'sales','pending','2025-04-29 22:18:49','2025-04-29 22:18:49','TRX20250429231849EABQYN1'),(124,NULL,1,0.09,'shipping_fee','successful','2025-04-29 22:18:50','2025-04-29 22:18:50','TRX20250429231850ZZS9HM1'),(125,4,1,5.00,'sales','pending','2025-04-29 22:21:17','2025-04-29 22:21:17','TRX20250429232117DQVJDA1'),(126,NULL,1,0.09,'shipping_fee','successful','2025-04-29 22:21:18','2025-04-29 22:21:18','TRX20250429232118KH7D9F1'),(127,4,1,5.00,'sales','pending','2025-04-30 11:28:32','2025-04-30 11:28:32','TRX20250430122832EJGHQ91'),(128,NULL,1,0.09,'shipping_fee','successful','2025-04-30 11:28:32','2025-04-30 11:28:32','TRX20250430122832AEG5JM1'),(129,4,1,5.00,'sales','pending','2025-04-30 11:33:05','2025-04-30 11:33:05','TRX20250430123305PACDWZ1'),(130,NULL,1,0.09,'shipping_fee','successful','2025-04-30 11:33:10','2025-04-30 11:33:10','TRX20250430123310GXM1TP1'),(131,4,1,10.00,'sales','pending','2025-04-30 11:36:06','2025-04-30 11:36:06','TRX20250430123606P9QMVB1'),(132,NULL,1,0.09,'shipping_fee','successful','2025-04-30 11:36:06','2025-04-30 11:36:06','TRX20250430123606AWCQDK1'),(133,4,1,20.00,'sales','pending','2025-04-30 11:37:05','2025-04-30 11:37:05','TRX2025043012370526XMGE1'),(134,NULL,1,0.09,'shipping_fee','successful','2025-04-30 11:37:06','2025-04-30 11:37:06','TRX202504301237069DX07S1'),(135,2,2,10500.00,'withdrawal','processing','2025-04-30 22:22:22','2025-04-30 22:53:47','TRX20250430232222P5HYAF2'),(137,2,2,10500.00,'withdrawal','pending','2025-04-30 22:26:08','2025-04-30 22:26:08','TRX20250430232608JRXJKI2'),(138,2,2,10500.00,'withdrawal','completed','2025-04-30 22:27:58','2025-04-30 23:03:35','TRX202504302327583VF3PN2'),(139,2,2,10500.00,'withdrawal','completed','2025-04-30 22:29:37','2025-04-30 23:05:06','TRX20250430232936Q7DRPA2'),(140,2,2,10500.00,'withdrawal','completed','2025-04-30 22:55:11','2025-04-30 22:59:36','TRX20250430235511QSPEU62'),(141,4,1,10.00,'sales','pending','2025-05-04 16:48:38','2025-05-04 16:48:38','TRX20250504174838M1MKI51'),(142,NULL,1,5555.00,'shipping_fee','successful','2025-05-04 16:48:39','2025-05-04 16:48:39','TRX20250504174839FZZDWK1');
+INSERT INTO `transactions` VALUES (113,2,1,10000.00,'sales','pending','2025-04-28 23:02:07','2025-04-28 23:02:07','TRX20250429000207LZCMVW1',0),(114,2,1,20000.00,'sales','pending','2025-04-28 23:02:09','2025-04-28 23:02:09','TRX20250429000208ZM2CC11',0),(115,NULL,1,5555.00,'shipping_fee','successful','2025-04-28 23:02:10','2025-04-28 23:02:10','TRX20250429000210L4RK2C1',0),(116,2,1,6010.00,'sales','pending','2025-04-28 23:09:30','2025-04-28 23:09:30','TRX20250429000930Z9FCAP1',0),(117,2,1,6006.00,'sales','pending','2025-04-28 23:09:32','2025-04-28 23:09:32','TRX20250429000931EHWL291',0),(118,NULL,1,5555.00,'shipping_fee','successful','2025-04-28 23:09:33','2025-04-28 23:09:33','TRX20250429000933WUZ6MZ1',0),(122,2,1,2000.00,'sales','pending','2025-04-29 22:14:53','2025-04-29 22:14:53','TRX20250429231453EO0DCI1',0),(123,4,1,5.00,'sales','pending','2025-04-29 22:18:49','2025-04-29 22:18:49','TRX20250429231849EABQYN1',0),(124,NULL,1,0.09,'shipping_fee','successful','2025-04-29 22:18:50','2025-04-29 22:18:50','TRX20250429231850ZZS9HM1',0),(125,4,1,5.00,'sales','pending','2025-04-29 22:21:17','2025-04-29 22:21:17','TRX20250429232117DQVJDA1',0),(126,NULL,1,0.09,'shipping_fee','successful','2025-04-29 22:21:18','2025-04-29 22:21:18','TRX20250429232118KH7D9F1',0),(127,4,1,5.00,'sales','pending','2025-04-30 11:28:32','2025-04-30 11:28:32','TRX20250430122832EJGHQ91',0),(128,NULL,1,0.09,'shipping_fee','successful','2025-04-30 11:28:32','2025-04-30 11:28:32','TRX20250430122832AEG5JM1',0),(129,4,1,5.00,'sales','pending','2025-04-30 11:33:05','2025-04-30 11:33:05','TRX20250430123305PACDWZ1',0),(130,NULL,1,0.09,'shipping_fee','successful','2025-04-30 11:33:10','2025-04-30 11:33:10','TRX20250430123310GXM1TP1',0),(131,4,1,10.00,'sales','pending','2025-04-30 11:36:06','2025-04-30 11:36:06','TRX20250430123606P9QMVB1',0),(132,NULL,1,0.09,'shipping_fee','successful','2025-04-30 11:36:06','2025-04-30 11:36:06','TRX20250430123606AWCQDK1',0),(133,4,1,20.00,'sales','pending','2025-04-30 11:37:05','2025-04-30 11:37:05','TRX2025043012370526XMGE1',0),(134,NULL,1,0.09,'shipping_fee','successful','2025-04-30 11:37:06','2025-04-30 11:37:06','TRX202504301237069DX07S1',0),(135,2,2,10500.00,'withdrawal','processing','2025-04-30 22:22:22','2025-04-30 22:53:47','TRX20250430232222P5HYAF2',0),(137,2,2,10500.00,'withdrawal','pending','2025-04-30 22:26:08','2025-04-30 22:26:08','TRX20250430232608JRXJKI2',0),(138,2,2,10500.00,'withdrawal','completed','2025-04-30 22:27:58','2025-04-30 23:03:35','TRX202504302327583VF3PN2',0),(139,2,2,10500.00,'withdrawal','completed','2025-04-30 22:29:37','2025-04-30 23:05:06','TRX20250430232936Q7DRPA2',0),(140,2,2,10500.00,'withdrawal','completed','2025-04-30 22:55:11','2025-04-30 22:59:36','TRX20250430235511QSPEU62',0),(141,4,1,10.00,'sales','pending','2025-05-04 16:48:38','2025-05-04 16:48:38','TRX20250504174838M1MKI51',0),(142,NULL,1,5555.00,'shipping_fee','successful','2025-05-04 16:48:39','2025-05-04 16:48:39','TRX20250504174839FZZDWK1',0),(143,2,2,10000.00,'withdrawal','pending','2025-05-10 14:53:05','2025-05-10 14:53:05','TRX20250510155305RODGFE2',500),(144,2,2,10000.00,'withdrawal','pending','2025-05-10 14:55:52','2025-05-10 14:55:52','TRX20250510155552LD5LUZ2',500),(145,2,2,10000.00,'withdrawal','pending','2025-05-10 14:56:14','2025-05-10 14:56:14','TRX2025051015561449OQFG2',500),(146,2,2,10000.00,'withdrawal','pending','2025-05-10 14:56:31','2025-05-10 14:56:31','TRX202505101556313P60YP2',500),(147,2,2,10000.00,'withdrawal','pending','2025-05-10 14:58:05','2025-05-10 14:58:05','TRX20250510155805UORE0O2',500),(148,2,2,10000.00,'withdrawal','pending','2025-05-10 15:01:31','2025-05-10 15:01:31','TRX20250510160131GKEPOK2',500),(149,2,2,1000000.00,'funding','pending','2025-05-10 15:18:46','2025-05-10 15:18:46','TRX20250510161839ZU3XQU2',0),(150,2,2,10000.00,'withdrawal','pending','2025-05-10 15:19:17','2025-05-10 15:19:17','TRX20250510161916IVRVQD2',500),(151,2,2,10000.00,'withdrawal','pending','2025-05-10 15:48:26','2025-05-10 15:48:26','TRX20250510164826B63IV22',500),(152,1,1,1000000.00,'funding','pending','2025-05-10 16:36:00','2025-05-10 16:36:00','TRX202505101735597DVS4U1',0),(153,1,1,10000.00,'funding','pending','2025-05-10 16:43:39','2025-05-10 16:43:39','TRX202505101743374AFLK31',0);
 /*!40000 ALTER TABLE `transactions` ENABLE KEYS */;
 
 --
@@ -965,8 +966,39 @@ CREATE TABLE `users` (
 --
 
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'Jake','Jay','1745198486jakejay25Ny6CC4wRiN6KxiFBrKSdSjqg0.jpg',NULL,'Pinnacle Estate, Ifesowapo','07059579655','jake@jay',NULL,'user','2025-03-27 11:41:20','Joshua Oyakhire Jacobs','Joshua Oyakhire Jacobs','Joshua Oyakhire Jacobs','Joshua Oyakhire Jacobs','$2y$12$jey663Z1vnvzRT8zLzBp.u71QuvqmfztzUO77YR5v3ejeUqDafc7W',0.00,'JAJA1877',0,NULL,66394.73,'GTB','Joshua Oyakhire Jacobs','0968857754','no',NULL,'2025-03-27 11:40:54','2025-05-04 16:48:39',2,3,0),(2,'Jacobs','Joshua','1744935917jacobsjoshua25kEOS6jrGgbIIZmwDhg2YQSDpJ.jpg','1746225405jacobsjoshua25KxB5A4ZbjqbSfl9LkCrVJeVI8.jpg','Pinnacle Estate, Ifesowapo','07059579655','jacobsjoshua81@gmail.com',NULL,'creative','2025-03-31 15:47:07','JJacobs','jjacobs','jjacobs','jjacobs','$2y$12$h4ci/jlNQIrjkPouzzy9n.P7QPGHjUKZP1bD8cbiVxtB5hciXLfsG',4.00,'JAJO1489',0,NULL,89500.00,'GTB','Jacobs Joshua','2133236678','yes','H0sKiae6MpJNhacaRyToS9aMaJiQR21Q6f8bdNwEzn9txkptuFatJgbJ6cKC','2025-03-27 11:43:37','2025-05-07 18:49:09',2,2,19),(3,'Twellr','Admin',NULL,NULL,NULL,NULL,'twellradmin@admin.com',NULL,'admin','2025-04-04 19:28:33',NULL,NULL,NULL,NULL,'$2y$12$Wq12R43pCc9C2SuEMBL5luAjlxxsCvrq7jul78D/XOhRhjMpx9Cuu',0.00,NULL,0,NULL,0.00,NULL,NULL,NULL,'yes','ui6swSJmmMylVp8fKYgwozvzja1jnKMEWOmxOLZ5O1uZGCBjzMTX4ZHVN8Zt','2025-04-04 19:28:20','2025-04-04 19:28:33',2,3,0),(4,'Jack','Brussels',NULL,NULL,'9 paddington ave','07894552','jackbrussels44@gmail.com',NULL,'creative','2025-04-08 15:11:16',NULL,NULL,NULL,NULL,'$2y$12$BoCc8dVReP/vZG0WbQdwbeDZJM.9RoODBm6CJJpiM34xmCETldA1K',4.33,'JABR2895',0,NULL,65.00,'Bank of England','Jack Brussels','9589983442','yes',NULL,'2025-04-08 15:10:48','2025-05-07 18:50:25',2,3,0),(11,'Jake','Jnr',NULL,NULL,NULL,NULL,'jake@jnr',NULL,'user','2025-04-09 19:53:58',NULL,NULL,NULL,NULL,'$2y$12$OvVlerg.EqXFfm1MESn48.X7otsgilQbwCdLe3URzhyv03VcdaSia',0.00,'JAJN4419',0,2,0.00,NULL,NULL,NULL,'no',NULL,'2025-04-09 19:53:28','2025-04-09 19:53:58',2,3,0);
+INSERT INTO `users` VALUES (1,'Jake','Jay','1745198486jakejay25Ny6CC4wRiN6KxiFBrKSdSjqg0.jpg',NULL,'Pinnacle Estate, Ifesowapo','07059579655','jakejay@gmail.com',NULL,'user','2025-05-10 20:37:12','Joshua Oyakhire Jacobs','Joshua Oyakhire Jacobs','Joshua Oyakhire Jacobs','Joshua Oyakhire Jacobs','$2y$12$jey663Z1vnvzRT8zLzBp.u71QuvqmfztzUO77YR5v3ejeUqDafc7W',0.00,'JAJA1877',0,NULL,66394.73,'GTB','Joshua Oyakhire Jacobs','0968857754','no',NULL,'2025-03-27 11:40:54','2025-05-10 20:37:12',2,3,0),(2,'Jacobs','Joshua','1744935917jacobsjoshua25kEOS6jrGgbIIZmwDhg2YQSDpJ.jpg','1746225405jacobsjoshua25KxB5A4ZbjqbSfl9LkCrVJeVI8.jpg','Pinnacle Estate, Ifesowapo','07059579655','jacobsjoshua81@gmail.com',NULL,'creative','2025-03-31 15:47:07','JJacobs','jjacobs','jjacobs','jjacobs','$2y$12$h4ci/jlNQIrjkPouzzy9n.P7QPGHjUKZP1bD8cbiVxtB5hciXLfsG',4.00,'JAJO1489',0,NULL,5500.00,'GTB','Jacobs Joshua','2133236678','yes','DZptwxK29G2uO9k2Mtw1PRl3EWGJKzDmiHOUas62q2MeMtFacL8OBGKOwZFQ','2025-03-27 11:43:37','2025-05-10 15:48:26',2,2,19),(3,'Twellr','Admin',NULL,NULL,NULL,NULL,'twellradmin@admin.com',NULL,'admin','2025-04-04 19:28:33',NULL,NULL,NULL,NULL,'$2y$12$Wq12R43pCc9C2SuEMBL5luAjlxxsCvrq7jul78D/XOhRhjMpx9Cuu',0.00,NULL,0,NULL,0.00,NULL,NULL,NULL,'yes','gYeF1BMF0MY2Lq4hzc7RAphOfD43xD1PLQeGkkTW59RYEAyY33hm1b4c8z2o','2025-04-04 19:28:20','2025-04-04 19:28:33',2,3,0),(4,'Jack','Brussels',NULL,NULL,'9 paddington ave','07894552','jackbrussels44@gmail.com',NULL,'creative','2025-04-08 15:11:16',NULL,NULL,NULL,NULL,'$2y$12$BoCc8dVReP/vZG0WbQdwbeDZJM.9RoODBm6CJJpiM34xmCETldA1K',4.33,'JABR2895',0,NULL,65.00,'Bank of England','Jack Brussels','9589983442','yes',NULL,'2025-04-08 15:10:48','2025-05-07 18:50:25',2,3,0),(11,'Jake','Jnr','1746906349jakejnr25RkVa6ZYyqKuYlJJ5mc62YzXU3.jpg',NULL,'Pinnacle Estate, Ifesowapo','9948494400','jake@jnr',NULL,'user','2025-04-09 19:53:58','jakejnr','jakejnr','jakejnr','jakejnr','$2y$12$OvVlerg.EqXFfm1MESn48.X7otsgilQbwCdLe3URzhyv03VcdaSia',0.00,'JAJN4419',0,2,0.00,'GTB','Jake Jnr','8585859990','no',NULL,'2025-04-09 19:53:28','2025-05-10 18:45:49',2,3,0);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
+
+--
+-- Table structure for table `votes`
+--
+
+DROP TABLE IF EXISTS `votes`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `votes` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` bigint unsigned NOT NULL,
+  `contestant_id` bigint unsigned NOT NULL,
+  `product_id` bigint unsigned NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `votes_user_id_foreign` (`user_id`),
+  KEY `votes_contestant_id_foreign` (`contestant_id`),
+  KEY `votes_product_id_foreign` (`product_id`),
+  CONSTRAINT `votes_contestant_id_foreign` FOREIGN KEY (`contestant_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `votes_product_id_foreign` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `votes_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `votes`
+--
+
+/*!40000 ALTER TABLE `votes` DISABLE KEYS */;
+/*!40000 ALTER TABLE `votes` ENABLE KEYS */;
 
 --
 -- Table structure for table `withdrawals`
@@ -994,7 +1026,7 @@ CREATE TABLE `withdrawals` (
   KEY `withdrawals_processed_by_foreign` (`processed_by`),
   CONSTRAINT `withdrawals_processed_by_foreign` FOREIGN KEY (`processed_by`) REFERENCES `users` (`id`),
   CONSTRAINT `withdrawals_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1002,7 +1034,7 @@ CREATE TABLE `withdrawals` (
 --
 
 /*!40000 ALTER TABLE `withdrawals` DISABLE KEYS */;
-INSERT INTO `withdrawals` VALUES (8,2,10500.00,'GTB','Jacobs Joshua','2133236678','processing',NULL,NULL,NULL,'TRX20250430232222P5HYAF2','2025-04-30 22:22:22','2025-04-30 22:53:47'),(10,2,10500.00,'GTB','Jacobs Joshua','2133236678','pending',NULL,NULL,NULL,'TRX20250430232608JRXJKI2','2025-04-30 22:26:08','2025-04-30 22:26:08'),(11,2,10500.00,'GTB','Jacobs Joshua','2133236678','completed',NULL,NULL,NULL,'TRX202504302327583VF3PN2','2025-04-30 22:27:58','2025-04-30 23:03:34'),(12,2,10500.00,'GTB','Jacobs Joshua','2133236678','completed',NULL,NULL,NULL,'TRX20250430232936Q7DRPA2','2025-04-30 22:29:36','2025-04-30 23:05:06'),(13,2,10500.00,'GTB','Jacobs Joshua','2133236678','completed',NULL,NULL,NULL,'TRX20250430235511QSPEU62','2025-04-30 22:55:11','2025-04-30 22:59:36');
+INSERT INTO `withdrawals` VALUES (8,2,10500.00,'GTB','Jacobs Joshua','2133236678','processing',NULL,NULL,NULL,'TRX20250430232222P5HYAF2','2025-04-30 22:22:22','2025-04-30 22:53:47'),(10,2,10500.00,'GTB','Jacobs Joshua','2133236678','pending',NULL,NULL,NULL,'TRX20250430232608JRXJKI2','2025-04-30 22:26:08','2025-04-30 22:26:08'),(11,2,10500.00,'GTB','Jacobs Joshua','2133236678','completed',NULL,NULL,NULL,'TRX202504302327583VF3PN2','2025-04-30 22:27:58','2025-04-30 23:03:34'),(12,2,10500.00,'GTB','Jacobs Joshua','2133236678','completed',NULL,NULL,NULL,'TRX20250430232936Q7DRPA2','2025-04-30 22:29:36','2025-04-30 23:05:06'),(13,2,10500.00,'GTB','Jacobs Joshua','2133236678','completed',NULL,NULL,NULL,'TRX20250430235511QSPEU62','2025-04-30 22:55:11','2025-04-30 22:59:36'),(14,2,10000.00,'GTB','Jacobs Joshua','2133236678','pending',NULL,NULL,NULL,'TRX20250510155305RODGFE2','2025-05-10 14:53:05','2025-05-10 14:53:05'),(15,2,10000.00,'GTB','Jacobs Joshua','2133236678','pending',NULL,NULL,NULL,'TRX20250510155552LD5LUZ2','2025-05-10 14:55:52','2025-05-10 14:55:52'),(16,2,10000.00,'GTB','Jacobs Joshua','2133236678','pending',NULL,NULL,NULL,'TRX2025051015561449OQFG2','2025-05-10 14:56:14','2025-05-10 14:56:14'),(17,2,10000.00,'GTB','Jacobs Joshua','2133236678','pending',NULL,NULL,NULL,'TRX202505101556313P60YP2','2025-05-10 14:56:31','2025-05-10 14:56:31'),(18,2,10000.00,'GTB','Jacobs Joshua','2133236678','pending',NULL,NULL,NULL,'TRX20250510155805UORE0O2','2025-05-10 14:58:05','2025-05-10 14:58:05'),(19,2,10000.00,'GTB','Jacobs Joshua','2133236678','pending',NULL,NULL,NULL,'TRX20250510160131GKEPOK2','2025-05-10 15:01:31','2025-05-10 15:01:31'),(20,2,10000.00,'GTB','Jacobs Joshua','2133236678','pending',NULL,NULL,NULL,'TRX20250510161916IVRVQD2','2025-05-10 15:19:16','2025-05-10 15:19:16'),(21,2,10000.00,'GTB','Jacobs Joshua','2133236678','pending',NULL,NULL,NULL,'TRX20250510164826B63IV22','2025-05-10 15:48:26','2025-05-10 15:48:26');
 /*!40000 ALTER TABLE `withdrawals` ENABLE KEYS */;
 
 --
@@ -1018,4 +1050,4 @@ INSERT INTO `withdrawals` VALUES (8,2,10500.00,'GTB','Jacobs Joshua','2133236678
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-05-07 22:23:23
+-- Dump completed on 2025-05-11  0:47:21

@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('contest_winners', function (Blueprint $table) {
+        Schema::create('ratings', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedInteger('user_id')->nullable();
+            $table->unsignedInteger('designer_id')->nullable();
             $table->unsignedInteger('product_id')->nullable();
-            $table->unsignedInteger('rating_id')->nullable();
-            $table->string('type');
+            $table->unsignedInteger('rate');
             $table->timestamps();
         });
     }
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('contest_winners');
+        Schema::dropIfExists('ratings');
     }
 };

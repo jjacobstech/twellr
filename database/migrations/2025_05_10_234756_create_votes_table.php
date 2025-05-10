@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('votes', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade'); // Voter
-            $table->foreignId('contestant_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('user_id')->index('votes_user_id_foreign');
+            $table->unsignedBigInteger('contestant_id')->index('votes_contestant_id_foreign');
+            $table->unsignedBigInteger('product_id')->index('votes_product_id_foreign');
             $table->timestamps();
         });
     }

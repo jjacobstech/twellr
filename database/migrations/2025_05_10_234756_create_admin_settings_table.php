@@ -16,14 +16,12 @@ return new class extends Migration
             $table->char('currency_symbol', 10)->nullable();
             $table->string('currency_code', 20)->nullable();
             $table->decimal('commission_fee', 10)->unsigned()->default(0);
-            $table->string('logo', 100)->nullable();
-            $table->string('logo_2', 100)->nullable();
             $table->string('withdrawal_time', 100)->nullable();
-            $table->string('favicon', 100)->nullable();
             $table->enum('maintenance_mode', ['on', 'off'])->default('off');
             $table->decimal('vat', 10)->unsigned()->default(0);
             $table->boolean('advertisement_status')->default(true);
             $table->unsignedInteger('withdrawal_threshold')->nullable()->default(0);
+            $table->unsignedInteger('minimum_rating')->default(10);
         });
     }
 
