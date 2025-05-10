@@ -96,193 +96,118 @@ new #[Layout('layouts.guest')] class extends Component {
     }
 };
 ?>
-<div class="px-10 mx-16 py-16  mt-20 border border-black md:mt-10 rounded-3xl">
-    <div class=" text-sm font-semibold text-center text-black md:text-lg lg:text-xl">
+<div class="px-4 py-8 mx-4 mt-12 border border-black rounded-3xl md:mt-10 md:px-10 md:py-16 md:mx-16">
+    <div class="text-center text-black text-sm md:text-lg lg:text-xl font-semibold">
         <p>{{ __('Check your email for the OTP pin, If it doesn’t reflect in your inbox') }}</p>
-        <span> {{ __('consider checking Spam mail') }}</span>
+        <span>{{ __('consider checking Spam mail') }}</span>
     </div>
 
     <form wire:submit='verify' id="otp-form" class="w-full">
         <div class="py-8 bg-white">
-            <div class="flex justify-center space-x-4">
-                <input wire:model='No1' name="No1" type="text" maxlength="1"
-                    class="w-10 h-10 p-1 text-2xl font-medium text-center bg-white border rounded-lg shadow-xs outline-none md:w-20 md:h-20 border-stroke text-gray-5 sm:text-4xl" />
-                <input wire:model='No2' name="No2" type="text" maxlength="1"
-                    class="w-10 h-10 p-2 text-2xl font-medium text-center bg-white border rounded-lg shadow-xs outline-none md:w-20 md:h-20 border-stroke text-gray-5 sm:text-4xl dark:border-dark-3 dark:bg-white/5" />
-                <input wire:model='No3' name="No3" type="text" maxlength="1"
-                    class="w-10 h-10 p-2 text-2xl font-medium text-center bg-white border rounded-lg shadow-xs outline-none md:w-20 md:h-20 border-stroke text-gray-5 sm:text-4xl dark:border-dark-3 dark:bg-white/5" />
-                <input wire:model='No4' name="No4" type="text" maxlength="1"
-                    class="w-10 h-10 p-2 text-2xl font-medium text-center bg-white border rounded-lg shadow-xs outline-none md:w-20 md:h-20 border-stroke text-gray-5 sm:text-4xl dark:border-dark-3 dark:bg-white/5" />
-                <input x-on:input="document.getElementById('verify').click()" wire:model='No5' name="No5"
-                    type="text" maxlength="1"
-                    class="w-10 h-10 p-2 text-2xl font-medium text-center bg-white border rounded-lg shadow-xs outline-none md:w-20 md:h-20 border-stroke text-gray-5 sm:text-4xl dark:border-dark-3 dark:bg-white/5" />
+            <div class="flex justify-center gap-2 sm:gap-4">
+                @foreach (['No1', 'No2', 'No3', 'No4', 'No5'] as $key => $field)
+                    <input wire:model='{{ $field }}' name="{{ $field }}" type="text" maxlength="1"
+                        class="w-10 h-10 text-2xl sm:w-14 sm:h-14 md:w-20 md:h-20 p-2 font-medium text-center bg-white border rounded-lg shadow outline-none border-stroke text-gray-5 sm:text-4xl" />
+                @endforeach
             </div>
         </div>
+
         @if ($errors->all())
-            <p class="mt-2 text-center text-red-500" x-cloak="display:hidden">{{ __('Incomplete Pin') }}</p>
+            <p class="mt-2 text-center text-red-500">{{ __('Incomplete Pin') }}</p>
         @endif
 
-        <x-primary-button hidden id="verify">
-            {{ __('Verify') }}
-        </x-primary-button>
+        <x-primary-button hidden id="verify">{{ __('Verify') }}</x-primary-button>
 
         @if (session('status') == 'verification-link-sent')
-            <div class="absolute left-0 right-0 px-6  text-sm font-medium text-center text-green-600"
-                x-cloak="display:hidden">
-                {{ __('Check your email for the OTP pin, If it doesn’t reflect in your inbox, consider checking Spam mail.') }}
-                <br>
+            <div class="mt-4 text-sm font-medium text-center text-green-600">
+                {{ __('Check your email for the OTP pin. If it doesn’t reflect in your inbox, consider checking Spam mail.') }}<br>
                 {{ __('A new verification link has been sent to the email address you provided during registration.') }}
             </div>
         @endif
 
         @if (session('status') == 'verification-successful')
-            <div class="absolute left-0 right-0 mt-4 font-bold text-center text-green-600" x-cloak="display:hidden">
+            <div class="mt-4 font-bold text-center text-green-600">
                 {{ __('Verification Successful') }}
             </div>
         @endif
 
         @if (session('status') == 'Invalid OTP')
-            <div class="absolute left-0 right-0 font-bold text-center text-red-600 md:mt-4 text-md"
-                x-cloak="display:hidden">
-                {{ $disabled = false }}
-
+            <div class="mt-4 font-bold text-center text-red-600">
                 {{ __('Invalid OTP') }}
             </div>
         @endif
     </form>
-
 
     <div class="mt-12 text-center">
         <div class="text-xl font-semibold" id="timer">
             {{ __('Time Left:') }} <span id="countdown">{{ config('otp.expiry') }}:00</span>
         </div>
         <button
-            class=" mt-5 inline-flex items-center px-3 py-3 bg-navy-blue border border-transparent rounded-md font-semibold text-xl text-white  capitalize tracking-widest hover:bg-white hover:text-navy-blue hover:border-navy-blue border-navy-blue  focus:bg-white  active:bg-navy-blue active:text-white  focus:outline-none focus:ring-2 focus:ring-navy-blue focus:ring-offset-2  transition ease-in-out duration-150"
-            @click="startTimer(),$wire.sendVerification()">
+            class="mt-5 px-4 py-3 text-xl font-semibold text-white transition duration-150 ease-in-out bg-navy-blue border border-transparent rounded-md hover:bg-white hover:text-navy-blue hover:border-navy-blue focus:outline-none focus:ring-2 focus:ring-navy-blue focus:ring-offset-2"
+            @click="startTimer(); $wire.sendVerification()">
             {{ __('Resend Verification Email') }}
         </button>
-
-
     </div>
 
-    @script
         <script>
             document.addEventListener("DOMContentLoaded", () => {
                 const form = document.getElementById("otp-form");
                 const inputs = Array.from(form.querySelectorAll("input[type=text]"));
 
-                // Use event delegation for better performance
-                form.addEventListener("keydown", (e) => {
-                    const target = e.target;
-                    if (!inputs.includes(target)) return;
+                inputs.forEach((input, idx) => {
+                    input.addEventListener("input", (e) => {
+                        const val = e.target.value;
+                        if (val.length > 1) e.target.value = val.slice(0, 1);
+                        if (val && idx < inputs.length - 1) inputs[idx + 1].focus();
+                    });
 
-                    // Only allow numeric input, navigation keys and modifier keys
-                    if (
-                        !/^[0-9]$/.test(e.key) &&
-                        !["Backspace", "Delete", "Tab", "ArrowLeft", "ArrowRight"].includes(e.key) &&
-                        !e.metaKey && !e.ctrlKey
-                    ) {
-                        e.preventDefault();
-                        return;
-                    }
-
-                    // Handle backspace/delete
-                    if ((e.key === "Delete" || e.key === "Backspace") && target.value === "") {
-                        const index = inputs.indexOf(target);
-                        if (index > 0) {
-                            inputs[index - 1].focus();
-                            // For better UX, put cursor at the end
-                            const len = inputs[index - 1].value.length;
-                            inputs[index - 1].setSelectionRange(len, len);
+                    input.addEventListener("keydown", (e) => {
+                        if (e.key === "Backspace" && !input.value && idx > 0) {
+                            inputs[idx - 1].focus();
                         }
-                    }
+                    });
                 });
 
-                form.addEventListener("input", (e) => {
-                    const target = e.target;
-                    if (!inputs.includes(target)) return;
-
-                    const index = inputs.indexOf(target);
-
-                    // Enforce single character
-                    if (target.value.length > 1) {
-                        target.value = target.value.slice(0, 1);
-                    }
-
-                    // Move to next input if value was entered
-                    if (target.value && index < inputs.length - 1) {
-                        setTimeout(() => inputs[index + 1].focus(), 0);
-                    }
-
-                    // Check if all inputs are filled to potentially submit
-                    const allFilled = inputs.every(input => input.value.length === 1);
-                    if (allFilled && index === inputs.length - 1) {
-                        // Optionally auto-submit or focus submit button
-                        // form.querySelector('button[type=submit]').focus();
-                    }
-                });
-
-                // Handle focus selection
-                form.addEventListener("click", (e) => {
-                    const target = e.target;
-                    if (inputs.includes(target)) {
-                        target.select();
-                    }
-                });
-
-                // Handle paste event for the entire form
                 form.addEventListener("paste", (e) => {
-                    // Only handle paste if one of our inputs is the target
-                    if (!inputs.includes(e.target)) return;
-
                     e.preventDefault();
-                    const pastedText = (e.clipboardData || window.clipboardData).getData("text");
-                    const digits = pastedText.replace(/\D/g, "").split("").slice(0, inputs.length);
-
-                    if (digits.length > 0) {
-                        // Fill as many inputs as we have digits
-                        digits.forEach((digit, i) => {
-                            if (i < inputs.length) inputs[i].value = digit;
-                        });
-
-                        // Focus the next empty input or the last one
-                        const nextEmptyIndex = digits.length < inputs.length ? digits.length : inputs.length -
-                        1;
-                        inputs[nextEmptyIndex].focus();
-                    }
+                    const paste = (e.clipboardData || window.clipboardData).getData("text").replace(/\D/g, "").slice(0, inputs.length);
+                    paste.split("").forEach((char, i) => inputs[i].value = char);
+                    inputs[paste.length < inputs.length ? paste.length : inputs.length - 1].focus();
                 });
 
-                // Initial focus on first empty input
-                const firstEmptyInput = inputs.find(input => !input.value) || inputs[0];
-                firstEmptyInput.focus();
+                const firstEmpty = inputs.find(input => !input.value) || inputs[0];
+                firstEmpty.focus();
             });
 
-            let countdownDate = new Date().getTime() + ({{ config('otp.expiry') }} * 60 * 1000); // 5 minutes from now
             let countdownInterval;
-
             const updateCountdown = () => {
-                const now = new Date().getTime();
-                const distance = countdownDate - now;
+                const countdownElement = document.getElementById("countdown");
+                let time = countdownElement.textContent.split(":");
+                let minutes = parseInt(time[0]);
+                let seconds = parseInt(time[1]);
 
-                const minutes = Math.max(0, Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)));
-                const seconds = Math.max(0, Math.floor((distance % (1000 * 60)) / 1000));
-
-                document.getElementById("countdown").innerHTML =
-                    (`${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`);
-
-                if (distance < 0) {
+                if (minutes === 0 && seconds === 0) {
                     clearInterval(countdownInterval);
-                    document.getElementById("countdown").innerHTML = "00:00";
-
+                    countdownElement.innerText = "00:00";
+                    return;
                 }
+
+                if (seconds === 0) {
+                    minutes--;
+                    seconds = 59;
+                } else {
+                    seconds--;
+                }
+
+                countdownElement.innerText = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
             };
 
             const startTimer = () => {
-                updateCountdown(); // Initial call to avoid a brief flash of the initial time
+                clearInterval(countdownInterval);
+                document.getElementById("countdown").innerText = "{{ config('otp.expiry') }}:00";
                 countdownInterval = setInterval(updateCountdown, 1000);
             };
 
             document.addEventListener("DOMContentLoaded", startTimer);
         </script>
-    @endscript
 </div>

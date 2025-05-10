@@ -41,7 +41,7 @@ new class extends Component {
         $this->total_referrals = Referral::where('referrer_id', Auth::id())->count();
 
         // Get total rewards/points
-        $this->total_rewards = Referral::where('referrer_id', Auth::user()->id)->count() ?? 0;
+        $this->total_rewards = Referral::where('referrer_id', Auth::user()->id)->sum('reward_points') ?? 0;
 
         // Get recent referrals (limited to 5)
         $this->recent_referrals = Referral::where('referrer_id', Auth::id())

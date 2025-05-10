@@ -102,101 +102,87 @@ new class extends Component {
 ?>
 
 
-<nav x-data="{ open: false, more: false, notification: false,term:'' }" class="bg-white border-gray-100">
-    <!-- Primary Navigation Menu -->
-    <div class="px-5 mx-auto md:px-2 max-w-7xl sm:px-6 lg:px-4">
-        <div class="flex justify-between h-16">
-            <div class="flex">
-                <!-- Logo -->
-                <div class="flex items-center shrink-0">
-                    <a class="flex" href="{{ route('home') }} " wire:navigate>
-                        <x-application-logo class="block w-auto fill-current h-9" />
-                        <img class="hidden md:h-5 md:px-3 md:my-1 md:block" src="{{ asset('assets/twellr-text.png') }}"
-                            alt="">
-                    </a>
-                </div>
+<nav x-data="{ open: false, term: '' }" class="bg-white border-b border-gray-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16 items-center">
+            <!-- Logo -->
+            <div class="flex items-center shrink-0">
+                <a href="{{ route('home') }}" wire:navigate class="flex items-center">
+                    <x-application-logo class="h-9 w-auto fill-current" />
+                    <img src="{{ asset('assets/twellr-text.png') }}" alt="Twellr" class="hidden md:block h-5 px-3" />
+                </a>
             </div>
 
-            <div class="w-full sm:-my-px sm:ms-10 sm:flex">
-                {{-- Search Bar --}}
-                <form class="w-full px-3 mt-1.5 sm:px-5 md:px-9">
-                    <div class="flex justify-between w-full">
-                        <div class="relative flex w-full py-1.5">
-                            <input type="text" id="search-dropdown" x-model="term" x-on:keydown="$wire.search(term)"
-                                x-on:keyup="$wire.search(term)"
-                                class="font-bold block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-200 rounded-lg border-0 active:border-0 hover:ring-1 hover:ring-gray-400 focus:border-0 focus:ring-0 border-navy-blue "
-                                placeholder="Search by: Creator, Design, Location, Ratings"
-                                alt="Search by: Creator, Design, Location, Ratings"
-                                title='Search by: Creator, Design, Location, Ratings' />
-                            <span wire:click="search"
-                                class="top-0 end-0 p-2.5 text-sm font-medium border-0 rounded-e-lg  absolute mt-2 z-50 focus:ring-0 focus:outline-none ">
-                                <svg class="w-4 h-4 text-[#fbaa0d]" aria-hidden="true"
-                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                        stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
-                                </svg>
-                                <span class="sr-only">Search</span>
-                            </span>
+            <!-- Search Bar -->
+            <div class="flex-1 ml-6">
+                <form class="relative">
+                    <input
+                        type="text"
+                        x-model="term"
+                        x-on:keydown="$wire.search(term)"
+                        x-on:keyup="$wire.search(term)"
+                        placeholder="Search by: Creator, Design, Location, Ratings"
+                        title="Search by: Creator, Design, Location, Ratings"
+                        class="w-full px-4 py-2.5 text-sm font-bold text-gray-900 bg-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400"
+                    />
 
-                            @if ($result != '')
-                                <div class="absolute top-full left-0 w-full z-[9999]">
+                    <!-- Search Icon -->
+                    <span class="absolute right-3 top-3 z-50 bg-gray-200 pl-2">
+                        <svg class="w-4 h-5 text-[#fbaa0d]" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 20 20" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                        </svg>
+                    </span>
 
-                                    <div x-show="term != ''" x-transition:enter="transition ease-out duration-200"
-                                        x-transition:enter-start="opacity-0 transform scale-95"
-                                        x-transition:enter-end="opacity-100 transform scale-100"
-                                        class="mt-1 overflow-y-auto bg-white rounded-md shadow-lg max-h-96">
-
-                                        @if ($userActions != '')
-                                            {{-- Actions --}}
-                                            <div class="w-full p-2 sm:p-3">
-                                                <div class="flex flex-col gap-1 sm:gap-2">
-                                                    @foreach ($userActions as $action)
-                                                        <a href="{{ $action['link'] }}"
-                                                            class="flex items-center gap-2 p-1 transition-colors border-b border-gray-200 sm:p-2 hover:bg-gray-100">
-                                                          <div>
-                                                            <x-mary-icon name='o-user' class='p-2 bg-black rounded-full w-11 h-11' />
-                                                          </div>
-                                                            <div class="flex-1 min-w-0">
-                                                                <h4
-                                                                    class="text-xs font-bold text-gray-800 truncate sm:text-sm">
-                                                                    {{ $action['name'] }}</h4>
-                                                                <p class="text-xs text-gray-500 truncate">
-                                                                    {{ $action['description'] }}</p>
-                                                            </div>
-                                                        </a>
-                                                    @endforeach
+                    <!-- Search Results -->
+                    @if ($result)
+                        <div
+                            x-show="term !== ''"
+                            x-transition
+                            class="absolute z-50 w-full mt-1 overflow-y-auto bg-white rounded-md shadow-lg max-h-96 scrollbar-none"
+                        >
+                            {{-- Static Actions --}}
+                            @if ($userActions)
+                                <div class="p-3 border-b border-gray-200">
+                                    <div class="space-y-2">
+                                        @foreach ($userActions as $action)
+                                            <a href="{{ $action['link'] }}"
+                                                class="flex items-center gap-3 p-2 rounded-md hover:bg-gray-100 transition">
+                                                <x-mary-icon name="o-user" class="w-11 h-11 p-2 bg-black rounded-full text-white" />
+                                                <div>
+                                                    <h4 class="text-sm font-semibold text-gray-800">
+                                                        {{ $action['name'] }}
+                                                    </h4>
+                                                    <p class="text-xs text-gray-500">{{ $action['description'] }}</p>
                                                 </div>
-                                            </div>
-
-                                        @endif
-
-                                        {{-- Users result --}}
-                                        <div class="w-full p-2 sm:p-3">
-                                            <div class="flex flex-col gap-1 sm:gap-2">
-                                                @foreach ($result as $item)
-                                                    <a href="{{ $item->link }}"
-                                                        class="flex items-center gap-2 p-1 transition-colors border-b border-gray-200 sm:p-2 hover:bg-gray-100">
-                                                        <img src="{{ $item->avatar }}" alt="{{ $item->name }}"
-                                                            class="object-cover w-8 h-8 rounded-full sm:w-10 sm:h-10">
-                                                        <div class="flex-1 min-w-0">
-                                                            <h4
-                                                                class="text-xs font-bold text-gray-800 truncate sm:text-sm">
-                                                                {{ $item->name }}</h4>
-                                                            <p class="text-xs text-gray-500 truncate">
-                                                                {{ $item->email }}</p>
-                                                        </div>
-                                                    </a>
-                                                @endforeach
-                                            </div>
-                                        </div>
+                                            </a>
+                                        @endforeach
                                     </div>
                                 </div>
                             @endif
+
+                            {{-- User Results --}}
+                            <div class="p-3">
+                                <div class="space-y-2">
+                                    @foreach ($result as $item)
+                                        <a href="{{ $item->link }}"
+                                            class="flex items-center gap-3 p-2 rounded-md hover:bg-gray-100 transition">
+                                            <img src="{{ $item->avatar }}" alt="{{ $item->name }}"
+                                                class="w-10 h-10 rounded-full object-cover" />
+                                            <div>
+                                                <h4 class="text-sm font-semibold text-gray-800">{{ $item->name }}</h4>
+                                                <p class="text-xs text-gray-500">{{ $item->email }}</p>
+                                            </div>
+                                        </a>
+                                    @endforeach
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    @endif
                 </form>
             </div>
-
         </div>
     </div>
 </nav>
+

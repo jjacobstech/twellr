@@ -85,20 +85,26 @@ new #[Layout('layouts.guest')] class extends Component {
     <h1 class="w-full my-1 md:mb-5 text-3xl font-bold  md:text-4xl text-left ">Create Account</h1>
     <div>
 
-        @session('message')
-            @session('status')
-                <div class="toast toast-top toast-right" x-transition:leave="500ms" x-data="{ show: true }" x-show="show">
+   @session('message')
+    @session('status')
+        <div
+            class="fixed top-4 right-4 z-[9999] w-[90%] max-w-sm sm:max-w-xs md:max-w-sm lg:max-w-md xl:max-w-lg"
+            x-data="{ show: true }"
+            x-show="show"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100 transform"
+            x-transition:leave-end="opacity-0 -translate-y-2"
+        >
+            <div class="flex items-center justify-between p-4 text-sm font-semibold text-white bg-navy-blue rounded-xl shadow-lg">
+                <span>Registration successful.</span>
+                <button @click="show = false" class="ml-4 focus:outline-none">
+                    @svg('eva-close', 'w-5 h-5 text-red-400 hover:text-red-500')
+                </button>
+            </div>
+        </div>
+    @endsession
+@endsession
 
-                    <div class="font-extrabold text-white transition-all ease-out alert bg-navy-blue">
-                        <span>Registration successfully. </span>
-                        <span @click="show = false">
-                            @svg('eva-close', 'h-6 w-6 text-red-500 cursor-pointer')
-                        </span>
-                    </div>
-
-                </div>
-            @endsession
-        @endsession
     </div>
     <form wire:submit.prevent="register">
         {{-- role selector button --}}

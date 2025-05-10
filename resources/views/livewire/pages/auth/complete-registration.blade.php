@@ -79,12 +79,19 @@ new #[Layout('layouts.guest')] class extends Component {
     <div>
 
         @if (session()->has('message'))
-            <div class="alert alert-success">
-
-                {{ session('message') }}
-
+            <div class="fixed top-4 right-4 z-[9999] w-[90%] max-w-sm sm:max-w-xs md:max-w-sm lg:max-w-md xl:max-w-lg"
+                x-data="{ show: true }" x-show="show" x-transition:leave="transition ease-in duration-300"
+                x-transition:leave-start="opacity-100 transform" x-transition:leave-end="opacity-0 -translate-y-2">
+                <div
+                    class="flex items-center justify-between p-4 text-sm font-semibold text-white bg-green-600 rounded-xl shadow-lg">
+                    <span>{{ session('message') }}</span>
+                    <button @click="show = false" class="ml-4 focus:outline-none">
+                        @svg('eva-close', 'w-5 h-5 text-white hover:text-red-200')
+                    </button>
+                </div>
             </div>
         @endif
+
     </div>
     <form wire:submit="register" enctype="multipart/form-data">
 

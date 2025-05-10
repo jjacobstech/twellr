@@ -10,6 +10,7 @@ use App\Livewire\Forms\LoginForm;
 use Illuminate\Support\Facades\Session;
 
 new #[Layout('layouts.guest')] class extends Component {
+
     public LoginForm $form;
     public string $role = 'user';
 
@@ -29,10 +30,23 @@ new #[Layout('layouts.guest')] class extends Component {
 
             $otp = Otp::generate($this->form->email);
 
-            Mail::to($this->form->email)->send(new EmailVerification($otp, $user->name)) ? '' : session(['otp' => 'There was an error sending the email. We are working on it.']);
+            try {
+                // Send email for OTP verification
+                Mail::to($this->form->email)->send(new EmailVerification($otp, $user->name));
 
-            return redirect(route('email.verification'))->with(['user' => $user, 'secret' => $this->form->email]);
-            ///
+                // Redirect to the email verification page with user and secret
+                return redirect(route('email.verification'))->with([
+                    'user' => $user,
+                    'secret' => $this->form->email,
+                ]);
+            } catch (\Exception $e) {
+                             // Optionally, log the exception for debugging purposes
+                report($e); // This will log the error to the Laravel logs
+
+                // Optionally, you can set a session variable with the error message if you want to persist the message
+                session()->flash('otp', 'There was an error sending the email. We are working on it.');
+
+            }
         } elseif (!empty($emailVerified)) {
             $this->form->authenticate();
 
@@ -47,18 +61,42 @@ new #[Layout('layouts.guest')] class extends Component {
 
 <div class="my-7 lg:px-10 h-screen">
 
-    @session('status')
-        <div class="toast toast-top toast-right" x-transition:leave="500ms" x-data="{ show: true }" x-show="show">
-
-            <div class="alert bg-navy-blue text-white font-extrabold transition-all ease-out">
-                <span>Login successfully. </span>
-                <span @click="show = false">
-                    @svg('eva-close', 'h-6 w-6 text-red-500 cursor-pointer')
-                </span>
-            </div>
-
+  @session('status')
+    <div
+        class="fixed top-4 right-4 z-[9999] w-[90%] max-w-sm sm:max-w-xs md:max-w-sm lg:max-w-md xl:max-w-lg"
+        x-data="{ show: true }"
+        x-show="show"
+        x-transition:leave="transition ease-in duration-300"
+        x-transition:leave-start="opacity-100 transform"
+        x-transition:leave-end="opacity-0 -translate-y-2"
+    >
+        <div class="flex items-center justify-between p-4 text-sm font-semibold text-white bg-navy-blue rounded-xl shadow-lg">
+            <span>Login successful.</span>
+            <button @click="show = false" class="ml-4 focus:outline-none">
+                @svg('eva-close', 'w-5 h-5 text-red-400 hover:text-red-500')
+            </button>
         </div>
-    @endsession
+    </div>
+@endsession
+
+@session('otp')
+    <div
+        class="fixed top-4 right-4 z-[9999] w-[90%] max-w-sm sm:max-w-xs md:max-w-sm lg:max-w-md xl:max-w-lg"
+        x-data="{ show: true }"
+        x-show="show"
+        x-transition:leave="transition ease-in duration-300"
+        x-transition:leave-start="opacity-100 transform"
+        x-transition:leave-end="opacity-0 -translate-y-2"
+    >
+        <div class="flex items-center justify-between p-4 text-sm font-semibold text-white bg-navy-blue rounded-xl shadow-lg">
+            <span>{{ session('otp') }}</span>
+            <button @click="show = false" class="ml-4 focus:outline-none">
+                @svg('eva-close', 'w-5 h-5 text-red-400 hover:text-red-500')
+            </button>
+        </div>
+    </div>
+@endsession
+
 
     <h1 class="my-1 text-4xl font-extrabold capitalize">Welcome Back! </h1>
 
@@ -76,7 +114,6 @@ new #[Layout('layouts.guest')] class extends Component {
             </div>
             <div class="validator">
                 <x-input-error :messages="$errors->get('role')" class="validator absolute" />
-                <x-input-error :messages="session('otp')" class=" validator" />
             </div>
 
             <!-- Session Status -->
