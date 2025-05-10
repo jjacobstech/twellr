@@ -15,7 +15,7 @@ return new class extends Migration
             $table->bigIncrements('id');
             $table->text('title');
             $table->longText('content');
-            $table->unsignedBigInteger('category')->index('blog_posts_category_foreign');
+            $table->unsignedBigInteger('category_id')->index('blog_posts_category_foreign');
             $table->timestamp('created_at')->nullable();
             $table->string('image');
             $table->timestamp('updated_at')->nullable();
