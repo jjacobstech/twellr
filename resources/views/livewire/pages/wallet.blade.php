@@ -354,225 +354,24 @@ $withdraw = function () {
 
     </div>
     {{-- Tranaction Paginator --}}
-    <div x-show="transactions" x-transition:enter.duration.500ms x-cloak="display:none"
-        class="flex justify-center md:justify-between py-2 bg-white">
-
-        @php
-            $paginator = $transactions;
-        @endphp
-
-        @if ($paginator->isNotEmpty())
-            <div class="justify-start text-sm text-black hidden md:block">Showing {{ $paginator->firstItem() ?? 0 }} to
-                {{ $paginator->lastItem() ?? 0 }} of
-                {{ $paginator->total() }} results
-            </div>
-
-            <div class="flex flex-wrap items-center justify-end gap-1">
-                {{-- Previous Page Link --}}
-                @if ($paginator->onFirstPage())
-                    <button disabled
-                        class="px-2 py-1 text-xs font-medium text-gray-400 bg-white border border-gray-300 rounded-md cursor-not-allowed">
-                        <span class="hidden sm:inline">Previous</span>
-                        <span class="sm:hidden">&larr;</span>
-                    </button>
-                @else
-                    <a href="{{ $paginator->previousPageUrl() }}" wire:navigate>
-                        <button
-                            class="px-2 py-1 text-xs font-medium text-gray-700 transition duration-150 ease-in-out bg-white border border-gray-300 rounded-md hover:bg-golden hover:text-white focus:outline-none focus:ring ring-blue-300 focus:border-blue-300 active:bg-gray-100">
-                            <span class="hidden sm:inline">Previous</span>
-                            <span class="sm:hidden">&larr;</span>
-                        </button>
-                    </a>
+    <div x-show="transactions" x-transition:enter.duration.500ms x-cloak="display:none">
+          @if ($transactions->hasPages())
+                    <div class="mt-4 sm:mt-6">
+                        {{ $transactions->links() }}
+                    </div>
                 @endif
-
-                <div class="items-center hidden gap-1 sm:flex">
-                    {{-- Pagination Elements - Desktop --}}
-                    @php
-                        $start = max(1, $paginator->currentPage() - 1);
-                        $end = min($start + 2, $paginator->lastPage());
-                        if ($end - $start < 2 && $start > 1) {
-                            $start = max(1, $end - 2);
-                        }
-                    @endphp
-
-                    @if ($start > 1)
-                        <a href="{{ $paginator->url(1) }}" wire:navigate>
-                            <button
-                                class="px-2 py-1 text-xs font-medium text-gray-700 transition duration-150 ease-in-out bg-white border border-gray-300 rounded-md hover:bg-golden hover:text-white focus:outline-none focus:ring ring-blue-300 focus:border-blue-300 active:bg-gray-100">
-                                1
-                            </button>
-                        </a>
-                        @if ($start > 2)
-                            <span class="px-1 py-1 text-xs text-gray-500">...</span>
-                        @endif
-                    @endif
-
-                    @for ($i = $start; $i <= $end; $i++)
-                        @if ($paginator->currentPage() == $i)
-                            <button aria-current="page" disabled
-                                class="relative px-2 py-1 text-xs font-bold text-white border rounded-md bg-golden border-golden">
-                                {{ $i }}
-                                <span
-                                    class="absolute w-1 h-1 transform -translate-x-1/2 rounded-full -bottom-1 left-1/2 bg-golden"></span>
-                            </button>
-                        @else
-                            <a href="{{ $paginator->url($i) }}" wire:navigate>
-                                <button
-                                    class="px-2 py-1 text-xs font-medium text-gray-700 transition duration-150 ease-in-out bg-white border border-gray-300 rounded-md hover:bg-golden hover:text-white focus:outline-none focus:ring ring-blue-300 focus:border-blue-300 active:bg-gray-100">
-                                    {{ $i }}
-                                </button>
-                            </a>
-                        @endif
-                    @endfor
-
-                    @if ($end < $paginator->lastPage())
-                        @if ($end < $paginator->lastPage() - 1)
-                            <span class="px-1 py-1 text-xs text-gray-500">...</span>
-                        @endif
-                        <a href="{{ $paginator->url($paginator->lastPage()) }}" wire:navigate>
-                            <button
-                                class="px-2 py-1 text-xs font-medium text-gray-700 transition duration-150 ease-in-out bg-white border border-gray-300 rounded-md hover:bg-golden hover:text-white focus:outline-none focus:ring ring-blue-300 focus:border-blue-300 active:bg-gray-100">
-                                {{ $paginator->lastPage() }}
-                            </button>
-                        </a>
-                    @endif
-                </div>
-
-                {{-- Mobile Page Indicator --}}
-                <span class="px-2 py-1 text-xs font-medium text-black sm:hidden">
-                    Page {{ $paginator->currentPage() }} of {{ $paginator->lastPage() }}
-                </span>
-
-                {{-- Next Page Link --}}
-                @if ($paginator->hasMorePages())
-                    <a href="{{ $paginator->nextPageUrl() }}" wire:navigate>
-                        <button
-                            class="px-2 py-1 text-xs font-medium text-gray-700 transition duration-150 ease-in-out bg-white border border-gray-300 rounded-md hover:bg-golden hover:text-white focus:outline-none focus:ring ring-blue-300 focus:border-blue-300 active:bg-gray-100">
-                            <span class="hidden sm:inline">Next</span>
-                            <span class="sm:hidden">&rarr;</span>
-                        </button>
-                    </a>
-                @else
-                    <button disabled
-                        class="px-2 py-1 text-xs font-medium text-gray-400 bg-white border border-gray-300 rounded-md cursor-not-allowed">
-                        <span class="hidden sm:inline">Next</span>
-                        <span class="sm:hidden">&rarr;</span>
-                    </button>
-                @endif
-            </div>
-        @endif
     </div>
     {{-- Transaction Paginator End --}}
 
 
 
     {{-- Purchase Paginator --}}
-    <div x-show="purchases" x-transition:enter.duration.500ms x-cloak="display:none"
-        class="flex justify-between py-2 bg-white  justify-center md:justify-between ">
-
-        @php
-            $paginator = $purchases;
-        @endphp
-        @if ($paginator->isNotEmpty())
-            <div class="justify-start text-sm text-black hidden md:block ">Showing {{ $paginator->firstItem() ?? 0 }} to
-                {{ $paginator->lastItem() ?? 0 }} of
-                {{ $paginator->total() }} results
-            </div>
-
-            <div class="flex flex-wrap items-center justify-end gap-1">
-                {{-- Previous Page Link --}}
-                @if ($paginator->onFirstPage())
-                    <button disabled
-                        class="px-2 py-1 text-xs font-medium text-gray-400 bg-white border border-gray-300 rounded-md cursor-not-allowed">
-                        <span class="hidden sm:inline">Previous</span>
-                        <span class="sm:hidden">&larr;</span>
-                    </button>
-                @else
-                    <a href="{{ $paginator->previousPageUrl() }}" wire:navigate>
-                        <button
-                            class="px-2 py-1 text-xs font-medium text-gray-700 transition duration-150 ease-in-out bg-white border border-gray-300 rounded-md hover:bg-golden hover:text-white focus:outline-none focus:ring ring-blue-300 focus:border-blue-300 active:bg-gray-100">
-                            <span class="hidden sm:inline">Previous</span>
-                            <span class="sm:hidden">&larr;</span>
-                        </button>
-                    </a>
+    <div x-show="purchases" x-transition:enter.duration.500ms x-cloak="display:none">
+          @if ($purchases->hasPages())
+                    <div class="mt-4 sm:mt-6">
+                        {{ $purchases->links() }}
+                    </div>
                 @endif
-
-                <div class="items-center hidden gap-1 sm:flex">
-                    {{-- Pagination Elements - Desktop --}}
-                    @php
-                        $start = max(1, $paginator->currentPage() - 1);
-                        $end = min($start + 2, $paginator->lastPage());
-                        if ($end - $start < 2 && $start > 1) {
-                            $start = max(1, $end - 2);
-                        }
-                    @endphp
-
-                    @if ($start > 1)
-                        <a href="{{ $paginator->url(1) }}" wire:navigate>
-                            <button
-                                class="px-2 py-1 text-xs font-medium text-gray-700 transition duration-150 ease-in-out bg-white border border-gray-300 rounded-md hover:bg-golden hover:text-white focus:outline-none focus:ring ring-blue-300 focus:border-blue-300 active:bg-gray-100">
-                                1
-                            </button>
-                        </a>
-                        @if ($start > 2)
-                            <span class="px-1 py-1 text-xs text-gray-500">...</span>
-                        @endif
-                    @endif
-
-                    @for ($i = $start; $i <= $end; $i++)
-                        @if ($paginator->currentPage() == $i)
-                            <button aria-current="page" disabled
-                                class="relative px-2 py-1 text-xs font-bold text-white border rounded-md bg-golden border-golden">
-                                {{ $i }}
-                                <span
-                                    class="absolute w-1 h-1 transform -translate-x-1/2 rounded-full -bottom-1 left-1/2 bg-golden"></span>
-                            </button>
-                        @else
-                            <a href="{{ $paginator->url($i) }}" wire:navigate>
-                                <button
-                                    class="px-2 py-1 text-xs font-medium text-gray-700 transition duration-150 ease-in-out bg-white border border-gray-300 rounded-md hover:bg-golden hover:text-white focus:outline-none focus:ring ring-blue-300 focus:border-blue-300 active:bg-gray-100">
-                                    {{ $i }}
-                                </button>
-                            </a>
-                        @endif
-                    @endfor
-
-                    @if ($end < $paginator->lastPage())
-                        @if ($end < $paginator->lastPage() - 1)
-                            <span class="px-1 py-1 text-xs text-gray-500">...</span>
-                        @endif
-                        <a href="{{ $paginator->url($paginator->lastPage()) }}" wire:navigate>
-                            <button
-                                class="px-2 py-1 text-xs font-medium text-gray-700 transition duration-150 ease-in-out bg-white border border-gray-300 rounded-md hover:bg-golden hover:text-white focus:outline-none focus:ring ring-blue-300 focus:border-blue-300 active:bg-gray-100">
-                                {{ $paginator->lastPage() }}
-                            </button>
-                        </a>
-                    @endif
-                </div>
-
-                {{-- Mobile Page Indicator --}}
-                <span class="px-2 py-1 text-xs font-medium text-black sm:hidden">
-                    Page {{ $paginator->currentPage() }} of {{ $paginator->lastPage() }}
-                </span>
-
-                {{-- Next Page Link --}}
-                @if ($paginator->hasMorePages())
-                    <a href="{{ $paginator->nextPageUrl() }}" wire:navigate>
-                        <button
-                            class="px-2 py-1 text-xs font-medium text-gray-700 transition duration-150 ease-in-out bg-white border border-gray-300 rounded-md hover:bg-golden hover:text-white focus:outline-none focus:ring ring-blue-300 focus:border-blue-300 active:bg-gray-100">
-                            <span class="hidden sm:inline">Next</span>
-                            <span class="sm:hidden">&rarr;</span>
-                        </button>
-                    </a>
-                @else
-                    <button disabled
-                        class="px-2 py-1 text-xs font-medium text-gray-400 bg-white border border-gray-300 rounded-md cursor-not-allowed">
-                        <span class="hidden sm:inline">Next</span>
-                        <span class="sm:hidden">&rarr;</span>
-                    </button>
-                @endif
-            </div>
-        @endif
     </div>
     {{-- Purchase Paginator End --}}
 

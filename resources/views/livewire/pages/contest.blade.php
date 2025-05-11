@@ -417,10 +417,7 @@ $submitEntry = function () {
 
                                     <!-- Vote Button -->
                                     <div class="mt-3 sm:mt-4">
-                                        @if (Auth::user()->isCreative() || Auth::user()->role === 'admin')
-                                            <x-mary-button disabled label="Vote"
-                                                class="w-full bg-[#001f54] text-white hover:bg-golden hover:border-golden" />
-                                        @else
+
                                        @if ($voted)
                                              <x-mary-button label="Voted"
                                                     class="w-full bg-[#001f54] text-white hover:bg-golden hover:border-golden"
@@ -431,7 +428,6 @@ $submitEntry = function () {
                                                     wire:click="castVote" spinner />
                                        @endif
 
-                                        @endif
                                     </div>
                                 </div>
                             @endif
@@ -472,8 +468,9 @@ $submitEntry = function () {
                                 <button wire:click='viewDesign({{ $design->product->id }})'
                                     class="px-3 py-2 text-sm font-medium text-white transition duration-200 rounded cursor-pointer sm:px-4 bg-navy-blue hover:bg-golden">VIEW
                                     EXHIBIT</button>
-                                <button wire:click='vote({{ $design->product->id }})'
-                                    class="px-3 py-2 text-sm font-medium text-white transition duration-200 rounded cursor-pointer sm:px-4 bg-navy-blue hover:bg-golden">VOTE</button>
+                                @if (!$design->user->id !=  Auth::id())
+
+                                @endif
                             </div>
                         </div>
                     </div>
