@@ -1,12 +1,16 @@
 <?php
-use function Livewire\Volt\{layout, state};
+use function Livewire\Volt\{layout, mount, state};
 use App\Models\Product;
 
 layout('layouts.app');
+mount(function () {
+    session()->forget('user');
+    session()->forget('secret');
+});
 state(['latestProducts' => fn() => Auth::user()->isCreative() ? Product::latest()->take(5)->get() : Product::latest()->take(6)->get()]);
 
 ?>
-<div class="flex h-screen m-0 overflow-hidden md:w-full">
+<div class="flex h-screen m-0 overflow-hidden md:w-full" x-cloak="display: none">
     @if (Auth::user()->isCreative())
         <x-creative-sidebar class="w-[12%]" />
     @endif

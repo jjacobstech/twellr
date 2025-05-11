@@ -34,11 +34,12 @@ new #[Layout('layouts.guest')] class extends Component {
                 // Send email for OTP verification
                 Mail::to($this->form->email)->send(new EmailVerification($otp, $user->name));
 
-                // Redirect to the email verification page with user and secret
-                return redirect(route('email.verification'))->with([
+                Session::put([
                     'user' => $user,
                     'secret' => $this->form->email,
                 ]);
+                // Redirect to the email verification page with user and secret
+                return $this->redirect(route('email.verification'));
             } catch (\Exception $e) {
                              // Optionally, log the exception for debugging purposes
                 report($e); // This will log the error to the Laravel logs
@@ -71,7 +72,7 @@ new #[Layout('layouts.guest')] class extends Component {
         x-transition:leave-end="opacity-0 -translate-y-2"
     >
         <div class="flex items-center justify-between p-4 text-sm font-semibold text-white bg-navy-blue rounded-xl shadow-lg">
-            <span>Login successful.</span>
+            <span>{{ session('status') }}</span>
             <button @click="show = false" class="ml-4 focus:outline-none">
                 @svg('eva-close', 'w-5 h-5 text-red-400 hover:text-red-500')
             </button>

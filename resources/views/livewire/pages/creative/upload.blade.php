@@ -179,10 +179,10 @@ new #[Layout('layouts.app')] class extends Component {
         <x-creative-sidebar class="w-full md:w-[12%] md:min-h-screen" />
 
         <!-- Main Content Area - Takes remaining space -->
-        <div class="w-full md:w-[87%] px-2 sm:px-4 py-2.5 text-xl bg-white h-screen md:h-full scrollbar-none">
+        <div class="w-full md:w-[87%] px-2 sm:px-4 text-xl bg-white h-screen md:h-full scrollbar-none md:pb-0 py-2 pb-44">
             <!-- Background Container - Height adapts to content -->
             <div style="background-image: url('{{ asset('assets/blurred.png') }}')"
-                class="relative flex justify-center text-white bg-no-repeat bg-cover rounded-lg min-h-[500px] h-100 scrollbar-none">
+                class="relative flex justify-center text-white bg-no-repeat bg-cover rounded-lg min-h-[500px] h-100 scrollbar-none ">
 
                 <!-- Back Button - Positioned consistently across screens -->
                 <div class="absolute z-10 top-2 sm:top-4 left-2 sm:left-4">
@@ -195,12 +195,12 @@ new #[Layout('layouts.app')] class extends Component {
                 <!-- Form Container - Adapts width based on screen size and state -->
                 <form x-transition:enter.duration.500ms x-cloak="display:none"
                     :class="uploadModal ? 'w-full p-2 sm:p-4 md:p-8 lg:p-12' :
-                        'w-[95%] sm:w-[90%] md:w-[75%] lg:w-[60%] bg-[#dedddb] rounded-[20px] sm:rounded-[30px] md:rounded-[40px] my-4 sm:my-6'"
+                        'w-[95%] sm:w-[90%] md:w-[75%] lg:w-[60%] bg-[#dedddb] rounded-[20px] sm:rounded-[30px] md:rounded-[40px] my-4 sm:my-4'"
                     wire:submit="uploadProduct" enctype="multipart/form-data">
                     @csrf
 
                     <!-- Main Form View -->
-                    <div x-show="form" x-transition:enter.duration.700ms>
+                    <div x-show="form"  x-transition:enter.duration.700ms>
                         <div class="flex flex-col h-full px-3 py-4 sm:px-6 md:px-10 sm:py-6 md:py-10">
 
                             <!-- Name and Price Row - Always stack on mobile, side by side on larger screens -->
@@ -299,7 +299,7 @@ new #[Layout('layouts.app')] class extends Component {
 
                     <!-- Upload Modal -->
                     <div x-show="uploadModal" x-transition:enter.duration.500ms x-cloak
-                        class="py-6 sm:py-8 md:py-16 lg:py-[124.5px]">
+                        class="py-6 sm:py-8 md:py-16 lg:py-[117px]">
                         <!-- Responsive Grid Layout for Uploads -->
                         <div
                             class="grid grid-cols-1 gap-4 px-2 xs:grid-cols-2 lg:grid-cols-4 sm:gap-6 md:gap-8 sm:px-4 md:px-8 lg:px-16">
@@ -312,7 +312,7 @@ new #[Layout('layouts.app')] class extends Component {
                                     accept="image/png, image/jpeg, image/jpg">
                                     <!-- Responsive Image Container -->
 
-                                    <img class="object-cover w-full h-full rounded-xl"
+                                    <img class="object-cover w-full h-full rounded-xl aspect-square"
                                         src="{{ asset('assets/uploadDesignStack.png') }}" alt="Upload Front View">
 
                                 </x-mary-file>
@@ -333,7 +333,7 @@ new #[Layout('layouts.app')] class extends Component {
                                     change-text="Upload Back View" wire:model.live="backView"
                                     accept="image/png, image/jpeg, image/jpg">
 
-                                    <img class="object-cover w-full h-full rounded-xl"
+                                    <img class="object-cover w-full h-full rounded-xl aspect-square"
                                         src="{{ asset('assets/uploadDesignStack.png') }}" alt="Upload Back View">
                                 </x-mary-file>
                                 @error('backView')
@@ -352,7 +352,7 @@ new #[Layout('layouts.app')] class extends Component {
                                     class="relative grid items-center w-24 h-24 mx-auto xs:w-28 xs:h-28 sm:w-32 sm:h-32 md:w-36 md:h-36 lg:w-40 lg:h-40 group"
                                     change-text="Upload Side View" wire:model="sideView"
                                     accept="image/png, image/jpeg, image/jpg">
-                                    <img class="object-cover w-full h-full rounded-xl"
+                                    <img class="object-cover w-full h-full rounded-xl aspect-square"
                                         src="{{ asset('assets/uploadDesignStack.png') }}" alt="Upload Side View">
                                 </x-mary-file>
                                 @error('sideView')

@@ -35,25 +35,34 @@ class GoogleAuthController extends Controller
 
         $user = User::where('google_id', $google_id)->first();
 
+
         try {
-            if ($user) {
-                // Login Authenticated User
-                Auth::login($user);
-                return redirect(route('dashboard', absolute: false));
-            } else {
+            // Check if a user exists with the given email
+            $existingUser = User::where('email', $email)->first();
 
-                // Redirection To Registration Completion Page
-                return  redirect(route('complete.registration'))->with([
-                    'firstname' => $firstname,
-                    'lastname' => $lastname,
-                    'avatar' => $avatar,
-                    'email' => $email,
-                    'google_id' => $google_id,
-
-                ]);
+            if ($existingUser) {
+                return redirect(route('login'))->with('status', 'Kindly login with your email and password');
             }
-        } catch (\Exception $error) {
-            return  $error;
+
+            // Check if the user exists via Google ID
+            $user = User::where('google_id', $google_id)->first();
+
+            if ($user) {
+                Auth::login($user);
+                return redirect()->route('dashboard');
+            }
+
+            // Redirect to registration completion
+            return redirect()->route('complete.registration')->with([
+                'firstname' => $firstname,
+                'lastname' => $lastname,
+                'avatar' => $avatar,
+                'email' => $email,
+                'google_id' => $google_id,
+            ]);
+        } catch (\Exception $e) {
+            session('status', "Google login failed:" . $e->getMessage());
+            return redirect()->route('login')->withErrors('Something went wrong. Please try again.');
         }
     }
 }

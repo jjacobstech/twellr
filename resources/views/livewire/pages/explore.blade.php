@@ -20,7 +20,7 @@ state([
             'title' => 'Picked For You',
             'path' => 'market.place',
             'filter' => 'picked-for-you',
-            'items' => Auth::user()?->pickedForYou()->get() ?? collect(),
+            'items' => Auth::user()?->pickedForYou() ?? collect(),
         ],
         (object) [
             'title' => 'Who Rocked It Best',
@@ -69,7 +69,7 @@ state([
             </div>
 
             <div
-                class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 gap-3 bg-gray-100 p-3 rounded-2xl shadow-lg ">
+                class="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 gap-3 bg-gray-100 p-3 rounded-2xl shadow-lg ">
                 @forelse ($section->items as $item)
                     @if (!empty($section->isPhoto))
                         <div class="rounded-xl shadow-md">

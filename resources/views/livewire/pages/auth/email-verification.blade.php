@@ -105,37 +105,50 @@ new #[Layout('layouts.guest')] class extends Component {
     <form wire:submit='verify' id="otp-form" class="w-full">
         <div class="py-8 bg-white">
             <div class="flex justify-center gap-2 sm:gap-4">
-                @foreach (['No1', 'No2', 'No3', 'No4', 'No5'] as $key => $field)
-                    <input wire:model='{{ $field }}' name="{{ $field }}" type="text" maxlength="1"
-                        class="w-10 h-10 text-2xl sm:w-14 sm:h-14 md:w-20 md:h-20 p-2 font-medium text-center bg-white border rounded-lg shadow outline-none border-stroke text-gray-5 sm:text-4xl" />
-                @endforeach
+
+                <input wire:model='No1' name="No1" inputmode="numeric" pattern="[0-9]*" type="text" maxlength="1"
+                    class="w-10 h-10 text-2xl sm:w-14 sm:h-14 md:w-20 md:h-20 p-2 font-medium text-center bg-white border rounded-lg shadow outline-none border-stroke text-gray-5 sm:text-4xl" />
+                <input wire:model='No2' name="No2" inputmode="numeric" pattern="[0-9]*" type="text"
+                    maxlength="1"
+                    class="w-10 h-10 text-2xl sm:w-14 sm:h-14 md:w-20 md:h-20 p-2 font-medium text-center bg-white border rounded-lg shadow outline-none border-stroke text-gray-5 sm:text-4xl" />
+                <input wire:model='No3' name="No3" inputmode="numeric" pattern="[0-9]*" type="text"
+                    maxlength="1"
+                    class="w-10 h-10 text-2xl sm:w-14 sm:h-14 md:w-20 md:h-20 p-2 font-medium text-center bg-white border rounded-lg shadow outline-none border-stroke text-gray-5 sm:text-4xl" />
+                <input wire:model='No4' name="No4" inputmode="numeric" pattern="[0-9]*" type="text"
+                    maxlength="1"
+                    class="w-10 h-10 text-2xl sm:w-14 sm:h-14 md:w-20 md:h-20 p-2 font-medium text-center bg-white border rounded-lg shadow outline-none border-stroke text-gray-5 sm:text-4xl" />
+                <input
+                    x-on:input="$wire.verify();"
+                    inputmode="numeric" pattern="[0-9]*" wire:model='No5' name="No5" type="text" maxlength="1"
+                    class="w-10 h-10 text-2xl sm:w-14 sm:h-14 md:w-20 md:h-20 p-2 font-medium text-center bg-white border rounded-lg shadow outline-none border-stroke text-gray-5 sm:text-4xl" />
+
             </div>
         </div>
 
-        @if ($errors->all())
-            <p class="mt-2 text-center text-red-500">{{ __('Incomplete Pin') }}</p>
-        @endif
+        <div class="flex items-center justify-center mt-4">
 
-        <x-primary-button hidden id="verify">{{ __('Verify') }}</x-primary-button>
+            @if ($errors->all())
+                <p class="mt-2 text-center text-red-500 absolute font-bold">{{ __('Incomplete Pin') }}</p>
+            @endif
 
-        @if (session('status') == 'verification-link-sent')
-            <div class="mt-4 text-sm font-medium text-center text-green-600">
-                {{ __('Check your email for the OTP pin. If it doesn’t reflect in your inbox, consider checking Spam mail.') }}<br>
-                {{ __('A new verification link has been sent to the email address you provided during registration.') }}
-            </div>
-        @endif
+            @if (session('status') === 'verification-link-sent')
+                <div class="mt-2 text-sm font-medium text-center text-green-600 absolute ">
+                    {{ __('A new verification link has been sent to the email address you provided during registration.') }}
+                </div>
+            @endif
 
-        @if (session('status') == 'verification-successful')
-            <div class="mt-4 font-bold text-center text-green-600">
-                {{ __('Verification Successful') }}
-            </div>
-        @endif
+            @if (session('status') === 'verification-successful')
+                <div class="mt-4 font-bold text-center text-green-600 absolute">
+                    {{ __('Verification Successful') }}
+                </div>
+            @endif
 
-        @if (session('status') == 'Invalid OTP')
-            <div class="mt-4 font-bold text-center text-red-600">
-                {{ __('Invalid OTP') }}
-            </div>
-        @endif
+            @if (session('status') === 'Invalid OTP')
+                <div class="mt-4 font-bold text-center text-red-600 absolute">
+                    {{ __('Invalid OTP') }}
+                </div>
+            @endif
+        </div>
     </form>
 
     <div class="mt-12 text-center">
@@ -149,65 +162,58 @@ new #[Layout('layouts.guest')] class extends Component {
         </button>
     </div>
 
-        <script>
-            document.addEventListener("DOMContentLoaded", () => {
-                const form = document.getElementById("otp-form");
-                const inputs = Array.from(form.querySelectorAll("input[type=text]"));
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const form = document.getElementById("otp-form");
+            const inputs = Array.from(form.querySelectorAll("input[type=text]"));
 
-                inputs.forEach((input, idx) => {
-                    input.addEventListener("input", (e) => {
-                        const val = e.target.value;
-                        if (val.length > 1) e.target.value = val.slice(0, 1);
-                        if (val && idx < inputs.length - 1) inputs[idx + 1].focus();
-                    });
-
-                    input.addEventListener("keydown", (e) => {
-                        if (e.key === "Backspace" && !input.value && idx > 0) {
-                            inputs[idx - 1].focus();
-                        }
-                    });
+            inputs.forEach((input, idx) => {
+                input.addEventListener("input", (e) => {
+                    const val = e.target.value;
+                    if (val.length > 1) e.target.value = val.slice(0, 1);
+                    if (val && idx < inputs.length - 1) inputs[idx + 1].focus();
                 });
 
-                form.addEventListener("paste", (e) => {
-                    e.preventDefault();
-                    const paste = (e.clipboardData || window.clipboardData).getData("text").replace(/\D/g, "").slice(0, inputs.length);
-                    paste.split("").forEach((char, i) => inputs[i].value = char);
-                    inputs[paste.length < inputs.length ? paste.length : inputs.length - 1].focus();
+                input.addEventListener("keydown", (e) => {
+                    if (e.key === "Backspace" && !input.value && idx > 0) {
+                        inputs[idx - 1].focus();
+                    }
                 });
-
-                const firstEmpty = inputs.find(input => !input.value) || inputs[0];
-                firstEmpty.focus();
             });
 
-            let countdownInterval;
-            const updateCountdown = () => {
-                const countdownElement = document.getElementById("countdown");
-                let time = countdownElement.textContent.split(":");
-                let minutes = parseInt(time[0]);
-                let seconds = parseInt(time[1]);
+            const firstEmpty = inputs.find(input => !input.value) || inputs[0];
+            firstEmpty.focus();
+        });
 
-                if (minutes === 0 && seconds === 0) {
-                    clearInterval(countdownInterval);
-                    countdownElement.innerText = "00:00";
-                    return;
-                }
+        let countdownInterval;
+        const updateCountdown = () => {
+            const countdownElement = document.getElementById("countdown");
+            let time = countdownElement.textContent.split(":");
+            let minutes = parseInt(time[0]);
+            let seconds = parseInt(time[1]);
 
-                if (seconds === 0) {
-                    minutes--;
-                    seconds = 59;
-                } else {
-                    seconds--;
-                }
-
-                countdownElement.innerText = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-            };
-
-            const startTimer = () => {
+            if (minutes === 0 && seconds === 0) {
                 clearInterval(countdownInterval);
-                document.getElementById("countdown").innerText = "{{ config('otp.expiry') }}:00";
-                countdownInterval = setInterval(updateCountdown, 1000);
-            };
+                countdownElement.innerText = "00:00";
+                return;
+            }
 
-            document.addEventListener("DOMContentLoaded", startTimer);
-        </script>
+            if (seconds === 0) {
+                minutes--;
+                seconds = 59;
+            } else {
+                seconds--;
+            }
+
+            countdownElement.innerText = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        };
+
+        const startTimer = () => {
+            clearInterval(countdownInterval);
+            document.getElementById("countdown").innerText = "{{ config('otp.expiry') }}:00";
+            countdownInterval = setInterval(updateCountdown, 1000);
+        };
+
+        document.addEventListener("DOMContentLoaded", startTimer);
+    </script>
 </div>

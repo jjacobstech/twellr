@@ -156,6 +156,21 @@ class User extends Authenticatable
 
         // Return products where the user_id is in the following list
         return Product::whereIn('user_id', $followingIds)
+            ->latest()->take(7)->get();  // Order by most recent first
+    }
+
+    public function pickedForYous()
+    {
+        // Get IDs of users this user is following
+        $followingIds = $this->following()->pluck('users.id');
+
+        // If not following anyone, return empty collection
+        if ($followingIds->isEmpty()) {
+            return collect();
+        }
+
+        // Return products where the user_id is in the following list
+        return Product::whereIn('user_id', $followingIds)
             ->latest()->take(7);  // Order by most recent first
     }
 

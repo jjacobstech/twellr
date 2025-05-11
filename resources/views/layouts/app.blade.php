@@ -30,7 +30,8 @@
 
 <body class="fixed w-screen h-screen font-sans antialiased bg-white">
 <x-mary-toast position="toast-top top-right" />
-    <div class="h-full bg-gray-100">
+
+    <div wire:loading.class='hidden' class="h-full bg-gray-100">
         {{-- To Allow Admin view blog, marketplace and explore pages from admin panel --}}
      @if (Auth::user()->role === 'admin' || Auth::user()->role == 'admin'  )
             <livewire:layout.admin.navigation />
@@ -40,7 +41,7 @@
 
 
         <!-- Page Content -->
-        <main class="mt-2 h-screen md:h-full" x-data="{ show: false }"
+        <main class="mt-2 h-screen md:h-full" x-cloak="display:none" x-data="{ show: false }"
      x-init="setTimeout(() => show = true, 50)"
      x-show="show"
      x-transition:enter="transition ease-in-out duration-500"

@@ -140,12 +140,17 @@ $withdraw = function () {
 };
 
 ?>
-<div class="h-screen pb-32 overflow-y-scroll bg-white px-7 md:px-20 scrollbar-none" x-data="{
+<div class="h-screen pb-44 overflow-y-scroll bg-white px-7 md:px-20 scrollbar-none" x-data="{
     transactions: true,
     purchases: false,
-    setTab() {
-        this.transactions = !this.transactions;
-        this.purchases = !this.purchases;
+    setTab(tab) {
+        if (tab === 'transactions') {
+            this.transactions = true;
+            this.purchases = false;
+        } else if (tab === 'purchases') {
+            this.transactions = false;
+            this.purchases = true;
+        }
     }
 }">
 
@@ -187,13 +192,13 @@ $withdraw = function () {
     </div>
     <div class="flex bg-gray-100 rounded-t-md">
 
-        <h1 @click="setTab()" :class="transactions ? 'border-b-2 border-navy-blue' : ''"
+        <h1 @click="setTab('transactions')" :class="transactions ? 'border-b-2 border-navy-blue' : ''"
             class="px-5 py-2 mt-5 text-2xl font-extrabold text-left text-gray-500 bg-gray-100 md:mt-3">
             Trasactions
 
         </h1>
 
-        <h1 @click="setTab()" :class="purchases ? 'border-b-2 border-navy-blue' : ''"
+        <h1 @click="setTab('purchases')" :class="purchases ? 'border-b-2 border-navy-blue' : ''"
             class="px-5 py-2 mt-5 text-2xl font-extrabold text-left text-gray-500 bg-gray-100 md:mt-3 ">
             Purchases
 
@@ -355,11 +360,11 @@ $withdraw = function () {
     </div>
     {{-- Tranaction Paginator --}}
     <div x-show="transactions" x-transition:enter.duration.500ms x-cloak="display:none">
-          @if ($transactions->hasPages())
-                    <div class="mt-4 sm:mt-6">
-                        {{ $transactions->links() }}
-                    </div>
-                @endif
+        @if ($transactions != null || !$transactions->isEmpty())
+                <div class="mt-4 sm:mt-6">
+                    {{ $transactions->links() }}
+                </div>
+        @endif
     </div>
     {{-- Transaction Paginator End --}}
 
@@ -367,16 +372,16 @@ $withdraw = function () {
 
     {{-- Purchase Paginator --}}
     <div x-show="purchases" x-transition:enter.duration.500ms x-cloak="display:none">
-          @if ($purchases->hasPages())
-                    <div class="mt-4 sm:mt-6">
-                        {{ $purchases->links() }}
-                    </div>
-                @endif
+        @if ($purchases != null || !$purchases->isEmpty())
+                <div class="mt-4 sm:mt-6">
+                    {{ $purchases->links() }}
+                </div>
+        @endif
     </div>
     {{-- Purchase Paginator End --}}
 
-    <div x-transition:enter.duration.500ms x-cloak="display:none" x-cloak="display:hidden"
-        wire:show='withdrawalModal' class="w-screen h-screen bg-black/30 backdrop-blur-sm inset-0 absolute z-[999]">
+    <div x-transition:enter.duration.500ms x-cloak="display:none" x-cloak="display:hidden" wire:show='withdrawalModal'
+        class="w-screen h-screen bg-black/30 backdrop-blur-sm inset-0 absolute z-[999]">
         <div class="flex justify-center md:px-20 lg:px-[30%] mt-[15%]">
             <x-bladewind.card class=" lg:w-full">
 

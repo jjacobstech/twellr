@@ -41,43 +41,63 @@ new #[Layout('layouts.guest')] class extends Component {
 
         $validated['password'] = Hash::make($validated['password']);
 
-        $referrer = $validated['referral'] ? User::where('referral_link', $validated['referral'])->first() : '';
+        try {
+            $referrer = $validated['referral'] ? User::where('referral_link', $validated['referral'])->first() : '';
 
-        event(
-            new Registered(
-                ($user = User::create([
-                    'firstname' => $validated['firstname'],
-                    'lastname' => $validated['lastname'],
-                    'email' => $validated['email'],
-                    'password' => $validated['password'],
-                    'role' => $validated['role'],
-                    'referral_link' => strtoupper(substr($validated['firstname'], 0, 2) . substr($validated['lastname'], 0, 2) . rand(1000, 9999)),
-                    'notify_purchase' => $validated['role'] == 'creative' ? 'yes' : 'no',
-                    'referred_by' => $referrer ? $referrer->id : '',
-                ])),
-            ),
-        );
+            if ($referrer) {
+                event(
+                    new Registered(
+                        ($user = User::create([
+                            'firstname' => $validated['firstname'],
+                            'lastname' => $validated['lastname'],
+                            'email' => $validated['email'],
+                            'password' => $validated['password'],
+                            'role' => $validated['role'],
+                            'referral_link' => strtoupper(substr($validated['firstname'], 0, 2) . substr($validated['lastname'], 0, 2) . rand(1000, 9999)),
+                            'notify_purchase' => $validated['role'] == 'creative' ? 'yes' : 'no',
+                            'referred_by' => $referrer->id,
+                        ])),
+                    ),
+                );
 
-        if ($referrer) {
-            Referral::create([
-                'referrer_id' => $referrer->id,
-                'referred_id' => $user->id,
-                'code_used' => $validated['referral'],
-                'status' => 'pending',
-            ]);
-        } else {
-            abort('500', 'Something went wrong but we are working on it');
+                Referral::create([
+                    'referrer_id' => $referrer->id,
+                    'referred_id' => $user->id,
+                    'code_used' => $validated['referral'],
+                    'status' => 'pending',
+                ]);
+            } else {
+                event(
+                    new Registered(
+                        ($user = User::create([
+                            'firstname' => $validated['firstname'],
+                            'lastname' => $validated['lastname'],
+                            'email' => $validated['email'],
+                            'password' => $validated['password'],
+                            'role' => $validated['role'],
+                            'referral_link' => strtoupper(substr($validated['firstname'], 0, 2) . substr($validated['lastname'], 0, 2) . rand(1000, 9999)),
+                            'notify_purchase' => $validated['role'] == 'creative' ? 'yes' : 'no',
+                        ])),
+                    ),
+                );
+            }
+
+            $otp = Otp::generate($validated['email']);
+
+            Mail::to($this->email)->send(new EmailVerification($otp, $user->name));
+
+            session()->flash('status', 'Registration successful');
+            session()->reflash();
+            session()->put('user', $user);
+
+            redirect(route('email.verification'))->with(['user' => $user, 'secret' => $validated['email']]);
+        } catch (\Throwable $e) {
+            // Optionally, log the exception for debugging purposes
+            report($e); // This will log the error to the Laravel logs
+
+            // Optionally, you can set a session variable with the error message if you want to persist the message
+            session()->flash('status', 'An error has occurred. We are working on it.');
         }
-
-        $otp = Otp::generate($validated['email']);
-
-        Mail::to($this->email)->send(new EmailVerification($otp, $user->name));
-
-        session()->flash('message', 'Registration successful');
-        session()->reflash();
-        session()->put('user', $user);
-
-        redirect(route('email.verification'))->with(['user' => $user, 'secret' => $validated['email']]);
     }
 }; ?>
 
@@ -85,25 +105,19 @@ new #[Layout('layouts.guest')] class extends Component {
     <h1 class="w-full my-1 md:mb-5 text-3xl font-bold  md:text-4xl text-left ">Create Account</h1>
     <div>
 
-   @session('message')
-    @session('status')
-        <div
-            class="fixed top-4 right-4 z-[9999] w-[90%] max-w-sm sm:max-w-xs md:max-w-sm lg:max-w-md xl:max-w-lg"
-            x-data="{ show: true }"
-            x-show="show"
-            x-transition:leave="transition ease-in duration-300"
-            x-transition:leave-start="opacity-100 transform"
-            x-transition:leave-end="opacity-0 -translate-y-2"
-        >
-            <div class="flex items-center justify-between p-4 text-sm font-semibold text-white bg-navy-blue rounded-xl shadow-lg">
-                <span>Registration successful.</span>
-                <button @click="show = false" class="ml-4 focus:outline-none">
-                    @svg('eva-close', 'w-5 h-5 text-red-400 hover:text-red-500')
-                </button>
-            </div>
-        </div>
-    @endsession
-@endsession
+            @session('status')
+                <div class="fixed top-4 right-4 z-[9999] w-[90%] max-w-sm sm:max-w-xs md:max-w-sm lg:max-w-md xl:max-w-lg"
+                    x-data="{ show: true }" x-show="show" x-transition:leave="transition ease-in duration-300"
+                    x-transition:leave-start="opacity-100 transform" x-transition:leave-end="opacity-0 -translate-y-2">
+                    <div
+                        class="flex items-center justify-between p-4 text-sm font-semibold text-white bg-navy-blue rounded-xl shadow-lg">
+                        <span>{{ session('status') }}</span>
+                        <button @click="show = false" class="ml-4 focus:outline-none">
+                            @svg('eva-close', 'w-5 h-5 text-red-400 hover:text-red-500')
+                        </button>
+                    </div>
+                </div>
+            @endsession
 
     </div>
     <form wire:submit.prevent="register">
@@ -111,8 +125,7 @@ new #[Layout('layouts.guest')] class extends Component {
         <input type="text" wire:model="referral" class="hidden" />
         <div class="">
             <div class="md:flex justify-evenly">
-                <div
-                    class="mb-3 font-semibold md:w-1/2 md:py-3 lg:py-0 text-left lg:pr-10 md:text-lg md:font-bold">
+                <div class="mb-3 font-semibold md:w-1/2 md:py-3 lg:py-0 text-left lg:pr-10 md:text-lg md:font-bold">
                     Sign up to create an account on Twellr
                 </div>
                 <x-selector />
