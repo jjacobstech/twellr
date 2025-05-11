@@ -355,14 +355,14 @@ $withdraw = function () {
     </div>
     {{-- Tranaction Paginator --}}
     <div x-show="transactions" x-transition:enter.duration.500ms x-cloak="display:none"
-        class="flex justify-between py-2 bg-white">
+        class="flex justify-center md:justify-between py-2 bg-white">
 
         @php
             $paginator = $transactions;
         @endphp
 
         @if ($paginator->isNotEmpty())
-            <div class="justify-start text-sm text-black">Showing {{ $paginator->firstItem() ?? 0 }} to
+            <div class="justify-start text-sm text-black hidden md:block">Showing {{ $paginator->firstItem() ?? 0 }} to
                 {{ $paginator->lastItem() ?? 0 }} of
                 {{ $paginator->total() }} results
             </div>
@@ -468,13 +468,13 @@ $withdraw = function () {
 
     {{-- Purchase Paginator --}}
     <div x-show="purchases" x-transition:enter.duration.500ms x-cloak="display:none"
-        class="flex justify-between py-2 bg-white">
+        class="flex justify-between py-2 bg-white  justify-center md:justify-between ">
 
         @php
             $paginator = $purchases;
         @endphp
         @if ($paginator->isNotEmpty())
-            <div class="justify-start text-sm text-black">Showing {{ $paginator->firstItem() ?? 0 }} to
+            <div class="justify-start text-sm text-black hidden md:block ">Showing {{ $paginator->firstItem() ?? 0 }} to
                 {{ $paginator->lastItem() ?? 0 }} of
                 {{ $paginator->total() }} results
             </div>
