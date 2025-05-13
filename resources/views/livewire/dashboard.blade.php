@@ -1,13 +1,13 @@
 <?php
 use function Livewire\Volt\{layout, mount, state};
-use App\Models\Product;
+use App\Models\Purchase;
 
 layout('layouts.app');
 mount(function () {
     session()->forget('user');
     session()->forget('secret');
 });
-state(['latestProducts' => fn() => Auth::user()->isCreative() ? Product::latest()->take(5)->get() : Product::latest()->take(6)->get()]);
+state(['purchases' => fn() => Auth::user()->isCreative() ? Purchase::where('buyer_id','=',Auth::id())->latest()->with('product')->take(5)->get() : Purchase::where('buyer_id','=',Auth::id())->latest()->with('product')->take(6)->get()]);
 
 ?>
 <div class="flex h-screen m-0 overflow-hidden md:w-full" x-cloak="display: none">
@@ -19,7 +19,7 @@ state(['latestProducts' => fn() => Auth::user()->isCreative() ? Product::latest(
             class="w-full overflow-y-scroll px-3 py-3 pb-20 scrollbar-none space-y-5 bg-white md:pt-5 md:flex md:flex-col md:flex-1 md:h-full md:w-[82%] md:overflow-auto lg:mx-1">
             <!-- Banner Image -->
             <div class="relative">
-                <img class="w-full rounded-xl h-[200px] md:h-[254px] object-cover" src="{{ asset('assets/sales.png') }}"
+                <img loading="lazy" class="w-full rounded-xl h-[200px] md:h-[254px] object-cover" src="{{ asset('uploads/banner.png') }}"
                     alt="Dashboard banner">
             </div>
 
@@ -28,29 +28,29 @@ state(['latestProducts' => fn() => Auth::user()->isCreative() ? Product::latest(
                 @if (Auth::user()->isCreative())
                     <!-- Mobile/Tablet View for Creative Users -->
                     <div class="grid w-full gap-3 sm:grid-cols-2 scrollbar-none md:grid-cols-3 lg:hidden">
-                        @foreach ($latestProducts as $latestProduct)
-                            <x-dashboard-product-card :product="$latestProduct" />
+                        @foreach ($purchases as $purchase)
+                            <x-dashboard-product-card :product="$purchase->product" />
                         @endforeach
                     </div>
 
                     <!-- Desktop View for Creative Users -->
                     <div class="hidden w-full gap-3 lg:grid lg:grid-cols-5">
-                        @foreach ($latestProducts as $latestProduct)
-                            <x-dashboard-product-card :product="$latestProduct" />
+                        @foreach ($purchases as $purchase)
+                            <x-dashboard-product-card :product="$purchase->product" />
                         @endforeach
                     </div>
                 @else
                     <!-- Mobile/Tablet View for Non-Creative Users -->
                     <div class="grid w-full gap-4 sm:grid-cols-4 scrollbar-none md:grid-cols-6 lg:hidden">
-                        @foreach ($latestProducts as $latestProduct)
-                            <x-dashboard-product-card :product="$latestProduct" />
+                        @foreach ($purchases as $purchase)
+                            <x-dashboard-product-card :product="$purchase->product" />
                         @endforeach
                     </div>
 
                     <!-- Desktop View for Non-Creative Users -->
                     <div class="hidden w-full gap-4 lg:grid lg:grid-cols-6">
-                        @foreach ($latestProducts as $latestProduct)
-                            <x-dashboard-product-card :product="$latestProduct" />
+                        @foreach ($purchases as $purchase)
+                            <x-dashboard-product-card :product="$purchase->product" />
                         @endforeach
                     </div>
                 @endif

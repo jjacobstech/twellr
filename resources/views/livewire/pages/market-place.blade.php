@@ -506,9 +506,9 @@ $completeCheckout = function () {
     @enderror
 
     <div wire:loading class="toast toast-top top-28 z-[9999]">
-        <div class=" alert-info alert top-10 bg-navy-blue border border-navy-blue text-white py-3 rounded mb-6 transition-opacity duration-500 "
+        <div class="py-3 mb-6 text-white transition-opacity duration-500 border rounded alert-info alert top-10 bg-navy-blue border-navy-blue"
             role="alert">
-            <svg class="animate-spin inline-block bw-spinner h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg"
+            <svg class="inline-block w-6 h-6 text-white animate-spin bw-spinner" xmlns="http://www.w3.org/2000/svg"
                 fill="none" viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
                 </circle>
@@ -524,18 +524,18 @@ $completeCheckout = function () {
 
         <x-market-place-sidebar :locations="$locations" :categories="$categories" :filterTerm="$filterTerm" />
         <div
-            class="relative bg-white w-screen pb-8 md:pb-0 md:w-[72%] lg:w-[80%] md:h-screen  lg:py-4 overflow-y-scroll scrollbar-none mb-20">
+            class="relative bg-white w-screen pb-8 md:pb-0 md:w-[100%] lg:w-[80%] md:h-screen  lg:py-4 overflow-y-scroll scrollbar-none mb-20">
 
             <div>
 
                 <div x-cloak="display:hidden"
-                    class="relative grid justify-center w-screen grid-cols-2 sm:grid-cols-3 gap-5 px-5 mb-16 md:h-screen lg:hidden md:grid-cols-2">
+                    class="relative grid justify-center w-screen grid-cols-2 gap-5 px-5 mt-16 mb-16 sm:grid-cols-3 lg:hidden md:grid-cols-4">
                     @if ($products && $products->count())
                         @foreach ($products as $product)
                             <x-product-card :$product />
                         @endforeach
                     @else
-                        <div class="col-span-full text-center text-gray-500 text-lg font-medium py-10 mt-10">
+                        <div class="py-10 mt-10 text-lg font-medium text-center text-gray-500 col-span-full">
                             No designs available.
                         </div>
                     @endif
@@ -548,7 +548,7 @@ $completeCheckout = function () {
                             <x-product-card :$product />
                         @endforeach
                     @else
-                        <div class="col-span-full text-center text-gray-500 text-lg font-medium py-10">
+                        <div class="py-10 text-lg font-medium text-center text-gray-500 col-span-full">
                             No designs available.
                         </div>
                     @endif
@@ -768,7 +768,7 @@ $completeCheckout = function () {
         x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
         x-transition:leave="transition ease-in-out duration-300" x-transition:leave-start="opacity-100"
         x-transition:leave-end="opacity-0"
-        class="w-full h-screen pb-36 overflow-y-scroll bg-gray-100 scrollbar-thin scrollbar-track-white scrollbar-thumb-navy-blue">
+        class="w-full h-screen overflow-y-scroll bg-gray-100 pb-36 scrollbar-thin scrollbar-track-white scrollbar-thumb-navy-blue">
         <!-- Main Container -->
         <div class="px-4 py-4 mx-auto max-w-20xl sm:px-6 lg:px-4 md:flex md:gap-3">
 

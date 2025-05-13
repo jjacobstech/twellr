@@ -2,20 +2,20 @@
 
 namespace App\Helpers;
 
-use App\Models\Files;
-use App\Models\Product;
-use File;
 use Illuminate\Support\Str;
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
+use Spatie\ImageOptimizer\Image;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use Livewire\Features\SupportFileUploads\FileUploadController;
-use Symfony\Component\Console\Helper\HelperInterface;
+use Spatie\LaravelImageOptimizer\Facades\ImageOptimizer;
 
 class FileHelper
 {
+
+    public static function optimizeImage($file){
+         ImageOptimizer::optimize($file->getRealPath());
+    }
+
     public static function getFileData(UploadedFile $file)
     {
 
@@ -30,7 +30,7 @@ class FileHelper
     public static function saveFile(UploadedFile $file, $filename)
     {
 
-        $storage = Storage::disk()->putFileAs('', $file, $filename);
+        $storage = Storage::disk()->putFileAs('', $file->getRealPath(), $filename);
 
         if (!$storage) {
             return response()->json(['messsage' => 'server error'], 500);

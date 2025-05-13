@@ -2,7 +2,7 @@
     class="w-full  max-w-sm md:overflow-hidden transition-shadow duration-300 shadow-md rounded-xl hover:shadow-lg aspect-square">
     <!-- Product Image Container with fixed aspect ratio -->
     <div class="relative group aspect-square">
-        <img class="object-cover aspect-square w-full h-full rounded-t-xl lg:rounded-t-none"
+        <img class="object-cover aspect-square w-full h-full rounded-t-xl lg:rounded-t-none" loading="lazy"
             src="{{ asset('uploads/products/design-stack/' . $product->front_view) }}" alt="{{ $product->name }}">
 
         <!-- Quick view overlay - appears on hover (desktop only) -->

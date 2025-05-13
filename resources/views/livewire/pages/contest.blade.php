@@ -177,8 +177,10 @@ $submitEntry = function () {
     $entry = (object) $this->validate([
         'name' => 'required|string|max:255',
         'description' => 'nullable|string|max:1000',
-        'photo' => 'required|image|mimes:' . config('twellr.printable_stack_format'),
+        'photo' => 'required|image|mimes:' . config('twellr.design_stack_format'),
     ]);
+
+    FileHelper::optimizeImage($entry->photo);
 
     $photo = FileHelper::getFileData($entry->photo);
 
@@ -197,7 +199,7 @@ $submitEntry = function () {
         if ($contestCreate) {
             $this->name = '';
             $this->description = '';
-            $this->photo = '';
+            $this->photo = null;
 
             $this->success('success', 'Your outfit has been submitted!');
         } else {
@@ -326,7 +328,7 @@ $submitEntry = function () {
                                 <!-- FRONT VIEW -->
                                 <div class="relative w-full h-full carousel-item" id="front-view">
                                     <div class="flex items-center justify-center w-full h-full">
-                                        <img src="@if ($view) {{ asset('uploads/products/design-stack/' . $view->front_view) }} @endif"
+                                        <img loading="lazy" src="@if ($view) {{ asset('uploads/products/design-stack/' . $view->front_view) }} @endif"
                                             alt="front view" class="object-contain max-w-full max-h-full" />
                                     </div>
                                     <div
@@ -341,7 +343,7 @@ $submitEntry = function () {
                                 <!-- BACK VIEW -->
                                 <div class="relative w-full h-full carousel-item" id="back-view">
                                     <div class="flex items-center justify-center w-full h-full">
-                                        <img src="@if ($view) {{ asset('uploads/products/design-stack/' . $view->back_view) }} @endif"
+                                        <img loading="lazy" src="@if ($view) {{ asset('uploads/products/design-stack/' . $view->back_view) }} @endif"
                                             alt="back view" class="object-contain max-w-full max-h-full" />
                                     </div>
                                     <div
@@ -356,7 +358,7 @@ $submitEntry = function () {
                                 <!-- SIDE VIEW -->
                                 <div class="relative w-full h-full carousel-item" id="side-view">
                                     <div class="flex items-center justify-center w-full h-full">
-                                        <img src="@if ($view) {{ asset('uploads/products/design-stack/' . $view->side_view) }} @endif"
+                                        <img loading="lazy" src="@if ($view) {{ asset('uploads/products/design-stack/' . $view->side_view) }} @endif"
                                             alt="side view" class="object-contain max-w-full max-h-full" />
                                     </div>
                                     <div
@@ -390,7 +392,7 @@ $submitEntry = function () {
                                 <div
                                     class="w-full h-64 overflow-y-scroll bg-gray-100 sm:h-80 scrollbar-none lg:h-full lg:w-3/4">
                                     <div class="scrollbar-none relative flex items-center justify-center w-full bg-black min-h-full ">
-                                        <img src="{{ asset('uploads/products/design-stack/' . $view->side_view) }}"
+                                        <img loading="lazy" src="{{ asset('uploads/products/design-stack/' . $view->side_view) }}"
                                             alt="{{ $view->name }}" class="object-cover max-w-full scrollbar-none max-h-full" />
                                     </div>
                                 </div>
@@ -442,8 +444,8 @@ $submitEntry = function () {
                         <!-- Image container - Fixed height on mobile, auto on desktop -->
                         <div class="w-full h-48 sm:h-56 md:w-1/3 md:h-auto">
                             <div class="w-full h-full bg-indigo-100">
-                                <img src="{{ asset('uploads/products/design-stack/' . $design->product->front_view) }}"
-                                    alt="{{ $design->product->name }}" class="object-cover w-full h-full" />
+                                <img loading="lazy" src="{{ asset('uploads/products/design-stack/' . $design->product->front_view) }}"
+                                    alt="{{ $design->product->name }}" class="object-cover w-full h-full aspect-[4/2]" />
                             </div>
                         </div>
                         <!-- Content container - Better spacing -->
@@ -459,7 +461,7 @@ $submitEntry = function () {
                             <p class="mb-1 text-sm text-gray-600 sm:mb-2">Designer: <span
                                     class="font-medium">{{ $design->user->firstname . ' ' . $design->user->lastname }}</span>
                             </p>
-                            <p class="mb-3 text-sm text-gray-500 sm:mb-4 line-clamp-3 sm:line-clamp-none">
+                            <p class="mb-3 text-sm text-gray-500 sm:mb-4 line-clamp-3 sm:line-clamp-2 ">
                                 {{ $design->product->description }}
                             </p>
 
@@ -519,7 +521,7 @@ $submitEntry = function () {
                         <div class="w-full h-full bg-black carousel">
                             <div class="relative w-full h-full carousel-item">
                                 <div class="flex items-center justify-center w-full h-full">
-                                    <img src="@if ($entry) {{ asset('uploads/contest/' . $entry->photo) }} @endif"
+                                    <img loading="lazy" src="@if ($entry) {{ asset('uploads/contest/' . $entry->photo) }} @endif"
                                         alt="entry image" class="object-contain max-w-full max-h-full" />
                                 </div>
                             </div>
@@ -540,7 +542,7 @@ $submitEntry = function () {
                         <!-- Image container - Fixed height on mobile, auto on desktop -->
                         <div class="w-full h-48 sm:h-56 md:w-1/3 md:h-auto">
                             <div class="w-full h-full bg-indigo-100">
-                                <img src="{{ asset('uploads/contest/' . $entry->photo) }}" alt="{{ $entry->name }}"
+                                <img loading="lazy" src="{{ asset('uploads/contest/' . $entry->photo) }}" alt="{{ $entry->name }}"
                                     class="object-cover w-full h-full" />
                             </div>
                         </div>
@@ -628,9 +630,9 @@ $submitEntry = function () {
                         <label for="photo" class="block mb-1 text-sm font-medium text-gray-700">Upload Your Outfit
                             Photo</label>
                         <x-mary-file omit-error="true" wire:model.defer="photo" accept="image/*">
-                            <img class="object-cover w-24 h-24 sm:w-32 sm:h-32 border border-gray-300 rounded-md shadow-sm
+                            <img loading="lazy" class="object-cover w-24 h-24 sm:w-32 sm:h-32 border border-gray-300 rounded-md shadow-sm
                                 @error('photo') ring-red-500 ring-2 @enderror"
-                                src="{{ asset('assets/pexels-godisable-jacob-226636-794064.jpg') }}" />
+                                src="{{ asset('assets/pexels-godisable-jacob-226636-794064.jpg') ??  $photo }}" />
                         </x-mary-file>
 
                         @error('photo')

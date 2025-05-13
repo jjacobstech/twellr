@@ -42,12 +42,12 @@ state([
 ]);
 ?>
 
-<div class="flex gap-1 w-full">
-    <div class="bg-white px-4 sm:px-8 py-8 w-full overflow-y-scroll  scrollbar-none pb-20">
+<div class="flex w-full gap-1">
+    <div class="w-full px-4 py-8 pb-20 overflow-y-scroll bg-white sm:px-8 scrollbar-none">
         <h1 class="text-4xl font-extrabold text-gray-500 md:text-center">Explore</h1>
 
         @foreach ($sections as $section)
-            <div class="flex justify-between w-full mt-5 text-lg items-center">
+            <div class="flex items-center justify-between w-full mt-5 text-lg">
                 <p class="font-extrabold text-navy-blue text-[21px]">{{ $section->title }}</p>
                 <a href="{{ url(route($section->path, ['filter' => $section->filter])) }}"
                     class="flex items-center font-extrabold text-golden">
@@ -60,18 +60,18 @@ state([
             </div>
 
             <div
-                class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 gap-3 bg-gray-100 p-3 rounded-2xl shadow-lg ">
+                class="grid grid-cols-2 gap-3 p-3 bg-gray-100 shadow-md sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 rounded-2xl ">
                 @forelse ($section->items as $item)
                     @if (!empty($section->isPhoto))
-                        <div class="rounded-xl shadow-md">
+                        <div class="shadow-md rounded-xl">
                             <img src="{{ asset('uploads/contest/' . $item->photo) }}" alt=""
-                                class="w-full h-full rounded-xl object-cover aspect-square md:h-20 md:w-28 lg:h-32 lg:w-40 hover:scale-110 transition duration-150 ease-in-out" />
+                                class="object-cover w-full h-full transition duration-150 ease-in-out rounded-xl aspect-square md:h-20 md:w-28 lg:h-32 lg:w-40 hover:scale-110" />
                         </div>
                     @else
                         <x-explore-card wire:navigate :product="$item" />
                     @endif
                 @empty
-                    <p class="text-gray-400 col-span-full text-center">No {{ $section->title }}</p>
+                    <p class="text-center text-gray-400 col-span-full">No {{ $section->title }}</p>
                 @endforelse
             </div>
         @endforeach

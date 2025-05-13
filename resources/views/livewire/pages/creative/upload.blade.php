@@ -55,6 +55,11 @@ new #[Layout('layouts.app')] class extends Component {
         $sideView = $product->sideView;
         $printFile = $product->printUpload;
 
+        //OptimizeImages
+        FileHelper::optimizeImage($frontView);
+        FileHelper::optimizeImage($backView);
+        FileHelper::optimizeImage($sideView);
+
         //File Data Fetch
         $frontViewData = FileHelper::getFileData($frontView);
         $backViewData = FileHelper::getFileData($backView);
@@ -68,7 +73,7 @@ new #[Layout('layouts.app')] class extends Component {
         $printFileSave = FileHelper::saveFile($printFile, 'products/print-stack/' . $printFileData->name);
 
         if (!$frontViewSave || !$backViewSave || !$sideViewSave || !$printFileSave) {
-            abort(500, 'Something went wrong, but we are working on it.');
+            $this->error('Upload Failed', 'Something went wrong, but we are working on it.');
         }
 
         $productSaved = Product::create([
@@ -179,7 +184,8 @@ new #[Layout('layouts.app')] class extends Component {
         <x-creative-sidebar class="w-full md:w-[12%] md:min-h-screen" />
 
         <!-- Main Content Area - Takes remaining space -->
-        <div class="w-full md:w-[87%] px-2 sm:px-4 text-xl bg-white h-screen md:h-full scrollbar-none md:pb-0 py-2 pb-44">
+        <div
+            class="w-full md:w-[87%] px-2 sm:px-4 text-xl bg-white h-screen md:h-full scrollbar-none md:pb-0 py-2 pb-44">
             <!-- Background Container - Height adapts to content -->
             <div style="background-image: url('{{ asset('assets/blurred.png') }}')"
                 class="relative flex justify-center text-white bg-no-repeat bg-cover rounded-lg min-h-[500px] h-100 scrollbar-none ">
@@ -200,7 +206,7 @@ new #[Layout('layouts.app')] class extends Component {
                     @csrf
 
                     <!-- Main Form View -->
-                    <div x-show="form"  x-transition:enter.duration.700ms>
+                    <div x-show="form" x-transition:enter.duration.700ms>
                         <div class="flex flex-col h-full px-3 py-4 sm:px-6 md:px-10 sm:py-6 md:py-10">
 
                             <!-- Name and Price Row - Always stack on mobile, side by side on larger screens -->

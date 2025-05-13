@@ -4,7 +4,7 @@
 <div class="product-card">
     <div class="overflow-hidden rounded-xl relative">
 
-        <img class="w-full h-48 rounded-xl object-cover transition-transform hover:scale-105"
+        <img class="w-full h-48 rounded-xl object-cover transition-transform hover:scale-105" loading="lazy"
             src="{{ asset('uploads/products/design-stack/' . $product->front_view) }}"
             alt="{{ $product->name }} product image">
     </div>

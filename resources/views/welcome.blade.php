@@ -21,20 +21,20 @@
 
     <livewire:welcome.navigation />
 
-    <div class=" px-4 sm:px-6 lg:px-8 py-10 bg-white mt-1 scrollbar-none pb-20">
+    <div class="px-4 py-10 pb-20 mt-1 bg-white sm:px-6 lg:px-8 scrollbar-none">
         <!-- Hero Section -->
         <div class="mb-10 text-center">
-            <h1 class="mb-3 text-3xl sm:text-4xl font-bold text-gray-800">Stay Creative. Monetize your designs.</h1>
-            <p class="text-lg sm:text-2xl font-semibold text-gray-600">Co-create your fashion. Have a say in what you wear!</p>
+            <h1 class="mb-3 text-3xl font-bold text-gray-800 sm:text-4xl">Stay Creative. Monetize your designs.</h1>
+            <p class="text-lg font-semibold text-gray-600 sm:text-2xl">Co-create your fashion. Have a say in what you wear!</p>
             <a href="{{ route('login') }}">
-                <button class="px-6 py-3 mt-6 text-white text-sm sm:text-base bg-navy-blue hover:bg-golden rounded-md transition-colors font-semibold">
+                <button class="px-6 py-3 mt-6 text-sm font-semibold text-white transition-colors rounded-md sm:text-base bg-navy-blue hover:bg-golden">
                     Get Started Now
                 </button>
             </a>
         </div>
 
         <!-- Image Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
             <div class="relative overflow-hidden bg-yellow-200 rounded-md shadow-md">
                 <div class="absolute top-3 left-3 bg-red-500 text-white font-semibold py-1 px-3 rounded-sm transform rotate-[-20deg]">
                     NEW
@@ -47,7 +47,7 @@
             <div x-data="{ showModal: false }" class="overflow-hidden bg-white rounded-md shadow-md">
                 <img src="{{ asset('assets/white-sweater-png-sticker-design-space-transparent-background_53876-988335.jpg') }}"
                      alt="Co-creation Example"
-                     class="object-contain w-full h-60 sm:h-72 md:h-80 lg:h-96 cursor-pointer">
+                     class="object-contain w-full cursor-pointer h-60 sm:h-72 md:h-80 lg:h-96">
             </div>
         </div>
 
