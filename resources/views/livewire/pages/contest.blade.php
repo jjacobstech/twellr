@@ -543,7 +543,7 @@ $submitEntry = function () {
                         <div class="w-full h-48 sm:h-56 md:w-1/3 md:h-auto">
                             <div class="w-full h-full bg-indigo-100">
                                 <img loading="lazy" src="{{ asset('uploads/contest/' . $entry->photo) }}" alt="{{ $entry->name }}"
-                                    class="object-cover w-full h-full" />
+                                    class="object-cover w-full h-full aspect-[4/2]" />
                             </div>
                         </div>
                         <!-- Content container -->
