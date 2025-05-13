@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 echo "🔧 Installing image optimization tools. . ."
 sudo apt-get update
 
@@ -12,7 +11,7 @@ sudo apt-get install -y \
     webp \
     libavif-bin
 
-sudo apt-get autoremove 
+sudo apt-get autoremove
 
 echo "🔧 Installing npm svg optimization tools. . ."
 sudo npm install -g svgo
