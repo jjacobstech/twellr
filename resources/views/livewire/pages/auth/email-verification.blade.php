@@ -97,17 +97,20 @@ new #[Layout('layouts.guest')] class extends Component {
 };
 ?>
 <div class="px-4 py-8 mx-4 mt-12 border border-black rounded-3xl md:mt-10 md:px-10 md:py-16 md:mx-16">
-    <div wire:loading class="py-3 mb-6 text-white transition-opacity duration-500 border rounded alert-info alert top-10 bg-navy-blue border-navy-blue"
-            role="alert">
-            <svg class="inline-block w-6 h-6 text-white animate-spin bw-spinner" xmlns="http://www.w3.org/2000/svg"
-                fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
-                </circle>
-                <path class="opacity-75" fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-                </path>
-            </svg>
-        </div>
+    <div wire:loading
+        class="py-3 mb-6 text-white transition-opacity duration-500 border rounded alert-info alert top-5 right-1 bg-navy-blue border-navy-blue absolute"
+        role="alert">
+        <svg class="inline-block w-6 h-6 text-white animate-spin bw-spinner" xmlns="http://www.w3.org/2000/svg"
+            fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+            </circle>
+            <path class="opacity-75" fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+            </path>
+        </svg>
+        Loading . . .
+    </div>
+
     <div class="text-center text-black text-sm md:text-lg lg:text-xl font-semibold">
         <p>{{ __('Check your email for the OTP pin, If it doesn’t reflect in your inbox') }}</p>
         <span>{{ __('consider checking Spam mail') }}</span>
@@ -119,7 +122,8 @@ new #[Layout('layouts.guest')] class extends Component {
         <div class="py-8 bg-white">
             <div class="flex justify-center gap-2 sm:gap-4">
 
-                <input wire:model='No1' name="No1" inputmode="numeric" pattern="[0-9]*" type="text" maxlength="1"
+                <input wire:model='No1' name="No1" inputmode="numeric" pattern="[0-9]*" type="text"
+                    maxlength="1"
                     class="w-10 h-10 text-2xl sm:w-14 sm:h-14 md:w-20 md:h-20 p-2 font-medium text-center bg-white border rounded-lg shadow outline-none border-stroke text-gray-5 sm:text-4xl" />
                 <input wire:model='No2' name="No2" inputmode="numeric" pattern="[0-9]*" type="text"
                     maxlength="1"
@@ -130,9 +134,8 @@ new #[Layout('layouts.guest')] class extends Component {
                 <input wire:model='No4' name="No4" inputmode="numeric" pattern="[0-9]*" type="text"
                     maxlength="1"
                     class="w-10 h-10 text-2xl sm:w-14 sm:h-14 md:w-20 md:h-20 p-2 font-medium text-center bg-white border rounded-lg shadow outline-none border-stroke text-gray-5 sm:text-4xl" />
-                <input
-                    x-on:input="$wire.verify();"
-                    inputmode="numeric" pattern="[0-9]*" wire:model='No5' name="No5" type="text" maxlength="1"
+                <input x-on:input="$wire.verify();" inputmode="numeric" pattern="[0-9]*" wire:model='No5' name="No5"
+                    type="text" maxlength="1"
                     class="w-10 h-10 text-2xl sm:w-14 sm:h-14 md:w-20 md:h-20 p-2 font-medium text-center bg-white border rounded-lg shadow outline-none border-stroke text-gray-5 sm:text-4xl" />
 
             </div>

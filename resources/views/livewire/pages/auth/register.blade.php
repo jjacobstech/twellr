@@ -102,34 +102,36 @@ new #[Layout('layouts.guest')] class extends Component {
 }; ?>
 
 <div class="h-screen lg:px-10 my-7 border-0 md:my-10">
-    <div wire:loading class="py-3 mb-6 text-white transition-opacity duration-500 border rounded alert-info alert top-10 bg-navy-blue border-navy-blue"
-            role="alert">
-            <svg class="inline-block w-6 h-6 text-white animate-spin bw-spinner" xmlns="http://www.w3.org/2000/svg"
-                fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
-                </circle>
-                <path class="opacity-75" fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-                </path>
-            </svg>
-        </div>
+       <div wire:loading
+        class="py-3 mb-6 text-white transition-opacity duration-500 border rounded alert-info alert top-5 right-1 bg-navy-blue border-navy-blue absolute"
+        role="alert">
+        <svg class="inline-block w-6 h-6 text-white animate-spin bw-spinner" xmlns="http://www.w3.org/2000/svg"
+            fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+            </circle>
+            <path class="opacity-75" fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+            </path>
+        </svg>
+        Loading . . .
+    </div>
 
     <h1 class="w-full my-1 md:mb-5 text-3xl font-bold  md:text-4xl text-left ">Create Account</h1>
     <div>
 
-            @session('status')
-                <div class="fixed top-4 right-4 z-[9999] w-[90%] max-w-sm sm:max-w-xs md:max-w-sm lg:max-w-md xl:max-w-lg"
-                    x-data="{ show: true }" x-show="show" x-transition:leave="transition ease-in duration-300"
-                    x-transition:leave-start="opacity-100 transform" x-transition:leave-end="opacity-0 -translate-y-2">
-                    <div
-                        class="flex items-center justify-between p-4 text-sm font-semibold text-white bg-navy-blue rounded-xl shadow-lg">
-                        <span>{{ session('status') }}</span>
-                        <button @click="show = false" class="ml-4 focus:outline-none">
-                            @svg('eva-close', 'w-5 h-5 text-red-400 hover:text-red-500')
-                        </button>
-                    </div>
+        @session('status')
+            <div class="fixed top-4 right-4 z-[9999] w-[90%] max-w-sm sm:max-w-xs md:max-w-sm lg:max-w-md xl:max-w-lg"
+                x-data="{ show: true }" x-show="show" x-transition:leave="transition ease-in duration-300"
+                x-transition:leave-start="opacity-100 transform" x-transition:leave-end="opacity-0 -translate-y-2">
+                <div
+                    class="flex items-center justify-between p-4 text-sm font-semibold text-white bg-navy-blue rounded-xl shadow-lg">
+                    <span>{{ session('status') }}</span>
+                    <button @click="show = false" class="ml-4 focus:outline-none">
+                        @svg('eva-close', 'w-5 h-5 text-red-400 hover:text-red-500')
+                    </button>
                 </div>
-            @endsession
+            </div>
+        @endsession
 
     </div>
     <form wire:submit.prevent="register">
