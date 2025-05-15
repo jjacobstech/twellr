@@ -93,7 +93,7 @@ $toggleSort = function () {
 
 <div class="fixed flex w-screen gap-1 pt-1 bg-gray-100">
     <div wire:loading class="toast toast-top top-28 z-[9999]">
-        <div class="py-3 mb-6 text-white transition-opacity duration-500 border rounded  alert-info alert top-10 bg-navy-blue border-navy-blue"
+        <div class="py-3 mb-6 text-white transition-opacity duration-500 border rounded alert-info alert top-10 bg-navy-blue border-navy-blue"
             role="alert">
             <svg class="inline-block w-6 h-6 text-white animate-spin bw-spinner" xmlns="http://www.w3.org/2000/svg"
                 fill="none" viewBox="0 0 24 24">
@@ -107,9 +107,9 @@ $toggleSort = function () {
     </div>
     <x-admin-sidebar />
     <div class="w-screen h-screen p-6 pb-20 overflow-y-scroll bg-white rounded-lg shadow-lg scrollbar-thin scrollbar-thumb-navy-blue scrollbar-track-gray-100">
-        <h2 class=" text-2xl font-bold text-gray-700 ">Uploaded Designs</h2>
+        <h2 class="text-2xl font-bold text-gray-700 ">Uploaded Designs</h2>
 
-            <div class="relative flex justify-evenly w-full py-2 md:py-3 gap-4">
+            <div class="relative flex w-full gap-4 py-2 justify-evenly md:py-3">
                 <input type="text" id="search-dropdown" wire:model.live="keyword"
                     class=" w-80 font-bold block p-2.5  z-20 text-sm text-gray-900 bg-gray-200 rounded-lg border-0 active:border-0 hover:border hover:border-gray-400 focus:border-0 focus:ring-0 border-navy-blue "
                     placeholder="Search by: Design/Designer" alt="Search by: Design"
@@ -184,9 +184,9 @@ $toggleSort = function () {
                                 </div>
                             </div>
 
-                            <div class="flex justify-between mt-4">
+                            <div class="flex justify-between gap-5 mt-4">
                                 <div class="text-sm text-black">
-                                    <span class="font-medium text-black trunca">File:</span> <span class="truncate text-black">{{ $design->print_stack }}</span>
+                                    <span class="font-medium text-black trunca">File:</span> <span class="text-black truncate line-clamp-1">{{ $design->print_stack }}</span>
                                     ({{ round($design->print_stack_size / 1024, 2) }} KB)
                                 </div>
 

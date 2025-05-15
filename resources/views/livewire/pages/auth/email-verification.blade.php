@@ -97,12 +97,25 @@ new #[Layout('layouts.guest')] class extends Component {
 };
 ?>
 <div class="px-4 py-8 mx-4 mt-12 border border-black rounded-3xl md:mt-10 md:px-10 md:py-16 md:mx-16">
+    <div wire:loading class="py-3 mb-6 text-white transition-opacity duration-500 border rounded alert-info alert top-10 bg-navy-blue border-navy-blue"
+            role="alert">
+            <svg class="inline-block w-6 h-6 text-white animate-spin bw-spinner" xmlns="http://www.w3.org/2000/svg"
+                fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                </circle>
+                <path class="opacity-75" fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                </path>
+            </svg>
+        </div>
     <div class="text-center text-black text-sm md:text-lg lg:text-xl font-semibold">
         <p>{{ __('Check your email for the OTP pin, If it doesn’t reflect in your inbox') }}</p>
         <span>{{ __('consider checking Spam mail') }}</span>
     </div>
 
     <form wire:submit='verify' id="otp-form" class="w-full">
+
+
         <div class="py-8 bg-white">
             <div class="flex justify-center gap-2 sm:gap-4">
 

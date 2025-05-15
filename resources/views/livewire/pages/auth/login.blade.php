@@ -10,7 +10,6 @@ use App\Livewire\Forms\LoginForm;
 use Illuminate\Support\Facades\Session;
 
 new #[Layout('layouts.guest')] class extends Component {
-
     public LoginForm $form;
     public string $role = 'user';
 
@@ -41,12 +40,11 @@ new #[Layout('layouts.guest')] class extends Component {
                 // Redirect to the email verification page with user and secret
                 return $this->redirect(route('email.verification'));
             } catch (\Exception $e) {
-                             // Optionally, log the exception for debugging purposes
+                // Optionally, log the exception for debugging purposes
                 report($e); // This will log the error to the Laravel logs
 
                 // Optionally, you can set a session variable with the error message if you want to persist the message
                 session()->flash('otp', 'There was an error sending the email. We are working on it.');
-
             }
         } elseif (!empty($emailVerified)) {
             $this->form->authenticate();
@@ -61,42 +59,47 @@ new #[Layout('layouts.guest')] class extends Component {
 }; ?>
 
 <div class="my-7 lg:px-10 h-screen">
-
-  @session('status')
-    <div
-        class="fixed top-4 right-4 z-[9999] w-[90%] max-w-sm sm:max-w-xs md:max-w-sm lg:max-w-md xl:max-w-lg"
-        x-data="{ show: true }"
-        x-show="show"
-        x-transition:leave="transition ease-in duration-300"
-        x-transition:leave-start="opacity-100 transform"
-        x-transition:leave-end="opacity-0 -translate-y-2"
-    >
-        <div class="flex items-center justify-between p-4 text-sm font-semibold text-white bg-navy-blue rounded-xl shadow-lg">
-            <span>{{ session('status') }}</span>
-            <button @click="show = false" class="ml-4 focus:outline-none">
-                @svg('eva-close', 'w-5 h-5 text-red-400 hover:text-red-500')
-            </button>
-        </div>
+    <div wire:loading
+        class="py-3 mb-6 text-white transition-opacity duration-500 border rounded alert-info alert top-5 right-1 bg-navy-blue border-navy-blue absolute"
+        role="alert">
+        <svg class="inline-block w-6 h-6 text-white animate-spin bw-spinner" xmlns="http://www.w3.org/2000/svg"
+            fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+            </circle>
+            <path class="opacity-75" fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+            </path>
+        </svg>
+        Loading . . .
     </div>
-@endsession
 
-@session('otp')
-    <div
-        class="fixed top-4 right-4 z-[9999] w-[90%] max-w-sm sm:max-w-xs md:max-w-sm lg:max-w-md xl:max-w-lg"
-        x-data="{ show: true }"
-        x-show="show"
-        x-transition:leave="transition ease-in duration-300"
-        x-transition:leave-start="opacity-100 transform"
-        x-transition:leave-end="opacity-0 -translate-y-2"
-    >
-        <div class="flex items-center justify-between p-4 text-sm font-semibold text-white bg-navy-blue rounded-xl shadow-lg">
-            <span>{{ session('otp') }}</span>
-            <button @click="show = false" class="ml-4 focus:outline-none">
-                @svg('eva-close', 'w-5 h-5 text-red-400 hover:text-red-500')
-            </button>
+    @session('status')
+        <div class="fixed top-4 right-4 z-[9999] w-[90%] max-w-sm sm:max-w-xs md:max-w-sm lg:max-w-md xl:max-w-lg"
+            x-data="{ show: true }" x-show="show" x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100 transform" x-transition:leave-end="opacity-0 -translate-y-2">
+            <div
+                class="flex items-center justify-between p-4 text-sm font-semibold text-white bg-navy-blue rounded-xl shadow-lg">
+                <span>{{ session('status') }}</span>
+                <button @click="show = false" class="ml-4 focus:outline-none">
+                    @svg('eva-close', 'w-5 h-5 text-red-400 hover:text-red-500')
+                </button>
+            </div>
         </div>
-    </div>
-@endsession
+    @endsession
+
+    @session('otp')
+        <div class="fixed top-4 right-4 z-[9999] w-[90%] max-w-sm sm:max-w-xs md:max-w-sm lg:max-w-md xl:max-w-lg"
+            x-data="{ show: true }" x-show="show" x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100 transform" x-transition:leave-end="opacity-0 -translate-y-2">
+            <div
+                class="flex items-center justify-between p-4 text-sm font-semibold text-white bg-navy-blue rounded-xl shadow-lg">
+                <span>{{ session('otp') }}</span>
+                <button @click="show = false" class="ml-4 focus:outline-none">
+                    @svg('eva-close', 'w-5 h-5 text-red-400 hover:text-red-500')
+                </button>
+            </div>
+        </div>
+    @endsession
 
 
     <h1 class="my-1 text-4xl font-extrabold capitalize">Welcome Back! </h1>

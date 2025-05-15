@@ -22,7 +22,8 @@ $uploadPost = function () {
         'content' => 'required|string',
         'category' => 'required|string',
     ]);
-            $postImageData = FileHelper::getFileData($post->image);
+    FileHelper::optimizeImage($post->image);
+    $postImageData = FileHelper::getFileData($post->image);
 
         $postImageSave = FileHelper::saveFile($post->image, 'blog/' . $postImageData->name);
 
@@ -82,7 +83,7 @@ $uploadPost = function () {
         <x-admin-sidebar />
         <!-- Main content -->
         <div class="w-full px-1 pb-2 mb-16 overflow-y-scroll bg-white scrollbar-thin scrollbar-thumb-navy-blue scrollbar-track-gray-100">
-            <header class="flex items-center justify-between w-full px-5 mt-1">
+            <header class="flex items-center justify-between w-full px-5 mt-5">
                 <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800 mb-6 sm:mb-8">
                     {{ __('Create New Blog Post') }}
 

@@ -17,7 +17,6 @@ state(['perPage' => 5]);
 state('viewData');
 state(['viewCard' => false]);
 
-
 with([
     'orders' => fn() => Purchase::orderBy('created_at', $this->dateSort)
         ->where(function ($query) {
@@ -95,125 +94,128 @@ $view = function ($id) {
 
     <div wire:show='viewCard' x-cloak="display:none"
         class="fixed inset-0 w-screen h-full ease-in-out bg-black/40 backdrop-blur-sm z-[9999] px-10 py-20">
-        <div class="bg-white ">
+        <div class="bg-white rounded-lg shadow-lg">
             <div class="flex justify-end bg-navy-blue">
                 <span wire:click="viewCard=false" class="pr-5 my-2">
                     @svg('eva-close-circle', ['class' => 'w-7 h-7'])
                 </span>
             </div>
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th scope="col"
-                            class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                            # Order
-                        </th>
-                        <th scope="col"
-                            class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                            Customer
-                        </th>
-                        <th scope="col"
-                            class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                            Product
-                        </th>
-                        <th scope="col"
-                            class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                            Material
-                        </th>
-
-                        <th scope="col"
-                            class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                            location
-                        </th>
-                        <th scope="col"
-                            class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                            Date
-                        </th>
-                        <th scope="col"
-                            class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                            Price
-                        </th>
-                        <th scope="col"
-                            class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                            Quantity
-                        </th>
-                        <th scope="col"
-                            class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                            Total
-                        </th>
-                        <th scope="col"
-                            class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                            Status
-                        </th>
-                        <th scope="col"
-                            class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
-                            Actions
-                        </th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                    @if ($viewData)
+            <div class="overflow-x-scroll scrollbar-thin scrollbar-thumb-navy-blue scrollbar-track-gray-100">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
                         <tr>
-                            <td class="px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
-                                #{{ $viewData->id }}
-                            </td>
-                            <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
-                                {{ "{$viewData->customer->firstname} {$viewData->customer->lastname} " ?? 'N/A' }}<br>
-                                <span class="text-xs">{{ $viewData->customer->email ?? '' }}</span>
-                            </td>
-                            <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
-                                {{ $viewData->product->name }}
-                            </td>
-                            <td class="px-6 py-4 text-sm text-gray-500 capitalize grid">
-                                <span>{{ $viewData->material->name }}</span>
-                                <span class="text-xs">{{ $viewData->material->price }}</span>
-                            </td>
-                            <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
-                                {{ $viewData->shippingLocation->location }}
-                            </td>
+                            <th scope="col"
+                                class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                                # Order
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                                Customer
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                                Product
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                                Material
+                            </th>
 
-                            <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
-                                {{ $viewData->created_at->format('M d, Y H') }}
-                            </td>
-                            <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
-                                {{ number_format($viewData->product->price, 2) }}
-                            </td>
-                            <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
-                                {{$viewData->quantity }}
-                            </td>
-                            <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
-                                {{ AdminSetting::value('currency_symbol').number_format($viewData->amount, 2) }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span
-                                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                            <th scope="col"
+                                class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                                location
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                                Date
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                                Price
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                                Quantity
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                                Total
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                                Status
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
+                                Actions
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        @if ($viewData)
+                            <tr>
+                                <td class="px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
+                                    #{{ $viewData->id }}
+                                </td>
+                                <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
+                                    {{ "{$viewData->customer->firstname} {$viewData->customer->lastname} " ?? 'N/A' }}<br>
+                                    <span class="text-xs">{{ $viewData->customer->email ?? '' }}</span>
+                                </td>
+                                <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
+                                    {{ $viewData->product->name }}
+                                </td>
+                                <td class="px-6 py-4 text-sm text-gray-500 capitalize grid">
+                                    <span>{{ $viewData->material->name }}</span>
+                                    <span class="text-xs">{{ $viewData->material->price }}</span>
+                                </td>
+                                <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
+                                    {{ $viewData->shippingLocation->location }}
+                                </td>
+
+                                <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
+                                    {{ $viewData->created_at->format('M d, Y H') }}
+                                </td>
+                                <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
+                                    {{ number_format($viewData->product->price, 2) }}
+                                </td>
+                                <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
+                                    {{ $viewData->quantity }}
+                                </td>
+                                <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
+                                    {{ AdminSetting::value('currency_symbol') . number_format($viewData->amount, 2) }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span
+                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
                                             {{ $viewData->delivery_status === 'pending' ? 'bg-yellow-100 text-yellow-800' : '' }}
                                             {{ $viewData->delivery_status === 'processing' ? 'bg-blue-100 text-blue-800' : '' }}
                                             {{ $viewData->delivery_status === 'shipped' ? 'bg-indigo-100 text-indigo-800' : '' }}
                                             {{ $viewData->delivery_status === 'delivered' ? 'bg-green-100 text-green-800' : '' }}
                                             {{ $viewData->delivery_status === 'cancelled' ? 'bg-red-100 text-red-800' : '' }}">
-                                    {{ ucfirst($viewData->delivery_status) }}
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 text-sm font-medium text-right whitespace-nowrap">
-                                <div class="flex items-center justify-end space-x-2">
-                                    <select x-on:change="$wire.updateStatus({{ $viewData->id }}, event.target.value )"
-                                        class="text-xs text-black border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                                        @foreach ($statuses as $status)
-                                            <option value="{{ $status }}"
-                                                {{ $viewData->delivery_status === $status ? 'selected' : '' }}>
-                                                {{ ucfirst($status) }}
-                                            </option>
-                                        @endforeach
-                                    </select>
+                                        {{ ucfirst($viewData->delivery_status) }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 text-sm font-medium text-right whitespace-nowrap">
+                                    <div class="flex items-center justify-end space-x-2">
+                                        <select
+                                            x-on:change="$wire.updateStatus({{ $viewData->id }}, event.target.value )"
+                                            class="text-xs text-black border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                            @foreach ($statuses as $status)
+                                                <option value="{{ $status }}"
+                                                    {{ $viewData->delivery_status === $status ? 'selected' : '' }}>
+                                                    {{ ucfirst($status) }}
+                                                </option>
+                                            @endforeach
+                                        </select>
 
-                                </div>
-                            </td>
-                        </tr>
+                                    </div>
+                                </td>
+                            </tr>
 
-                    @endif
-                </tbody>
-            </table>
+                        @endif
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
@@ -221,7 +223,8 @@ $view = function ($id) {
         <!-- Sidebar component -->
         <x-admin-sidebar />
         <!-- Main content -->
-        <div class="w-full px-1 pb-2 mb-16 overflow-y-scroll bg-white scrollbar-thin scrollbar-thumb-navy-blue scrollbar-track-gray-100">
+        <div
+            class="w-full px-1 pb-2 mb-16 overflow-y-scroll bg-white scrollbar-thin scrollbar-thumb-navy-blue scrollbar-track-gray-100">
             <header class="flex items-center justify-between w-full px-5 mb-1 bg-white">
                 <h2 class="py-4 text-3xl font-extrabold text-gray-500 capitalize">
                     {{ __('Orders') }}
@@ -284,8 +287,10 @@ $view = function ($id) {
             </div>
             <!-- Orders table -->
             <div class="w-full px-5 l  scrollbar-thin scrollbar-thumb-navy-blue scrollbar-track-gray-100">
-                <div class="overflow-hidden border-b border-gray-200 shadow sm:rounded-lg scrollbar-thin scrollbar-thumb-navy-blue scrollbar-track-gray-100">
-                    <table class="min-w-full divide-y divide-gray-200 scrollbar-thin scrollbar-thumb-navy-blue scrollbar-track-gray-100">
+                <div
+                    class="overflow-x-scroll border-b border-gray-200 shadow sm:rounded-lg scrollbar-thin scrollbar-thumb-navy-blue scrollbar-track-gray-100">
+                    <table
+                        class="min-w-full divide-y  overflow-x-scroll divide-gray-200 scrollbar-thin scrollbar-thumb-navy-blue scrollbar-track-gray-100">
                         <thead class="bg-gray-50">
                             <tr>
                                 <th scope="col"

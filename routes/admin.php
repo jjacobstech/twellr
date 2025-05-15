@@ -26,6 +26,9 @@ Route::middleware(['auth', 'verified','IsAdmin'])->group(function () {
 
     Volt::route('admin/blog/upload', 'pages.admin.blog.blog-post-upload')->name(name: 'admin.blog.post.upload');
 
+    Volt::route('admin/user/management', 'pages.admin.user-management')->name(name: 'admin.user.management');
+
+
 
 
 });

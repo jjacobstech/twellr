@@ -421,7 +421,8 @@ $withdraw = function () {
 
                 <div class="flex flex-col justify-center">
                     <div class="grid ">
-                        <div class="flex justify-end">
+                        <div class="flex justify-between">
+                            <x-application-logo/>
                             <x-mary-button icon="o-x-mark"
                                 class="left-0 justify btn-dark hover:bg-navy-blue btn-sm btn-circle"
                                 wire:click='addFundModal = false' />
@@ -433,7 +434,7 @@ $withdraw = function () {
                         <div class="grid justify-between space-y-2 lg:flex w-100">
                             <x-text-input name="amount" wire:model="amount" />
                             <x-mary-button label="Fund"
-                                class="bg-[#001f54] text-white hover:bg-golden hover:border-golden h-12"
+                                class="bg-[#001f54] text-white hover:bg-golden hover:border-golden h-12 rounded-xl"
                                 wire:click="addFund" spinner />
                         </div>
                         <x-input-error :messages="$errors->get('amount')" />

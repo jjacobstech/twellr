@@ -178,6 +178,20 @@ new #[Layout('layouts.app')] class extends Component {
         {{ $this->error('Name Field is empty') }}
     @enderror
 
+      <div wire:loading
+        class="py-3 mb-6 text-white transition-opacity duration-500 border rounded alert-info alert top-5 right-1 bg-navy-blue border-navy-blue absolute"
+        role="alert">
+        <svg class="inline-block w-6 h-6 text-white animate-spin bw-spinner" xmlns="http://www.w3.org/2000/svg"
+            fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+            </circle>
+            <path class="opacity-75" fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+            </path>
+        </svg>
+        Loading . . .
+    </div>
+
     <!-- Main Layout: Sidebar + Content -->
     <div class="flex flex-col h-screen bg-gray-100 md:flex-row md:gap-1 scrollbar-none">
         <!-- Sidebar - Adjusts width proportionally -->

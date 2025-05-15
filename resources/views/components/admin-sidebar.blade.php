@@ -5,14 +5,18 @@
         <div id="menu" class="flex flex-col space-y-2">
             <!-- Dashboard Link -->
             <a href="{{ route('admin.dashboard') }}"
-                class="flex items-center gap-2 px-3 py-3 text-sm font-medium text-gray-600 rounded-lg transition-all hover:bg-golden hover:text-white group">
+                class="flex items-center gap-2 px-3 py-3 text-sm font-medium text-gray-600 rounded-lg transition-all hover:bg-golden hover:text-white group  @if (url()->current() == route('admin.dashboard'))
+                    border-b-2 border-golden
+                @endif">
                 @svg('heroicon-o-home', ['class' => 'w-6 h-6'])
                 <span class="hidden md:block hover:block ">Dashboard</span>
             </a>
 
             <!-- Uploaded Designs Dropdown -->
             <a href="{{ route('admin.designs') }}"
-                class="flex items-center gap-2 px-3 py-3 text-sm font-medium text-gray-600 rounded-lg transition-all hover:bg-golden hover:text-white group">
+                class="flex items-center gap-2 px-3 py-3 text-sm font-medium text-gray-600 rounded-lg transition-all hover:bg-golden hover:text-white group  @if (url()->current() == route('admin.designs'))
+                    border-b-2 border-golden
+                @endif">
 
             @svg('eva-upload', ['class' => 'w-6 h-6'])
                 <span class="hidden md:block">Uploaded Designs</span>
@@ -22,35 +26,41 @@
 
 
             <!-- Promote Design Link -->
-            <a href=""
-                class="flex items-center gap-2 px-3 py-3 text-sm font-medium text-gray-600 rounded-lg transition-all hover:bg-golden hover:text-white group">
-                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                    <path
-                        d="M11 17a1 1 0 001.447.894l4-2A1 1 0 0017 15V9.236a1 1 0 00-1.447-.894l-4 2a1 1 0 00-.553.894V17zM15.211 6.276a1 1 0 000-1.788l-4.764-2.382a1 1 0 00-.894 0L4.789 4.488a1 1 0 000 1.788l4.764 2.382a1 1 0 00.894 0l4.764-2.382zM4.447 8.342A1 1 0 003 9.236V15a1 1 0 00.553.894l4 2A1 1 0 009 17v-5.764a1 1 0 00-.553-.894l-4-2z">
-                    </path>
-                </svg>
-                <span class="hidden md:block">Promote Design</span>
+            <a href="{{ route('admin.user.management') }}"
+                class="flex items-center gap-2 px-3 py-3 text-sm font-medium text-gray-600 rounded-lg transition-all hover:bg-golden hover:text-white group @if (url()->current() == route('admin.user.management'))
+                    border-b-2 border-golden
+                @endif">
+                @svg('solar-users-group-two-rounded-bold-duotone', ['class' => 'w-6 h-6'])
+                <span class="hidden md:block">User Management</span>
             </a>
             <a href="{{ route('admin.orders') }}"
-                class="flex items-center gap-2 px-3 py-3 text-sm font-medium text-gray-600 rounded-lg transition-all hover:bg-golden hover:text-white group">
+                class="flex items-center gap-2 px-3 py-3 text-sm font-medium text-gray-600 rounded-lg transition-all hover:bg-golden hover:text-white group  @if (url()->current() == route('admin.orders'))
+                    border-b-2 border-golden
+                @endif">
                 @svg('eva-car', ['class' => 'w-6 h-6'])
                 <span class="hidden md:block">Orders</span>
             </a>
 
             <a href="{{ route('admin.withdrawal') }}"
-                class="flex items-center gap-2 px-3 py-3 text-sm font-medium text-gray-600 rounded-lg transition-all hover:bg-golden hover:text-white group">
+                class="flex items-center gap-2 px-3 py-3 text-sm font-medium text-gray-600 rounded-lg transition-all hover:bg-golden hover:text-white group  @if (url()->current() == route('admin.withdrawal'))
+                    border-b-2 border-golden
+                @endif">
                @svg('eva-credit-card', ['class' => 'w-6 h-6'])
                   <span class="hidden md:block">Withdrawal</span>
             </a>
 
             <a href="{{ route('admin.blog.post') }}"
-                class="flex items-center gap-2 px-3 py-3 text-sm font-medium text-gray-600 rounded-lg transition-all hover:bg-golden hover:text-white group">
+                class="flex items-center gap-2 px-3 py-3 text-sm font-medium text-gray-600 rounded-lg transition-all hover:bg-golden hover:text-white group  @if (url()->current() == route('admin.blog.post'))
+                    border-b-2 border-golden
+                @endif">
                 @svg('eva-globe', ['class' => 'w-6 h-6'])
                 <span class="hidden md:block"> {{ __('Blog Posts') }}</span>
 
             </a>
             <a href="{{ route('admin.preferences') }}"
-                class="flex items-center gap-2 px-3 py-3 text-sm font-medium text-gray-600 rounded-lg transition-all hover:bg-golden hover:text-white group">
+                class="flex items-center gap-2 px-3 py-3 text-sm font-medium text-gray-600 rounded-lg transition-all hover:bg-golden hover:text-white group  @if (url()->current() == route('admin.preferences'))
+                    border-b-2 border-golden
+                @endif">
                 @svg('heroicon-o-cog', ['class' => 'w-6 h-6'])
                 <span class="hidden md:block">System Preferences</span>
             </a>

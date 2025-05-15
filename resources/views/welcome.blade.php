@@ -53,7 +53,7 @@
 
         <!-- Explore Section -->
         <div class="mt-10">
-            <livewire:explore-section />
+            <livewire:welcome.explore-section />
         </div>
 
         <!-- Footer -->

@@ -214,9 +214,8 @@ new class extends Component {
 }; ?>
 
 <!--Profile Form content -->
-<div class="w-full " x-data="{ remove: true }"
-x-on:livewire-upload-error="$wire.error('Upload Failed')"
-x-on:livewire-upload-finish="$wire.success('Upload Successful')">
+<div class="w-full " x-data="{ remove: true }" x-on:livewire-upload-error="$wire.error('Upload Failed')"
+    x-on:livewire-upload-finish="$wire.success('Upload Successful')">
     <div class="overflow-hidden bg-white rounded-lg shadow-md shadow-neutral-700">
         <div class="px-4 py-4 sm:px-6 bg-navy-blue">
             <h3 class="text-lg font-medium leading-6 text-gray-100">Profile Information</h3>
@@ -270,8 +269,8 @@ x-on:livewire-upload-finish="$wire.success('Upload Successful')">
                                     Address
                                 </label>
                                 <div class="mt-1">
-                                    <input type="text" wire:model.live="address" id="address" autocomplete="address"
-                                        required
+                                    <input type="text" wire:model.live="address" id="address"
+                                        autocomplete="address" required
                                         class="shadow-sm text-black  focus:ring-navy-blue focus:border-navy-blue block w-full sm:text-sm border-gray-300 rounded-md @error('address') border-red-500 @enderror">
                                 </div>
                             </div>
@@ -281,8 +280,8 @@ x-on:livewire-upload-finish="$wire.success('Upload Successful')">
                                     Phone No
                                 </label>
                                 <div class="mt-1">
-                                    <input type="text" wire:model.live="phone_no" id="phone_no" autocomplete="number"
-                                        required
+                                    <input type="text" wire:model.live="phone_no" id="phone_no"
+                                        autocomplete="number" required
                                         class="shadow-sm text-black  focus:ring-navy-blue focus:border-navy-blue block w-full sm:text-sm border-gray-300 rounded-md @error('phone_no') border-red-500 @enderror">
                                 </div>
                             </div>
@@ -303,8 +302,8 @@ x-on:livewire-upload-finish="$wire.success('Upload Successful')">
                                     Account No
                                 </label>
                                 <div class="mt-1">
-                                    <input type="text" wire:model.live="account_no" id="account_no" autocomplete="number"
-                                        required
+                                    <input type="text" wire:model.live="account_no" id="account_no"
+                                        autocomplete="number" required
                                         class="shadow-sm text-black  focus:ring-navy-blue focus:border-navy-blue block w-full sm:text-sm border-gray-300 @error('account_no') border-red-500 @enderror rounded-md">
 
 
@@ -348,7 +347,8 @@ x-on:livewire-upload-finish="$wire.success('Upload Successful')">
                                     </svg></label>
                                 <div class="mt-1">
 
-                                    <input type="text" wire:model.live="x" id="x" autocomplete="social-media"
+                                    <input type="text" wire:model.live="x" id="x"
+                                        autocomplete="social-media"
                                         class="shadow-sm text-black  focus:ring-navy-blue focus:border-navy-blue block w-full sm:text-sm border-gray-300 rounded-md @error('x')
                                             border-red-500
                                         @enderror">

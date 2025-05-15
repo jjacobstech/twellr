@@ -57,6 +57,8 @@ $readMore = function ($id) {
 $close = function () {
     $this->postView = null;
     $this->view = false;
+        $this->postCategory = null;
+
 };
 
 ?>
@@ -102,17 +104,17 @@ $close = function () {
 
             @forelse ($posts as $post)
                 <div
-                    class="flex flex-col md:flex-row bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100">
+                    class="flex flex-col md:flex-row bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100 ">
                     <div class="w-full md:w-1/3 h-56 sm:h-64 md:h-auto">
                         <div class="w-full h-full bg-amber-100">
-                            <img src="{{ asset('uploads/blog/' . $post->image) }}" alt="Woman in beige outfit with cap"
-                                class="w-full h-full object-cover" />
+                            <img src="{{ asset('uploads/blog/' . $post->image) }}" alt="{{ $post->title }}"
+                                class="w-full h-full object-cover aspect-[4/2]" />
                         </div>
                     </div>
                     <div class="w-full md:w-2/3 p-4 sm:p-6 bg-gray-50">
                         <h2 class="text-xl sm:text-2xl font-medium text-gray-700 mb-2 sm:mb-3">
                             {{ $post->title }}</h2>
-                        <p class="text-gray-500 mb-4 sm:mb-5 text-sm sm:text-base">
+                        <p class="text-gray-500 mb-4 sm:mb-5 text-sm sm:text-base line-clamp-1">
                             {{ $post->content }}
                         </p>
                         <button wire:click='readMore({{ $post->id }})'
@@ -146,10 +148,10 @@ $close = function () {
                     </div>
 
                     <!-- Featured Image -->
-                    <div class="w-full h-64 sm:h-96 bg-amber-100 overflow-hidden rounded-lg shadow-sm mb-8">
-                        <img src="{{ asset('uploads/blog/' . $postView->image) }}" alt="{{ $postView->title }}"
-                            class="w-full h-full object-cover" />
-                    </div>
+                   <div class="flex justify-center">
+                         <img src="{{ asset('uploads/blog/' . $postView->image) }}" alt="{{ $postView->title }}"
+                            class=" object-contain h-64 sm:h-96 overflow-hidden rounded-lg shadow-sm mb-8" />
+                       </div>
 
                     <!-- Post Title -->
                     <h1 class="text-2xl sm:text-4xl font-bold text-gray-800 mb-4">
@@ -170,7 +172,6 @@ $close = function () {
                     </div>
                 </div>
             </div>
-
         @endif
 
     </div>

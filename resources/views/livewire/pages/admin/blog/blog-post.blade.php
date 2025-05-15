@@ -15,20 +15,21 @@ state(['searchTerm' => '']);
 state(['categoryFilter' => '']);
 state(['dateSort' => 'desc']);
 state(['currentPage' => 1]);
-state(['perPage' => 5]);
-state('viewData');
-state(['viewCard' => false]);
+state(['perPage' => 10]);
+state(['postView' => null]);
+state(['postCategory' => null]);
+state(['view' => false]);
+state(['blog' => true]);
 state(['categories' => fn() => BlogCategory::all()]);
-
 
 with([
     'posts' => fn() => BlogPost::orderBy('created_at', $this->dateSort)
         ->where(function ($query) {
             $query->where('title', 'like', "%{$this->searchTerm}%")->orWhereHas('category', function ($category) {
-                $category->where('content', 'like', "%{$this->searchTerm}%")
-                ;
+                $category->where('content', 'like', "%{$this->searchTerm}%");
             });
-        })->where('category', 'like' ,"%{$this->categoryFilter}%")
+        })
+        ->where('category_id', 'like', "%{$this->categoryFilter}%")
         ->paginate($this->perPage),
 ]);
 
@@ -42,23 +43,34 @@ $resetFilters = function () {
 // Method to toggle sort direction
 $toggleSort = function () {
     $this->dateSort = $this->dateSort === 'desc' ? 'asc' : 'desc';
-
 };
 
 $toggleCategory = function ($id) {
-  return $this->categoryFilter = $id;
-
+    return $this->categoryFilter = $id;
 };
-$delete = function($id){
-$blogPost = BlogPost::find($id);
-if(!$blogPost){
-    $this->error('Post Deletion Error','Something went Wrong');
-}else{
-    $blogPost->delete();
-    $this->success('Post Deleted Successfully');
-}
 
-}
+$delete = function ($id) {
+    $blogPost = BlogPost::find($id);
+    if (!$blogPost) {
+        $this->error('Post Deletion Error', 'Something went Wrong');
+    } else {
+        $blogPost->delete();
+        $this->success('Post Deleted Successfully');
+    }
+};
+
+$readMore = function ($id) {
+    $this->postView = BlogPost::where('id', '=', $id)->first();
+    $this->postCategory = BlogCategory::where('id',$this->postView->category_id)->first();
+    $this->view = true;
+    $this->blog = false;
+};
+
+$close = function () {
+    $this->postView = null;
+    $this->postCategory = null;
+    $this->blog = true;
+};
 
 ?>
 
@@ -83,7 +95,8 @@ if(!$blogPost){
         <!-- Sidebar component -->
         <x-admin-sidebar />
         <!-- Main content -->
-        <div class="w-full px-1 pb-2 mb-16 overflow-y-scroll bg-white scrollbar-thin scrollbar-thumb-navy-blue scrollbar-track-gray-100">
+        <div wire:show="blog"
+            class="w-full px-1 pb-2 mb-16 overflow-y-scroll bg-white scrollbar-thin scrollbar-thumb-navy-blue scrollbar-track-gray-100">
             <header class="flex items-center justify-between w-full px-5 mb-1 bg-white">
                 <h2 class="py-4 text-3xl font-extrabold text-gray-500 capitalize">
                     {{ __('Blog Posts') }}
@@ -149,38 +162,6 @@ if(!$blogPost){
             </div>
             <!-- blog table -->
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-1 py-6 sm:py-8 h-screen pb-24">
-
-                <!-- Categories and Search - Sticky on mobile, fixed on desktop -->
-                <div
-                    class="bg-gray-100 p-3 sm:p-4 rounded-lg flex flex-col md:flex-row justify-between items-center mb-6 sm:mb-8 top-14 z-10">
-                    <!-- Categories - Scrollable on small screens -->
-                    <div class="flex space-x-2 mb-4 md:mb-0 overflow-x-auto pb-2 w-full md:w-auto whitespace-nowrap">
-                        @forelse ($categories as $category)
-                            <button wire:click="toggleCategory({{ $category->id }})"
-                                class="@if (url()->current() == route('blog')) bg-white @endif text-gray-600 px-3 py-1 rounded-full text-sm shadow-sm border border-gray-200 hover:bg-gray-50 flex-shrink-0">
-                                {{ $category->name }}
-                            </button>
-                        @empty
-                            No Categories
-                        @endforelse
-
-                    </div>
-
-                    <!-- Search -->
-                    <div class="relative w-full md:w-auto">
-                        <input type="text" wire:model.live="searchTerm"
-                            @keypress="$wire.searchTerm = event.target.value" placeholder="Search creator/design"
-                            class="pl-4 pr-10 py-2 bg-white text-gray-700 rounded-full border border-gray-200 w-full md:w-64 focus:outline-none focus:ring-2 focus:ring-yellow-400">
-                        <button class="absolute right-3 top-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-400" fill="none"
-                                viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-
                 <!-- Blog Posts - Main scrollable content -->
                 <div class="space-y-6 sm:space-y-8 pb-24 ">
 
@@ -190,22 +171,22 @@ if(!$blogPost){
                             <div class="w-full md:w-1/3 h-56 sm:h-64 md:h-auto">
                                 <div class="w-full h-full bg-amber-100">
                                     <img src="{{ asset('uploads/blog/' . $post->image) }}"
-                                        alt="Woman in beige outfit with cap" class="w-full h-full object-cover" />
+                                        alt="Woman in beige outfit with cap"
+                                        class="w-full h-full object-cover aspect-[4/2]" />
                                 </div>
                             </div>
                             <div class="w-full md:w-2/3 p-4 sm:p-6 bg-gray-50">
                                 <h2 class="text-xl sm:text-2xl font-medium text-gray-700 mb-2 sm:mb-3">
                                     {{ $post->title }}</h2>
-                                <p class="text-gray-500 mb-4 sm:mb-5 text-sm sm:text-base">
+                                <p class="text-gray-500 mb-4 sm:mb-5 text-sm sm:text-base line-clamp-1">
                                     {{ $post->content }}
                                 </p>
-                             <div class="flex gap-2">
-                                   <a href="#"
-                                    class="inline-block bg-yellow-400 hover:bg-yellow-500 text-white font-medium px-4 sm:px-6 py-2 rounded transition duration-200 text-sm sm:text-base">READ
-                                    MORE</a>
+                                <div class="flex gap-2">
+                                    <button wire:click='readMore({{ $post->id }})' class="inline-block bg-yellow-400 hover:bg-yellow-500 text-white font-medium px-4 sm:px-6 py-2 rounded transition duration-200 text-sm sm:text-base">READ
+                                        MORE</button>
                                     <button wire:click='delete({{ $post->id }})'
-                                    class="inline-block bg-yellow-400 hover:bg-yellow-500 text-white font-medium px-4 sm:px-6 py-2 rounded transition duration-200 text-sm sm:text-base">DELETE</button>
-                             </div>
+                                        class="inline-block bg-yellow-400 hover:bg-yellow-500 text-white font-medium px-4 sm:px-6 py-2 rounded transition duration-200 text-sm sm:text-base">DELETE</button>
+                                </div>
                             </div>
                         </div>
                     @empty
@@ -222,5 +203,43 @@ if(!$blogPost){
                 </div>
             </div>
         </div>
+
+        @if ($postView)
+           <div class="w-full px-1 pb-2 mb-16 overflow-y-scroll bg-white scrollbar-thin scrollbar-thumb-navy-blue scrollbar-track-gray-100">
+                <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+                    <!-- Back Button -->
+                    <div class="mb-6">
+                        <button wire:click='close'
+                            class="inline-flex items-center text-sm font-medium text-gray-600 hover:text-yellow-500 transition">
+                            ← Back to Blog
+                        </button>
+                    </div>
+
+                    <!-- Featured Image -->
+                       <div class="flex justify-center">
+                         <img src="{{ asset('uploads/blog/' . $postView->image) }}" alt="{{ $postView->title }}"
+                            class=" object-contain h-64 sm:h-96 overflow-hidden rounded-lg shadow-sm mb-8" />
+                       </div>
+
+                    <!-- Post Title -->
+                    <h1 class="text-2xl sm:text-4xl font-bold text-gray-800 mb-4">
+                        {{ $postView->title }}
+                    </h1>
+
+                    <!-- Meta Info -->
+                    <div class="text-sm text-gray-500 mb-6">
+                        {{ $postView->created_at->format('F j, Y') }}
+                        @if ($postCategory)
+                            • {{ $postCategory->name }}
+                        @endif
+                    </div>
+
+                    <!-- Post Content -->
+                    <div class="prose prose-sm sm:prose lg:prose-lg max-w-none text-gray-700">
+                        {!! nl2br(e($postView->content)) !!}
+                    </div>
+                </div>
+            </div>
+        @endif
     </div>
 </div>
