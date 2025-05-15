@@ -22,6 +22,7 @@ return new class extends Migration
             $table->boolean('advertisement_status')->default(true);
             $table->unsignedInteger('withdrawal_threshold')->nullable()->default(0);
             $table->unsignedInteger('minimum_rating')->default(10);
+            $table->string('banner_image')->nullable();
         });
     }
 
