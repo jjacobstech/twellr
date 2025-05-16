@@ -12,7 +12,7 @@ state(['purchases' => fn() => Auth::user()->isCreative() ? Purchase::where('buye
 state(['banner' => fn() => AdminSetting::first()->banner_image]);
 
 ?>
-<div class="flex h-screen m-0 overflow-hidden md:w-full" x-cloak="display: none">
+<div class="flex h-screen mb-20 overflow-hidden md:w-full" x-cloak="display: none">
     @if (Auth::user()->isCreative())
         <x-creative-sidebar class="w-[12%]" />
     @endif
@@ -57,6 +57,7 @@ state(['banner' => fn() => AdminSetting::first()->banner_image]);
                     </div>
                 @endif
             </div>
+        <x-footer/>
         </div>
     @endif
 </div>

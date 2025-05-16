@@ -283,7 +283,7 @@ $checkout = function () {
 
 <div class="w-full h-screen overflow-y-scroll bg-gray-100 pb-44 lg:pb-20 scrollbar-none">
 
-        <div wire:loading
+    <div wire:loading
         class="absolute py-3 mb-6 text-white transition-opacity duration-500 border rounded alert-info alert top-5 right-1 bg-navy-blue border-navy-blue"
         role="alert">
         <svg class="inline-block w-6 h-6 text-white animate-spin bw-spinner" xmlns="http://www.w3.org/2000/svg"
@@ -293,8 +293,7 @@ $checkout = function () {
             <path class="opacity-75" fill="currentColor"
                 d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
             </path>
-        </svg
-        Loading . . .
+        </svg> Loading . . .
     </div>
 
     @error('address')
@@ -309,19 +308,6 @@ $checkout = function () {
         {{ $this->warning('Location Not Selected') }}
     @enderror
 
-      <div wire:loading class="toast toast-top top-28 z-[9999]">
-        <div class="py-3 mb-6 text-white transition-opacity duration-500 border rounded alert-info alert top-10 bg-navy-blue border-navy-blue"
-            role="alert">
-            <svg class="inline-block w-6 h-6 text-white animate-spin bw-spinner" xmlns="http://www.w3.org/2000/svg"
-                fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
-                </circle>
-                <path class="opacity-75" fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-                </path>
-            </svg>
-        </div>
-    </div>
 
     {{-- <form wire:submit.prevent='checkout'> --}}
     <!-- Main Container -->
@@ -364,6 +350,7 @@ $checkout = function () {
                                             <img class="object-cover w-full h-full rounded-md shadow-sm"
                                                 src="{{ asset('uploads/products/design-stack/' . $item->product->front_view) }}"
                                                 alt="{{ $item->product->name }}">
+
                                         </div>
 
                                         <!-- Product Details -->
@@ -567,9 +554,7 @@ $checkout = function () {
                                                 </select>
                                                 <x-input-error :messages="$errors->get('size') ? 'Size Not Selected' : ''" class="mt-1" />
 
-                                                {{-- <a href="#" class="hidden ml-auto text-sm text-gray-500 underline md:block">Size
-                                        Guide
-                                             </a> --}}
+
                                             </div>
 
                                             <!-- Quantity Controls -->
@@ -608,7 +593,7 @@ $checkout = function () {
                                             </div>
 
                                             <!-- Item Total -->
-                                            <div class="w-[8%] text-right">
+                                            <div class="w-[8%] text-right grid ">
                                                 <span class="text-sm font-medium text-gray-800">
                                                     @if ($item->material == null)
                                                         ${{ $item->product->price * $item->quantity }}
@@ -616,6 +601,8 @@ $checkout = function () {
                                                         ${{ ($item->product->price + $item->material->price) * $item->quantity }}
                                                     @endif
                                                 </span>
+                                                  <span wire:click="removeFromCart({{ $item }})" class="absolute mt-8 right-10  hover:text-red-400 lg:hidden cursor-pointer text-red-500 font-bold">Remove</span>
+                                                    <span wire:click="removeFromCart({{ $item }})" class="absolute mt-8 hidden lg:block ml-5 hover:text-red-400 cursor-pointer text-red-500 font-bold">Remove</span>
                                             </div>
 
                                         </div>
@@ -750,5 +737,5 @@ $checkout = function () {
                     </div>
                 </div>
             </div>
-            {{-- </form> --}}
+            <x-footer/>
         </div>

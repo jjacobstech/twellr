@@ -368,7 +368,7 @@ $completeCheckout = function () {
                 'location_id' => $this->location,
                 'size' => $orderInfo->size,
                 'product_name' => $this->order->name,
-                'product_category' => $this->order->category,
+                'product_category' => $this->order->category->name,
                 'material_id' => $orderInfo->material,
                 'quantity' => $this->quantity,
             ]);
@@ -754,6 +754,10 @@ $completeCheckout = function () {
                         </span>
                     </div>
                 </div>
+                         <div class="lg:hidden">
+                               <x-footer/>
+                         </div>
+
             </div>
 
         </div>

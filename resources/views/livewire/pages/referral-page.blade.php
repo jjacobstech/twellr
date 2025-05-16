@@ -221,16 +221,19 @@
 
     <footer class="text-white bg-navy-blue">
         <div class="container px-6 py-6 mx-auto">
-            <div class="flex flex-col justify-between md:flex-row">
                 <div class="mb-6 md:mb-0">
-                    <div class="flex items-center ">
+                    <div class="flex flex-between w-full">
                         <x-bladewind.avatar class="border-0 ring-0" size="big"
                             image="{{ asset('assets/twellr-logo.png') }}" alt="" />
-                        <span class="text-xl font-bold ">Twellr</span>
+                        <span class="text-xl font-bold  my-4">Twellr</span>
+
                     </div>
-                    <p class="mt-2 text-sm text-gray-400">Co-create your fashion. Have a say in
+
+                    <p class="mt-2 text-sm text-white">Co-create your fashion. Have a say in
                         what you wear!</p>
+                    <p class="text-sm  text-white">Copyright © 2025 Twellr. All Rights Reserved</p>
                 </div>
+        </div>
     </footer>
 </body>
 

@@ -27,7 +27,8 @@ new #[Layout('layouts.guest')] class extends Component {
 
     public function mount()
     {
-        $this->user = session()->get('user');
+       // $this->user = session()->get('user');
+       $this->user = User::find(1);
         if ($this->user) {
             $this->firstname = $this->user->firstname;
             $this->countries = Country::all();
@@ -100,8 +101,8 @@ new #[Layout('layouts.guest')] class extends Component {
     }
 };
 ?>
-<div class="flex justify-center px-24 py-10 mt-3 border border-black rounded-3xl md:mx-20">
-    <form class="w-[50%]" wire:submit.prevent="storeInfo">
+<div class="flex justify-center px-5 lg:px-24 py-10 mt-3 border border-black rounded-3xl md:mx-20 ">
+    <form class="md:w-[50%]" wire:submit.prevent="storeInfo">
         <div class="relative ">
 
 

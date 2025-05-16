@@ -1,116 +1,135 @@
 <?php
-use Mary\Traits\Toast;
-use App\Models\Cart;
+use Carbon\Carbon;
+use App\Models\User;
 use App\Models\Product;
 use App\Models\Purchase;
 use App\Models\Transaction;
-use App\Models\Notification;
-use Livewire\Attributes\Layout;
-use Livewire\Volt\Component;
-use Illuminate\Support\Facades\Auth;
-use function Livewire\Volt\{state, computed, mount, rules, layout};
+use App\Models\AdminSetting;
+use App\Models\PlatformEarning;
+use function Livewire\Volt\{state, layout};
 
 layout('layouts.admin');
 
 state([
+    //Currency
+    'currency' => fn() => AdminSetting::first()->currency_symbol,
+
+    //Dating
+    'startOfWeek' => fn() => Carbon::now()->startOfWeek(),
+    'endOfWeek' => fn() => Carbon::now()->endOfWeek(),
+    'startOfMonth' => fn() => Carbon::now()->startOfMonth(),
+    'endOfMonth' => fn() => Carbon::now()->endOfMonth(),
+    'startOfYear' => fn() => Carbon::now()->startOfYear(),
+    'endOfYear' => fn() => Carbon::now()->endOfYear(),
+
     // Weekly stats
-    'weeklySignups' => 0,
-    'weeklySignupGrowth' => 0,
-    'weeklyDesigns' => 0,
-    'weeklyDesignsGrowth' => 0,
-    'weeklyIncome' => 0,
-    'weeklyIncomeGrowth' => 0,
-    'weeklyPurchases' => 0,
-    'weeklyPurchasesGrowth' => 0,
+    'weeklySignups' => fn() => User::where('role', 'user')->whereBetween('created_at', [$this->startOfWeek, $this->endOfWeek])->count(), //fix
+    'weeklyDesignerSignups' => fn() => User::where('role', 'creative')->whereBetween('created_at', [$this->startOfWeek, $this->endOfWeek])->count(), //fix
+    'weeklyDesigns' => fn() => Product::whereBetween('created_at', [$this->startOfWeek, $this->endOfWeek])->count(),
+    'weeklyIncome' => fn() => Transaction::where('transaction_type', '=', 'sales')
+        ->whereBetween('created_at', [$this->startOfWeek, $this->endOfWeek])
+        ->sum('amount'),
+    'weeklyPurchases' => fn() => Purchase::whereBetween('created_at', [$this->startOfWeek, $this->endOfWeek])->count(),
 
     // Monthly and Annual stats
-    'monthlySignups' => 0,
-    'annualSignups' => 0,
-    'monthlyDesigns' => 0,
-    'annualDesigns' => 0,
-    'monthlyIncome' => 0,
-    'annualIncome' => 0,
-    'monthlyPurchases' => 0,
-    'annualPurchases' => 0,
+    'monthlySignups' => fn() => User::where('role', '=', 'creative')
+        ->whereBetween('created_at', [$this->startOfMonth, $this->endOfMonth])
+        ->count(),
+    'annualSignups' => fn() => User::where('role', '=', 'creative')
+        ->whereBetween('created_at', [$this->startOfYear, $this->endOfYear])
+        ->count(),
+    'monthlyDesigns' => fn() => Product::whereBetween('created_at', [$this->startOfMonth, $this->endOfMonth])->count(),
+    'annualDesigns' => fn() => Product::whereBetween('created_at', [$this->startOfYear, $this->endOfYear])->count(),
+    'monthlyIncome' => fn() => Transaction::where('transaction_type', '=', 'sales')
+        ->whereBetween('created_at', [$this->startOfMonth, $this->endOfMonth])
+        ->sum('amount'),
+    'annualIncome' => fn() => Transaction::where('transaction_type', '=', 'sales')
+        ->whereBetween('created_at', [$this->startOfYear, $this->endOfYear])
+        ->sum('amount'),
+    'monthlyPurchases' => fn() => Purchase::whereBetween('created_at', [$this->startOfMonth, $this->endOfMonth])->count(),
+    'annualPurchases' => fn() => Purchase::whereBetween('created_at', [$this->startOfYear, $this->endOfYear])->count(),
 
     // All-time stats
-    'totalDesignerSignups' => 0,
-    'totalUserSignups' => 0,
-    'totalDesignerIncome' => 0,
-    'totalShirtsPurchased' => 0,
+    'totalDesignerSignups' => fn() => User::where('role', '=', 'creative')->count(),
+    'totalUserSignups' => fn() => User::where('role', '=', 'user')->count(),
+    'totalDesignerIncome' => fn() => Transaction::where('transaction_type', '=', 'sales')->sum('amount'),
+    'totalShirtsPurchased' => fn() => Purchase::all()->count(),
+
+    // Earnings
+    'weeklyEarnings' => fn() => PlatformEarning::whereBetween('created_at', [$this->startOfWeek, $this->endOfWeek])->sum('total'),
+    'monthlyEarnings' => fn() => PlatformEarning::whereBetween('created_at', [$this->startOfMonth, $this->endOfMonth])->sum('total'),
+    'annualEarnings' => fn() => PlatformEarning::whereBetween('created_at', [$this->startOfYear, $this->endOfYear])->sum('total'),
+    'totalEarnings' => fn() => PlatformEarning::sum('total'),
 ]);
-
-
-
 
 ?>
 
-<div class="flex  gap-1 w-full pt-1 fixed bg-gray-100 overflow-hidden h-screen">
+<div class="fixed flex w-full h-screen gap-1 pt-1 overflow-hidden bg-gray-100">
     <!-- Sidebar component -->
     <x-admin-sidebar />
 
 
-    <div class="w-full p-4 bg-white shadow-sm overflow-y-scroll mb-16 scrollbar-thin scrollbar-thumb-navy-blue scrollbar-track-gray-100">
+    <div
+        class="w-full p-4 mb-16 overflow-y-scroll bg-white shadow-sm scrollbar-thin scrollbar-thumb-navy-blue scrollbar-track-gray-100">
         <!-- Weekly Stats Section -->
         <div class="mb-6">
-            <h2 class="text-xl font-bold mb-4 text-gray-800 border-b pb-2">Weekly Performance</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div class="p-4 bg-navy-blue text-white rounded-xl shadow">
-                    <h3 class="font-semibold text-sm uppercase">Avg Weekly Designer Signups</h3>
-                    <div class="text-2xl font-bold mt-2">{{ $weeklySignups ?? '0' }}</div>
-                    <div class="text-xs mt-1">+{{ $weeklySignupGrowth ?? '0' }}% from last week</div>
+            <h2 class="pb-2 mb-4 text-xl font-bold text-gray-800 border-b">Weekly Performance</h2>
+            <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+                <div class="p-4 text-white shadow bg-navy-blue rounded-xl">
+                    <h3 class="text-sm font-semibold uppercase">Weekly User Signups</h3>
+                    <div class="mt-2 text-2xl font-bold">{{ $weeklySignups ?? '0' }}</div>
+                </div>
+                 <div class="p-4 text-white shadow bg-navy-blue rounded-xl">
+                    <h3 class="text-sm font-semibold uppercase">Weekly Designer Signups</h3>
+                    <div class="mt-2 text-2xl font-bold">{{ $weeklyDesignerSignups ?? '0' }}</div>
                 </div>
 
-                <div class="p-4 bg-navy-blue text-white rounded-xl shadow">
-                    <h3 class="font-semibold text-sm uppercase">Weekly Designs Uploaded</h3>
-                    <div class="text-2xl font-bold mt-2">{{ $weeklyDesigns ?? '0' }}</div>
-                    <div class="text-xs mt-1">+{{ $weeklyDesignsGrowth ?? '0' }}% from last week</div>
+                <div class="p-4 text-white shadow bg-navy-blue rounded-xl">
+                    <h3 class="text-sm font-semibold uppercase">Weekly Designs Uploaded</h3>
+                    <div class="mt-2 text-2xl font-bold">{{ $weeklyDesigns ?? '0' }}</div>
                 </div>
 
-                <div class="p-4 bg-navy-blue text-white rounded-xl shadow">
-                    <h3 class="font-semibold text-sm uppercase">Avg Weekly Designer Income</h3>
-                    <div class="text-2xl font-bold mt-2">${{ $weeklyIncome ?? '0' }}</div>
-                    <div class="text-xs mt-1">+{{ $weeklyIncomeGrowth ?? '0' }}% from last week</div>
+                <div class="p-4 text-white shadow bg-navy-blue rounded-xl">
+                    <h3 class="text-sm font-semibold uppercase">Weekly Designer Income</h3>
+                    <div class="mt-2 text-2xl font-bold">{{ $currency }}{{ $weeklyIncome ?? '0' }}</div>
                 </div>
 
-                <div class="p-4 bg-navy-blue text-white rounded-xl shadow">
-                    <h3 class="font-semibold text-sm uppercase">Weekly Shirts Purchased</h3>
-                    <div class="text-2xl font-bold mt-2">{{ $weeklyPurchases ?? '0' }}</div>
-                    <div class="text-xs mt-1">+{{ $weeklyPurchasesGrowth ?? '0' }}% from last week</div>
+                <div class="p-4 text-white shadow bg-navy-blue rounded-xl">
+                    <h3 class="text-sm font-semibold uppercase">Weekly Shirts Purchased</h3>
+                    <div class="mt-2 text-2xl font-bold">{{ $weeklyPurchases ?? '0' }}</div>
                 </div>
             </div>
         </div>
 
         <!-- Monthly & Annual Stats Section -->
         <div class="mb-6">
-            <h2 class="text-xl font-bold mb-4 text-gray-800 border-b pb-2">Monthly & Annual Metrics</h2>
+            <h2 class="pb-2 mb-4 text-xl font-bold text-gray-800 border-b">Monthly & Annual Metrics</h2>
 
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
+            <div class="grid grid-cols-1 gap-4 mb-4 lg:grid-cols-2">
                 <!-- Monthly & Annual Designer Signups -->
-                <div class="p-4 bg-white border rounded-xl shadow">
-                    <h3 class="font-semibold text-gray-700 mb-3">Designer Signups</h3>
+                <div class="p-4 bg-white border shadow rounded-xl">
+                    <h3 class="mb-3 font-semibold text-gray-700">Designer Signups</h3>
                     <div class="flex justify-between">
-                        <div class="text-center p-3 bg-navy-blue rounded-lg">
+                        <div class="p-3 text-center rounded-lg bg-navy-blue">
                             <div class="text-sm text-white">Monthly</div>
                             <div class="text-xl font-bold text-white">{{ $monthlySignups ?? '0' }}</div>
                         </div>
-                        <div class="text-center p-3 bg-navy-blue rounded-lg">
+                        <div class="p-3 text-center rounded-lg bg-navy-blue">
                             <div class="text-sm text-white">Annually</div>
                             <div class="text-xl font-bold text-white">{{ $annualSignups ?? '0' }}</div>
                         </div>
                     </div>
-                    {{-- <livewire:pages.admin.charts.signup-trend /> --}}
                 </div>
 
                 <!-- Monthly & Annual Designs Uploaded -->
-                <div class="p-4 bg-white border rounded-xl shadow">
-                    <h3 class="font-semibold text-gray-700 mb-3">Designs Uploaded</h3>
+                <div class="p-4 bg-white border shadow rounded-xl">
+                    <h3 class="mb-3 font-semibold text-gray-700">Designs Uploaded</h3>
                     <div class="flex justify-between">
-                        <div class="text-center p-3 bg-navy-blue rounded-lg">
+                        <div class="p-3 text-center rounded-lg bg-navy-blue">
                             <div class="text-sm text-white">Monthly</div>
                             <div class="text-xl font-bold text-white">{{ $monthlyDesigns ?? '0' }}</div>
                         </div>
-                        <div class="text-center p-3 bg-navy-blue rounded-lg">
+                        <div class="p-3 text-center rounded-lg bg-navy-blue">
                             <div class="text-sm text-white">Annually</div>
                             <div class="text-xl font-bold text-white">{{ $annualDesigns ?? '0' }}</div>
                         </div>
@@ -119,61 +138,91 @@ state([
                 </div>
 
                 <!-- Monthly & Annual Designer Incomes -->
-                <div class="p-4 bg-white border rounded-xl shadow">
-                    <h3 class="font-semibold text-gray-700 mb-3">Designer Incomes</h3>
+                <div class="p-4 bg-white border shadow rounded-xl">
+                    <h3 class="mb-3 font-semibold text-gray-700">Designer Incomes</h3>
                     <div class="flex justify-between">
-                        <div class="text-center p-3 bg-navy-blue rounded-lg">
+                        <div class="p-3 text-center rounded-lg bg-navy-blue">
                             <div class="text-sm text-white">Monthly</div>
-                            <div class="text-xl font-bold text-white">${{ $monthlyIncome ?? '0' }}</div>
+                            <div class="text-xl font-bold text-white">{{ $currency }}{{ $monthlyIncome ?? '0' }}
+                            </div>
                         </div>
-                        <div class="text-center p-3 bg-navy-blue rounded-lg">
+                        <div class="p-3 text-center rounded-lg bg-navy-blue">
                             <div class="text-sm text-white">Annually</div>
-                            <div class="text-xl font-bold text-white">${{ $annualIncome ?? '0' }}</div>
+                            <div class="text-xl font-bold text-white">{{ $currency }}{{ $annualIncome ?? '0' }}
+                            </div>
                         </div>
                     </div>
                     {{-- <livewire:pages.admin.charts.income-trend /> --}}
                 </div>
 
                 <!-- Monthly & Annual Shirts Purchased -->
-                <div class="p-4 bg-white border rounded-xl shadow">
-                    <h3 class="font-semibold text-gray-700 mb-3">Shirts Purchased</h3>
+                <div class="p-4 bg-white border shadow rounded-xl">
+                    <h3 class="mb-3 font-semibold text-gray-700">Shirts Purchased</h3>
                     <div class="flex justify-between">
-                        <div class="text-center p-3 bg-navy-blue rounded-lg">
+                        <div class="p-3 text-center rounded-lg bg-navy-blue">
                             <div class="text-sm text-white">Monthly</div>
                             <div class="text-xl font-bold text-white">{{ $monthlyPurchases ?? '0' }}</div>
                         </div>
-                        <div class="text-center p-3 bg-navy-blue rounded-lg">
+                        <div class="p-3 text-center rounded-lg bg-navy-blue">
                             <div class="text-sm text-white">Annually</div>
                             <div class="text-xl font-bold text-white">{{ $annualPurchases ?? '0' }}</div>
                         </div>
                     </div>
-                    {{-- <livewire:pages.admin.charts.purchases-trend /> --}}
+                </div>
+
+
+            </div>
+        </div>
+
+                <!-- Platform Earnings - Monthly & Annual -->
+
+        <div class="mb-6">
+            <h2 class="pb-2 mb-4 text-xl font-bold text-gray-800 border-b">Platform Earning</h2>
+            <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+                <div class="p-4 text-white bg-gray-800 shadow rounded-xl">
+                    <h3 class="text-sm font-semibold uppercase">Total Designer Signups</h3>
+                    <div class="mt-2 text-3xl font-bold">{{ $currency }}{{ $weeklyEarnings ?? '0' }}</div>
+                </div>
+
+                <div class="p-4 text-white bg-gray-800 shadow rounded-xl">
+                    <h3 class="text-sm font-semibold uppercase">Total User Signups</h3>
+                    <div class="mt-2 text-3xl font-bold">{{ $currency }}{{ $monthlyEarnings ?? '0' }}</div>
+                </div>
+
+                <div class="p-4 text-white bg-gray-800 shadow rounded-xl">
+                    <h3 class="text-sm font-semibold uppercase">Total Designer Income</h3>
+                    <div class="mt-2 text-3xl font-bold">{{ $currency }}{{ $annualEarnings ?? '0' }}</div>
+                </div>
+
+                <div class="p-4 text-white bg-gray-800 shadow rounded-xl">
+                    <h3 class="text-sm font-semibold uppercase">Total Shirts Purchased</h3>
+                    <div class="mt-2 text-3xl font-bold">{{ $currency }}{{ $totalEarnings ?? '0' }}</div>
                 </div>
             </div>
         </div>
 
         <!-- All-Time Stats Section -->
         <div class="mb-6">
-            <h2 class="text-xl font-bold mb-4 text-gray-800 border-b pb-2">Lifetime Platform Statistics</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div class="p-4 bg-gray-800 text-white rounded-xl shadow">
-                    <h3 class="font-semibold text-sm uppercase">Total Designer Signups</h3>
-                    <div class="text-3xl font-bold mt-2">{{ $totalDesignerSignups ?? '0' }}</div>
+            <h2 class="pb-2 mb-4 text-xl font-bold text-gray-800 border-b">Lifetime Platform Statistics</h2>
+            <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+                <div class="p-4 text-white bg-gray-800 shadow rounded-xl">
+                    <h3 class="text-sm font-semibold uppercase">Total Designer Signups</h3>
+                    <div class="mt-2 text-3xl font-bold">{{ $totalDesignerSignups ?? '0' }}</div>
                 </div>
 
-                <div class="p-4 bg-gray-800 text-white rounded-xl shadow">
-                    <h3 class="font-semibold text-sm uppercase">Total User Signups</h3>
-                    <div class="text-3xl font-bold mt-2">{{ $totalUserSignups ?? '0' }}</div>
+                <div class="p-4 text-white bg-gray-800 shadow rounded-xl">
+                    <h3 class="text-sm font-semibold uppercase">Total User Signups</h3>
+                    <div class="mt-2 text-3xl font-bold">{{ $totalUserSignups ?? '0' }}</div>
                 </div>
 
-                <div class="p-4 bg-gray-800 text-white rounded-xl shadow">
-                    <h3 class="font-semibold text-sm uppercase">Total Designer Income</h3>
-                    <div class="text-3xl font-bold mt-2">${{ $totalDesignerIncome ?? '0' }}</div>
+                <div class="p-4 text-white bg-gray-800 shadow rounded-xl">
+                    <h3 class="text-sm font-semibold uppercase">Total Designer Income</h3>
+                    <div class="mt-2 text-3xl font-bold">{{ $currency }}{{ $totalDesignerIncome ?? '0' }}</div>
                 </div>
 
-                <div class="p-4 bg-gray-800 text-white rounded-xl shadow">
-                    <h3 class="font-semibold text-sm uppercase">Total Shirts Purchased</h3>
-                    <div class="text-3xl font-bold mt-2">{{ $totalShirtsPurchased ?? '0' }}</div>
+                <div class="p-4 text-white bg-gray-800 shadow rounded-xl">
+                    <h3 class="text-sm font-semibold uppercase">Total Shirts Purchased</h3>
+                    <div class="mt-2 text-3xl font-bold">{{ $totalShirtsPurchased ?? '0' }}</div>
                 </div>
             </div>
         </div>
@@ -181,8 +230,8 @@ state([
 
 
         <!-- Footer -->
-        <footer class="mt-8 border-t pt-4">
-            <p class="text-center text-gray-500 text-sm">Copyright © 2025 Twellr. All Rights Reserved</p>
+        <footer class="pt-4 mt-8 border-t">
+            <p class="text-sm text-center text-gray-500">Copyright © 2025 Twellr. All Rights Reserved</p>
         </footer>
     </div>
 </div>

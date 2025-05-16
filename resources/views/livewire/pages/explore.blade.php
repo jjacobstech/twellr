@@ -51,9 +51,9 @@ state([
 ]);
 ?>
 
-<div class="flex gap-1 w-full h-screen pb-2">
-    <div class="bg-white px-4 sm:px-8 md:px-16 py-8 w-full overflow-y-scroll mb-16 scrollbar-none pb-20">
-        <h1 class="text-4xl font-extrabold text-gray-500 md:text-center">Explore</h1>
+    <div class="bg-white px-4 sm:px-8 md:px-16 py-8 grid space-y-8 h-screen w-full overflow-y-scroll mb-16 scrollbar-none pb-20">
+     <div>
+           <h1 class="text-4xl font-extrabold text-gray-500 md:text-center">Explore</h1>
 
         @foreach ($sections as $section)
             <div class="flex justify-between w-full mt-5 mb-2 text-lg items-center">
@@ -84,5 +84,8 @@ state([
                 @endforelse
             </div>
         @endforeach
+     </div>
+
+
+        <x-footer/>
     </div>
-</div>

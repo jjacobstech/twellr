@@ -32,8 +32,9 @@
                     </x-bladewind.button>
                 </div>
             </div>
-        </div>
 
+        </div>
+<div class="mt-44 w-full text-center"> <x-footer/></div>
         <!--Start of Tawk.to Script
     -->
         <script type="text/javascript">

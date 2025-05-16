@@ -41,7 +41,7 @@
 
 
         <!-- Page Content -->
-        <main class="mt-2 h-screen md:h-full" x-cloak="display:none" x-data="{ show: false }"
+        <main class="mt-1 h-screen md:h-full" x-cloak="display:none" x-data="{ show: false }"
      x-init="setTimeout(() => show = true, 50)"
      x-show="show"
      x-transition:enter="transition ease-in-out duration-500"

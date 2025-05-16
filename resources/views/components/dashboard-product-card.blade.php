@@ -15,8 +15,8 @@
 
           <div class="absolute justify-between w-full p-3 bottom-1 hidden group-hover:block group-hover:ease-in-out duration-100">
             <span
-                class="text-xs sm:text-sm md:text-sm font-bold text-golden bg-black  px-2 py-1 sm:px-3  rounded-full top-2 right-2 bg-opacity-80">
-             Purchased: {{ $purchase->created_at->diffForHumans() }}
+                class="text-[10px] sm:text-xs md:text-sm font-bold text-golden bg-black  px-2 py-1 sm:px-3  rounded-full top-2 right-2 bg-opacity-80">
+             {{ $purchase->created_at->diffForHumans() }}
             </span>
         </div>
 

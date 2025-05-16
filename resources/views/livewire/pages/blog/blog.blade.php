@@ -131,6 +131,7 @@ $close = function () {
                     </div>
                 </div>
             @endforelse
+        <x-footer/>
 
 
         </div>
@@ -171,8 +172,12 @@ $close = function () {
                         {!! nl2br(e($postView->content)) !!}
                     </div>
                 </div>
+                        <x-footer/>
+
             </div>
         @endif
 
     </div>
+
+
 </div>

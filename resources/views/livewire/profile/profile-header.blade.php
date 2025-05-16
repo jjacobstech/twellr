@@ -122,14 +122,14 @@ new class extends Component {
         <div style="background-image: url('@if (empty(Auth::user()->cover)) {{ asset('assets/pexels-solliefoto-298863.jpg') }}@else{{ asset('uploads/cover/' . Auth::user()->cover) }} @endif')"
             class="rounded-[14px] bg-no-repeat bg-cover justify-center items-center w-full min-h-[250px]">
             <div class="relative flex justify-center w-full">
-                <img class="w-20 h-20 md:w-40 md:h-40 rounded-full absolute md:mt-28 z-10 mt-14 border-[#bebebe] border-[1px] object-cover"
+                <img class="w-20 h-20 md:w-40 md:h-40 rounded-full absolute md:mt-28 z-10 mt-14 object-cover"
                     src="@if (empty(Auth::user()->avatar)) {{ asset('assets/icons-user.png') }}
                         @else
                         {{ asset('uploads/avatar/' . Auth::user()->avatar) }} @endif"
                     alt="{{ Auth::user()->name }}" />
             </div>
             <div
-                class="mt-24 md:py-9 w-100 bg-white rounded-[14px] md:mt-[12rem] text-center items-center justify-center grid">
+                class="mt-24 md:py-9 w-100 bg-white rounded-[14px] md:mt-[12rem] border-0 text-center items-center justify-center grid">
                 @if (Auth::user()->isCreative())
                     <div class="mt-12 md:mt-16 flex flex-col items-center justify-center space-y-2">
                         <x-bladewind.rating rating="{{ $rating }}" size="medium" class="text-golden"
@@ -331,6 +331,7 @@ new class extends Component {
         </div>
 
     @endif
+     <x-footer/>
 </div>
 
 <script>

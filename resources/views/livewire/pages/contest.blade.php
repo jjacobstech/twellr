@@ -504,6 +504,9 @@ $submitEntry = function () {
                     </div>
                 @endif
             </div>
+
+                    <x-footer/>
+
         </div>
 
         <!-- Who Rocked It Best View -->
@@ -596,11 +599,13 @@ $submitEntry = function () {
                     </div>
                 @endif
             </div>
+                    <x-footer/>
+
         </div>
 
         <!-- Entry Form -->
         <div x-transition:enter.duration.500ms x-cloak x-show='whoRockedItBestEntry'
-            class="max-w-4xl pb-20 mx-auto mt-4 overflow-hidden bg-white border border-indigo-100 rounded-lg shadow-sm sm:mt-6 sm:pb-24">
+            class="max-w-4xl pb-10 mx-auto mt-4 overflow-hidden bg-white border border-indigo-100 rounded-lg shadow-sm sm:mt-6 sm:pb-24">
             <div class="px-4 py-6 sm:px-6 sm:py-8">
                 <h2 class="mb-3 text-xl font-semibold text-gray-800 sm:text-2xl">Enter the Style Contest</h2>
                 <p class="mb-4 text-gray-600 sm:mb-6">
@@ -648,7 +653,10 @@ $submitEntry = function () {
                         </x-mary-button>
                     </div>
                 </form>
+
+
             </div>
+
         </div>
     </div>
 </div>

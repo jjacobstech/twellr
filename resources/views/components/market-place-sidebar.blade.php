@@ -43,6 +43,10 @@
             Contact Our In-House Designer
         </x-bladewind.button>
     </div>
+
+    <div class="mt-40 hidden lg:block ">
+        <x-footer/>
+    </div>
 </div>
 
 <!-- Mobile Bar -->

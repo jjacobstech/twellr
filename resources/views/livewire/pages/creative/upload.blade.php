@@ -137,7 +137,7 @@ new #[Layout('layouts.app')] class extends Component {
     backButton: false,
 }" x-on:livewire-upload-error="$wire.error('Upload Failed')"
     x-on:livewire-upload-finish="$wire.success('Upload Successful')"
-    class="h-screen pb-20 overflow-y-scroll font-sans md:pb-0 scrollbar-none">
+    class="h-screen pb-40 overflow-y-scroll font-sans md:pb-0 scrollbar-none w-screen">
 
     @session('status')
         {{ $this->success('Design Upload Successful', 'Check Marketplace to view design') }}
@@ -202,7 +202,7 @@ new #[Layout('layouts.app')] class extends Component {
             class="w-full md:w-[87%] px-2 sm:px-4 text-xl bg-white h-screen md:h-full scrollbar-none md:pb-0 py-2 pb-44">
             <!-- Background Container - Height adapts to content -->
             <div style="background-image: url('{{ asset('assets/blurred.png') }}')"
-                class="relative flex justify-center text-white bg-no-repeat bg-cover rounded-lg min-h-[500px] h-100 scrollbar-none ">
+                class="relative flex flex-row justify-center text-white bg-no-repeat my-2 bg-cover rounded-lg min-h-[500px] h-100 scrollbar-none ">
 
                 <!-- Back Button - Positioned consistently across screens -->
                 <div class="absolute z-10 top-2 sm:top-4 left-2 sm:left-4">
@@ -215,13 +215,13 @@ new #[Layout('layouts.app')] class extends Component {
                 <!-- Form Container - Adapts width based on screen size and state -->
                 <form x-transition:enter.duration.500ms x-cloak="display:none"
                     :class="uploadModal ? 'w-full p-2 sm:p-4 md:p-8 lg:p-12' :
-                        'w-[95%] sm:w-[90%] md:w-[75%] lg:w-[60%] bg-[#dedddb] rounded-[20px] sm:rounded-[30px] md:rounded-[40px] my-4 sm:my-4'"
+                        'w-[95%] sm:w-[90%] md:w-[55%] lg:w-[40%] bg-[#dedddb] rounded-[20px] sm:rounded-[30px] md:rounded-[40px] my-4 sm:my-4'"
                     wire:submit="uploadProduct" enctype="multipart/form-data">
                     @csrf
 
                     <!-- Main Form View -->
                     <div x-show="form" x-transition:enter.duration.700ms>
-                        <div class="flex flex-col h-full px-3 py-4 sm:px-6 md:px-10 sm:py-6 md:py-10">
+                        <div class="flex flex-col h-full px-3 py-4 sm:px-6 md:px-10 sm:py-6 md:py-7">
 
                             <!-- Name and Price Row - Always stack on mobile, side by side on larger screens -->
                             <div class="flex flex-col sm:flex-row sm:gap-4 md:gap-6">
@@ -266,7 +266,7 @@ new #[Layout('layouts.app')] class extends Component {
                             </div>
 
                             <!-- Description and Uploads Row - Stack on small screens, side by side on larger -->
-                            <div class="flex flex-col mt-3 sm:mt-4 md:flex-row md:gap-4 lg:gap-6">
+                            <div class="flex flex-col mt-3 sm:mt-4 md:flex-row md:gap-20 lg:gap-20">
                                 <div class="w-full md:w-3/5">
                                     <x-input-label :value="__('Description')"
                                         class="text-gray-500 font-extrabold text-[15px] sm:text-[17px]"
@@ -278,7 +278,7 @@ new #[Layout('layouts.app')] class extends Component {
                                 </div>
 
                                 <div
-                                    class="flex flex-col items-center w-full mt-3 sm:mt-4 md:w-2/5 md:mt-0 md:items-end">
+                                    class="flex flex-col items-center w-full mt-3 sm:mt-4 md:w-2/5 md:mt-0 md:items-start">
                                     <x-input-label :value="__('Uploads')"
                                         class="text-gray-500 font-extrabold text-[15px] sm:text-[17px] mb-1 sm:mb-2 text-center md:text-right"
                                         for="uploads" />
@@ -421,6 +421,8 @@ new #[Layout('layouts.app')] class extends Component {
                 </form>
                 <!-- Form Container End -->
             </div> <!-- Background Image Container End -->
+            <x-footer/>
+
         </div> <!-- Main Content Area End -->
     </div> <!-- Main Layout End -->
 </div>

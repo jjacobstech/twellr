@@ -87,7 +87,7 @@ $toggleFollow = action(function () {
 });
 
 ?>
-<div class="w-[100%] overflow-y-scroll px-8 md:px-16 mb-20 h-screen bg-gray-100 scrollbar-none">
+<div class="w-[100%] overflow-y-scroll px-8 md:px-16 pb-20 h-screen bg-gray-100 scrollbar-none">
 
     <div class="w-full">
         <div style="background-image: url('@if (empty($user->cover)) {{ asset('assets/pexels-solliefoto-298863.jpg') }}@else{{ asset('uploads/cover/' . $user->cover) }} @endif')"
@@ -188,4 +188,6 @@ $toggleFollow = action(function () {
             </div>
         </div>
     </div>
+
+       <x-footer/>
 </div>
