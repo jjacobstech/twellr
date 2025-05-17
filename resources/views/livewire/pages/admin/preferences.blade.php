@@ -12,7 +12,7 @@ use App\Models\BlogCategory;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Artisan;
-use function Livewire\Volt\{state, computed, mount, rules, layout, uses,usesFileUploads};
+use function Livewire\Volt\{state, computed, mount, rules, layout, uses, usesFileUploads};
 usesFileUploads();
 layout('layouts.admin');
 uses(Toast::class);
@@ -24,7 +24,7 @@ state(['shippingRates' => fn() => ShippingFee::all()]);
 state(['countries' => fn() => Country::with('states')->get()]);
 
 state([
-    'commissionRate' => fn() => AdminSetting::where('id', 1)->first()->commission_fee,
+    'commissionRate' => fn() => AdminSetting::where('id', 1)->first()?->commission_fee,
 ]);
 
 state(['newCategory' => '']);
@@ -52,13 +52,11 @@ state(['materialPrice' => '']);
 state(['editMaterialPrice' => '']);
 state(['material' => '']);
 state(['banner' => fn() => AdminSetting::first()?->banner_image]);
+state(['currency' => fn() => AdminSetting::first()?->currency_symbol]);
 state(['editMaterialName' => '']);
 state(['bannerImage' => null]);
 state(['showSuccessMessage' => false]);
 
-mount(function () {
-    $this->debugMode = config('app.debug', false);
-});
 
 rules([
     'newCategory' => 'required|min:3|max:50|unique:categories,name',
@@ -133,11 +131,22 @@ $cancelEditShippingFee = function () {
 $updateCommissionRate = function () {
     $this->validate(['commissionRate' => 'required|numeric|min:0|max:100']);
 
-    $commission = AdminSetting::where('id', 1);
+    $commission = AdminSetting::first();
 
     if ($commission) {
         $commission->update(['commission_fee' => $this->commissionRate]);
         $this->success('Commission rate updated successfully.');
+    }
+};
+
+$updateCurrency = function () {
+    $this->validate(['currency' => 'required|min:1|max:1']);
+
+    $currency = AdminSetting::first();
+
+    if ($currency) {
+        $currency->update(['currency_symbol' => $this->currency]);
+        $this->success('Currency updated successfully.');
     }
 };
 
@@ -403,9 +412,9 @@ $uploadBanner = function () {
 
             <!-- Shipping Settings Section -->
             <div class="p-6 mb-6 bg-white shadow">
-                <h2 class="mb-4 text-xl font-semibold text-gray-700 ">Banner Image Upload  </h2>
+                <h2 class="mb-4 text-xl font-semibold text-gray-700 ">Banner Image Upload </h2>
 
-                <x-mary-file wire:model="bannerImage" class="mb-4"  accept="image/*">
+                <x-mary-file wire:model="bannerImage" class="mb-4" accept="image/*">
                     <img src="{{ asset('uploads/banner/banner.png') }}" alt="Banner Image"
                         class="object-cover w-full rounded-lg h-60 aspect-square">
                 </x-mary-file>
@@ -419,28 +428,49 @@ $uploadBanner = function () {
 
             <!-- Shipping Settings Section -->
             <div class="p-6 mb-6 bg-white shadow">
-                <h2 class="mb-4 text-xl font-semibold text-gray-700 ">Shipping & Commission Settings</h2>
+                <h2 class="mb-4 text-xl font-semibold text-gray-700 ">Shipping, Currency & Commission Settings</h2>
 
-                <!-- Commission Rate -->
-                <div>
-                    <label for="commissionRate" class="block mb-1 text-sm font-medium text-gray-700">Commission Rate
-                        (%)</label>
-                    <div class="relative mt-1 rounded-md shadow-sm">
-                        <input type="number" wire:model="commissionRate" id="commissionRate"
-                            class="block w-full pr-12 text-gray-700 border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                            placeholder="0" step="0.1">
-                        <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                            <span class="text-gray-500 sm:text-sm">%</span>
+                <div class="flex justify-evenly w-full gap-3">
+                    <!-- Commission Rate -->
+                    <div class="w-1/2">
+                        <label for="commissionRate" class="block mb-1 text-sm font-medium text-gray-700">Commission Rate
+                            (%)</label>
+                        <div class="relative mt-1 rounded-md shadow-sm">
+                            <input type="number" wire:model="commissionRate" id="commissionRate"
+                                class="block w-full pr-12 text-gray-700 border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                placeholder="0" step="0.1">
+                            <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                <span class="text-gray-500 sm:text-sm">%</span>
+                            </div>
                         </div>
+                        @error('commissionRate')
+                            <span class="text-sm text-red-500">{{ $message }}</span>
+                        @enderror
+
+                        <button wire:click="updateCommissionRate"
+                            class="px-4 py-2 mt-2 text-sm text-white bg-blue-600 rounded hover:bg-blue-700">
+                            Update Commission Rate
+                        </button>
                     </div>
-                    @error('commissionRate')
+
+                       <!-- Currency -->
+                <div class="w-1/2">
+                    <label for="currency" class="block mb-1 text-sm font-medium text-gray-700">System Currency</label>
+                    <div class="relative mt-1 rounded-md shadow-sm">
+                        <input type="text" wire:model="currency" id="currency"
+                            class="block w-full pr-12 text-gray-700 border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                            >
+
+                    </div>
+                    @error('currency')
                         <span class="text-sm text-red-500">{{ $message }}</span>
                     @enderror
 
-                    <button wire:click="updateCommissionRate"
+                    <button wire:click="updateCurrency"
                         class="px-4 py-2 mt-2 text-sm text-white bg-blue-600 rounded hover:bg-blue-700">
-                        Update Commission Rate
+                        Update System Currency
                     </button>
+                </div>
                 </div>
 
                 <div class="grid gap-6 mt-3">
