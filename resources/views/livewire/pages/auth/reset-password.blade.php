@@ -74,9 +74,9 @@ new #[Layout('layouts.guest')] class extends Component
 
 
 
-    <form wire:submit="resetPassword">
+    <form wire:submit="resetPassword" class="grid md:p-4 lg:px-10 ">
        <!-- Email Address -->
-            <div class="relative w-100">
+            <div class="relative w-100 ">
                 <x-input-label class="absolute z-50 px-1 ml-3 font-extrabold bg-white mt-7" for="email"
                     :value="__('Email')" />
 
@@ -100,18 +100,18 @@ new #[Layout('layouts.guest')] class extends Component
             </div>
 
          <!--  Confirm Password -->
-            <div class="relative mt-20 w-100">
-                <x-input-label class="absolute z-50 px-1 ml-3 font-extrabold bg-white mt-7" for="password_confirmation"
+                  <div class="relative mt-20 w-100">
+                <x-input-label class="absolute z-50 px-1 ml-3 font-extrabold bg-white mt-7" for="password_ confirmation"
                     :value="__('Confirm Password')" />
 
                 <div class="absolute w-full mt-4">
-                    <x-text-input wire:model="password_confirmation" id="password_confirmation" class="block w-full mt-5" type="password_confirmation"
+                    <x-text-input wire:model="password_confirmation" id="password_confirmation" class="block w-full mt-5" type="password"
                         name="password_confirmation" required autofocus autocomplete="password_confirmation" />
                     <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2 validator absolute" />
                 </div>
             </div>
 
-        <div class="flex items-center justify-end mt-4">
+        <div class="flex items-center justify-end mt-10">
             <x-primary-button>
                 {{ __('Reset Password') }}
             </x-primary-button>
