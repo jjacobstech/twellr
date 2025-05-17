@@ -11,12 +11,12 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote')->hourly();
 
+#Production
+    Schedule::command( 'winners')->saturdays()->at('00:00');
+    Schedule::command('activate-voting')->mondays()->at('07:00');
 
-    // Schedule::command( 'winners')->saturdays()->at('00:00');
-    // Schedule::command('activate-voting')->mondays()->at('07:00');
 
-
-    #Tests
-Schedule::command('winners')->everyFiveSeconds();
-Schedule::command('activate-voting')->everyFiveSeconds();
+#Tests
+// Schedule::command('winners')->everyFiveSeconds();
+// Schedule::command('activate-voting')->everyFiveSeconds();
 
