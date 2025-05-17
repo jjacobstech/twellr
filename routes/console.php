@@ -17,6 +17,6 @@ Artisan::command('inspire', function () {
 
 
     #Tests
-// Schedule::command('winners')->everyFiveSeconds();
+Schedule::command('winners')->everyFiveSeconds();
 Schedule::command('activate-voting')->everyFiveSeconds();
 
