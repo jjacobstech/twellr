@@ -2,10 +2,13 @@
 
 namespace App\Console\Commands;
 
+use App\Models\User;
 use App\Models\AdminSetting;
 use App\Models\ContestWinner;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ContestWinner as Winner;
 
 class Winners extends Command
 {
@@ -51,6 +54,15 @@ class Winners extends Command
                     'contest_type' => 'design_fest',
                     'won_at' => now(),
                 ]);
+
+                $winner = User::find($designContestWinner->contestant_id);
+                $winner->discount += config('twellr.discount');
+                $winner->save();
+
+                Mail::to($winner->email)->send(new Winner($winner,'Design Fest'));
+
+
+
             }
 
 
@@ -69,6 +81,12 @@ class Winners extends Command
                     'contest_type' => 'who_rocked_it_best',
                     'won_at' => now(),
                 ]);
+
+                $winner = User::find($userContestWinner->contestant_id);
+                $winner->discount += config('twellr.discount');
+                $winner->save();
+
+                Mail::to($winner->email)->send(new Winner($winner, 'Who Rocked It Best'));
             }
 
             info('Votes calculated and winners determined successfully.');
