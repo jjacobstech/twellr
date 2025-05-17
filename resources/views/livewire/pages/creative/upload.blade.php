@@ -319,7 +319,7 @@ new #[Layout('layouts.app')] class extends Component {
 
                     <!-- Upload Modal -->
                     <div x-show="uploadModal" x-transition:enter.duration.500ms x-cloak
-                        class="py-6 sm:py-8 md:py-16 lg:py-[117px]">
+                        class="py-6 sm:py-8 md:py-16 lg:py-[105px]">
                         <!-- Responsive Grid Layout for Uploads -->
                         <div
                             class="grid grid-cols-1 gap-4 px-2 xs:grid-cols-2 lg:grid-cols-4 sm:gap-6 md:gap-8 sm:px-4 md:px-8 lg:px-16">
@@ -333,7 +333,7 @@ new #[Layout('layouts.app')] class extends Component {
                                     <!-- Responsive Image Container -->
 
                                     <img class="object-cover w-full h-full rounded-xl aspect-square"
-                                        src="{{ asset('assets/uploadDesignStack.png') }}" alt="Upload Front View">
+                                        src="{{ asset('assets/frontview.jpeg') }}" alt="Upload Front View">
 
                                 </x-mary-file>
                                 @error('frontView')
@@ -354,7 +354,7 @@ new #[Layout('layouts.app')] class extends Component {
                                     accept="image/png, image/jpeg, image/jpg">
 
                                     <img class="object-cover w-full h-full rounded-xl aspect-square"
-                                        src="{{ asset('assets/uploadDesignStack.png') }}" alt="Upload Back View">
+                                        src="{{ asset('assets/backview.jpeg') }}" alt="Upload Back View">
                                 </x-mary-file>
                                 @error('backView')
                                     <span class="block text-xs text-red-600">Invalid File Format</span>
@@ -373,7 +373,7 @@ new #[Layout('layouts.app')] class extends Component {
                                     change-text="Upload Side View" wire:model="sideView"
                                     accept="image/png, image/jpeg, image/jpg">
                                     <img class="object-cover w-full h-full rounded-xl aspect-square"
-                                        src="{{ asset('assets/uploadDesignStack.png') }}" alt="Upload Side View">
+                                        src="{{ asset('assets/sideview.png') }}" alt="Upload Side View">
                                 </x-mary-file>
                                 @error('sideView')
                                     <span class="block text-xs text-red-600">Invalid File Format</span>
@@ -394,11 +394,11 @@ new #[Layout('layouts.app')] class extends Component {
 
                                     <div
                                         class="relative w-24 h-24 mx-auto xs:w-28 xs:h-28 sm:w-32 sm:h-32 md:w-36 md:h-36 lg:w-40 lg:h-40 group">
-                                        <div class="relative z-40 flex items-center justify-center w-full h-full p-2 transition-all duration-150 bg-white cursor-pointer group-hover:scale-110 group-hover:shadow-xl rounded-xl"
+                                        <div class="relative z-40 flex items-center justify-center w-full h-full transition-all duration-150 bg-white cursor-pointer group-hover:scale-110 group-hover:shadow-xl rounded-xl"
                                             id="printable-container">
                                             <!-- Display file icon or placeholder -->
-                                            <img class="object-contain w-full h-full"
-                                                src="{{ $printUpload ? asset('assets/file.png') : asset('assets/uploadPrintableStack.png') }}"
+                                            <img class="object-contain w-full h-full rounded-xl"
+                                                src="{{ $printUpload ? asset('assets/file.png') : asset('assets/uploadPrintableStack.jpeg') }}"
                                                 id="printImage" alt="Printable Stack Upload">
                                         </div>
                                         <div
