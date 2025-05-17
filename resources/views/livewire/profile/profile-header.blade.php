@@ -331,7 +331,6 @@ new class extends Component {
         </div>
 
     @endif
-     <x-footer/>
 </div>
 
 <script>

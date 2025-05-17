@@ -41,7 +41,9 @@ class GoogleAuthController extends Controller
             $existingUser = User::where('email', $email)->first();
 
             if ($existingUser) {
-                return redirect(route('login'))->with('status', 'Kindly login with your email and password');
+
+                    return redirect(route('login'))->with('status', 'Kindly login with your email and password');
+
             }
 
             // Check if the user exists via Google ID

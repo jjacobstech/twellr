@@ -445,5 +445,4 @@ $withdraw = function () {
         </div>
     </div>
 
-         <x-footer/>
 </div>

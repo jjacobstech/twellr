@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -20,7 +21,7 @@
     <!-- UI Libraries - Load in correct order -->
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-     <!-- Scripts -->
+    <!-- Scripts -->
     @bukStyles(true)
 
     <!-- Scripts needed in head -->
@@ -29,28 +30,29 @@
 </head>
 
 <body class="fixed w-screen h-screen font-sans antialiased bg-white">
-<x-mary-toast position="toast-top top-right" />
+    <x-mary-toast position="toast-top top-right" />
 
     <div wire:loading.class='hidden' class="h-full bg-gray-100">
         {{-- To Allow Admin view blog, marketplace and explore pages from admin panel --}}
-     @if (Auth::user()->role === 'admin' || Auth::user()->role == 'admin'  )
+        @if (Auth::user()->role === 'admin' || Auth::user()->role == 'admin')
             <livewire:layout.admin.navigation />
-     @else
+        @else
             <livewire:layout.navigation />
-     @endif
+        @endif
 
 
         <!-- Page Content -->
-        <main class="mt-1 h-screen md:h-full" x-cloak="display:none" x-data="{ show: false }"
-     x-init="setTimeout(() => show = true, 50)"
-     x-show="show"
-     x-transition:enter="transition ease-in-out duration-500"
-     x-transition:enter-start="opacity-0 scale-95"
-     x-transition:enter-end="opacity-100 scale-100">
+        <main class="mt-1 h-screen md:h-full " x-cloak="display:none" x-data="{ show: false }" x-init="setTimeout(() => show = true, 50)"
+            x-show="show" x-transition:enter="transition ease-in-out duration-500"
+            x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100">
             {{ $slot }}
         </main>
+ <div class="fixed bottom-0 left-0 right-0 z-50 bg-white shadow-sm">
+        <x-footer />
+    </div>
     </div>
 
     <script src="{{ asset('vendor/bladewind/js/helpers.js') }}"></script>
 </body>
+
 </html>

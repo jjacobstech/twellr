@@ -7,6 +7,7 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -62,4 +63,6 @@ class Contest extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+
 }

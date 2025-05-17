@@ -19,10 +19,6 @@ new #[Layout('layouts.guest')] class extends Component {
     public string $No4 = '';
     public string $No5 = '';
     public string $otp = '';
-    public bool $status = false;
-    public int $timeLeft = 300; // 5 minutes in seconds
-    public bool $resent = false;
-    private $timer;
 
     public function mount()
     {
@@ -84,161 +80,140 @@ new #[Layout('layouts.guest')] class extends Component {
     }
 };
 ?>
-<div class="justify-center px-24 py-16 mt-3 border border-black rounded-3xl">
-    <div class="px-10 text-sm text-center text-black md:text-xl md:text-bold w-100">
-        {{ __('Check your email for the OTP pin, If it doesn’t reflect in your inbox,') }}<br>{{ __('consider checking Spam mail') }}
+<div class="px-4 py-8 mx-4 mt-12 border border-black rounded-3xl md:mt-10 md:px-10 md:py-16 md:mx-16">
+    <div wire:loading
+        class="py-3 mb-6 text-white transition-opacity duration-500 border rounded alert-info alert top-5 right-1 bg-navy-blue border-navy-blue absolute"
+        role="alert">
+        <svg class="inline-block w-6 h-6 text-white animate-spin bw-spinner" xmlns="http://www.w3.org/2000/svg"
+            fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+            </circle>
+            <path class="opacity-75" fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+            </path>
+        </svg>
+        Loading . . .
     </div>
 
-    <!-- ====== OTP Start -->
-    <form wire:submit='verify' id="otp-form" class="flex w-100 ">
-        <div class="justify-center w-full py-16 bg-white px-28">
-            <div class="flex justify-evenly">
-                <input wire:model='No1' name="No1" type="text" maxlength="1"
-                    class="shadow-xs flex w-[100px] h-[100px] items-center justify-center rounded-lg border border-stroke bg-white p-1 text-center text-2xl font-medium text-gray-5 outline-none sm:text-4xl" />
-                <input wire:model='No2' name="No2" type="text" maxlength="1"
-                    class="shadow-xs flex w-[100px] h-[100px] items-center justify-center rounded-lg border border-stroke bg-white p-2 text-center text-2xl font-medium text-gray-5 outline-none sm:text-4xl dark:border-dark-3 dark:bg-white/5" />
-                <input wire:model='No3' name="No3" type="text" maxlength="1"
-                    class="shadow-xs flex w-[100px] h-[100px] items-center justify-center rounded-lg border border-stroke bg-white p-2 text-center text-2xl font-medium text-gray-5 outline-none sm:text-4xl dark:border-dark-3 dark:bg-white/5" />
-                <input wire:model='No4' name="No4" type="text" maxlength="1"
-                    class="shadow-xs flex w-[100px] h-[100px] items-center justify-center rounded-lg border border-stroke bg-white p-2 text-center text-2xl font-medium text-gray-5 outline-none sm:text-4xl dark:border-dark-3 dark:bg-white/5" />
-                <input x-on:input="document.getElementById('verify').click()" wire:model='No5' name="No5"
+    <div class="text-center text-black text-sm md:text-lg lg:text-xl font-semibold">
+        <p>{{ __('Check your email for the OTP pin, If it doesn’t reflect in your inbox') }}</p>
+        <span>{{ __('consider checking Spam mail') }}</span>
+    </div>
+
+    <form wire:submit='verify' id="otp-form" class="w-full">
+
+
+        <div class="py-8 bg-white">
+            <div class="flex justify-center gap-2 sm:gap-4">
+
+                <input wire:model='No1' name="No1" inputmode="numeric" pattern="[0-9]*" type="text"
+                    maxlength="1"
+                    class="w-10 h-10 text-2xl sm:w-14 sm:h-14 md:w-20 md:h-20 p-2 font-medium text-center bg-white border rounded-lg shadow outline-none border-stroke text-gray-5 sm:text-4xl" />
+                <input wire:model='No2' name="No2" inputmode="numeric" pattern="[0-9]*" type="text"
+                    maxlength="1"
+                    class="w-10 h-10 text-2xl sm:w-14 sm:h-14 md:w-20 md:h-20 p-2 font-medium text-center bg-white border rounded-lg shadow outline-none border-stroke text-gray-5 sm:text-4xl" />
+                <input wire:model='No3' name="No3" inputmode="numeric" pattern="[0-9]*" type="text"
+                    maxlength="1"
+                    class="w-10 h-10 text-2xl sm:w-14 sm:h-14 md:w-20 md:h-20 p-2 font-medium text-center bg-white border rounded-lg shadow outline-none border-stroke text-gray-5 sm:text-4xl" />
+                <input wire:model='No4' name="No4" inputmode="numeric" pattern="[0-9]*" type="text"
+                    maxlength="1"
+                    class="w-10 h-10 text-2xl sm:w-14 sm:h-14 md:w-20 md:h-20 p-2 font-medium text-center bg-white border rounded-lg shadow outline-none border-stroke text-gray-5 sm:text-4xl" />
+                <input x-on:input="$wire.verify();" inputmode="numeric" pattern="[0-9]*" wire:model='No5' name="No5"
                     type="text" maxlength="1"
-                    class="shadow-xs flex w-[100px] h-[100px] items-center justify-center rounded-lg border border-stroke bg-white p-2 text-center text-2xl font-medium text-gray-5 outline-none sm:text-4xl dark:border-dark-3 dark:bg-white/5" />
+                    class="w-10 h-10 text-2xl sm:w-14 sm:h-14 md:w-20 md:h-20 p-2 font-medium text-center bg-white border rounded-lg shadow outline-none border-stroke text-gray-5 sm:text-4xl" />
 
             </div>
         </div>
-        <!-- ====== OTP End -->
 
+        <div class="flex items-center justify-center mt-4">
 
-        @if ($errors->all())
-            <p>Incomplete Pin</p>
-        @endif
+            @if ($errors->all())
+                <p class="mt-2 text-center text-red-500 absolute font-bold">{{ __('Incomplete Pin') }}</p>
+            @endif
 
+            @if (session('status') === 'verification-link-sent')
+                <div class="mt-2 text-sm font-medium text-center text-green-600 absolute ">
+                    {{ __('A new verification link has been sent to the email address you provided during registration.') }}
+                </div>
+            @endif
 
+            @if (session('status') === 'verification-successful')
+                <div class="mt-4 font-bold text-center text-green-600 absolute">
+                    {{ __('Verification Successful') }}
+                </div>
+            @endif
 
-        <x-primary-button hidden id="verify">
-            {{ __('Verify') }}
-        </x-primary-button>
-
-
-        @if (session('status') == 'verification-link-sent')
-            <div class=" ml-[10%]  mt-[13.5%]  px-28 font-medium text-sm text-green-600   text-center z-50 absolute">
-                Check
-                your
-                email
-                for the OTP
-                pin, If
-                it
-                doesn’t reflect in your inbox, consider checking Spam mail. <br>
-                {{ __('A new verification link has been sent to the email address you provided during registration.') }}
-            </div>
-        @endif
-        @if (session('status') == 'verification-successful')
-            <div
-                class=" ml-[28%]  mt-[15%] px-20 font-bold text-green-600 dark:text-green-400  text-center z-50 absolute">
-                {{ __('Verification Successful') }}
-            </div>
-        @endif
-        @if (session('status') == 'Invalid OTP')
-            <div class="ml-[31%]  mt-[15%] px-20 font-bold text-md text-red-600 z-50 absolute ">
-                {{ __('Invalid OTP') }}
-            </div>
-        @endif
-
-
+            @if (session('status') === 'Invalid OTP')
+                <div class="mt-4 font-bold text-center text-red-600 absolute">
+                    {{ __('Invalid OTP') }}
+                </div>
+            @endif
+        </div>
     </form>
-    <div class="justify-center mt-1 text-center w-100">
-        <div class="h-4 text-2xl "> Time Left: <span id="countdown">{{ config('otp.expiry') }}:00</span>
+
+    <div class="mt-12 text-center">
+        <div class="text-xl font-semibold" id="timer">
+            {{ __('Time Left:') }} <span id="countdown">{{ config('otp.expiry') }}:00</span>
         </div>
-        <x-primary-button @click="startTimer()" wire:click="sendVerification">
+        <button
+            class="mt-5 px-4 py-3 text-xl font-semibold text-white transition duration-150 ease-in-out bg-navy-blue border border-transparent rounded-md hover:bg-white hover:text-navy-blue hover:border-navy-blue focus:outline-none focus:ring-2 focus:ring-navy-blue focus:ring-offset-2"
+            @click="startTimer(); $wire.sendVerification()">
             {{ __('Resend Verification Email') }}
-        </x-primary-button>
+        </button>
     </div>
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const form = document.getElementById("otp-form");
-            const inputs = [...form.querySelectorAll("input[type=text]")];
-            const submit = form.querySelector('button[type=submit]')
+            const inputs = Array.from(form.querySelectorAll("input[type=text]"));
 
-            const handleKeyDown = (e) => {
-                if (
-                    !/^[0-9]{1}$/.test(e.key) &&
-                    e.key !== "Backspace" &&
-                    e.key !== "Delete" &&
-                    e.key !== "Tab" &&
-                    !e.metaKey
-                ) {
-                    e.preventDefault();
-                }
+            inputs.forEach((input, idx) => {
+                input.addEventListener("input", (e) => {
+                    const val = e.target.value;
+                    if (val.length > 1) e.target.value = val.slice(0, 1);
+                    if (val && idx < inputs.length - 1) inputs[idx + 1].focus();
+                });
 
-                if (e.key === "Delete" || e.key === "Backspace") {
-                    const index = inputs.indexOf(e.target);
-                    if (index > 0) {
-                        inputs[index - 1].value = "";
-                        inputs[index - 1].focus();
+                input.addEventListener("keydown", (e) => {
+                    if (e.key === "Backspace" && !input.value && idx > 0) {
+                        inputs[idx - 1].focus();
                     }
-                }
-            };
-
-            const handleInput = (e) => {
-                const {
-                    target
-                } = e;
-                const index = inputs.indexOf(target);
-                if (target.value) {
-                    if (index < inputs.length - 1) {
-                        inputs[index + 1].focus();
-                    } else {
-                        // submit.focus()
-                    }
-                }
-            };
-
-            const handleFocus = (e) => {
-                e.target.select();
-            };
-
-            const handlePaste = (e) => {
-                e.preventDefault();
-                const text = e.clipboardData.getData("text");
-                if (!new RegExp(`^[0-9]{${inputs.length}}$`).test(text)) {
-                    return;
-                }
-                const digits = text.split("");
-                inputs.forEach((input, index) => (input.value = digits[index]));
-                // submit.focus()
-            };
-
-            inputs.forEach((input) => {
-                input.addEventListener("input", handleInput);
-                input.addEventListener("keydown", handleKeyDown);
-                input.addEventListener("focus", handleFocus);
-                input.addEventListener("paste", handlePaste);
+                });
             });
+
+            const firstEmpty = inputs.find(input => !input.value) || inputs[0];
+            firstEmpty.focus();
         });
 
-        let countdownDate = new Date().getTime() + ({{ config('otp.expiry') }} * 60 * 1000); // 5 minutes from now
+        let countdownInterval;
+        const updateCountdown = () => {
+            const countdownElement = document.getElementById("countdown");
+            let time = countdownElement.textContent.split(":");
+            let minutes = parseInt(time[0]);
+            let seconds = parseInt(time[1]);
 
+            if (minutes === 0 && seconds === 0) {
+                clearInterval(countdownInterval);
+                countdownElement.innerText = "00:00";
+                return;
+            }
 
-        let startTimer = () => {
-            let x = setInterval(function() {
-                let now = new Date().getTime();
-                let distance = countdownDate - now;
+            if (seconds === 0) {
+                minutes--;
+                seconds = 59;
+            } else {
+                seconds--;
+            }
 
-                let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                let seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            countdownElement.innerText = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        };
 
-                document.getElementById("countdown").innerHTML =
-                    ("0" + minutes).slice(-2) + ":" + ("0" + seconds).slice(-2);
+        const startTimer = () => {
+            clearInterval(countdownInterval);
+            document.getElementById("countdown").innerText = "{{ config('otp.expiry') }}:00";
+            countdownInterval = setInterval(updateCountdown, 1000);
+        };
 
-                if (distance < 0) {
-                    clearInterval(x);
-                    document.getElementById("countdown").innerHTML = "EXPIRED";
-                }
-            }, 1000);
-        }
-
-        document.addEventListener("DOMContentLoaded", startTimer());
+        document.addEventListener("DOMContentLoaded", startTimer);
     </script>
 </div>

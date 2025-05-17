@@ -39,7 +39,8 @@ class Vote extends Model
     protected $fillable = [
         'user_id',
         'contestant_id',
-        'product_id'
+        'product_id',
+        'contest_id'
     ];
 
     public function user()

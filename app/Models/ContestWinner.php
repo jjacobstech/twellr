@@ -36,6 +36,7 @@ class ContestWinner extends Model
         'user_id',
         'product_id',
         'contest_type',
+        'votes',
         'won_at'
     ];
 

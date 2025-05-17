@@ -29,7 +29,6 @@ layout('layouts.app');
             <livewire:account.update-profile-information-form />
 
             <livewire:account.update-password-form />
-   <x-footer/>
         </div>
 
     </div>

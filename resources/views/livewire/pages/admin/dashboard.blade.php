@@ -14,52 +14,64 @@ state([
     //Currency
     'currency' => fn() => AdminSetting::first()->currency_symbol,
 
-    //Dating
-    'startOfWeek' => fn() => Carbon::now()->startOfWeek(),
-    'endOfWeek' => fn() => Carbon::now()->endOfWeek(),
-    'startOfMonth' => fn() => Carbon::now()->startOfMonth(),
-    'endOfMonth' => fn() => Carbon::now()->endOfMonth(),
-    'startOfYear' => fn() => Carbon::now()->startOfYear(),
-    'endOfYear' => fn() => Carbon::now()->endOfYear(),
-
     // Weekly stats
-    'weeklySignups' => fn() => User::where('role', 'user')->whereBetween('created_at', [$this->startOfWeek, $this->endOfWeek])->count(), //fix
-    'weeklyDesignerSignups' => fn() => User::where('role', 'creative')->whereBetween('created_at', [$this->startOfWeek, $this->endOfWeek])->count(), //fix
-    'weeklyDesigns' => fn() => Product::whereBetween('created_at', [$this->startOfWeek, $this->endOfWeek])->count(),
+    'weeklySignups' => fn() => User::where('role', 'user')->whereBetween('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])->count(),
+    'averageWeeklyDesignerSignups' => fn() =>collect(range(1, 4)) // last 4 weeks
+    ->map(function ($weekAgo) {
+        $start = Carbon::now()->subWeeks($weekAgo)->startOfWeek();
+        $end = Carbon::now()->subWeeks($weekAgo)->endOfWeek();
+
+        return User::where('role', 'creative')
+            ->whereBetween('created_at', [$start, $end])
+            ->count();
+    })
+    ->average(), //fix
+    'weeklyDesigns' => fn() => Product::whereBetween('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])->count(),
     'weeklyIncome' => fn() => Transaction::where('transaction_type', '=', 'sales')
-        ->whereBetween('created_at', [$this->startOfWeek, $this->endOfWeek])
+        ->whereBetween('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])
         ->sum('amount'),
-    'weeklyPurchases' => fn() => Purchase::whereBetween('created_at', [$this->startOfWeek, $this->endOfWeek])->count(),
+    'weeklyPurchases' => fn() => Purchase::whereBetween('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])->sum('quantity'),
+    'averageWeeklyDesignerIncome' => fn() => collect(range(1, 4)) // last 4 weeks
+    ->map(function ($weekAgo) {
+        $start = Carbon::now()->subWeeks($weekAgo)->startOfWeek();
+        $end = Carbon::now()->subWeeks($weekAgo)->endOfWeek();
+
+        return Transaction::where('transaction_type', 'sales')
+            ->whereBetween('created_at', [$start, $end])
+            ->sum('amount');
+    })
+    ->average(),
 
     // Monthly and Annual stats
-    'monthlySignups' => fn() => User::where('role', '=', 'creative')
-        ->whereBetween('created_at', [$this->startOfMonth, $this->endOfMonth])
+    'monthlyDesignerSignups' => fn() => User::where('role', '=', 'creative')
+        ->whereBetween('created_at', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()])
         ->count(),
-    'annualSignups' => fn() => User::where('role', '=', 'creative')
-        ->whereBetween('created_at', [$this->startOfYear, $this->endOfYear])
+    'annualDesignerSignups' => fn() => User::where('role', '=', 'creative')
+        ->whereBetween('created_at', [Carbon::now()->startOfYear(), Carbon::now()->endOfYear()])
         ->count(),
-    'monthlyDesigns' => fn() => Product::whereBetween('created_at', [$this->startOfMonth, $this->endOfMonth])->count(),
-    'annualDesigns' => fn() => Product::whereBetween('created_at', [$this->startOfYear, $this->endOfYear])->count(),
+    'monthlyDesigns' => fn() => Product::whereBetween('created_at', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()])->count(),
+    'annualDesigns' => fn() => Product::whereBetween('created_at', [Carbon::now()->startOfYear(), Carbon::now()->endOfYear()])->count(),
     'monthlyIncome' => fn() => Transaction::where('transaction_type', '=', 'sales')
-        ->whereBetween('created_at', [$this->startOfMonth, $this->endOfMonth])
+        ->whereBetween('created_at', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()])
         ->sum('amount'),
     'annualIncome' => fn() => Transaction::where('transaction_type', '=', 'sales')
-        ->whereBetween('created_at', [$this->startOfYear, $this->endOfYear])
+        ->whereBetween('created_at', [Carbon::now()->startOfYear(), Carbon::now()->endOfYear()])
         ->sum('amount'),
-    'monthlyPurchases' => fn() => Purchase::whereBetween('created_at', [$this->startOfMonth, $this->endOfMonth])->count(),
-    'annualPurchases' => fn() => Purchase::whereBetween('created_at', [$this->startOfYear, $this->endOfYear])->count(),
+    'monthlyPurchases' => fn() => Purchase::whereBetween('created_at', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()])->sum('quantity'),
+    'annualPurchases' => fn() => Purchase::whereBetween('created_at', [Carbon::now()->startOfYear(), Carbon::now()->endOfYear()])->sum('quantity'),
+
+    //Platform Earnings
+    'weeklyEarnings' => fn() => PlatformEarning::whereBetween('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])->sum('total'),
+    'monthlyEarnings' => fn() => PlatformEarning::whereBetween('created_at', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()])->sum('total'),
+    'annualEarnings' => fn() => PlatformEarning::whereBetween('created_at', [Carbon::now()->startOfYear(), Carbon::now()->endOfYear()])->sum('total'),
+    'totalEarnings' => fn() => PlatformEarning::sum('total'),
+
 
     // All-time stats
     'totalDesignerSignups' => fn() => User::where('role', '=', 'creative')->count(),
     'totalUserSignups' => fn() => User::where('role', '=', 'user')->count(),
     'totalDesignerIncome' => fn() => Transaction::where('transaction_type', '=', 'sales')->sum('amount'),
-    'totalShirtsPurchased' => fn() => Purchase::all()->count(),
-
-    // Earnings
-    'weeklyEarnings' => fn() => PlatformEarning::whereBetween('created_at', [$this->startOfWeek, $this->endOfWeek])->sum('total'),
-    'monthlyEarnings' => fn() => PlatformEarning::whereBetween('created_at', [$this->startOfMonth, $this->endOfMonth])->sum('total'),
-    'annualEarnings' => fn() => PlatformEarning::whereBetween('created_at', [$this->startOfYear, $this->endOfYear])->sum('total'),
-    'totalEarnings' => fn() => PlatformEarning::sum('total'),
+    'totalShirtsPurchased' => fn() => Purchase::sum('quantity'),
 ]);
 
 ?>
@@ -80,8 +92,8 @@ state([
                     <div class="mt-2 text-2xl font-bold">{{ $weeklySignups ?? '0' }}</div>
                 </div>
                  <div class="p-4 text-white shadow bg-navy-blue rounded-xl">
-                    <h3 class="text-sm font-semibold uppercase">Weekly Designer Signups</h3>
-                    <div class="mt-2 text-2xl font-bold">{{ $weeklyDesignerSignups ?? '0' }}</div>
+                    <h3 class="text-sm font-semibold uppercase">Average Weekly Designer Signups</h3>
+                    <div class="mt-2 text-2xl font-bold">{{ $averageWeeklyDesignerSignups ?? '0' }}</div>
                 </div>
 
                 <div class="p-4 text-white shadow bg-navy-blue rounded-xl">
@@ -90,8 +102,8 @@ state([
                 </div>
 
                 <div class="p-4 text-white shadow bg-navy-blue rounded-xl">
-                    <h3 class="text-sm font-semibold uppercase">Weekly Designer Income</h3>
-                    <div class="mt-2 text-2xl font-bold">{{ $currency }}{{ $weeklyIncome ?? '0' }}</div>
+                    <h3 class="text-sm font-semibold uppercase">Average Weekly Designer Income</h3>
+                    <div class="mt-2 text-2xl font-bold">{{ $currency }}{{ $averageWeeklyDesignerIncome ?? '0' }}</div>
                 </div>
 
                 <div class="p-4 text-white shadow bg-navy-blue rounded-xl">
@@ -112,11 +124,11 @@ state([
                     <div class="flex justify-between">
                         <div class="p-3 text-center rounded-lg bg-navy-blue">
                             <div class="text-sm text-white">Monthly</div>
-                            <div class="text-xl font-bold text-white">{{ $monthlySignups ?? '0' }}</div>
+                            <div class="text-xl font-bold text-white">{{ $monthlyDesignerSignups ?? '0' }}</div>
                         </div>
                         <div class="p-3 text-center rounded-lg bg-navy-blue">
                             <div class="text-sm text-white">Annually</div>
-                            <div class="text-xl font-bold text-white">{{ $annualSignups ?? '0' }}</div>
+                            <div class="text-xl font-bold text-white">{{ $annualDesignerSignups ?? '0' }}</div>
                         </div>
                     </div>
                 </div>
@@ -180,22 +192,22 @@ state([
             <h2 class="pb-2 mb-4 text-xl font-bold text-gray-800 border-b">Platform Earning</h2>
             <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
                 <div class="p-4 text-white bg-gray-800 shadow rounded-xl">
-                    <h3 class="text-sm font-semibold uppercase">Total Designer Signups</h3>
+                    <h3 class="text-sm font-semibold uppercase">Weekly Earnings</h3>
                     <div class="mt-2 text-3xl font-bold">{{ $currency }}{{ $weeklyEarnings ?? '0' }}</div>
                 </div>
 
                 <div class="p-4 text-white bg-gray-800 shadow rounded-xl">
-                    <h3 class="text-sm font-semibold uppercase">Total User Signups</h3>
+                    <h3 class="text-sm font-semibold uppercase">Month Earnings</h3>
                     <div class="mt-2 text-3xl font-bold">{{ $currency }}{{ $monthlyEarnings ?? '0' }}</div>
                 </div>
 
                 <div class="p-4 text-white bg-gray-800 shadow rounded-xl">
-                    <h3 class="text-sm font-semibold uppercase">Total Designer Income</h3>
+                    <h3 class="text-sm font-semibold uppercase">Yearly Earnings</h3>
                     <div class="mt-2 text-3xl font-bold">{{ $currency }}{{ $annualEarnings ?? '0' }}</div>
                 </div>
 
                 <div class="p-4 text-white bg-gray-800 shadow rounded-xl">
-                    <h3 class="text-sm font-semibold uppercase">Total Shirts Purchased</h3>
+                    <h3 class="text-sm font-semibold uppercase">Total Earnings</h3>
                     <div class="mt-2 text-3xl font-bold">{{ $currency }}{{ $totalEarnings ?? '0' }}</div>
                 </div>
             </div>

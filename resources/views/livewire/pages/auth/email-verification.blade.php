@@ -20,11 +20,6 @@ new #[Layout('layouts.guest')] class extends Component {
     public string $No4 = '';
     public string $No5 = '';
     public string $otp = '';
-    public bool $status = false;
-    public int $timeLeft = 300; // 5 minutes in seconds
-    public bool $resent = false;
-    public bool $disabled = false;
-    private $timer;
 
     public function mount()
     {

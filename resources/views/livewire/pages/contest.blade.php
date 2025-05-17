@@ -4,7 +4,9 @@ use Mary\Traits\Toast;
 use App\Models\Contest;
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\UserVote;
 use App\Helpers\FileHelper;
+use App\Models\AdminSetting;
 use function Livewire\Volt\{state, mount, layout, uses, with, usesPagination, usesFileUploads};
 
 usesFileUploads();
@@ -35,7 +37,6 @@ state([
     'whoRockedItBest' => false,
     'whoRockedItBestView' => false,
     'whoRockedItBestEntry' => false,
-    'votingActive' => false,
 ]);
 
 with([
@@ -60,7 +61,7 @@ with([
         ->where('name', 'like', "%{$this->search}%")
         ->where('description', 'like', "%{$this->search}%")
         ->with('user')
-        ->paginate($this->perPage)
+        ->paginate($this->perPage),
 ]);
 
 mount(function () {
@@ -102,8 +103,8 @@ $viewDesign = function ($id) {
     $this->modal = true;
 };
 
-$votingInactive = function(){
-$this->warning('Vote Submission Is Closed');
+$votingInactive = function () {
+    $this->warning('Vote Submission Is Closed');
 };
 
 $viewEntry = function ($id) {
@@ -130,8 +131,7 @@ $vote = function ($id) {
     if ($designer) {
         $vote = Vote::where('user_id', Auth::id())->where('contestant_id', $designer->id)->where('product_id', $this->view->id)->exists();
 
-        $this->voted = ($vote) ? true : false;
-
+        $this->voted = $vote ? true : false;
     } else {
         $this->voted = false;
     }
@@ -139,33 +139,73 @@ $vote = function ($id) {
 };
 
 $castVote = function () {
-    $exists = Vote::where('user_id', Auth::id())
-        ->where('contestant_id', $this->view->designer->id)
-        ->where('product_id', $this->view->id)
-        ->first();
+    $votingActive = AdminSetting::first()->voting;
+    if ($votingActive == false) {
+        $this->votingInactive();
+        return;
+    } else {
+        $exists = Vote::where('user_id', Auth::id())
+            ->where('contestant_id', $this->view->designer->id)
+            ->where('product_id', $this->view->id)
+            ->first();
 
-    if (!$exists) {
-        $voted = Vote::create([
-            'user_id' => Auth::id(),
-            'contestant_id' => $this->view->designer->id,
-            'product_id' => $this->view->id,
-        ]);
+        if (!$exists) {
+            $voted = Vote::create([
+                'user_id' => Auth::id(),
+                'contestant_id' => $this->view->designer->id,
+                'product_id' => $this->view->id,
+            ]);
 
-        if ($voted) {
-            $this->success('Vote Casted');
+            if ($voted) {
+                $this->success('Vote Casted');
+            }
+
+            $this->voted = true;
+            $this->voteModal = false;
+            $this->view = null;
+        } else {
+            $deleted = $exists->delete();
+            if ($deleted) {
+                $this->success('Vote Removed');
+                $this->voted = false;
+            } else {
+                $this->error('Failed to remove vote');
+            }
         }
-
-        $this->voted = true;
-        $this->voteModal = false;
-        $this->view = null;
-    } else{
-       $deleted = $exists->delete();
-         if ($deleted) {
-            $this->success('Vote Removed');
-             $this->voted = false;
-        }else {
-        $this->error('Failed to remove vote');
     }
+};
+
+$voteUser = function (Contest $entry) {
+    $votingActive = AdminSetting::first()->voting;
+
+    if ($votingActive == false) {
+        $this->votingInactive();
+    } else {
+        $exists = UserVote::where('user_id', Auth::id())->where('contestant_id', $entry->user->id)->where('contest_id', $entry->id)->first();
+
+        if (!$exists) {
+            $voted = UserVote::create([
+                'user_id' => Auth::id(),
+                'contestant_id' => $entry->user->id,
+                'contest_id' => $entry->id,
+            ]);
+
+            if ($voted) {
+                $this->success('Vote Casted');
+            }
+
+            $this->voted = true;
+            $this->voteModal = false;
+            $this->view = null;
+        } else {
+            $deleted = $exists->delete();
+            if ($deleted) {
+                $this->success('Vote Removed');
+                $this->voted = false;
+            } else {
+                $this->error('Failed to remove vote');
+            }
+        }
     }
 };
 $setTab = function () {
@@ -328,7 +368,8 @@ $submitEntry = function () {
                                 <!-- FRONT VIEW -->
                                 <div class="relative w-full h-full carousel-item" id="front-view">
                                     <div class="flex items-center justify-center w-full h-full">
-                                        <img loading="lazy" src="@if ($view) {{ asset('uploads/products/design-stack/' . $view->front_view) }} @endif"
+                                        <img loading="lazy"
+                                            src="@if ($view) {{ asset('uploads/products/design-stack/' . $view->front_view) }} @endif"
                                             alt="front view" class="object-contain max-w-full max-h-full" />
                                     </div>
                                     <div
@@ -343,7 +384,8 @@ $submitEntry = function () {
                                 <!-- BACK VIEW -->
                                 <div class="relative w-full h-full carousel-item" id="back-view">
                                     <div class="flex items-center justify-center w-full h-full">
-                                        <img loading="lazy" src="@if ($view) {{ asset('uploads/products/design-stack/' . $view->back_view) }} @endif"
+                                        <img loading="lazy"
+                                            src="@if ($view) {{ asset('uploads/products/design-stack/' . $view->back_view) }} @endif"
                                             alt="back view" class="object-contain max-w-full max-h-full" />
                                     </div>
                                     <div
@@ -358,7 +400,8 @@ $submitEntry = function () {
                                 <!-- SIDE VIEW -->
                                 <div class="relative w-full h-full carousel-item" id="side-view">
                                     <div class="flex items-center justify-center w-full h-full">
-                                        <img loading="lazy" src="@if ($view) {{ asset('uploads/products/design-stack/' . $view->side_view) }} @endif"
+                                        <img loading="lazy"
+                                            src="@if ($view) {{ asset('uploads/products/design-stack/' . $view->side_view) }} @endif"
                                             alt="side view" class="object-contain max-w-full max-h-full" />
                                     </div>
                                     <div
@@ -384,16 +427,19 @@ $submitEntry = function () {
                         x-cloak x-transition.opacity
                         class="fixed inset-0 z-50 flex items-center justify-center w-screen h-full px-2 py-8 sm:py-12 md:px-6 lg:px-20 bg-black/40 backdrop-blur-sm">
                         <div x-transition:enter="transition ease-out duration-500"
-                            x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
-                            @click.away="$wire.voteModal = false"
+                            x-transition:enter-start="opacity-0 scale-95"
+                            x-transition:enter-end="opacity-100 scale-100" @click.away="$wire.voteModal = false"
                             class="relative w-full max-w-6xl h-[90vh]  rounded-xl shadow-lg mt-40 sm:mt-0 overflow-hidden flex flex-col lg:flex-row">
                             @if ($view)
                                 <!-- Left: Image Section -->
                                 <div
                                     class="w-full h-64 overflow-y-scroll bg-gray-100 sm:h-80 scrollbar-none lg:h-full lg:w-3/4">
-                                    <div class="scrollbar-none relative flex items-center justify-center w-full bg-black min-h-full ">
-                                        <img loading="lazy" src="{{ asset('uploads/products/design-stack/' . $view->side_view) }}"
-                                            alt="{{ $view->name }}" class="object-cover max-w-full scrollbar-none max-h-full" />
+                                    <div
+                                        class="scrollbar-none relative flex items-center justify-center w-full bg-black min-h-full ">
+                                        <img loading="lazy"
+                                            src="{{ asset('uploads/products/design-stack/' . $view->side_view) }}"
+                                            alt="{{ $view->name }}"
+                                            class="object-cover max-w-full scrollbar-none max-h-full" />
                                     </div>
                                 </div>
 
@@ -420,15 +466,15 @@ $submitEntry = function () {
                                     <!-- Vote Button -->
                                     <div class="mt-3 sm:mt-4">
 
-                                       @if ($voted)
-                                             <x-mary-button label="Voted"
-                                                    class="w-full bg-[#001f54] text-white hover:bg-golden hover:border-golden"
-                                                    wire:click="castVote" spinner />
-                                       @else
-                                             <x-mary-button label="Vote"
-                                                    class="w-full bg-[#001f54] text-white hover:bg-golden hover:border-golden"
-                                                    wire:click="castVote" spinner />
-                                       @endif
+                                        @if ($voted)
+                                            <x-mary-button label="Voted"
+                                                class="w-full bg-[#001f54] text-white hover:bg-golden hover:border-golden"
+                                                wire:click="castVote" spinner />
+                                        @else
+                                            <x-mary-button label="Vote"
+                                                class="w-full bg-[#001f54] text-white hover:bg-golden hover:border-golden"
+                                                wire:click="castVote" spinner />
+                                        @endif
 
                                     </div>
                                 </div>
@@ -444,8 +490,10 @@ $submitEntry = function () {
                         <!-- Image container - Fixed height on mobile, auto on desktop -->
                         <div class="w-full h-48 sm:h-56 md:w-1/3 md:h-auto">
                             <div class="w-full h-full bg-indigo-100">
-                                <img loading="lazy" src="{{ asset('uploads/products/design-stack/' . $design->product->front_view) }}"
-                                    alt="{{ $design->product->name }}" class="object-cover w-full h-full aspect-[4/2]" />
+                                <img loading="lazy"
+                                    src="{{ asset('uploads/products/design-stack/' . $design->product->front_view) }}"
+                                    alt="{{ $design->product->name }}"
+                                    class="object-cover w-full h-full aspect-[4/2]" />
                             </div>
                         </div>
                         <!-- Content container - Better spacing -->
@@ -470,8 +518,9 @@ $submitEntry = function () {
                                 <button wire:click='viewDesign({{ $design->product->id }})'
                                     class="px-3 py-2 text-sm font-medium text-white transition duration-200 rounded cursor-pointer sm:px-4 bg-navy-blue hover:bg-golden">VIEW
                                     EXHIBIT</button>
-                                @if (!$design->user->id !=  Auth::id())
-
+                                @if ($design->user->id != Auth::id())
+                                    <button wire:click='vote({{ $design->product->id }})'
+                                        class="px-3 py-2 text-sm font-medium text-white transition duration-200 rounded cursor-pointer sm:px-4 bg-navy-blue hover:bg-golden">VOTE</button>
                                 @endif
                             </div>
                         </div>
@@ -505,7 +554,7 @@ $submitEntry = function () {
                 @endif
             </div>
 
-                    <x-footer/>
+
 
         </div>
 
@@ -524,7 +573,8 @@ $submitEntry = function () {
                         <div class="w-full h-full bg-black carousel">
                             <div class="relative w-full h-full carousel-item">
                                 <div class="flex items-center justify-center w-full h-full">
-                                    <img loading="lazy" src="@if ($entry) {{ asset('uploads/contest/' . $entry->photo) }} @endif"
+                                    <img loading="lazy"
+                                        src="@if ($entry) {{ asset('uploads/contest/' . $entry->photo) }} @endif"
                                         alt="entry image" class="object-contain max-w-full max-h-full" />
                                 </div>
                             </div>
@@ -545,8 +595,8 @@ $submitEntry = function () {
                         <!-- Image container - Fixed height on mobile, auto on desktop -->
                         <div class="w-full h-48 sm:h-56 md:w-1/3 md:h-auto">
                             <div class="w-full h-full bg-indigo-100">
-                                <img loading="lazy" src="{{ asset('uploads/contest/' . $entry->photo) }}" alt="{{ $entry->name }}"
-                                    class="object-cover w-full h-full aspect-[4/2]" />
+                                <img loading="lazy" src="{{ asset('uploads/contest/' . $entry->photo) }}"
+                                    alt="{{ $entry->name }}" class="object-cover w-full h-full aspect-[4/2]" />
                             </div>
                         </div>
                         <!-- Content container -->
@@ -566,8 +616,13 @@ $submitEntry = function () {
                                 <button wire:click='viewEntry({{ $entry->id }})'
                                     class="px-3 py-2 text-sm font-medium text-white transition duration-200 rounded cursor-pointer sm:px-4 bg-navy-blue hover:bg-golden">VIEW
                                     EXHIBIT</button>
-                                <button wire:click=''
-                                    class="px-3 py-2 text-sm font-medium text-white transition duration-200 rounded cursor-pointer sm:px-4 bg-navy-blue hover:bg-golden">VOTE</button>
+                                @if (UserVote::where('user_id', Auth::id())->where('contestant_id', $entry->user->id)->where('contest_id', $entry->id)->exists())
+                                    <button wire:click='voteUser({{ $entry }})'
+                                        class="px-3 py-2 text-sm font-medium text-white transition duration-200 rounded cursor-pointer sm:px-4 bg-navy-blue hover:bg-golden">VOTED</button>
+                                @else
+                                    <button wire:click='voteUser({{ $entry }})'
+                                        class="px-3 py-2 text-sm font-medium text-white transition duration-200 rounded cursor-pointer sm:px-4 bg-navy-blue hover:bg-golden">VOTE</button>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -584,8 +639,7 @@ $submitEntry = function () {
                             </svg>
                             <h2 class="mb-2 text-lg font-medium text-gray-700 sm:text-xl">No Entries Found</h2>
                             <p class="mb-4 text-gray-500">Try adjusting your search or filter criteria</p>
-                            <button wire:click="resetFilters"
-                                class="font-medium text-indigo-600 hover:text-indigo-800">
+                            <button wire:click="resetFilters" class="font-medium text-indigo-600 hover:text-indigo-800">
                                 Clear all filters
                             </button>
                         </div>
@@ -599,7 +653,6 @@ $submitEntry = function () {
                     </div>
                 @endif
             </div>
-                    <x-footer/>
 
         </div>
 
@@ -635,9 +688,10 @@ $submitEntry = function () {
                         <label for="photo" class="block mb-1 text-sm font-medium text-gray-700">Upload Your Outfit
                             Photo</label>
                         <x-mary-file omit-error="true" wire:model.defer="photo" accept="image/*">
-                            <img loading="lazy" class="object-cover w-24 h-24 sm:w-32 sm:h-32 border border-gray-300 rounded-md shadow-sm
+                            <img loading="lazy"
+                                class="object-cover w-24 h-24 sm:w-32 sm:h-32 border border-gray-300 rounded-md shadow-sm
                                 @error('photo') ring-red-500 ring-2 @enderror"
-                                src="{{ asset('assets/pexels-godisable-jacob-226636-794064.jpg') ??  $photo }}" />
+                                src="{{ asset('assets/pexels-godisable-jacob-226636-794064.jpg') ?? $photo }}" />
                         </x-mary-file>
 
                         @error('photo')
@@ -659,4 +713,5 @@ $submitEntry = function () {
 
         </div>
     </div>
+     
 </div>

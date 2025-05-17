@@ -189,5 +189,4 @@ $toggleFollow = action(function () {
         </div>
     </div>
 
-       <x-footer/>
 </div>

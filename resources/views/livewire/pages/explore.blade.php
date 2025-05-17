@@ -51,7 +51,7 @@ state([
 ]);
 ?>
 
-    <div class="bg-white px-4 sm:px-8 md:px-16 py-8 grid space-y-8 h-screen w-full overflow-y-scroll mb-16 scrollbar-none pb-20">
+    <div class="bg-white px-4 sm:px-8 md:px-16 py-8 grid space-y-8 h-screen w-full overflow-y-scroll mb-16 scrollbar-none pb-32">
      <div>
            <h1 class="text-4xl font-extrabold text-gray-500 md:text-center">Explore</h1>
 
@@ -87,5 +87,4 @@ state([
      </div>
 
 
-        <x-footer/>
     </div>

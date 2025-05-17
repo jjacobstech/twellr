@@ -7,7 +7,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ config('app.name', 'Laravel') }}</title>
- <!-- Fonts -->
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
@@ -20,24 +20,24 @@
     <!-- UI Libraries - Load in correct order -->
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-     <!-- Scripts -->
+    <!-- Scripts -->
     @bukStyles(true)
 
     <!-- Scripts needed in head -->
     @bukScripts(true)
 </head>
 
-<body class=" p-0 m-0 font-sans antialiased bg-gray-100 border-0 w-screen">
-<x-mary-toast position="toast-top top-right" />
-
+<body class=" p-0 m-0 font-sans antialiased bg-gray-100 border-0 scrollbar-none  w-screen">
+    <x-mary-toast position="toast-top top-right" />
+    <div>
         <livewire:layout.admin.navigation />
 
         <!-- Page Content -->
-        <main class="p-0 border-0 bg-gray-100 w-screen ">
+        <main class="p-0 border-0 bg-gray-100 fixed scrollbar-none">
             {{ $slot }}
         </main>
     </div>
+    <script src="{{ asset('vendor/bladewind/js/helpers.js') }}"></script>
 </body>
-<script src="{{ asset('vendor/bladewind/js/helpers.js') }}"></script>
 
 </html>

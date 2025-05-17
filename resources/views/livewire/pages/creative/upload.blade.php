@@ -421,7 +421,6 @@ new #[Layout('layouts.app')] class extends Component {
                 </form>
                 <!-- Form Container End -->
             </div> <!-- Background Image Container End -->
-            <x-footer/>
 
         </div> <!-- Main Content Area End -->
     </div> <!-- Main Layout End -->

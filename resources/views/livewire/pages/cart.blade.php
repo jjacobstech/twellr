@@ -737,5 +737,4 @@ $checkout = function () {
                     </div>
                 </div>
             </div>
-            <x-footer/>
         </div>

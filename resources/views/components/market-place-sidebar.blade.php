@@ -45,7 +45,6 @@
     </div>
 
     <div class="mt-40 hidden lg:block ">
-        <x-footer/>
     </div>
 </div>
 

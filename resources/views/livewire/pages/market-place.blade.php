@@ -524,7 +524,7 @@ $completeCheckout = function () {
 
         <x-market-place-sidebar :locations="$locations" :categories="$categories" :filterTerm="$filterTerm" />
         <div
-            class="relative bg-white w-screen pb-8 md:pb-0 md:w-[100%] lg:w-[80%] md:h-screen  lg:py-4 overflow-y-scroll scrollbar-none mb-20">
+            class="relative bg-white w-screen pb-16 md:pb-0 md:w-[100%] lg:w-[80%] md:h-screen  lg:py-4 overflow-y-scroll scrollbar-none mb-20">
 
             <div>
 
@@ -754,9 +754,7 @@ $completeCheckout = function () {
                         </span>
                     </div>
                 </div>
-                         <div class="lg:hidden">
-                               <x-footer/>
-                         </div>
+
 
             </div>
 
