@@ -30,7 +30,7 @@ state([
             'title' => 'Designers Of The Week',
             'path' => 'market.place',
             'filter' => 'designers-of-the-week',
-            'items' => ContestWinner::weekly()->take(7)->get(),
+            'items' => ContestWinner::winner()->take(7),
         ],
         (object) [
             'title' => 'Featured Designs',

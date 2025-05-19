@@ -71,7 +71,7 @@ new #[Layout('layouts.guest')] class extends Component
 
 <div>
 
-
+rippen.com
 
 
     <form wire:submit="resetPassword" class="grid md:p-4 lg:px-10 ">

@@ -47,11 +47,33 @@
             x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100">
             {{ $slot }}
         </main>
- <div class="fixed bottom-0 left-0 right-0 z-50 bg-white shadow-sm">
-        <x-footer />
+        <div class="fixed bottom-0 left-0 right-0 z-50 bg-white shadow-sm">
+            <x-footer />
+        </div>
     </div>
-    </div>
+ <!--Start of Tawk.to Script
+    -->
+        <script type="text/javascript">
+            let customerSupport = document.getElementById('customer_support');
 
+
+            customerSupport.addEventListener('click', () => {
+                var Tawk_API = Tawk_API || {},
+                    Tawk_LoadStart = new Date();
+
+                (function() {
+                    var s1 = document.createElement("script"),
+                        s0 = document.getElementsByTagName("script")[0];
+                    s1.async = true;
+                    s1.src = 'https://embed.tawk.to/67db0589c029cf190fdd8e20/1imnor8sp';
+                    s1.charset = 'UTF-8';
+                    s1.setAttribute('crossorigin', '*');
+                    s0.parentNode.insertBefore(s1, s0);
+
+                })();
+            });
+        </script>
+        <!--End of Tawk.to Script-->
     <script src="{{ asset('vendor/bladewind/js/helpers.js') }}"></script>
 </body>
 

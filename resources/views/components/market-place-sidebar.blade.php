@@ -71,30 +71,4 @@
         color="w-full px-3 py-1  uppercase transition duration-200 bg-navy-blue text-white hover:bg-golden hover:border-golden">
     In-House Designer
     </x-bladewind.button>
-
-
-
-        <!--Start of Tawk.to Script
-    -->
-        <script type="text/javascript">
-            let customerSupport = document.getElementById('customer_support');
-
-
-            customerSupport.addEventListener('click', () => {
-                var Tawk_API = Tawk_API || {},
-                    Tawk_LoadStart = new Date();
-
-                (function() {
-                    var s1 = document.createElement("script"),
-                        s0 = document.getElementsByTagName("script")[0];
-                    s1.async = true;
-                    s1.src = 'https://embed.tawk.to/67db0589c029cf190fdd8e20/1imnor8sp';
-                    s1.charset = 'UTF-8';
-                    s1.setAttribute('crossorigin', '*');
-                    s0.parentNode.insertBefore(s1, s0);
-
-                })();
-            });
-        </script>
-        <!--End of Tawk.to Script-->
 </div>

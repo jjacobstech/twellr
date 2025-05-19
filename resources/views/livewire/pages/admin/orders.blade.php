@@ -164,16 +164,17 @@ $view = function ($id) {
                                 <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
                                     {{ $viewData->product->name }}
                                 </td>
-                                <td class="px-6 py-4 text-sm text-gray-500 capitalize grid">
+                                <td class="grid px-6 py-4 text-sm text-gray-500 capitalize">
                                     <span>{{ $viewData->material->name }}</span>
                                     <span class="text-xs">{{ $viewData->material->price }}</span>
                                 </td>
                                 <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
-                                    {{ $viewData->shippingLocation->location }}
+                                    {{ $viewData->shippingLocation->location }} <br>
+                                      <span class="text-xs">{{  $viewData->shippingLocation->rate }}</span>
                                 </td>
 
                                 <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
-                                    {{ $viewData->created_at->format('M d, Y H') }}
+                                    {{ $viewData->created_at->format('M d, Y ') }}
                                 </td>
                                 <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
                                     {{ number_format($viewData->product->price, 2) }}
@@ -286,11 +287,11 @@ $view = function ($id) {
                 {{ $orders->links() }}
             </div>
             <!-- Orders table -->
-            <div class="w-full px-5 l  scrollbar-thin scrollbar-thumb-navy-blue scrollbar-track-gray-100">
+            <div class="w-full px-5 l scrollbar-thin scrollbar-thumb-navy-blue scrollbar-track-gray-100">
                 <div
                     class="overflow-x-scroll border-b border-gray-200 shadow sm:rounded-lg scrollbar-thin scrollbar-thumb-navy-blue scrollbar-track-gray-100">
                     <table
-                        class="min-w-full divide-y  overflow-x-scroll divide-gray-200 scrollbar-thin scrollbar-thumb-navy-blue scrollbar-track-gray-100">
+                        class="min-w-full overflow-x-scroll divide-y divide-gray-200 scrollbar-thin scrollbar-thumb-navy-blue scrollbar-track-gray-100">
                         <thead class="bg-gray-50">
                             <tr>
                                 <th scope="col"

@@ -23,7 +23,8 @@ state(['count' => 10]);
 state(['withdrawalModal' => false]);
 state(['addFundModal' => false]);
 state(['amount' => '']);
-state(['commission' => fn() => AdminSetting::first()->value('commission_fee')]);
+state(['withdrawal_commission' => fn() => AdminSetting::first()->value('commission_fee')]);
+state(['currency' => fn() => AdminSetting::first()->value('currency_symbol')]);
 state(['processing_time' => fn() => AdminSetting::first()->value('withdrawal_time')]);
 
 with([
@@ -244,7 +245,7 @@ $withdraw = function () {
                                 </th>
                                 <td
                                     class="px-4 py-3 text-center font-medium {{ $transaction->amount > 0 ? 'text-green-600' : 'text-red-600' }}">
-                                    ${{ $transaction->amount }}
+                                    {{ $currency }}{{ $transaction->amount }}
                                 </td>
                                 <td class="px-4 py-3 text-center">
                                     <span
@@ -322,11 +323,11 @@ $withdraw = function () {
                                 </th>
                                 <th scope="row"
                                     class="px-4 py-3 font-medium text-center text-gray-900 capitalize whitespace-nowrap">
-                                    {{ $purchase->product->price }}
+                                {{ $currency }}{{ $purchase->product->price }}
                                 </th>
                                 <th scope="row"
                                     class="px-4 py-3 font-medium text-center text-gray-900 capitalize whitespace-nowrap">
-                                    {{ $purchase->material->price }}
+                                    {{ $currency }}{{ $purchase->material->price }}
                                 </th>
                                 <th scope="row"
                                     class="px-4 py-3 font-medium text-center text-gray-900 capitalize whitespace-nowrap">
@@ -334,7 +335,7 @@ $withdraw = function () {
                                 </th>
                                 <td
                                     class="px-4 py-3 text-center font-medium {{ $purchase->product->price > 0 ? 'text-green-600' : 'text-red-600' }}">
-                                    ${{ $purchase->amount }}
+                                {{ $currency }}{{ $purchase->amount }}
                                 </td>
                                 <td class="px-4 py-3 text-center">
                                     <span
@@ -387,7 +388,8 @@ $withdraw = function () {
 
                 <div class="flex flex-col justify-center">
                     <div class="grid ">
-                        <div class="flex justify-end">
+                        <div class="flex justify-between mb-5">
+                             <img class="h-7 w-7" src="{{ asset('assets/twellr.png') }}" alt="twellr-logo" title="twellr-logo">
                             <x-mary-button icon="o-x-mark"
                                 class="left-0 justify btn-dark hover:bg-navy-blue btn-sm btn-circle"
                                 wire:click='withdrawalModal = false' />
@@ -405,8 +407,8 @@ $withdraw = function () {
                         <x-input-error :messages="$errors->get('amount')" />
 
                     </div>
-                    <p class="text-black w-[80%]"><b>Note:</b> <em class="text-sm">A withdrawal charge is applied to
-                            all
+                    <p class="text-black w-[80%]"><b>Note:</b> <em class="text-sm">A withdrawal commission of {{ $withdrawal_commission }}% is applied to
+                            each
                             withdrawal</em></p>
 
                 </div>
@@ -421,8 +423,8 @@ $withdraw = function () {
 
                 <div class="flex flex-col justify-center">
                     <div class="grid ">
-                        <div class="flex justify-between">
-                            <x-application-logo/>
+                        <div class="flex justify-between mb-5">
+                           <img class="h-7 w-7" src="{{ asset('assets/twellr.png') }}" alt="twellr-logo" title="twellr-logo">
                             <x-mary-button icon="o-x-mark"
                                 class="left-0 justify btn-dark hover:bg-navy-blue btn-sm btn-circle"
                                 wire:click='addFundModal = false' />
@@ -433,7 +435,7 @@ $withdraw = function () {
 
                         <div class="grid justify-between space-y-2 lg:flex w-100">
                             <x-text-input name="amount" wire:model="amount" />
-                            <x-mary-button label="Fund"
+                            <x-mary-button label="Fund Now"
                                 class="bg-[#001f54] text-white hover:bg-golden hover:border-golden h-12 rounded-xl"
                                 wire:click="addFund" spinner />
                         </div>

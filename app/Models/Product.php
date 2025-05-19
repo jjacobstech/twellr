@@ -74,15 +74,13 @@ class Product extends Model
     public function designer(){
         return $this->belongsTo(User::class,'user_id', 'id');
     }
-    public static function mostPurchased($limit = 10)
+    public static function mostPurchased()
     {
         return self::select('products.*')
             ->join('purchases', 'products.id', '=', 'purchases.product_id')
             ->selectRaw('products.*, COUNT(purchases.id) as purchase_count')
             ->groupBy('products.id')
-            ->orderByDesc('purchase_count')
-            ->limit($limit)
-            ;
+            ->orderByDesc('purchase_count');
     }
 
     public function inDesignFest(){

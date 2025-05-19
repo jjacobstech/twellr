@@ -10,6 +10,7 @@ use Mary\Traits\Toast;
 use App\Models\Comment;
 use App\Models\Country;
 use App\Models\Product;
+use App\Models\Discount;
 use App\Models\Material;
 use App\Models\Purchase;
 use App\Models\ShippingFee;
@@ -43,7 +44,9 @@ state([
     'itemTotal' => 0,
     'newPrice' => 0,
     'oldPrice' => 0,
+    'useCurrentDiscount' => 'unUsed',
     'phone_no' => auth()->user()->phone_no,
+    'discount' => auth()->user()->discount,
     'referral_link' => '',
     'commentInput' => '',
     'comments' => [],
@@ -53,6 +56,7 @@ state([
     'filterTerm' => fn() => session('filter'),
     'designer' => fn() => session('user'),
     'starRating' => 0,
+    'discountAmount' => 0,
     'minimum_rating' => fn() => AdminSetting::first()->value('minimum_rating'),
 ]);
 state([
@@ -91,9 +95,9 @@ with(function () {
                 ->get(),
         ];
     } elseif ($this->filterTerm === 'designers-of-the-week') {
-        return ['products' => ContestWinner::weekly()->with('product')->take(7)->get()->pluck('product')];
+        return ['products' => ContestWinner::winner()];
     } elseif ($this->filterTerm === 'featured-designs') {
-        return ['products' => Product::inRandomOrder()->take(7)->get()];
+        return ['products' => Product::inRandomOrder()->get()];
     } elseif ($this->filterTerm === 'latest-designs') {
         return [
             'products' => Product::orderBy('created_at', 'desc')
@@ -105,7 +109,7 @@ with(function () {
         ];
     } elseif ($this->filterTerm === 'best-selling') {
         return [
-            'products' => Product::mostPurchased(20)
+            'products' => Product::mostPurchased()
                 ->whereHas('designer', function ($query) {
                     $query->where('state_id', 'like', "%{$this->location}%");
                 })
@@ -142,6 +146,7 @@ with(function () {
         ];
     }
 });
+
 mount(function () {
     if (request()->has('filter')) {
         $filter = request('filter');
@@ -151,6 +156,7 @@ mount(function () {
         redirect()->route('market.place');
     }
 });
+
 $setRating = function ($id) {
     $designer = $this->order->designer->id;
 
@@ -189,29 +195,52 @@ $setRating = function ($id) {
         return;
     }
 };
+
 $filter = function ($filter = '') {
     if ($filter === '') {
         session()->flash('filter');
     }
     return $this->filterTerm = $filter;
 };
+
 $locate = function ($location = '') {
     if ($location === '') {
         session()->flash('filter');
     }
     return $this->location = $location;
 };
+
 $incrementQuantity = function () {
+    $this->useDiscount('false');
+    $this->useCurrentDiscount = 'unUsed';
     $this->quantity++;
     $this->subTotal = $this->itemTotal * $this->quantity;
     $this->totalPrice = $this->subTotal + $this->shipping_fee;
 };
+
 $decrementQuantity = function () {
+    $this->useDiscount('false');
+    $this->useCurrentDiscount = 'unUsed';
     $this->subTotal = $this->subTotal - $this->subTotal / $this->quantity;
     $this->totalPrice = $this->subTotal + $this->shipping_fee;
     $this->quantity == 1 ? '' : $this->quantity--;
 };
+
+$useDiscount = function ($discount = '') {
+    if ($discount === 'true') {
+        $this->discountAmount = $this->totalPrice * ($this->discount / 100);
+        $this->totalPrice = $this->totalPrice * (1 - $this->discount / 100);
+        $this->useCurrentDiscount = 'used';
+    } elseif ($discount === 'false') {
+        $this->discountAmount = 0;
+        $this->totalPrice = $this->totalPrice / (1 - $this->discount / 100);
+        $this->useCurrentDiscount = 'unUsed';
+    }
+};
+
 $updateShippingFee = function () {
+    $this->useDiscount('false');
+    $this->useCurrentDiscount = 'unUsed';
     if ($this->location == 0) {
         $this->shipping_fee = 0;
         $this->totalPrice = $this->subTotal + $this->shipping_fee;
@@ -221,7 +250,10 @@ $updateShippingFee = function () {
         $this->totalPrice = $this->subTotal + $this->shipping_fee;
     }
 };
+
 $addMaterial = function ($id = 0) {
+    $this->useDiscount('false');
+    $this->useCurrentDiscount = 'unUsed';
     $material = Material::where('id', '=', $id)->first();
 
     if ($material) {
@@ -246,6 +278,7 @@ $addMaterial = function ($id = 0) {
         $this->totalPrice = $this->subTotal + $this->shipping_fee;
     }
 };
+
 $addToCart = function ($id) {
     $product = Product::where('id', '=', $id)->first();
 
@@ -341,143 +374,115 @@ $completeCheckout = function () {
         if ($this->totalPrice > Auth::user()->wallet_balance) {
             return $this->error("Low Balance $" . Auth::user()->wallet_balance, 'Your wallet balance is low. Add funds to continue');
         } else {
-            $ref_no = $this->generateReferenceNumber();
-            $transaction = Transaction::create([
-                'user_id' => $this->order->user_id,
-                'buyer_id' => Auth::id(),
-                'amount' => $this->order->price * $this->quantity,
-                'transaction_type' => 'sales',
-                'ref_no' => $ref_no,
-                'status' => 'pending',
-            ]);
+            try {
+                DB::beginTransaction();
 
-            if (!$transaction) {
+                $ref_no = $this->generateReferenceNumber();
+                $buyer =  User::find(Auth::id());
+                $creative = User::find($this->order->user_id);
+
+                $transaction = Transaction::create([
+                    'user_id' => $this->order->user_id,
+                    'buyer_id' => $buyer->id,
+                    'amount' => $this->order->price * $this->quantity,
+                    'transaction_type' => 'sales',
+                    'ref_no' => $ref_no,
+                    'status' => 'pending',
+                ]);
+
+                $purchase = Purchase::create([
+                    'transactions_id' => $transaction->id,
+                    'user_id' => $this->order->user_id,
+                    'buyer_id' => $buyer->id,
+                    'product_id' => $this->order->id,
+                    'delivery_status' => 'pending',
+                    'phone_no' => $orderInfo->phone_no,
+                    'address' => $orderInfo->address,
+                    'amount' => $this->totalPrice,
+                    'location_id' => $this->location,
+                    'size' => $orderInfo->size,
+                    'product_name' => $this->order->name,
+                    'product_category' => $this->order->category->name,
+                    'material_id' => $orderInfo->material,
+                    'quantity' => $this->quantity,
+                ]);
+
+                if ($this->useCurrentDiscount === 'used') {
+                    $discount = Discount::create([
+                        'user_id' => $buyer->id,
+                        'product_id' => $this->order->id,
+                        'transaction_id' => $transaction->id,
+                        'purchase_id' => $purchase->id,
+                        'amount' => $this->discount,
+                        'ref_no' => $ref_no,
+                    ]);
+
+                    if (!$discount) {
+                        throw new \Exception('Failed to apply discount.');
+                    }
+                }
+
+                $material = Material::find($this->material);
+                if (!$material) {
+                    throw new \Exception('Selected material not found.');
+                }
+
+                $platformEarning = PlatformEarning::create([
+                    'purchase_id' => $purchase->id,
+                    'transaction_id' => $transaction->id,
+                    'quantity' => $this->quantity,
+                    'price' => $material->price,
+                    'total' => $material->price * $this->quantity,
+                    'fee_type' => 'material sales',
+                ]);
+
+                // Deduct from buyer
+                $deducted = $buyer->decrement('wallet_balance', $this->totalPrice);
+
+                if (!$deducted) {
+                    throw new \Exception('Buyer balance deduction failed.');
+                }
+
+                // Credit creative
+               $deposited = $creative->increment('wallet_balance', $this->order->price * $this->quantity);
+                if (!$deposited) {
+                    throw new \Exception('Creative wallet update failed.');
+                }
+
+                // Notify creative
+                Notification::create([
+                    'user_id' => $creative->id,
+                    'title' => "{$this->order->name} design has been ordered",
+                    'message' => "{$buyer->firstname} {$buyer->lastname} has purchased {$this->order->name}",
+                    'type' => 'sales',
+                ]);
+
+                // Shipping transaction
+                $shippingTransaction = Transaction::create([
+                    'buyer_id' => $buyer->id,
+                    'amount' => $this->shipping_fee,
+                    'ref_no' => $ref_no,
+                    'transaction_type' => 'shipping_fee',
+                    'status' => 'successful',
+                ]);
+
+                PlatformEarning::create([
+                    'quantity' => 1,
+                    'purchase_id' => $purchase->id,
+                    'transaction_id' => $shippingTransaction->id,
+                    'price' => $this->shipping_fee,
+                    'total' => $this->shipping_fee,
+                    'fee_type' => 'shipping fee',
+                ]);
+
+                DB::commit();
+
+                $this->success('Order Successful', 'Your order is on its way', redirectTo: route('market.place'));
+            } catch (\Exception $e) {
+                DB::rollBack();
                 $this->withdrawalModal = false;
-                return $this->error('Transaction Error - Transaction Registration Service', 'An error has occured, but we are working on it');
+                $this->error('Transaction Error', $e->getMessage());
             }
-
-            $purchase = Purchase::create([
-                'transactions_id' => $transaction->id,
-                'user_id' => $this->order->user_id,
-                'buyer_id' => Auth::id(),
-                'product_id' => $this->order->id,
-                'delivery_status' => 'pending',
-                'phone_no' => $orderInfo->phone_no,
-                'address' => $orderInfo->address,
-                'amount' => $this->totalPrice,
-                'location_id' => $this->location,
-                'size' => $orderInfo->size,
-                'product_name' => $this->order->name,
-                'product_category' => $this->order->category->name,
-                'material_id' => $orderInfo->material,
-                'quantity' => $this->quantity,
-            ]);
-
-            if (!$purchase) {
-                Transaction::where('id', '=', $transaction->id)->delete();
-                $this->withdrawalModal = false;
-                return $this->error('Transaction Error - Purchase Registration Service', 'An error has occured, but we are working on it');
-            }
-
-            $material = Material::where('id', '=', $this->material)->first();
-
-            if (!$material) {
-                Transaction::where('id', '=', $transaction->id)->delete();
-                Purchase::where('id', '=', $purchase->id)->delete();
-                return $this->error('Transaction Error - Material Retrieval Service', 'An error has occured, but we are working on it');
-            }
-
-            $platformEarning = PlatformEarning::create([
-                'purchase_id' => $purchase->id,
-                'transaction_id' => $transaction->id,
-                'quantity' => $this->quantity,
-                'price' => $material->price,
-                'total' => $material->price * $this->quantity,
-                'fee_type' => 'material sales',
-            ]);
-
-            if (!$platformEarning) {
-                Transaction::where('id', '=', $transaction->id)->delete();
-                Purchase::where('id', '=', $purchase->id)->delete();
-                return $this->error('Transaction Error - Notification Service', 'An error has occured, but we are working on it');
-            }
-
-            $buyer = User::where('id', '=', Auth::id())->first();
-            $buyer->wallet_balance = $buyer->wallet_balance - $this->totalPrice;
-            $deducted = $buyer->save();
-
-            if (!$deducted) {
-                Transaction::where('id', '=', $transaction->id)->delete();
-                Purchase::where('id', '=', $purchase->id)->delete();
-                $this->withdrawalModal = false;
-                PlatformEarning::where('id', '=', $platformEarning->id)->delete();
-                return $this->error('Transaction Error - Buyer Deduction Service', 'An error has occured, but we are working on it');
-            }
-
-            $creative = User::where('id', '=', $this->order->user_id)->first();
-            $creative->wallet_balance = $creative->wallet_balance + $this->order->price * $this->quantity;
-            $deposited = $creative->save();
-
-            if (!$deposited) {
-                Transaction::where('id', '=', $transaction->id)->delete();
-                Purchase::where('id', '=', $purchase->id)->delete();
-                PlatformEarning::where('id', '=', $platformEarning->id)->delete();
-                $buyer->wallet_balance = $buyer->wallet_balance + $this->totalPrice;
-                $deducted = $buyer->save();
-                $this->withdrawalModal = false;
-                return $this->error('Transaction Error - Creative Deposit Service', 'An error has occured, but we are working on it');
-            }
-
-            $buyer_name = Auth::user()->firstname . ' ' . Auth::user()->lastname;
-
-            $notification = Notification::create([
-                'user_id' => $this->order->user_id,
-                'title' => $this->order->name . ' design has been ordered',
-                'message' => "$buyer_name has purchase " . $this->order->name,
-                'type' => 'sales',
-            ]);
-
-            if (!$notification) {
-                Transaction::where('id', '=', $transaction->id)->delete();
-                Purchase::where('id', '=', $purchase->id)->delete();
-                PlatformEarning::where('id', '=', $platformEarning->id)->delete();
-                $buyer->wallet_balance = $buyer->wallet_balance + $this->totalPrice;
-                $deducted = $buyer->save();
-                $creative->wallet_balance = $creative->wallet_balance - $this->order->price;
-                $deposited = $creative->save();
-                $this->withdrawalModal = false;
-                return $this->error('Transaction Error - Notification Service', 'An error has occured, but we are working on it');
-            }
-
-            $ref_no = $this->generateReferenceNumber();
-
-            $transaction = Transaction::create([
-                'buyer_id' => Auth::id(),
-                'amount' => $this->shipping_fee,
-                'ref_no' => $ref_no,
-                'transaction_type' => 'shipping_fee',
-                'status' => 'successful',
-            ]);
-
-            if (!$transaction) {
-                return $this->error('Transaction Error - Transaction Registration Service', 'An error has occured, but we are working on it');
-            }
-
-            $platformEarning = PlatformEarning::create([
-                'quantity' => 1,
-                'purchase_id' => $purchase->id,
-                'transaction_id' => $transaction->id,
-                'price' => $this->shipping_fee,
-                'total' => $this->shipping_fee,
-                'fee_type' => 'shipping fee',
-            ]);
-
-            if (!$platformEarning) {
-                Transaction::where('id', '=', $transaction->id)->delete();
-                return $this->error('Transaction Error - Platform Service', 'An error has occured, but we are working on it');
-            }
-
-            $this->success('Order Successful', 'Your order is on its way', redirectTo: route('market.place'));
         }
     }
 };
@@ -506,7 +511,7 @@ $completeCheckout = function () {
     @enderror
 
     <div wire:loading
-        class="py-3 mb-6 text-white transition-opacity duration-500 border rounded alert-info alert top-5 right-1 bg-navy-blue border-navy-blue absolute"
+        class="py-3 mb-6 z-50 text-white transition-opacity duration-500 border rounded alert-info alert top-40 md:top-5 right-1 bg-navy-blue border-navy-blue absolute"
         role="alert">
         <svg class="inline-block w-6 h-6 text-white animate-spin bw-spinner" xmlns="http://www.w3.org/2000/svg"
             fill="none" viewBox="0 0 24 24">
@@ -670,12 +675,11 @@ $completeCheckout = function () {
                                     <a href="https://x.com/intent/tweet?text={{ urlencode('Join me on Twellr! Use my referral link:') }}&url={{ urlencode($referral_link) }}"
                                         target="_blank"
                                         class="flex items-center px-4 py-2 text-white transition-colors bg-black rounded-lg hover:bg-white hover:text-black">
-                                       <svg
-                                        class="w-5 h-5 fill-current" xmlns="http://www.w3.org/2000/svg"
-                                        viewBox="0 0 448 512">
-                                        <path
-                                            d="M64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H64zm297.1 84L257.3 234.6 379.4 396H283.8L209 298.1 123.3 396H75.8l111-126.9L69.7 116h98l67.7 89.5L313.6 116h47.5zM323.3 367.6L153.4 142.9H125.1L296.9 367.6h26.3z" />
-                                    </svg>
+                                        <svg class="w-5 h-5 fill-current" xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 448 512">
+                                            <path
+                                                d="M64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H64zm297.1 84L257.3 234.6 379.4 396H283.8L209 298.1 123.3 396H75.8l111-126.9L69.7 116h98l67.7 89.5L313.6 116h47.5zM323.3 367.6L153.4 142.9H125.1L296.9 367.6h26.3z" />
+                                        </svg>
 
                                     </a>
                                     <a href="https://wa.me/?text={{ urlencode('Join me on Twellr! Use my referral link: ' . $referral_link) }}"
@@ -1039,6 +1043,24 @@ $completeCheckout = function () {
                             <!-- Total Cost -->
                             <div class="pt-4 border-t border-blue-800">
                                 <div class="flex justify-between font-medium">
+                                    <span class="text-sm uppercase">Discount ({{ $discount }}%)</span>
+                                    @if ($discount > 0)
+                                        @if ($useCurrentDiscount === 'used')
+                                            <x-mary-button label="Discounted"
+                                                class="bg-[#001f54] text-white hover:bg-golden hover:border-golden"
+                                                wire:click="useDiscount('false')" spinner />
+                                        @else
+                                            <x-mary-button label="Use Discount"
+                                                class="bg-[#001f54] text-white hover:bg-golden hover:border-golden"
+                                                wire:click="useDiscount('true')" spinner />
+                                        @endif
+                                    @endif
+                                </div>
+                            </div>
+
+                            <!-- Total Cost -->
+                            <div class="pt-4 border-t border-blue-800">
+                                <div class="flex justify-between font-medium">
                                     <span class="text-sm uppercase">Total cost</span>
                                     <span>${{ $totalPrice }}</span>
                                 </div>
@@ -1055,4 +1077,5 @@ $completeCheckout = function () {
             @endif
         </div>
     </div>
+
 </div>

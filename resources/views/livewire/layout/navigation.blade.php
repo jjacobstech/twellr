@@ -58,11 +58,11 @@ new class extends Component {
     {
         return User::query()
             ->where('role', 'creative')
-             ->where('id', '!=', Auth::id())
+            ->where('id', '!=', Auth::id())
             ->where(function ($query) use ($search) {
                 $query
-                ->where('firstname','!=', Auth::user()->firstname)
-                 ->where('lastname','!=', Auth::user()->lastname)
+                    ->where('firstname', '!=', Auth::user()->firstname)
+                    ->where('lastname', '!=', Auth::user()->lastname)
                     ->where('firstname', 'like', "%$search%")
                     ->orWhere('lastname', 'like', "%$search%")
                     ->orWhere('instagram', 'like', "%$search%");
@@ -170,9 +170,7 @@ new class extends Component {
                             <input type="text" id="search-dropdown" x-model="term" x-on:keydown="$wire.search(term)"
                                 x-on:keyup="$wire.search(term)"
                                 class="font-bold block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-200 rounded-lg border-0 active:border-0 hover:ring-1 hover:ring-gray-400 focus:border-0 focus:ring-0 border-navy-blue "
-                                placeholder="Search by: Creator"
-                                alt="Search by: Creator"
-                                title='Search by: Creator' />
+                                placeholder="Search by: Creator" alt="Search by: Creator" title='Search by: Creator' />
                             <span
                                 class="top-0 end-0 p-2.5 text-sm font-medium  bg-transparent border-0 rounded-e-lg  absolute z-20 mt-2.5 lg:mt-3.5 focus:ring-0 focus:outline-none ">
                                 <svg class="w-4 h-4 text-[#665d4c]" aria-hidden="true"
@@ -596,227 +594,203 @@ new class extends Component {
         </div>
 
         <!-- Responsive Settings Options -->
-        <div class="fixed w-screen pb-1 bg-white border-t border-gray-200 text-navy-blue">
-            <div>
-                <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
-                    <span>
-                        <svg class="inline-block w-6 h-6 fill-navy-blue" viewBox="0 0 20 20"
-                            xmlns="http://www.w3.org/2000/svg">
+        <div class=" w-screen  bg-white text-navy-blue overflow-y-scroll h-screen pb-64 scrollbar-none">
+
+            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
+                <span>
+                    <svg class="inline-block w-6 h-6 fill-navy-blue" viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z">
+                        </path>
+                    </svg>
+                </span>
+                {{ __('Dashboard') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('profile')" wire:navigate>
+                <span>
+                    <svg class='inline-block w-5 h-5 fill-navy-blue' viewBox="0 0 32 32" version="1.1"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                        <g id="SVGRepo_iconCarrier">
+                            <title>profile</title>
                             <path
-                                d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z">
+                                d="M28 9h-1.958v-2.938l-4.042-0.062 0.021 3h-12.146l0.083-3-3.958 0.062v3l-2-0.062c-1.104 0-2 0.896-2 2v14c0 1.104 0.896 2 2 2h24c1.104 0 2-0.896 2-2v-14c0-1.104-0.896-2-2-2zM23 7h2v4h-2v-4zM10 13.812c1.208 0 2.188 1.287 2.188 2.875s-0.98 2.875-2.188 2.875-2.188-1.287-2.188-2.875 0.98-2.875 2.188-2.875zM7 7h2v4h-2v-4zM5.667 22.948c0 0 0.237-1.902 0.776-2.261s2.090-0.598 2.090-0.598 1.006 1.075 1.434 1.075c0.427 0 1.433-1.075 1.433-1.075s1.552 0.238 2.091 0.598c0.633 0.422 0.791 2.261 0.791 2.261h-8.615zM26 22h-9v-1h9v1zM26 20h-9v-1h9v1zM26 18h-9v-1h9v1zM26 16h-9v-1h9v1z">
                             </path>
-                        </svg>
-                    </span>
-                    {{ __('Dashboard') }}
-                </x-responsive-nav-link>
-                <x-responsive-nav-link :href="route('profile')" wire:navigate>
+                        </g>
+                    </svg>
+                </span>
+                {{ __('Profile') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link x-cloak="display:none" wire:click="drawer = true" wire:navigate>
+                <span>
+                    <svg class="inline-block w-5 h-5 fill-navy-blue" viewBox="0 0 24 24" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                        <g id="SVGRepo_iconCarrier">
+                            <path
+                                d="M19.3399 14.49L18.3399 12.83C18.1299 12.46 17.9399 11.76 17.9399 11.35V8.82C17.9399 6.47 16.5599 4.44 14.5699 3.49C14.0499 2.57 13.0899 2 11.9899 2C10.8999 2 9.91994 2.59 9.39994 3.52C7.44994 4.49 6.09994 6.5 6.09994 8.82V11.35C6.09994 11.76 5.90994 12.46 5.69994 12.82L4.68994 14.49C4.28994 15.16 4.19994 15.9 4.44994 16.58C4.68994 17.25 5.25994 17.77 5.99994 18.02C7.93994 18.68 9.97994 19 12.0199 19C14.0599 19 16.0999 18.68 18.0399 18.03C18.7399 17.8 19.2799 17.27 19.5399 16.58C19.7999 15.89 19.7299 15.13 19.3399 14.49Z">
+                            </path>
+                            <path
+                                d="M14.8297 20.01C14.4097 21.17 13.2997 22 11.9997 22C11.2097 22 10.4297 21.68 9.87969 21.11C9.55969 20.81 9.31969 20.41 9.17969 20C9.30969 20.02 9.43969 20.03 9.57969 20.05C9.80969 20.08 10.0497 20.11 10.2897 20.13C10.8597 20.18 11.4397 20.21 12.0197 20.21C12.5897 20.21 13.1597 20.18 13.7197 20.13C13.9297 20.11 14.1397 20.1 14.3397 20.07C14.4997 20.05 14.6597 20.03 14.8297 20.01Z">
+                            </path>
+                        </g>
+                    </svg>
+                    {{ __('Notification') }}
+                    @if ($notification)
+                        <span
+                            class="inline-block w-5 h-5 text-sm font-bold text-center text-white rounded-full fill-current bg-navy-blue">
+                            {{ $notifications->count() }}
+                        </span>
+                    @endif
+                </span </x-responsive-nav-link>
+
+                <x-responsive-nav-link @click="more = !more" wire:navigate>
+
                     <span>
-                        <svg class='inline-block w-5 h-5 fill-navy-blue' viewBox="0 0 32 32" version="1.1"
+                        <svg class="inline-block w-5 h-5 fill-navy-blue" viewBox="0 0 24 24"
                             xmlns="http://www.w3.org/2000/svg">
                             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                             <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
                             <g id="SVGRepo_iconCarrier">
-                                <title>profile</title>
                                 <path
-                                    d="M28 9h-1.958v-2.938l-4.042-0.062 0.021 3h-12.146l0.083-3-3.958 0.062v3l-2-0.062c-1.104 0-2 0.896-2 2v14c0 1.104 0.896 2 2 2h24c1.104 0 2-0.896 2-2v-14c0-1.104-0.896-2-2-2zM23 7h2v4h-2v-4zM10 13.812c1.208 0 2.188 1.287 2.188 2.875s-0.98 2.875-2.188 2.875-2.188-1.287-2.188-2.875 0.98-2.875 2.188-2.875zM7 7h2v4h-2v-4zM5.667 22.948c0 0 0.237-1.902 0.776-2.261s2.090-0.598 2.090-0.598 1.006 1.075 1.434 1.075c0.427 0 1.433-1.075 1.433-1.075s1.552 0.238 2.091 0.598c0.633 0.422 0.791 2.261 0.791 2.261h-8.615zM26 22h-9v-1h9v1zM26 20h-9v-1h9v1zM26 18h-9v-1h9v1zM26 16h-9v-1h9v1z">
+                                    d="M4 8C5.10457 8 6 7.10457 6 6C6 4.89543 5.10457 4 4 4C2.89543 4 2 4.89543 2 6C2 7.10457 2.89543 8 4 8Z">
+                                </path>
+                                <path
+                                    d="M4 14C5.10457 14 6 13.1046 6 12C6 10.8954 5.10457 10 4 10C2.89543 10 2 10.8954 2 12C2 13.1046 2.89543 14 4 14Z">
+                                </path>
+                                <path
+                                    d="M6 18C6 19.1046 5.10457 20 4 20C2.89543 20 2 19.1046 2 18C2 16.8954 2.89543 16 4 16C5.10457 16 6 16.8954 6 18Z">
+                                </path>
+                                <path
+                                    d="M21 7.5C21.5523 7.5 22 7.05228 22 6.5V5.5C22 4.94772 21.5523 4.5 21 4.5H9C8.44772 4.5 8 4.94772 8 5.5V6.5C8 7.05228 8.44772 7.5 9 7.5H21Z">
+                                </path>
+                                <path
+                                    d="M22 12.5C22 13.0523 21.5523 13.5 21 13.5H9C8.44772 13.5 8 13.0523 8 12.5V11.5C8 10.9477 8.44772 10.5 9 10.5H21C21.5523 10.5 22 10.9477 22 11.5V12.5Z">
+                                </path>
+                                <path
+                                    d="M21 19.5C21.5523 19.5 22 19.0523 22 18.5V17.5C22 16.9477 21.5523 16.5 21 16.5H9C8.44772 16.5 8 16.9477 8 17.5V18.5C8 19.0523 8.44772 19.5 9 19.5H21Z">
                                 </path>
                             </g>
                         </svg>
                     </span>
-                    {{ __('Profile') }}
+                    {{ __('More') }}
                 </x-responsive-nav-link>
-                <x-responsive-nav-link x-cloak="display:none" wire:click="drawer = true" wire:navigate>
-                    <span>
-                        <svg class="inline-block w-5 h-5 fill-navy-blue" viewBox="0 0 24 24" fill="none"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                            <g id="SVGRepo_iconCarrier">
-                                <path
-                                    d="M19.3399 14.49L18.3399 12.83C18.1299 12.46 17.9399 11.76 17.9399 11.35V8.82C17.9399 6.47 16.5599 4.44 14.5699 3.49C14.0499 2.57 13.0899 2 11.9899 2C10.8999 2 9.91994 2.59 9.39994 3.52C7.44994 4.49 6.09994 6.5 6.09994 8.82V11.35C6.09994 11.76 5.90994 12.46 5.69994 12.82L4.68994 14.49C4.28994 15.16 4.19994 15.9 4.44994 16.58C4.68994 17.25 5.25994 17.77 5.99994 18.02C7.93994 18.68 9.97994 19 12.0199 19C14.0599 19 16.0999 18.68 18.0399 18.03C18.7399 17.8 19.2799 17.27 19.5399 16.58C19.7999 15.89 19.7299 15.13 19.3399 14.49Z">
-                                </path>
-                                <path
-                                    d="M14.8297 20.01C14.4097 21.17 13.2997 22 11.9997 22C11.2097 22 10.4297 21.68 9.87969 21.11C9.55969 20.81 9.31969 20.41 9.17969 20C9.30969 20.02 9.43969 20.03 9.57969 20.05C9.80969 20.08 10.0497 20.11 10.2897 20.13C10.8597 20.18 11.4397 20.21 12.0197 20.21C12.5897 20.21 13.1597 20.18 13.7197 20.13C13.9297 20.11 14.1397 20.1 14.3397 20.07C14.4997 20.05 14.6597 20.03 14.8297 20.01Z">
-                                </path>
-                            </g>
-                        </svg>
-                        {{ __('Notification') }}
-                        @if ($notification)
-                            <span
-                                class="inline-block w-5 h-5 text-sm font-bold text-center text-white rounded-full fill-current bg-navy-blue">
-                                {{ $notifications->count() }}
-                            </span>
-                        @endif
-                    </span </x-responsive-nav-link>
-
-                    <x-responsive-nav-link @click="more = !more" wire:navigate>
-
+                <div class="px-5 transition-all duration-500 bg-gray-200" x-show="more">
+                    <x-responsive-nav-link class="text-bold" :href="route('design.contest')">
                         <span>
-                            <svg class="inline-block w-5 h-5 fill-navy-blue" viewBox="0 0 24 24"
-                                xmlns="http://www.w3.org/2000/svg">
+                            @svg('solar-t-shirt-bold-duotone', ['class' => 'inline-block w-6 h-6 fill-current text-navy-blue'])
+                        </span>
+                        {{ __('Design Contest') }}
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('market.place')" wire:navigate>
+                        <span>
+                            <svg class="inline-block w-5 h-5 fill-current" fill="#000000" height="200px"
+                                width="200px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
+                                xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 511 511"
+                                xml:space="preserve">
                                 <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round">
+                                </g>
                                 <g id="SVGRepo_iconCarrier">
-                                    <path
-                                        d="M4 8C5.10457 8 6 7.10457 6 6C6 4.89543 5.10457 4 4 4C2.89543 4 2 4.89543 2 6C2 7.10457 2.89543 8 4 8Z">
-                                    </path>
-                                    <path
-                                        d="M4 14C5.10457 14 6 13.1046 6 12C6 10.8954 5.10457 10 4 10C2.89543 10 2 10.8954 2 12C2 13.1046 2.89543 14 4 14Z">
-                                    </path>
-                                    <path
-                                        d="M6 18C6 19.1046 5.10457 20 4 20C2.89543 20 2 19.1046 2 18C2 16.8954 2.89543 16 4 16C5.10457 16 6 16.8954 6 18Z">
-                                    </path>
-                                    <path
-                                        d="M21 7.5C21.5523 7.5 22 7.05228 22 6.5V5.5C22 4.94772 21.5523 4.5 21 4.5H9C8.44772 4.5 8 4.94772 8 5.5V6.5C8 7.05228 8.44772 7.5 9 7.5H21Z">
-                                    </path>
-                                    <path
-                                        d="M22 12.5C22 13.0523 21.5523 13.5 21 13.5H9C8.44772 13.5 8 13.0523 8 12.5V11.5C8 10.9477 8.44772 10.5 9 10.5H21C21.5523 10.5 22 10.9477 22 11.5V12.5Z">
-                                    </path>
-                                    <path
-                                        d="M21 19.5C21.5523 19.5 22 19.0523 22 18.5V17.5C22 16.9477 21.5523 16.5 21 16.5H9C8.44772 16.5 8 16.9477 8 17.5V18.5C8 19.0523 8.44772 19.5 9 19.5H21Z">
-                                    </path>
+                                    <g>
+                                        <path
+                                            d="M503.5,440H479V207.433c13.842-3.487,24-16.502,24-31.933v-104c0-8.547-6.953-15.5-15.5-15.5h-464 C14.953,56,8,62.953,8,71.5v104c0,15.432,10.158,28.446,24,31.933V440H7.5c-4.142,0-7.5,3.358-7.5,7.5s3.358,7.5,7.5,7.5h496 c4.142,0,7.5-3.358,7.5-7.5S507.642,440,503.5,440z M488,71.5v104c0,9.383-6.999,17.384-15.602,17.834 c-4.595,0.235-8.939-1.36-12.254-4.505c-3.317-3.148-5.145-7.4-5.145-11.971V71h32.5C487.776,71,488,71.224,488,71.5z M71,71h33 v105.858c0,9.098-7.402,16.5-16.5,16.5s-16.5-7.402-16.5-16.5V71z M119,71h33v105.858c0,9.098-7.402,16.5-16.5,16.5 s-16.5-7.402-16.5-16.5V71z M167,71h33v105.858c0,9.098-7.402,16.5-16.5,16.5s-16.5-7.402-16.5-16.5V71z M215,71h33v105.858 c0,9.098-7.402,16.5-16.5,16.5s-16.5-7.402-16.5-16.5V71z M263,71h33v105.858c0,9.098-7.402,16.5-16.5,16.5s-16.5-7.402-16.5-16.5 V71z M311,71h33v105.858c0,9.098-7.402,16.5-16.5,16.5s-16.5-7.402-16.5-16.5V71z M359,71h33v105.858c0,9.098-7.402,16.5-16.5,16.5 s-16.5-7.402-16.5-16.5V71z M407,71h33v105.858c0,9.098-7.402,16.5-16.5,16.5s-16.5-7.402-16.5-16.5V71z M23,175.5v-104 c0-0.276,0.224-0.5,0.5-0.5H56v105.858c0,4.571-1.827,8.823-5.145,11.971c-3.314,3.146-7.663,4.743-12.254,4.505 C29.999,192.884,23,184.883,23,175.5z M47,207.462c5.266-1.279,10.128-3.907,14.181-7.753c0.822-0.78,1.599-1.603,2.326-2.462 c5.782,6.793,14.393,11.11,23.993,11.11c9.604,0,18.218-4.32,24-11.119c5.782,6.799,14.396,11.119,24,11.119s18.218-4.32,24-11.119 c5.782,6.799,14.396,11.119,24,11.119s18.218-4.32,24-11.119c5.782,6.799,14.396,11.119,24,11.119s18.218-4.32,24-11.119 c5.782,6.799,14.396,11.119,24,11.119s18.218-4.32,24-11.119c5.782,6.799,14.396,11.119,24,11.119s18.218-4.32,24-11.119 c5.782,6.799,14.396,11.119,24,11.119s18.218-4.32,24-11.119c5.782,6.799,14.396,11.119,24,11.119c9.6,0,18.21-4.317,23.993-11.11 c0.728,0.859,1.504,1.682,2.326,2.462c4.054,3.847,8.914,6.482,14.181,7.761V440h-33V263.5c0-8.547-6.953-15.5-15.5-15.5h-96 c-8.547,0-15.5,6.953-15.5,15.5V440H47V207.462z M416,440h-97V263.5c0-0.276,0.224-0.5,0.5-0.5h96c0.276,0,0.5,0.224,0.5,0.5V440z">
+                                        </path>
+                                        <path
+                                            d="M343.5,336c-4.142,0-7.5,3.358-7.5,7.5v16c0,4.142,3.358,7.5,7.5,7.5s7.5-3.358,7.5-7.5v-16 C351,339.358,347.642,336,343.5,336z">
+                                        </path>
+                                        <path
+                                            d="M262.5,248h-174c-4.687,0-8.5,3.813-8.5,8.5v142c0,4.687,3.813,8.5,8.5,8.5h174c4.687,0,8.5-3.813,8.5-8.5v-142 C271,251.813,267.187,248,262.5,248z M256,392H95V263h161V392z">
+                                        </path>
+                                    </g>
                                 </g>
                             </svg>
                         </span>
-                        {{ __('More') }}
+                        {{ __('Marketplace') }}
                     </x-responsive-nav-link>
-                    <div class="px-5 transition-all duration-500 bg-gray-200" x-show="more">
-                        <x-responsive-nav-link class="text-bold" :href="route('design.contest')">
-                            <span>
-                                @svg('solar-t-shirt-bold-duotone', ['class' => 'inline-block w-6 h-6 fill-current text-navy-blue'])
-                            </span>
-                            {{ __('Design Contest') }}
-                        </x-responsive-nav-link>
-                        <x-responsive-nav-link :href="route('market.place')" wire:navigate>
-                            <span>
-                                <svg class="inline-block w-5 h-5 fill-current" fill="#000000" height="200px"
-                                    width="200px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
-                                    xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 511 511"
-                                    xml:space="preserve">
-                                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round">
-                                    </g>
-                                    <g id="SVGRepo_iconCarrier">
-                                        <g>
-                                            <path
-                                                d="M503.5,440H479V207.433c13.842-3.487,24-16.502,24-31.933v-104c0-8.547-6.953-15.5-15.5-15.5h-464 C14.953,56,8,62.953,8,71.5v104c0,15.432,10.158,28.446,24,31.933V440H7.5c-4.142,0-7.5,3.358-7.5,7.5s3.358,7.5,7.5,7.5h496 c4.142,0,7.5-3.358,7.5-7.5S507.642,440,503.5,440z M488,71.5v104c0,9.383-6.999,17.384-15.602,17.834 c-4.595,0.235-8.939-1.36-12.254-4.505c-3.317-3.148-5.145-7.4-5.145-11.971V71h32.5C487.776,71,488,71.224,488,71.5z M71,71h33 v105.858c0,9.098-7.402,16.5-16.5,16.5s-16.5-7.402-16.5-16.5V71z M119,71h33v105.858c0,9.098-7.402,16.5-16.5,16.5 s-16.5-7.402-16.5-16.5V71z M167,71h33v105.858c0,9.098-7.402,16.5-16.5,16.5s-16.5-7.402-16.5-16.5V71z M215,71h33v105.858 c0,9.098-7.402,16.5-16.5,16.5s-16.5-7.402-16.5-16.5V71z M263,71h33v105.858c0,9.098-7.402,16.5-16.5,16.5s-16.5-7.402-16.5-16.5 V71z M311,71h33v105.858c0,9.098-7.402,16.5-16.5,16.5s-16.5-7.402-16.5-16.5V71z M359,71h33v105.858c0,9.098-7.402,16.5-16.5,16.5 s-16.5-7.402-16.5-16.5V71z M407,71h33v105.858c0,9.098-7.402,16.5-16.5,16.5s-16.5-7.402-16.5-16.5V71z M23,175.5v-104 c0-0.276,0.224-0.5,0.5-0.5H56v105.858c0,4.571-1.827,8.823-5.145,11.971c-3.314,3.146-7.663,4.743-12.254,4.505 C29.999,192.884,23,184.883,23,175.5z M47,207.462c5.266-1.279,10.128-3.907,14.181-7.753c0.822-0.78,1.599-1.603,2.326-2.462 c5.782,6.793,14.393,11.11,23.993,11.11c9.604,0,18.218-4.32,24-11.119c5.782,6.799,14.396,11.119,24,11.119s18.218-4.32,24-11.119 c5.782,6.799,14.396,11.119,24,11.119s18.218-4.32,24-11.119c5.782,6.799,14.396,11.119,24,11.119s18.218-4.32,24-11.119 c5.782,6.799,14.396,11.119,24,11.119s18.218-4.32,24-11.119c5.782,6.799,14.396,11.119,24,11.119s18.218-4.32,24-11.119 c5.782,6.799,14.396,11.119,24,11.119s18.218-4.32,24-11.119c5.782,6.799,14.396,11.119,24,11.119c9.6,0,18.21-4.317,23.993-11.11 c0.728,0.859,1.504,1.682,2.326,2.462c4.054,3.847,8.914,6.482,14.181,7.761V440h-33V263.5c0-8.547-6.953-15.5-15.5-15.5h-96 c-8.547,0-15.5,6.953-15.5,15.5V440H47V207.462z M416,440h-97V263.5c0-0.276,0.224-0.5,0.5-0.5h96c0.276,0,0.5,0.224,0.5,0.5V440z">
-                                            </path>
-                                            <path
-                                                d="M343.5,336c-4.142,0-7.5,3.358-7.5,7.5v16c0,4.142,3.358,7.5,7.5,7.5s7.5-3.358,7.5-7.5v-16 C351,339.358,347.642,336,343.5,336z">
-                                            </path>
-                                            <path
-                                                d="M262.5,248h-174c-4.687,0-8.5,3.813-8.5,8.5v142c0,4.687,3.813,8.5,8.5,8.5h174c4.687,0,8.5-3.813,8.5-8.5v-142 C271,251.813,267.187,248,262.5,248z M256,392H95V263h161V392z">
-                                            </path>
-                                        </g>
-                                    </g>
-                                </svg>
-                            </span>
-                            {{ __('Marketplace') }}
-                        </x-responsive-nav-link>
-                        <x-responsive-nav-link :href="route('creative.upload')" wire:navigate>
-                            <span>
-                                @svg('solar-upload-bold', 'w-6 h-6 text-navy-blue inline-block fill-current')
-                            </span>
-                            {{ __('Upload') }}
-                        </x-responsive-nav-link>
-                        <x-responsive-nav-link :href="route('cart')" x-show="admin" wire:navigate>
-
-                            <span>
-                                @svg('solar-cart-bold', 'w-6 h-6 text-navy-blue inline-block fill-current')
-                            </span>
-                            {{ __('Cart') }}
-                        </x-responsive-nav-link>
-                        <x-responsive-nav-link x-show="$wire.isCreative" x-show="admin" :href="route('creative.upload')">
-                            <span>
-                                <svg class="inline-block w-5 h-5 fill-navy-blue " version="1.1" id="Capa_1"
-                                    xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                                    viewBox="0 0 384.97 384.97" xml:space="preserve">
-                                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round">
-                                    </g>
-                                    <g id="SVGRepo_iconCarrier">
-                                        <g>
-                                            <g id="Upload">
-                                                <path
-                                                    d="M372.939,264.641c-6.641,0-12.03,5.39-12.03,12.03v84.212H24.061v-84.212c0-6.641-5.39-12.03-12.03-12.03 S0,270.031,0,276.671v96.242c0,6.641,5.39,12.03,12.03,12.03h360.909c6.641,0,12.03-5.39,12.03-12.03v-96.242 C384.97,270.019,379.58,264.641,372.939,264.641z">
-                                                </path>
-                                                <path
-                                                    d="M117.067,103.507l63.46-62.558v235.71c0,6.641,5.438,12.03,12.151,12.03c6.713,0,12.151-5.39,12.151-12.03V40.95 l63.46,62.558c4.74,4.704,12.439,4.704,17.179,0c4.74-4.704,4.752-12.319,0-17.011l-84.2-82.997 c-4.692-4.656-12.584-4.608-17.191,0L99.888,86.496c-4.752,4.704-4.74,12.319,0,17.011 C104.628,108.211,112.327,108.211,117.067,103.507z">
-                                                </path>
-                                            </g>
-                                            <g> </g>
-                                            <g> </g>
-                                            <g> </g>
-                                            <g> </g>
-                                            <g> </g>
-                                            <g> </g>
-                                        </g>
-                                    </g>
-                                </svg>
-                            </span>
-                            {{ __('Upload') }}
-                        </x-responsive-nav-link>
-                        <x-responsive-nav-link :href="route('explore')" wire:navigate>
-                            <span>
-                                <svg class="inline-block w-6 h-6 fill-current text-navy-blue"
-                                    xmlns="http://www.w3.org/2000/svg" id="explore">
-                                    <path fill="none" d="M0 0h24v24H0V0z"></path>
-                                    <path
-                                        d="M12 10.9c-.61 0-1.1.49-1.1 1.1s.49 1.1 1.1 1.1c.61 0 1.1-.49 1.1-1.1s-.49-1.1-1.1-1.1zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm2.19 12.19L6 18l3.81-8.19L18 6l-3.81 8.19z">
-                                    </path>
-                                </svg>
-                            </span>
-                            {{ __('Explore') }}
-                        </x-responsive-nav-link>
-                        <x-responsive-nav-link :href="route('blog')" wire:navigate>
-                            <span>
-
-                                <span>
-                                    <svg class="inline-block w-5 h-5 fill-current" id="Layer_1" data-name="Layer 1"
-                                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                                        <defs>
-                                            <style>
-                                                .cls-1 {
-                                                    fill: #141f38;
-                                                }
-                                            </style>
-                                        </defs>
-                                        <title>browser-3-glyph</title>
-                                        <path class="cls-1"
-                                            d="M448,0H64A64,64,0,0,0,0,64v51.2H512V64A64,64,0,0,0,448,0ZM70.4,76.8A19.2,19.2,0,1,1,89.6,57.6,19.2,19.2,0,0,1,70.4,76.8Zm51.2,0a19.2,19.2,0,1,1,19.2-19.2A19.2,19.2,0,0,1,121.6,76.8Zm51.2,0A19.2,19.2,0,1,1,192,57.6,19.2,19.2,0,0,1,172.8,76.8ZM0,448a64,64,0,0,0,64,64H448a64,64,0,0,0,64-64V140.8H0ZM294.4,192H435.2a12.8,12.8,0,1,1,0,25.6H294.4a12.8,12.8,0,1,1,0-25.6Zm0,51.2H435.2a12.8,12.8,0,1,1,0,25.6H294.4a12.8,12.8,0,1,1,0-25.6Zm0,51.2H384a12.8,12.8,0,0,1,0,25.6H294.4a12.8,12.8,0,1,1,0-25.6Zm0,76.8H435.2a12.8,12.8,0,1,1,0,25.6H294.4a12.8,12.8,0,1,1,0-25.6Zm0,51.2H384a12.8,12.8,0,0,1,0,25.6H294.4a12.8,12.8,0,1,1,0-25.6ZM64,211.2a32,32,0,0,1,32-32H211.2a32,32,0,0,1,32,32V416a32,32,0,0,1-32,32H96a32,32,0,0,1-32-32Z" />
-                                    </svg>
-                                </span>
-                                {{ __('Blog') }}
-
-                        </x-responsive-nav-link>
-                    </div>
-                    <x-responsive-nav-link :href="route('wallet')" x-show="admin" wire:navigate>
+                    <x-responsive-nav-link x-show="$wire.isCreative" :href="route('creative.upload')" wire:navigate>
                         <span>
-                            @svg('solar-wallet-2-bold', ['class' => 'inline-block w-6 h-6 fill-current text-navy-blue'])
+                            @svg('solar-upload-bold', 'w-6 h-6 text-navy-blue inline-block fill-current')
                         </span>
-                        {{ __('Wallet') }}
-
+                        {{ __('Upload') }}
                     </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('cart')" x-show="admin" wire:navigate>
 
-                    <x-responsive-nav-link :href="route('settings')" wire:navigate>
                         <span>
+                            @svg('solar-cart-bold', 'w-6 h-6 text-navy-blue inline-block fill-current')
+                        </span>
+                        {{ __('Cart') }}
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('explore')" wire:navigate>
+                        <span>
+                            <svg class="inline-block w-6 h-6 fill-current text-navy-blue"
+                                xmlns="http://www.w3.org/2000/svg" id="explore">
+                                <path fill="none" d="M0 0h24v24H0V0z"></path>
+                                <path
+                                    d="M12 10.9c-.61 0-1.1.49-1.1 1.1s.49 1.1 1.1 1.1c.61 0 1.1-.49 1.1-1.1s-.49-1.1-1.1-1.1zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm2.19 12.19L6 18l3.81-8.19L18 6l-3.81 8.19z">
+                                </path>
+                            </svg>
+                        </span>
+                        {{ __('Explore') }}
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('blog')" wire:navigate>
+                        <span>
+
                             <span>
-                                @svg('solar-settings-bold', ['class' => 'inline-block w-6 h-6 fill-current text-navy-blue'])
+                                <svg class="inline-block w-5 h-5 fill-current" id="Layer_1" data-name="Layer 1"
+                                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                                    <defs>
+                                        <style>
+                                            .cls-1 {
+                                                fill: #141f38;
+                                            }
+                                        </style>
+                                    </defs>
+                                    <title>browser-3-glyph</title>
+                                    <path class="cls-1"
+                                        d="M448,0H64A64,64,0,0,0,0,64v51.2H512V64A64,64,0,0,0,448,0ZM70.4,76.8A19.2,19.2,0,1,1,89.6,57.6,19.2,19.2,0,0,1,70.4,76.8Zm51.2,0a19.2,19.2,0,1,1,19.2-19.2A19.2,19.2,0,0,1,121.6,76.8Zm51.2,0A19.2,19.2,0,1,1,192,57.6,19.2,19.2,0,0,1,172.8,76.8ZM0,448a64,64,0,0,0,64,64H448a64,64,0,0,0,64-64V140.8H0ZM294.4,192H435.2a12.8,12.8,0,1,1,0,25.6H294.4a12.8,12.8,0,1,1,0-25.6Zm0,51.2H435.2a12.8,12.8,0,1,1,0,25.6H294.4a12.8,12.8,0,1,1,0-25.6Zm0,51.2H384a12.8,12.8,0,0,1,0,25.6H294.4a12.8,12.8,0,1,1,0-25.6Zm0,76.8H435.2a12.8,12.8,0,1,1,0,25.6H294.4a12.8,12.8,0,1,1,0-25.6Zm0,51.2H384a12.8,12.8,0,0,1,0,25.6H294.4a12.8,12.8,0,1,1,0-25.6ZM64,211.2a32,32,0,0,1,32-32H211.2a32,32,0,0,1,32,32V416a32,32,0,0,1-32,32H96a32,32,0,0,1-32-32Z" />
+                                </svg>
                             </span>
-                            {{ __('Settings') }}
+                            {{ __('Blog') }}
+
                     </x-responsive-nav-link>
 
-                    <!-- Authentication -->
-                    <button wire:click="logout" class="w-full text-start text-navy-blue">
-                        <x-responsive-nav-link>
+                </div>
+                <x-responsive-nav-link :href="route('wallet')" x-show="admin" wire:navigate>
+                    <span>
+                        @svg('solar-wallet-2-bold', ['class' => 'inline-block w-6 h-6 fill-current text-navy-blue'])
+                    </span>
+                    {{ __('Wallet') }}
 
-                            <span>
-                                @svg('solar-logout-2-bold', ['class' => 'inline-block w-6 h-6 fill-current text-navy-blue'])
-                            </span>
-                            {{ __('Log Out') }}
-                        </x-responsive-nav-link>
-                    </button>
-            </div>
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('support')" wire:navigate>
+                    @svg('bx-support', ['class' => 'inline-block text-navy-blue w-6 h-6 fill-current'])
+
+                    {{ __('Support') }}
+
+                </x-responsive-nav-link>
+
+                <x-responsive-nav-link :href="route('settings')" wire:navigate>
+                    <span>
+                        <span>
+                            @svg('solar-settings-bold', ['class' => 'inline-block w-6 h-6 fill-current text-navy-blue'])
+                        </span>
+                        {{ __('Settings') }}
+                </x-responsive-nav-link>
+
+                <!-- Authentication -->
+                <button wire:click="logout" class="w-full text-start text-navy-blue">
+                    <x-responsive-nav-link>
+
+                        <span>
+                            @svg('solar-logout-2-bold', ['class' => 'inline-block w-6 h-6 fill-current text-navy-blue'])
+                        </span>
+                        {{ __('Log Out') }}
+                    </x-responsive-nav-link>
+                </button>
         </div>
     </div>
 </nav>
