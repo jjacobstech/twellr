@@ -54,15 +54,22 @@ class ContestWinner extends Model
 
         return $query->whereBetween('created_at', [$startOfMonth, $endOfMonth]);
     }
-    public function user(){
+    public function user()
+    {
         return $this->belongsTo(User::class, 'user_id');
     }
     public function product()
     {
         return $this->belongsTo(Product::class, 'product_id');
     }
-    public static function winner(){
-       $winner = self::where('contest_type','design_fest')->first();
-        return Product::where('user_id',$winner->user_id)->get();
+    public static function winner()
+    {
+        $winner = self::where('contest_type', 'design_fest')->first();
+
+        if ($winner) {
+            return Product::where('user_id', $winner->user_id)->get();
+        } else {
+            return;
+        }
     }
 }
