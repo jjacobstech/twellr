@@ -29,6 +29,7 @@ return new class extends Migration
             $table->string('product_category');
             $table->string('material_id');
             $table->integer('quantity');
+            $table->integer('discounted')->nullable();
         });
     }
 

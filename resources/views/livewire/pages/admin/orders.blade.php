@@ -16,6 +16,7 @@ state(['currentPage' => 1]);
 state(['perPage' => 5]);
 state('viewData');
 state(['viewCard' => false]);
+state(['currency' => fn() => AdminSetting::value('currency_symbol') ]);
 
 with([
     'orders' => fn() => Purchase::orderBy('created_at', $this->dateSort)
@@ -162,11 +163,16 @@ $view = function ($id) {
                                     <span class="text-xs">{{ $viewData->customer->email ?? '' }}</span>
                                 </td>
                                 <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
-                                    {{ $viewData->product->name }}
+                                    {{ $viewData->product->name }}<br>
+
+                                    @if ($viewData->discounted)
+                                          <span class="text-xs">Discounted</span>
+
+                                    @endif
                                 </td>
                                 <td class="grid px-6 py-4 text-sm text-gray-500 capitalize">
                                     <span>{{ $viewData->material->name }}</span>
-                                    <span class="text-xs">{{ $viewData->material->price }}</span>
+                                    <span class="text-xs">{{ $currency }}{{ $viewData->material->price }}</span>
                                 </td>
                                 <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
                                     {{ $viewData->shippingLocation->location }} <br>
@@ -177,13 +183,13 @@ $view = function ($id) {
                                     {{ $viewData->created_at->format('M d, Y ') }}
                                 </td>
                                 <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
-                                    {{ number_format($viewData->product->price, 2) }}
+                                    {{ $currency }}{{ number_format($viewData->product->price, 2) }}
                                 </td>
                                 <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
                                     {{ $viewData->quantity }}
                                 </td>
                                 <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
-                                    {{ AdminSetting::value('currency_symbol') . number_format($viewData->amount, 2) }}
+                                    {{ $currency . number_format($viewData->amount, 2) }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <span
@@ -345,10 +351,10 @@ $view = function ($id) {
                                         {{ $order->created_at->format('M d, Y H') }}
                                     </td>
                                     <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
-                                        {{ number_format($order->product->price, 2) }}
+                                       {{ $currency }}{{ number_format($order->product->price, 2) }}
                                     </td>
                                     <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
-                                        {{ number_format($order->amount, 2) }}
+                                       {{ $currency }}{{ number_format($order->amount, 2) }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <span

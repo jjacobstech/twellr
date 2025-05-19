@@ -89,16 +89,16 @@ state([
             <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
                 <div class="p-4 text-white shadow bg-navy-blue rounded-xl">
                     <h3 class="text-sm font-semibold uppercase">Weekly User Signups</h3>
-                    <div class="mt-2 text-2xl font-bold">{{ $weeklySignups ?? '0' }}</div>
+                    <div class="mt-2 text-2xl font-bold">{{ round($weeklySignups) ?? '0' }}</div>
                 </div>
                  <div class="p-4 text-white shadow bg-navy-blue rounded-xl">
                     <h3 class="text-sm font-semibold uppercase">Average Weekly Designer Signups</h3>
-                    <div class="mt-2 text-2xl font-bold">{{ $averageWeeklyDesignerSignups ?? '0' }}</div>
+                    <div class="mt-2 text-2xl font-bold">{{ round($averageWeeklyDesignerSignups) ?? '0' }}</div>
                 </div>
 
                 <div class="p-4 text-white shadow bg-navy-blue rounded-xl">
                     <h3 class="text-sm font-semibold uppercase">Weekly Designs Uploaded</h3>
-                    <div class="mt-2 text-2xl font-bold">{{ $weeklyDesigns ?? '0' }}</div>
+                    <div class="mt-2 text-2xl font-bold">{{ round($weeklyDesigns) ?? '0' }}</div>
                 </div>
 
                 <div class="p-4 text-white shadow bg-navy-blue rounded-xl">

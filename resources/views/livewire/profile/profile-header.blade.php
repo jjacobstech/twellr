@@ -20,6 +20,7 @@ new class extends Component {
     public ?string $referral_link = '';
     public $referral;
     public $points;
+    public $discount;
     public $total_referrals = 0;
     public $total_rewards = 0;
     public $recent_referrals;
@@ -203,7 +204,7 @@ new class extends Component {
                 <div class="grid w-full grid-cols-2 gap-4 mt-2">
                     <div class="p-4 text-center bg-white rounded-lg shadow-sm">
                         <p class="text-sm text-gray-500">Discount</p>
-                        <p class="text-2xl font-bold text-navy-blue">{{ $discount ?? '0' }}</p>
+                        <p class="text-2xl font-bold text-navy-blue">{{ $discount}}%</p>
                     </div>
 
                 </div>

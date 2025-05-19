@@ -57,7 +57,8 @@ class Purchase extends Model
         'product_name',
         'product_category',
         'material_id',
-        'quantity'
+        'quantity',
+        'discounted'
 
     ];
 

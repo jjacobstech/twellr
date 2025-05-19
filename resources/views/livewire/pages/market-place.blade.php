@@ -233,7 +233,7 @@ $useDiscount = function ($discount = '') {
         $this->useCurrentDiscount = 'used';
     } elseif ($discount === 'false') {
         $this->discountAmount = 0;
-        $this->totalPrice = $this->totalPrice / (1 - $this->discount / 100);
+        $this->totalPrice =  (1 - $this->discount / 100) === 0 ? $this->totalPrice : $this->totalPrice / (1 - $this->discount / 100);
         $this->useCurrentDiscount = 'unUsed';
     }
 };
@@ -378,7 +378,7 @@ $completeCheckout = function () {
                 DB::beginTransaction();
 
                 $ref_no = $this->generateReferenceNumber();
-                $buyer =  User::find(Auth::id());
+                $buyer = User::find(Auth::id());
                 $creative = User::find($this->order->user_id);
 
                 $transaction = Transaction::create([
@@ -405,6 +405,7 @@ $completeCheckout = function () {
                     'product_category' => $this->order->category->name,
                     'material_id' => $orderInfo->material,
                     'quantity' => $this->quantity,
+                    'discounted' => true
                 ]);
 
                 if ($this->useCurrentDiscount === 'used') {
@@ -420,6 +421,11 @@ $completeCheckout = function () {
                     if (!$discount) {
                         throw new \Exception('Failed to apply discount.');
                     }
+                    $discounted = $buyer->discount = 0;
+                    $discounted = $buyer->save();
+                    if (!$discounted) {
+                        throw new \Exception('Failed to deduct discount.');
+                    }
                 }
 
                 $material = Material::find($this->material);
@@ -427,14 +433,26 @@ $completeCheckout = function () {
                     throw new \Exception('Selected material not found.');
                 }
 
-                $platformEarning = PlatformEarning::create([
-                    'purchase_id' => $purchase->id,
-                    'transaction_id' => $transaction->id,
-                    'quantity' => $this->quantity,
-                    'price' => $material->price,
-                    'total' => $material->price * $this->quantity,
-                    'fee_type' => 'material sales',
-                ]);
+                if ($this->useCurrentDiscount === 'used') {
+                    $platformEarning = PlatformEarning::create([
+                        'purchase_id' => $purchase->id,
+                        'transaction_id' => $transaction->id,
+                        'quantity' => $this->quantity,
+                        'price' => $material->price,
+                        'total' => $this->totalPrice - (($this->order->price * $this->quantity) + $this->shipping_fee), //This deducts shipping fee and designer price and gives the real discounted price
+                        'fee_type' => 'material sales',
+                        'notes' => 'discounted purchase',
+                    ]);
+                } else {
+                    $platformEarning = PlatformEarning::create([
+                        'purchase_id' => $purchase->id,
+                        'transaction_id' => $transaction->id,
+                        'quantity' => $this->quantity,
+                        'price' => $material->price,
+                        'total' => $material->price * $this->quantity,
+                        'fee_type' => 'material sales',
+                    ]);
+                }
 
                 // Deduct from buyer
                 $deducted = $buyer->decrement('wallet_balance', $this->totalPrice);
@@ -444,7 +462,7 @@ $completeCheckout = function () {
                 }
 
                 // Credit creative
-               $deposited = $creative->increment('wallet_balance', $this->order->price * $this->quantity);
+                $deposited = $creative->increment('wallet_balance', $this->order->price * $this->quantity);
                 if (!$deposited) {
                     throw new \Exception('Creative wallet update failed.');
                 }
