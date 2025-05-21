@@ -253,7 +253,9 @@ $withdraw = function () {
                                             {{ $transaction->status === 'pending' ? 'bg-yellow-100 text-yellow-800' : '' }}
                                             {{ $transaction->status === 'processing' ? 'bg-blue-100 text-blue-800' : '' }}
                                             {{ $transaction->status === 'completed' ? 'bg-green-100 text-green-800' : '' }}
-                                            {{ $transaction->status === 'rejected' ? 'bg-red-100 text-red-800' : '' }}">
+                                            {{ $transaction->status === 'rejected' ? 'bg-red-100 text-red-800' : '' }}
+                                            {{ $transaction->status === 'failed' ? 'bg-red-100 text-red-800' : '' }}
+                                            ">
                                         {{ ucfirst($transaction->status) }}
                                     </span>
                                 </td>
