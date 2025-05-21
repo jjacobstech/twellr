@@ -71,7 +71,7 @@ state([
                         <x-explore-card wire:navigate :product="$item" />
                     @endif
                 @empty
-                    <p class="text-center text-gray-400 col-span-full">No {{ $section->title }}</p>
+                    <p class="text-center text-gray-400 col-span-full">No Designs</p>
                 @endforelse
             </div>
         @endforeach
