@@ -42,7 +42,7 @@ class PaymentController extends Controller
             'buyer_id' => Auth::id(),
             'amount' => $funding_amount,
             'transaction_type' => 'funding',
-            'status' => 'pending',
+            'status' => 'failed',
             'ref_no' => $reference,
         ]);
 
