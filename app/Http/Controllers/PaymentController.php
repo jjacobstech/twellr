@@ -12,6 +12,7 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
 
 
@@ -70,7 +71,7 @@ class PaymentController extends Controller
      * Obtain Paystack payment information
      * @return void
      */
-    public function confirmPayment(Request $request)
+    public function confirmPayment(Request $request): RedirectResponse
     {
 
         try {
@@ -155,7 +156,7 @@ class PaymentController extends Controller
                     'user_id' => Auth::id(),
                     'transaction_id' => $transaction->id,
                     'ref_no' => $trxref,
-                    'status' => 'pending',
+                    'status' => 'failed',
                 ]);
 
                 if ($deposit) {
