@@ -158,7 +158,7 @@ new class extends Component {
 
                <div class="grid items-center justify-center
                                 sm:mt-8 md:mt-10 lg:mt-12 xl:mt-16 space-y-3">
-                        <x-bladewind.rating clickable="false" rating="{{ $rating }}"
+                        <x-bladewind.rating rating="{{ $rating }}"
                             size="small"
                             class="text-golden text-sm sm:text-base md:text-lg lg:text-xl"
                             name="creative-rating" />
