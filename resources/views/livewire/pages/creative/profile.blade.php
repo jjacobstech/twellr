@@ -29,7 +29,7 @@ state([
         '3' => 'Dazzler',
         '4' => 'Boss',
         '5' => 'Jagaban',
-    ]
+    ],
 ]);
 
 /**
@@ -40,7 +40,7 @@ mount(function () {
         return redirect()->route('dashboard');
     }
 
-    if(Auth::id() === $this->user->id) {
+    if (Auth::id() === $this->user->id) {
         return redirect()->route('dashboard');
     }
     $this->designs = Product::where('user_id', $this->user->id)->get();
@@ -88,25 +88,46 @@ $toggleFollow = action(function () {
 
 ?>
 <div class="w-[100%] overflow-y-scroll px-8 md:px-16 pb-20 h-screen bg-gray-100 scrollbar-none">
-
+    <!-- Profile Cover Section -->
     <div class="w-full">
-        <div style="background-image: url('@if (empty($user->cover)) {{ asset('assets/pexels-solliefoto-298863.jpg') }}@else{{ asset('uploads/cover/' . $user->cover) }} @endif')"
-            class="rounded-[14px] bg-no-repeat bg-cover justify-center items-center w-full min-h-[250px]">
-            <div class="relative flex justify-center w-full bg-white">
-                <img class="w-20 h-20 md:w-40 md:h-40 rounded-full absolute md:mt-28 z-50 mt-14 border-[#bebebe] border-[1px] object-cover"
-                    src="@if (empty($user->avatar)) {{ asset('assets/icons-user.png') }}
-                        @else
-                        {{ asset('uploads/avatar/' . $user->avatar) }} @endif"
-                    alt="{{ $user->name }}" />
+        <div style="background-image: url('@if (empty(Auth::user()->cover)) {{ asset('assets/pexels-solliefoto-298863.jpg') }}@else{{ asset('uploads/cover/' . Auth::user()->cover) }} @endif')"
+            class="rounded-[14px] bg-no-repeat bg-cover bg-center justify-center items-center w-full
+                   mt-4 sm:mt-8 md:mt-12 lg:mt-16 xl:mt-20
+                   min-h-[180px] sm:min-h-[200px] md:min-h-[220px] lg:min-h-[250px] xl:min-h-[280px] pt-1">
+
+            <div class="relative flex justify-center w-full">
+                <img class="absolute z-10 object-cover {{ !empty(Auth::user()->avatar) && str_contains(Auth::user()->avatar, 'https://') ? 'aspect-square' : '' }}
+                         w-16 h-16 mt-10
+                         sm:w-18 sm:h-18 sm:mt-12
+                         md:w-20 md:h-20 md:mt-16
+                         lg:w-32 lg:h-32 lg:mt-20
+                         xl:w-40 xl:h-40 xl:mt-28
+                         rounded-full border-2 sm:border-3 md:border-4 border-white shadow-lg"
+                    src="@if (!empty(Auth::user()->avatar) && str_contains(Auth::user()->avatar, 'https://')) {{ Auth::user()->avatar }}@elseif(!empty(Auth::user()->avatar)){{ asset('uploads/avatar/' . Auth::user()->avatar) }}@else{{ asset('assets/icons-user.png') }} @endif"
+                    alt="{{ Auth::user()->name }}" />
             </div>
+
             <div
-                class="mt-24 md:py-9 w-100 bg-white rounded-[14px] md:mt-[12rem] text-center items-center justify-center grid">
-               <div class="mt-20  md:mt-16 flex flex-col items-center justify-center space-y-2">
-                        <x-bladewind.rating rating="{{ $rating }}" size="medium" class="text-golden"
-                            name="creative-rating" />
+                class="w-full bg-white h-full rounded-[14px] border-0 text-center items-center justify-center grid
+                      mt-20 px-4
+                      sm:mt-20 sm:py-6 sm:px-6
+                      md:mt-24 md:py-8 md:px-8
+                      lg:mt-28 lg:py-9 lg:px-10
+                      xl:mt-48 xl:py-9 xl:px-12">
+
+                @if (Auth::user()->isCreative())
+                    <div
+                        class="grid items-center justify-center
+                                sm:mt-8 md:mt-10 lg:mt-12 xl:mt-16 space-y-3">
+                        <x-bladewind.rating rating="{{ $rating }}" size="small"
+                            class="text-golden text-sm sm:text-base md:text-lg lg:text-xl" name="creative-rating" />
 
                         <span
-                            class="px-2 inline-flex text-sm leading-5 font-semibold rounded-full bg-navy-blue text-white text-center">
+                            class="inline-flex justify-center text-center text-white rounded-full bg-navy-blue font-semibold
+                                   px-2 py-1 text-xs leading-4
+                                   sm:px-3 sm:text-sm sm:leading-5
+                                   md:px-3 md:text-sm md:leading-5
+                                   lg:px-4 lg:text-base lg:leading-6">
                             @switch($rating)
                                 @case(1)
                                     {{ $statuses[$rating] }}
@@ -129,14 +150,26 @@ $toggleFollow = action(function () {
                                 @break
 
                                 @default
+                                    {{ $statuses[$rating] }}
                             @endswitch
                         </span>
                     </div>
-
-                <h1 class="my-2 text-lg font-bold text-gray-500 md:text-3xl">{{ $user->firstname }}
-                    {{ $user->lastname }}</h1>
-
-                <!-- Follow Button -->
+                    <h1
+                        class="font-bold text-gray-500 leading-tight break-words px-2
+                             my-2 text-sm sm:text-base md:text-lg lg:text-2xl xl:text-3xl">
+                        {{ Auth::user()->firstname }} {{ Auth::user()->lastname }}
+                    </h1>
+                @else
+                    <h1
+                        class="font-bold text-gray-500 leading-tight break-words px-2
+                             my-8 text-sm
+                             sm:my-10 sm:text-base
+                             md:my-12 md:text-lg
+                             lg:my-14 lg:text-2xl
+                             xl:my-16 xl:text-3xl">
+                        {{ Auth::user()->firstname }} {{ Auth::user()->lastname }}
+                    </h1>
+                @endif
                 @if (Auth::check() && Auth::id() !== $user->id)
                     <div class="mt-2 mb-4">
                         <button wire:click="toggleFollow"
@@ -147,46 +180,43 @@ $toggleFollow = action(function () {
                 @endif
             </div>
         </div>
-
-
-        <div
-            class="justify-between px-5 py-10 my-10 bg-white shadow-sm md:px-10 md:gap-6 md:flex w-100 rounded-xl scrollbar-none">
-            <div x-cloak="display:hidden"
-                class="relative grid w-full h-full gap-5 px-5 pt-1 mb-1 overflow-y-scroll md:h-screen lg:hidden md:grid-cols-4 sm:grid-cols-4 scrollbar-none">
-                @forelse ($designs as $design)
-                    <a href="{{ route('market.place') }}"
-                        class="w-full  max-w-sm md:overflow-hidden transition-shadow duration-300 shadow-md rounded-xl hover:shadow-lg aspect-square">
-                        <!-- Product Image Container with fixed aspect ratio -->
-                        <div class="relative group aspect-square">
-                            <img class="object-cover aspect-square w-full h-full rounded-xl lg:rounded-t-none"
-                                src="{{ asset('uploads/products/design-stack/' . $design->front_view) }}"
-                                alt="{{ $design->name }}">
-                        </div>
-                    </a>
-
-                @empty
-                    <h1 class="text-gray-500">No Designs Available</h1>
-                @endforelse
-            </div>
-
-            <div x-cloak="display:hidden"
-                class="relative hidden w-full gap-5 px-5 pt-1 lg:overflow-y-scroll lg:grid md:grid-cols-8 mb-[115px] scrollbar-none">
-                @forelse ($designs as $design)
-                    <div
-                        class="w-full  max-w-sm md:overflow-hidden transition-shadow duration-300 shadow-md rounded-xl hover:shadow-lg aspect-square">
-                        <!-- Product Image Container with fixed aspect ratio -->
-                        <a href="{{ route('market.place') }}"
-                            class="relative group aspect-square">
-                            <img class="object-cover aspect-square w-full h-full rounded-xl lg:rounded-t-none"
-                                src="{{ asset('uploads/products/design-stack/' . $design->front_view) }}"
-                                alt="{{ $design->name }}">
-                        </a>
-                    </div>
-                @empty
-                    <h1 class="text-gray-500">No Designs Available</h1>
-                @endforelse
-            </div>
-        </div>
     </div>
 
+    <div
+        class="justify-between px-5 py-10 my-10 bg-white shadow-sm md:px-10 md:gap-6 md:flex w-100 rounded-xl scrollbar-none">
+        <div x-cloak="display:hidden"
+            class="relative grid w-full h-full gap-5 px-5 pt-1 mb-1 overflow-y-scroll md:h-screen lg:hidden md:grid-cols-4 sm:grid-cols-4 scrollbar-none">
+            @forelse ($designs as $design)
+                <a href="{{ route('market.place') }}"
+                    class="w-full  max-w-sm md:overflow-hidden transition-shadow duration-300 shadow-md rounded-xl hover:shadow-lg aspect-square">
+                    <!-- Product Image Container with fixed aspect ratio -->
+                    <div class="relative group aspect-square">
+                        <img class="object-cover aspect-square w-full h-full rounded-xl lg:rounded-t-none"
+                            src="{{ asset('uploads/products/design-stack/' . $design->front_view) }}"
+                            alt="{{ $design->name }}">
+                    </div>
+                </a>
+
+            @empty
+                <h1 class="text-gray-500">No Designs Available</h1>
+            @endforelse
+        </div>
+
+        <div x-cloak="display:hidden"
+            class="relative hidden w-full gap-5 px-5 pt-1 lg:overflow-y-scroll lg:grid md:grid-cols-8 mb-[115px] scrollbar-none">
+            @forelse ($designs as $design)
+                <div
+                    class="w-full  max-w-sm md:overflow-hidden transition-shadow duration-300 shadow-md rounded-xl hover:shadow-lg aspect-square">
+                    <!-- Product Image Container with fixed aspect ratio -->
+                    <a href="{{ route('market.place') }}" class="relative group aspect-square">
+                        <img class="object-cover aspect-square w-full h-full rounded-xl lg:rounded-t-none"
+                            src="{{ asset('uploads/products/design-stack/' . $design->front_view) }}"
+                            alt="{{ $design->name }}">
+                    </a>
+                </div>
+            @empty
+                <h1 class="text-gray-500">No Designs Available</h1>
+            @endforelse
+        </div>
+    </div>
 </div>
