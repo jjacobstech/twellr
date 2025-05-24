@@ -105,22 +105,22 @@ new class extends Component {
     }
 };
 ?>
-<div class="w-full overflow-y-scroll mb-20 scrollbar-none 
+<div class="w-full overflow-y-scroll mb-20 scrollbar-none
            px-2 sm:px-4 md:px-8 lg:px-12 xl:px-16">
-    
+
     <!-- Header -->
     <header class="flex items-center justify-between w-full">
-        <h2 class="py-2 sm:py-3 md:py-4 
-                 text-xl sm:text-2xl md:text-3xl lg:text-4xl 
+        <h2 class="py-2 sm:py-3 md:py-4
+                 text-xl sm:text-2xl md:text-3xl lg:text-4xl
                  font-extrabold text-gray-500">
             {{ __('Profile') }}
         </h2>
 
         <a href="{{ route('settings') }}">
-            <svg class="text-gray-500 
-                      h-5 w-5 sm:h-6 sm:w-6 md:h-7 md:w-7" 
+            <svg class="text-gray-500
+                      h-5 w-5 sm:h-6 sm:w-6 md:h-7 md:w-7"
                  xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" 
+                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                  stroke-linecap="round" stroke-linejoin="round">
                 <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
                 <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
@@ -131,45 +131,45 @@ new class extends Component {
     <!-- Profile Cover Section -->
     <div class="w-full">
         <div style="background-image: url('@if (empty(Auth::user()->cover)) {{ asset('assets/pexels-solliefoto-298863.jpg') }}@else{{ asset('uploads/cover/' . Auth::user()->cover) }} @endif')"
-            class="rounded-[14px] bg-no-repeat bg-cover bg-center justify-center items-center w-full 
-                   mt-4 sm:mt-8 md:mt-12 lg:mt-16 xl:mt-20 
+            class="rounded-[14px] bg-no-repeat bg-cover bg-center justify-center items-center w-full
+                   mt-4 sm:mt-8 md:mt-12 lg:mt-16 xl:mt-20
                    min-h-[180px] sm:min-h-[200px] md:min-h-[220px] lg:min-h-[250px] xl:min-h-[280px] pt-1">
-            
+
             <div class="relative flex justify-center w-full">
-                <img class="absolute z-10 object-cover {{ !empty(Auth::user()->avatar) && str_contains(Auth::user()->avatar, 'https://') ? 'aspect-square' : '' }} 
-                         w-16 h-16 mt-10 
-                         sm:w-18 sm:h-18 sm:mt-12 
-                         md:w-20 md:h-20 md:mt-16 
-                         lg:w-32 lg:h-32 lg:mt-20 
-                         xl:w-40 xl:h-40 xl:mt-28 
+                <img class="absolute z-10 object-cover {{ !empty(Auth::user()->avatar) && str_contains(Auth::user()->avatar, 'https://') ? 'aspect-square' : '' }}
+                         w-16 h-16 mt-10
+                         sm:w-18 sm:h-18 sm:mt-12
+                         md:w-20 md:h-20 md:mt-16
+                         lg:w-32 lg:h-32 lg:mt-20
+                         xl:w-40 xl:h-40 xl:mt-28
                          rounded-full border-2 sm:border-3 md:border-4 border-white shadow-lg"
                     src="@if (!empty(Auth::user()->avatar) && str_contains(Auth::user()->avatar, 'https://')) {{ Auth::user()->avatar }}@elseif(!empty(Auth::user()->avatar)){{ asset('uploads/avatar/' . Auth::user()->avatar) }}@else{{ asset('assets/icons-user.png') }} @endif"
                     alt="{{ Auth::user()->name }}" />
             </div>
-            
+
             <div class="w-full bg-white h-full rounded-[14px] border-0 text-center items-center justify-center grid
-                      mt-20 px-4 
-                      sm:mt-20 sm:py-6 sm:px-6 
-                      md:mt-24 md:py-8 md:px-8 
-                      lg:mt-28 lg:py-9 lg:px-10 
+                      mt-20 px-4
+                      sm:mt-20 sm:py-6 sm:px-6
+                      md:mt-24 md:py-8 md:px-8
+                      lg:mt-28 lg:py-9 lg:px-10
                       xl:mt-48 xl:py-9 xl:px-12">
-                
+
                 @if (Auth::user()->isCreative())
-             
+
                <div class="grid items-center justify-center
                                 sm:mt-8 md:mt-10 lg:mt-12 xl:mt-16 space-y-3">
-                        <x-bladewind.rating rating="{{ $rating }}" 
-                            size="small" 
+                        <x-bladewind.rating clickable="false" rating="{{ $rating }}"
+                            size="small"
                             class="text-golden text-sm sm:text-base md:text-lg lg:text-xl"
                             name="creative-rating" />
 
                         <span class="inline-flex justify-center text-center text-white rounded-full bg-navy-blue font-semibold
-                                   px-2 py-1 text-xs leading-4 
-                                   sm:px-3 sm:text-sm sm:leading-5 
-                                   md:px-3 md:text-sm md:leading-5 
+                                   px-2 py-1 text-xs leading-4
+                                   sm:px-3 sm:text-sm sm:leading-5
+                                   md:px-3 md:text-sm md:leading-5
                                    lg:px-4 lg:text-base lg:leading-6">
                             @switch($rating)
-                         		
+
                                 @case(1)
                                     {{ $statuses[$rating] }}
                                 @break
@@ -195,13 +195,13 @@ new class extends Component {
                         {{ Auth::user()->firstname }} {{ Auth::user()->lastname }}
                     </h1>
 
-              
+
                          @else
                     <h1 class="font-bold text-gray-500 leading-tight break-words px-2
-                             my-8 text-sm 
-                             sm:my-10 sm:text-base 
-                             md:my-12 md:text-lg 
-                             lg:my-14 lg:text-2xl 
+                             my-8 text-sm
+                             sm:my-10 sm:text-base
+                             md:my-12 md:text-lg
+                             lg:my-14 lg:text-2xl
                              xl:my-16 xl:text-3xl">
                         {{ Auth::user()->firstname }} {{ Auth::user()->lastname }}
                     </h1>
@@ -213,13 +213,13 @@ new class extends Component {
         <div class="bg-white shadow-sm rounded-xl w-full my-6 sm:my-8 md:my-10
                   px-3 py-6 sm:px-4 sm:py-8 md:px-6 md:py-10 lg:px-8 lg:py-10 xl:px-10 xl:py-10
                   md:flex md:justify-between md:gap-4 lg:gap-6">
-            
+
             <!-- Left Column: Header and Stats -->
             <div class="w-full md:w-1/2 grid justify-center md:justify-items-start gap-2">
                 <div class="flex items-center mb-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" 
-                         class="text-golden mr-2 
-                                w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8" 
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         class="text-golden mr-2
+                                w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8"
                          fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -264,7 +264,7 @@ new class extends Component {
 
                 <!-- How It Works Section -->
                 <div class="w-full p-3 sm:p-4 mt-4 sm:mt-6 bg-white rounded-lg shadow-sm">
-                    <h3 class="mb-2 font-bold text-gray-700 
+                    <h3 class="mb-2 font-bold text-gray-700
                              text-sm sm:text-base">
                         How It Works
                     </h3>
@@ -285,12 +285,12 @@ new class extends Component {
                 </p>
                 <div class="flex w-full mb-4">
                     <input class="w-full text-gray-500 bg-white border-0 rounded-l-lg shadow-inner
-                                 px-3 py-2 sm:px-4 sm:py-3 
-                                 text-xs sm:text-sm md:text-base" 
+                                 px-3 py-2 sm:px-4 sm:py-3
+                                 text-xs sm:text-sm md:text-base"
                            readonly type="text" value="{{ $referral_link }}" id="referral_link">
                     <button id="copyButton"
                         class="font-bold text-gray-700 transition-all duration-200 rounded-r-lg bg-golden hover:bg-navy-blue hover:text-white focus:outline-none
-                               px-4 py-2 sm:px-6 sm:py-3 
+                               px-4 py-2 sm:px-6 sm:py-3
                                text-xs sm:text-sm md:text-base"
                         type="button" onclick="copyReferralLink()">
                         Copy
@@ -344,7 +344,7 @@ new class extends Component {
                                     <div class="flex items-center gap-2 sm:gap-3">
                                         @if (!isset($referral['avatar']) && $referral['avatar'] == null)
                                             <div class="flex items-center justify-center text-white rounded-full bg-navy-blue
-                                                      w-8 h-8 sm:w-10 sm:h-10 
+                                                      w-8 h-8 sm:w-10 sm:h-10
                                                       text-xs sm:text-sm">
                                                 {{ substr($referral['name'] ?? 'User ', 0, 1) }}
                                             </div>
@@ -354,7 +354,7 @@ new class extends Component {
                                                 src="{{ asset('uploads/avatar/' . ($referral['avatar'] ?? 'default-avatar.png')) }}"
                                                 alt="User Avatar">
                                         @endif
-                                        <span class="text-gray-700 
+                                        <span class="text-gray-700
                                                    text-xs sm:text-sm md:text-base">
                                             {{ $referral['name'] }}
                                         </span>
@@ -380,9 +380,9 @@ new class extends Component {
     <!-- Designs Section (Creative Users Only) -->
     @if (Auth::user()->isCreative())
         <div class="w-full bg-white shadow-sm rounded-xl my-6 sm:my-8 md:my-10
-                  py-6 sm:py-8 md:py-10 
+                  py-6 sm:py-8 md:py-10
                   px-0 sm:px-4 md:px-6 lg:px-8 xl:px-10">
-            
+
             <!-- Header -->
             <header class="flex items-center justify-between w-full mb-4 px-4 sm:px-0">
                 <h2 class="font-extrabold text-gray-500
@@ -393,10 +393,10 @@ new class extends Component {
 
             <!-- Responsive Grid -->
             <div class="relative bg-white w-full overflow-y-scroll scrollbar-none
-                      pb-2 md:pb-0 
-                      md:w-3/4 lg:w-full 
+                      pb-2 md:pb-0
+                      md:w-3/4 lg:w-full
                       md:h-screen lg:py-4">
-                
+
                 <!-- Mobile/Tablet Grid -->
                 <div x-cloak="display:hidden"
                     class="relative grid justify-center w-full gap-3 sm:gap-4 md:gap-5 mb-16 lg:hidden
@@ -416,8 +416,8 @@ new class extends Component {
                 <!-- Desktop Grid -->
                 <div x-cloak="display:hidden"
                     class="relative hidden w-full gap-3 sm:gap-4 md:gap-5 mb-16 lg:grid
-                           lg:grid-cols-4 xl:grid-cols-5 
-                           px-4 sm:px-5 
+                           lg:grid-cols-4 xl:grid-cols-5
+                           px-4 sm:px-5
                            py-1">
                     @forelse ($designs as $design)
                         <x-design-card :$design />
