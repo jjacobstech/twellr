@@ -203,7 +203,7 @@ new class extends Component {
                 @else
                     <h1
                         class="font-bold text-gray-500 leading-tight break-words px-2
-                             my-8 text-sm
+                             my-10 text-sm
                              sm:my-10 sm:text-base
                              md:my-12 md:text-lg
                              lg:my-14 lg:text-2xl
