@@ -169,7 +169,7 @@ new class extends Component {
                                    md:px-3 md:text-sm md:leading-5
                                    lg:px-4 lg:text-base lg:leading-6">
                             @switch($rating)
-                                y
+                                
                                 @case(1)
                                     {{ $statuses[$rating] }}
                                 @break
