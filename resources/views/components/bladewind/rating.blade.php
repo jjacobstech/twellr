@@ -9,6 +9,7 @@
     'type' => config('bladewind.rating.type', 'star'),
     'clickable' => config('bladewind.rating.clickable', true),
     'sizing' => [
+        'tiny'=> 3,
         'small' => 6,
         'medium' => 10,
         'big' => 14,
