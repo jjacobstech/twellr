@@ -45,7 +45,7 @@
         </div>
     </div>
 
-  
+
 
     <div wire:loading.class='hidden' class="h-full bg-gray-100">
         {{-- To Allow Admin view blog, marketplace and explore pages from admin panel --}}
@@ -62,7 +62,7 @@
             x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100">
             {{ $slot }}
         </main>
-        <div class="fixed bottom-0 left-0 right-0 z-50 bg-transparent shadow-sm">
+        <div class="fixed bottom-0 left-0 right-0 z-50 bg-white shadow-sm">
             <x-footer />
         </div>
     </div>

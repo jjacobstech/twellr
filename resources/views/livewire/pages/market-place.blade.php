@@ -6,6 +6,7 @@ use App\Models\Rate;
 use App\Models\User;
 use App\Models\State;
 use App\Models\Rating;
+use App\Models\Review;
 use Mary\Traits\Toast;
 use App\Models\Comment;
 use App\Models\Country;
@@ -49,7 +50,9 @@ state([
     'discount' => auth()->user()->discount,
     'referral_link' => '',
     'commentInput' => '',
+    'reviewInput' => '',
     'comments' => [],
+    'review' => [],
     'shipping_rates' => fn() => ShippingFee::all(),
     'locations' => fn() => State::all(),
     'location' => '',
@@ -233,7 +236,7 @@ $useDiscount = function ($discount = '') {
         $this->useCurrentDiscount = 'used';
     } elseif ($discount === 'false') {
         $this->discountAmount = 0;
-        $this->totalPrice =  (1 - $this->discount / 100) === 0 ? $this->totalPrice : $this->totalPrice / (1 - $this->discount / 100);
+        $this->totalPrice = 1 - $this->discount / 100 === 0 ? $this->totalPrice : $this->totalPrice / (1 - $this->discount / 100);
         $this->useCurrentDiscount = 'unUsed';
     }
 };
@@ -315,6 +318,23 @@ $commentDesign = function ($id) {
     return $this->comments = Comment::where('product_id', '=', $id)->with('user')->get();
 };
 
+$reviewDesign = function ($id) {
+    $data = (object) $this->validate(['reviewInput' => ['required', 'string']]);
+    $review = Review::create([
+        'user_id' => Auth::id(),
+        'product_id' => $id,
+        'review' => $data->reviewInput,
+    ]);
+
+    if (!$review) {
+        $this->error('Review Error', 'Something happened but we are working on it');
+    } else {
+        $this->success('Review Successful');
+        $this->mount();
+    }
+    return $this->review = Review::where('product_id', '=', $id)->where('user_id', '=', Auth::id())->first();
+};
+
 $generateReferenceNumber = function () {
     $prefix = 'TRX';
     do {
@@ -336,6 +356,7 @@ $orderModal = function ($id) {
         ->first();
     $this->starRating = $orderRating ? $orderRating->rate : 0;
     $this->comments = Comment::where('product_id', '=', $id)->with('user')->get();
+    $this->review = Review::where('product_id', '=', $id)->where('user_id', '=', Auth::id())->first();
     $this->referral_link = config('app.url') . '/r/' . $this->order->designer->referral_link;
     $this->order->user_id == Auth::id() ? ($this->owner = true) : ($this->owner = false);
     $this->modal = true;
@@ -405,7 +426,7 @@ $completeCheckout = function () {
                     'product_category' => $this->order->category->name,
                     'material_id' => $orderInfo->material,
                     'quantity' => $this->quantity,
-                    'discounted' => true
+                    'discounted' => true,
                 ]);
 
                 if ($this->useCurrentDiscount === 'used') {
@@ -439,7 +460,7 @@ $completeCheckout = function () {
                         'transaction_id' => $transaction->id,
                         'quantity' => $this->quantity,
                         'price' => $material->price,
-                        'total' => $this->totalPrice - (($this->order->price * $this->quantity) + $this->shipping_fee), //This deducts shipping fee and designer price and gives the real discounted price
+                        'total' => $this->totalPrice - ($this->order->price * $this->quantity + $this->shipping_fee), //This deducts shipping fee and designer price and gives the real discounted price
                         'fee_type' => 'material sales',
                         'notes' => 'discounted purchase',
                     ]);
@@ -712,6 +733,29 @@ $completeCheckout = function () {
                                     </a>
                                 </div>
 
+                                @if (is_null($review) || $review === [])
+                                    <!-- Review Section -->
+                                    <div class="flex flex-wrap gap-3">
+                                        <div class="grid w-full">
+                                            <x-text-input id="reviewInput" placeholder="Drop Review" :class="$errors->get('reviewInput')
+                                                ? 'block w-full mt-2 ring-1 border-0 ring-red-600 text-white bg-[#bebebe] rounded-xl'
+                                                : 'block border-0 text-white w-full mt-2 bg-[#bebebe] rounded-xl'"
+                                                wire:model="reviewInput" type="text" name="reviewInput" autofocus
+                                                autocomplete="reviewInput" />
+                                            <x-input-error class="absolute pt-1 mt-12" :messages="$errors->get('reviewInput') ? 'Comment Cannot Be Empty' : ''" />
+                                        </div>
+                                        <x-mary-button
+                                            class="bg-[#001f54] text-white hover:bg-golden hover:border-golden mt-2"
+                                            wire:click="reviewDesign({{ $order->id }})" spinner>
+                                            @svg('eva-message-circle', ['class' => 'w-5 h-5'])
+                                            Submit
+                                        </x-mary-button>
+
+                                    </div>
+                                @else
+                                    <p class="text-black scrollbar-none">Review Submitted</p>
+                                @endif
+
                                 <!-- Comment Section -->
 
                                 @if (auth()->user()->isFollowing($order->designer->id))
@@ -720,7 +764,7 @@ $completeCheckout = function () {
                                             <x-text-input id="commentInput" placeholder="Write a Comment"
                                                 :class="$errors->get('commentInput')
                                                     ? 'block w-full mt-2 ring-1 border-0 ring-red-600 text-white bg-[#bebebe] rounded-xl'
-                                                    : 'block border-0 text-white w-full mt-2 bg-[#bebebe] rounded-xl'" wire:model.live="commentInput" type="text"
+                                                    : 'block border-0 text-white w-full mt-2 bg-[#bebebe] rounded-xl'" wire:model="commentInput" type="text"
                                                 name="commentInput" autofocus autocomplete="commentInput" />
                                             <x-input-error class="absolute pt-1 mt-12" :messages="$errors->get('commentInput') ? 'Comment Cannot Be Empty' : ''" />
                                         </div>
@@ -735,15 +779,29 @@ $completeCheckout = function () {
 
 
                                     @forelse ($comments as $comment)
-                                        <div class="grid overflow-y-scroll">
+                                        <div class="grid">
 
                                             <div
                                                 class="h-full scrollbar-thin scrollbar-track-white scrollbar-thumb-navy-blue">
                                                 <div class="chat chat-start">
                                                     <div class="chat-image avatar">
                                                         <div class="w-10 rounded-full">
-                                                            <img alt="Tailwind CSS chat bubble component"
-                                                                src="{{ asset('uploads/avatar/' . $comment->user->avatar) }}" />
+                                                            @if (!empty($comment->user->avatar) && str_contains($comment->user->avatar, 'https://'))
+                                                                <x-bladewind.avatar
+                                                                    class="ring-0 border-0 aspect-square"
+                                                                    size="medium" :image="$comment->user->avatar" />
+                                                            @else
+                                                                @if ($comment->user->avatar)
+                                                                    <x-bladewind.avatar class="ring-0  border-0 "
+                                                                        size="medium"
+                                                                        image="{{ asset('uploads/avatar/' . $comment->user->avatar) }}" />
+                                                                @else
+                                                                    <x-bladewind.avatar class="ring-0 border-0"
+                                                                        size="medium"
+                                                                        image="{{ asset('assets/icons-user.png') }}" />
+                                                                @endif
+                                                            @endif
+
                                                         </div>
                                                     </div>
                                                     <div class="chat-header">
@@ -832,7 +890,7 @@ $completeCheckout = function () {
                                     <div class="w-full">
                                         <x-input-label class="mb-1 font-bold text-gray-700" for="material"
                                             :value="__('Material')" />
-                                        <select wire:model.live="material"
+                                        <select wire:model="material"
                                             x-on:change='$wire.addMaterial(event.target.value)' id="status"
                                             class="block w-full border border-gray-300 rounded-lg py-2.5 px-3 bg-white focus:outline-none focus:ring-2 focus:ring-navy-blue focus:border-navy-blue text-gray-800 text-sm">
                                             <option value="0">Select a material
@@ -851,7 +909,7 @@ $completeCheckout = function () {
                                     <div class="w-full">
                                         <x-input-label class="mb-1 font-bold text-gray-700" for="size"
                                             :value="__('Size')" />
-                                        <select id="size" required wire:model.live="size"
+                                        <select id="size" required wire:model="size"
                                             class="block w-full border border-gray-300 rounded-lg py-2.5 px-3 bg-white focus:outline-none focus:ring-2 focus:ring-navy-blue focus:border-navy-blue text-gray-800 text-sm">
                                             <option value="">
                                                 Select Size
@@ -926,8 +984,8 @@ $completeCheckout = function () {
                                 <div class="w-full">
                                     <x-input-label class="mb-1 font-bold text-gray-700" for="material"
                                         :value="__('Material')" />
-                                    <select wire:model.live='material'
-                                        x-on:change='$wire.addMaterial(event.target.value)' id="status"
+                                    <select wire:model='material' x-on:change='$wire.addMaterial(event.target.value)'
+                                        id="status"
                                         class="block w-full border border-gray-300 rounded-lg py-2.5 px-3 bg-white focus:outline-none focus:ring-2 focus:ring-navy-blue focus:border-navy-blue text-gray-800 text-sm">
                                         <option value="0">Select a material
                                         </option>
@@ -945,7 +1003,7 @@ $completeCheckout = function () {
                                 <div class="w-full">
                                     <x-input-label class="mb-1 font-bold text-gray-700" for="size"
                                         :value="__('Size')" />
-                                    <select id="size" required wire:model.live="size"
+                                    <select id="size" required wire:model="size"
                                         class="block w-full border border-gray-300 rounded-lg py-2.5 px-3 bg-white focus:outline-none focus:ring-2 focus:ring-navy-blue focus:border-navy-blue text-gray-800 text-sm">
                                         <option value="">
                                             Select Size
@@ -1042,8 +1100,8 @@ $completeCheckout = function () {
                                     Phone No
                                 </label>
                                 <div class="mt-1">
-                                    <input type="text" wire:model.live="phone_no" id="phone_no"
-                                        autocomplete="number" required
+                                    <input type="text" wire:model="phone_no" id="phone_no" autocomplete="number"
+                                        required
                                         class="block w-full text-gray-700 border-gray-300 rounded-md shadow-sm focus:ring-navy-blue focus:border-navy-blue sm:text-sm">
                                 </div>
                                 <x-input-error :messages="$errors->get('phone_no') ? 'Mobile Number Is Required For Delivery' : ''" class="mt-1" />
@@ -1053,7 +1111,7 @@ $completeCheckout = function () {
                             <div>
                                 <label for="address" class="block mb-2 text-sm font-medium uppercase">Shipping
                                     Address</label>
-                                <textarea wire:model.live="address" id="address" class="w-full p-3 text-sm text-gray-700 bg-white rounded"
+                                <textarea wire:model="address" id="address" class="w-full p-3 text-sm text-gray-700 bg-white rounded"
                                     rows="3" placeholder="Enter your shipping address"></textarea>
                                 <x-input-error :messages="$errors->get('address') ? 'Address Not Selected' : ''" class="mt-1" />
                             </div>

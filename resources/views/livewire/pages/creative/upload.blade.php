@@ -232,7 +232,7 @@ new #[Layout('layouts.app')] class extends Component {
                                     <x-text-input id="name" :class="$errors->get('name')
                                         ? 'block w-full mt-1 sm:mt-2 ring-1 border-0 ring-red-600 bg-[#bebebe] rounded-xl'
                                         : 'block border-0 w-full mt-1 sm:mt-2 bg-[#bebebe] rounded-xl'" type="text" name="name"
-                                        wire:model.live="name" autofocus autocomplete="name" />
+                                        wire:model="name" autofocus autocomplete="name" />
                                 </div>
 
                                 <div class="w-full sm:w-[40%] md:w-[30%]">
@@ -241,7 +241,7 @@ new #[Layout('layouts.app')] class extends Component {
                                         for="price" />
                                     <x-text-input id="price" :class="$errors->get('price')
                                         ? 'block w-full mt-1 sm:mt-2 ring-1 border-0 ring-red-600 bg-[#bebebe] rounded-xl'
-                                        : 'block border-0 w-full mt-1 sm:mt-2 bg-[#bebebe] rounded-xl'" wire:model.live="price"
+                                        : 'block border-0 w-full mt-1 sm:mt-2 bg-[#bebebe] rounded-xl'" wire:model="price"
                                         type="text" name="price" autofocus autocomplete="price" />
                                 </div>
                             </div>
@@ -250,7 +250,7 @@ new #[Layout('layouts.app')] class extends Component {
                             <div class="mt-3 sm:mt-4">
                                 <x-input-label :value="__('Category')"
                                     class="text-gray-500 font-extrabold text-[15px] sm:text-[17px]" for="category" />
-                                <x-select id="category" wire:model.live="category" :class="$errors->get('category')
+                                <x-select id="category" wire:model="category" :class="$errors->get('category')
                                     ? 'block w-full mt-1 sm:mt-2 border-0 ring-red-600 bg-[#bebebe] ring-1 rounded-xl'
                                     : 'block w-full mt-1 sm:mt-2 border-[#bebebe] bg-[#bebebe] border-0 rounded-xl'" type="text"
                                     name="category" autofocus autocomplete="category">
@@ -271,7 +271,7 @@ new #[Layout('layouts.app')] class extends Component {
                                     <x-input-label :value="__('Description')"
                                         class="text-gray-500 font-extrabold text-[15px] sm:text-[17px]"
                                         for="description" />
-                                    <x-textarea-input wire:model.live="description" :class="$errors->get('description')
+                                    <x-textarea-input wire:model="description" :class="$errors->get('description')
                                         ? 'w-full ring-1 border-0 ring-red-600 px-2 py-1 mt-1 sm:mt-2 bg-[#bebebe] rounded-xl text-black h-20 sm:h-24 md:h-28 scrollbar-none'
                                         : 'w-full px-2 py-1 mt-1 sm:mt-2 bg-[#bebebe] border-0 rounded-xl text-black h-20 sm:h-24 md:h-28 scrollbar-none'"
                                         id="description"></x-textarea-input>
@@ -328,7 +328,7 @@ new #[Layout('layouts.app')] class extends Component {
                             <div class="grid content-start justify-center space-y-1 text-center sm:space-y-2">
                                 <x-mary-file omit-error="true"
                                     class="relative grid items-center w-24 h-24 mx-auto xs:w-28 xs:h-28 sm:w-32 sm:h-32 md:w-36 md:h-36 lg:w-40 lg:h-40 group"
-                                    change-text="Upload Front View" wire:model.live="frontView"
+                                    change-text="Upload Front View" wire:model="frontView"
                                     accept="image/png, image/jpeg, image/jpg">
                                     <!-- Responsive Image Container -->
 
@@ -350,7 +350,7 @@ new #[Layout('layouts.app')] class extends Component {
 
                                 <x-mary-file omit-error="true"
                                     class="relative grid items-center w-24 h-24 mx-auto xs:w-28 xs:h-28 sm:w-32 sm:h-32 md:w-36 md:h-36 lg:w-40 lg:h-40 group"
-                                    change-text="Upload Back View" wire:model.live="backView"
+                                    change-text="Upload Back View" wire:model="backView"
                                     accept="image/png, image/jpeg, image/jpg">
 
                                     <img class="object-cover w-full h-full rounded-xl aspect-square"
@@ -390,7 +390,7 @@ new #[Layout('layouts.app')] class extends Component {
                                 <label
                                     title="Upload Print file ({{ config('twellr.printable_stack_format', 'Allowed Formats') }})">
                                     <input class="hidden" type="file" accept="*"
-                                        wire:model.live="printUpload" name="printable_stack" id="printable_stack">
+                                        wire:model="printUpload" name="printable_stack" id="printable_stack">
 
                                     <div
                                         class="relative w-24 h-24 mx-auto xs:w-28 xs:h-28 sm:w-32 sm:h-32 md:w-36 md:h-36 lg:w-40 lg:h-40 group">
