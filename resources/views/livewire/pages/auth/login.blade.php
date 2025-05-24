@@ -24,7 +24,7 @@ new #[Layout('layouts.guest')] class extends Component {
         ]);
         $emailVerified = User::where('email', '=', $this->form->email)->value('email_verified_at');
 
-        if (empty($emailVerified)) {
+        if (is_null($emailVerified)) {
             $user = User::where('email', '=', $this->form->email)->first();
 
             $otp = Otp::generate($this->form->email);

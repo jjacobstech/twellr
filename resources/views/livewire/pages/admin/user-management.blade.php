@@ -237,8 +237,17 @@ $save = function () {
                                         <span class="text-xs">{{ $user->email ?? '' }}</span>
                                     </td>
                                     <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
-                                        <img src="{{ $user->avatar ? asset('uploads/avatar/' . $user->avatar) : asset('assets/icons-user.png') }}"
-                                            alt="Profile Photo" class="w-10 h-10 rounded-full">
+                                        @if (!empty($user->avatar) && str_contains($user->avatar, 'https://'))
+                                        <x-bladewind.avatar class="ring-0 border-0 aspect-square" size="medium" :image="url($user->avatar) " />
+                                    @else
+                                        @if (auth()->user()->avatar)
+                                            <x-bladewind.avatar class="ring-0  border-0 " size="medium"
+                                                image="{{ asset('uploads/avatar/' . auth()->user()->avatar) }}" />
+                                        @else
+                                            <x-bladewind.avatar class="ring-0 border-0" size="medium" image="{{ asset('assets/icons-user.png') }}" />
+                                        @endif
+                                    @endif
+
                                     </td>
                                     <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
                                         {{ $user->referral_link ?? 'N/A' }}

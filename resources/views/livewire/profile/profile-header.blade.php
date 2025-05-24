@@ -124,9 +124,9 @@ new class extends Component {
             class="rounded-[14px] bg-no-repeat bg-cover justify-center items-center w-full min-h-[250px]">
             <div class="relative flex justify-center w-full">
 
-                <img class="absolute z-10 object-cover {{ (!empty(Auth::user()->avatar) && str_contains(Auth::user()->avatar, 'https://')) ? 'aspect-square' : '' }} w-20 h-20 mt-20 rounded-full md:w-40 md:h-40 md:mt-28"
-     src="@if(!empty(Auth::user()->avatar) && str_contains(Auth::user()->avatar, 'https://')){{ Auth::user()->avatar }}@elseif(!empty(Auth::user()->avatar)){{ asset('uploads/avatar/' . Auth::user()->avatar) }}@else{{ asset('assets/icons-user.png') }}@endif"
-     alt="{{ Auth::user()->name }}" />
+                <img class="absolute z-10 object-cover {{ !empty(Auth::user()->avatar) && str_contains(Auth::user()->avatar, 'https://') ? 'aspect-square' : '' }} w-20 h-20 mt-20 rounded-full md:w-40 md:h-40 md:mt-28"
+                    src="@if (!empty(Auth::user()->avatar) && str_contains(Auth::user()->avatar, 'https://')) {{ Auth::user()->avatar }}@elseif(!empty(Auth::user()->avatar)){{ asset('uploads/avatar/' . Auth::user()->avatar) }}@else{{ asset('assets/icons-user.png') }} @endif"
+                    alt="{{ Auth::user()->name }}" />
             </div>
             <div
                 class="mt-28 md:py-9 w-100 bg-white h-full rounded-[14px] md:mt-[12rem] border-0 text-center items-center justify-center grid">

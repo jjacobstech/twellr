@@ -54,7 +54,7 @@ new #[Layout('layouts.guest')] class extends Component {
                     'notify_purchase' => $validated['role'] == 'creative' ? 'yes' : 'no',
                     'password' => $validated['password'],
                     'role' => $validated['role'],
-                    'email_verified at' => now(),
+                    'email_verified_at' => now(),
                 ])),
             ),
         );
