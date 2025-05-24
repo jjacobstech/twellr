@@ -163,7 +163,7 @@ new class extends Component {
                             class="text-golden text-sm sm:text-base md:text-lg lg:text-xl"
                             name="creative-rating" />
 
-                        <span class=" text-center text-white rounded-full bg-navy-blue font-semibold
+                        <span class="inline-flex justify-center text-center text-white rounded-full bg-navy-blue font-semibold
                                    px-2 py-1 text-xs leading-4 
                                    sm:px-3 sm:text-sm sm:leading-5 
                                    md:px-3 md:text-sm md:leading-5 
