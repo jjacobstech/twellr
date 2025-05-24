@@ -132,7 +132,7 @@ new class extends Component {
         <div style="background-image: url('@if (empty(Auth::user()->cover)) {{ asset('assets/pexels-solliefoto-298863.jpg') }}@else{{ asset('uploads/cover/' . Auth::user()->cover) }} @endif')"
             class="rounded-[14px] bg-no-repeat bg-cover bg-center justify-center items-center w-full 
                    mt-4 sm:mt-8 md:mt-12 lg:mt-16 xl:mt-20 
-                   min-h-[180px] sm:min-h-[200px] md:min-h-[220px] lg:min-h-[250px] xl:min-h-[280px]">
+                   min-h-[180px] sm:min-h-[200px] md:min-h-[220px] lg:min-h-[250px] xl:min-h-[280px] pt-1">
             
             <div class="relative flex justify-center w-full">
                 <img class="absolute z-10 object-cover {{ !empty(Auth::user()->avatar) && str_contains(Auth::user()->avatar, 'https://') ? 'aspect-square' : '' }} 
@@ -146,18 +146,18 @@ new class extends Component {
                     alt="{{ Auth::user()->name }}" />
             </div>
             
-            <div class="w-full bg-white h-[50%] rounded-[14px] border-0 text-center items-center justify-center grid
-                      mt-28 py-4 px-4 
+            <div class="w-full bg-white h-full rounded-[14px] border-0 text-center items-center justify-center grid
+                      mt-20 px-4 
                       sm:mt-20 sm:py-6 sm:px-6 
                       md:mt-24 md:py-8 md:px-8 
                       lg:mt-28 lg:py-9 lg:px-10 
                       xl:mt-48 xl:py-9 xl:px-12">
                 
                 @if (Auth::user()->isCreative())
-                    <div class="flex flex-col items-center justify-center space-y-2 
-                               mt-6 sm:mt-8 md:mt-10 lg:mt-12 xl:mt-16">
+                    <div class="grid items-center justify-center
+                                sm:mt-8 md:mt-10 lg:mt-12 xl:mt-16 space-y-3">
                         <x-bladewind.rating rating="{{ $rating }}" 
-                            size="tiny" 
+                            size="small" 
                             class="text-golden text-sm sm:text-base md:text-lg lg:text-xl"
                             name="creative-rating" />
 
