@@ -199,7 +199,7 @@ new #[Layout('layouts.app')] class extends Component {
 
         <!-- Main Content Area - Takes remaining space -->
         <div
-            class="w-full md:w-[87%] px-2 sm:px-4 text-xl bg-white h-screen md:h-full scrollbar-none md:pb-0 py-2 pb-44">
+            class="w-full md:w-[87%] px-2 sm:px-4 text-xl bg-white h-screen md:h-full scrollbar-none md:pb-0 pb-40">
             <!-- Background Container - Height adapts to content -->
             <div style="background-image: url('{{ asset('assets/blurred.png') }}')"
                 class="relative flex flex-row justify-center text-white bg-no-repeat my-2 bg-cover rounded-lg min-h-[500px] h-100 scrollbar-none ">
@@ -214,14 +214,14 @@ new #[Layout('layouts.app')] class extends Component {
 
                 <!-- Form Container - Adapts width based on screen size and state -->
                 <form x-transition:enter.duration.500ms x-cloak="display:none"
-                    :class="uploadModal ? 'w-full p-2 sm:p-4 md:p-8 lg:p-12' :
-                        'w-[95%] sm:w-[90%] md:w-[55%] lg:w-[40%] bg-[#dedddb] rounded-[20px] sm:rounded-[30px] md:rounded-[40px] my-4 sm:my-4'"
+                    :class="uploadModal ? 'w-full p-2 sm:p-4 md:p-8 lg:p-12 md:my-2' :
+                        'w-[95%] sm:w-[90%] md:w-[55%] lg:w-[40%] bg-[#dedddb] rounded-[20px] sm:rounded-[30px] md:rounded-[40px] my-4 sm:my-8'"
                     wire:submit="uploadProduct" enctype="multipart/form-data">
                     @csrf
 
                     <!-- Main Form View -->
                     <div x-show="form" x-transition:enter.duration.700ms>
-                        <div class="flex flex-col h-full px-3 py-4 sm:px-6 md:px-10 sm:py-6 md:py-7">
+                        <div class="flex flex-col h-full px-3 py-4 sm:px-6 md:px-10 sm:py-6 md:py-3 md:pt-7">
 
                             <!-- Name and Price Row - Always stack on mobile, side by side on larger screens -->
                             <div class="flex flex-col sm:flex-row sm:gap-4 md:gap-6">
