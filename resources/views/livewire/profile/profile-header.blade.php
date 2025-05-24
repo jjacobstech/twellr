@@ -27,6 +27,7 @@ new class extends Component {
     public $designs = null;
     public $rating_status = '';
     public $statuses = [
+      	'0' => 'Newbie',
         '1' => 'Rookie',
         '2' => 'Notched',
         '3' => 'Dazzler',
@@ -154,19 +155,21 @@ new class extends Component {
                       xl:mt-48 xl:py-9 xl:px-12">
                 
                 @if (Auth::user()->isCreative())
-                    <div class="grid items-center justify-center
+             
+               <div class="grid items-center justify-center
                                 sm:mt-8 md:mt-10 lg:mt-12 xl:mt-16 space-y-3">
                         <x-bladewind.rating rating="{{ $rating }}" 
                             size="small" 
                             class="text-golden text-sm sm:text-base md:text-lg lg:text-xl"
                             name="creative-rating" />
 
-                        <span class="inline-flex text-center text-white rounded-full bg-navy-blue font-semibold
+                        <span class=" text-center text-white rounded-full bg-navy-blue font-semibold
                                    px-2 py-1 text-xs leading-4 
                                    sm:px-3 sm:text-sm sm:leading-5 
                                    md:px-3 md:text-sm md:leading-5 
                                    lg:px-4 lg:text-base lg:leading-6">
                             @switch($rating)
+                         		
                                 @case(1)
                                     {{ $statuses[$rating] }}
                                 @break
@@ -183,6 +186,7 @@ new class extends Component {
                                     {{ $statuses[$rating] }}
                                 @break
                                 @default
+                          			{{ $statuses[$rating] }}
                             @endswitch
                         </span>
                     </div>
@@ -190,7 +194,9 @@ new class extends Component {
                              my-2 text-sm sm:text-base md:text-lg lg:text-2xl xl:text-3xl">
                         {{ Auth::user()->firstname }} {{ Auth::user()->lastname }}
                     </h1>
-                @else
+
+              
+                         @else
                     <h1 class="font-bold text-gray-500 leading-tight break-words px-2
                              my-8 text-sm 
                              sm:my-10 sm:text-base 
