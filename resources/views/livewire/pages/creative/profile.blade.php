@@ -90,7 +90,7 @@ $toggleFollow = action(function () {
 ?>
 <div class="w-[100%] overflow-y-scroll px-8 md:px-16 pb-20 h-screen bg-gray-100 scrollbar-none">
     <!-- Profile Cover Section -->
-    <div class="w-full grid items-center">
+    <div class="w-full ">
         <div style="background-image: url('@if (empty($user->cover)) {{ asset('assets/pexels-solliefoto-298863.jpg') }}@else{{ asset('uploads/cover/' . $user->cover) }} @endif')"
             class="rounded-[14px] bg-no-repeat bg-cover bg-center justify-center items-center w-full
                    mt-4 sm:mt-8 md:mt-12 lg:mt-16 xl:mt-20
@@ -166,7 +166,7 @@ $toggleFollow = action(function () {
             </div>
         </div>
             @if (Auth::check() && Auth::id() !== $user->id)
-                    <div class="mt-2 mb-4">
+                    <div class="mt-2 mb-4 w-full flex justify-center">
                         <button wire:click="toggleFollow"
                             class="px-6 py-2 transition-all duration-300 rounded-full {{ $isFollowing ? 'bg-gray-200 text-gray-700' : 'bg-golden text-white' }} hover:opacity-90">
                             {{ $isFollowing ? 'Following' : 'Follow' }}
