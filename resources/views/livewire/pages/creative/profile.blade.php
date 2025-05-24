@@ -93,7 +93,7 @@ $toggleFollow = action(function () {
         <div style="background-image: url('@if (empty($user->cover)) {{ asset('assets/pexels-solliefoto-298863.jpg') }}@else{{ asset('uploads/cover/' . $user->cover) }} @endif')"
             class="rounded-[14px] bg-no-repeat bg-cover justify-center items-center w-full min-h-[250px]">
             <div class="relative flex justify-center w-full bg-white">
-                <img class="w-20 h-20 md:w-40 md:h-40 rounded-full absolute md:mt-28 z-10 mt-14 border-[#bebebe] border-[1px] object-cover"
+                <img class="w-20 h-20 md:w-40 md:h-40 rounded-full absolute md:mt-28 z-50 mt-14 border-[#bebebe] border-[1px] object-cover"
                     src="@if (empty($user->avatar)) {{ asset('assets/icons-user.png') }}
                         @else
                         {{ asset('uploads/avatar/' . $user->avatar) }} @endif"
@@ -101,7 +101,7 @@ $toggleFollow = action(function () {
             </div>
             <div
                 class="mt-24 md:py-9 w-100 bg-white rounded-[14px] md:mt-[12rem] text-center items-center justify-center grid">
-               <div class="mt-12 md:mt-16 flex flex-col items-center justify-center space-y-2">
+               <div class="mt-20  md:mt-16 flex flex-col items-center justify-center space-y-2">
                         <x-bladewind.rating rating="{{ $rating }}" size="medium" class="text-golden"
                             name="creative-rating" />
 
