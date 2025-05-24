@@ -713,5 +713,5 @@ $submitEntry = function () {
 
         </div>
     </div>
-     
+
 </div>

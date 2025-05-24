@@ -558,7 +558,7 @@ $completeCheckout = function () {
                             <x-product-card :$product />
                         @endforeach
                     @else
-                        <div class="py-10 mt-10 text-lg font-medium text-center text-gray-500 col-span-full">
+                        <div class="py-10 mt-10 text-lg font-medium text-center text-gray-500 col-span-full uppercase">
                             No designs available.
                         </div>
                     @endif
@@ -571,7 +571,7 @@ $completeCheckout = function () {
                             <x-product-card :$product />
                         @endforeach
                     @else
-                        <div class="py-10 text-lg font-medium text-center text-gray-500 col-span-full">
+                        <div class="py-10 text-lg font-medium text-center text-gray-500 col-span-full uppercase">
                             No designs available.
                         </div>
                     @endif

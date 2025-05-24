@@ -58,14 +58,10 @@ class AdminSetting extends Model
         'currency_symbol',
         'currency_code',
         'commission_fee',
-        'shipping_fee',
+        'withdrawal_time',
+        'withdrawal_threshold',
         'minimum_rating',
-        'logo_2',
-        'text_logo',
-        'favicon',
-        'maintenance_mode',
-        'vat',
-        'advertisement_status',
-        'currency'
+        'banner_image',
+        'voting'
     ];
 }

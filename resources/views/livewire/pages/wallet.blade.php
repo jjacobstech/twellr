@@ -141,7 +141,7 @@ $withdraw = function () {
 };
 
 ?>
-<div class="h-screen pb-44 overflow-y-scroll bg-white px-7 md:px-20 scrollbar-none" x-data="{
+<div class="h-screen overflow-y-scroll bg-white pb-44 px-7 md:px-20 scrollbar-none" x-data="{
     transactions: true,
     purchases: false,
     setTab(tab) {
@@ -249,7 +249,7 @@ $withdraw = function () {
                                 </td>
                                 <td class="px-4 py-3 text-center">
                                     <span
-                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
                                             {{ $transaction->status === 'pending' ? 'bg-yellow-100 text-yellow-800' : '' }}
                                             {{ $transaction->status === 'processing' ? 'bg-blue-100 text-blue-800' : '' }}
                                             {{ $transaction->status === 'completed' ? 'bg-green-100 text-green-800' : '' }}

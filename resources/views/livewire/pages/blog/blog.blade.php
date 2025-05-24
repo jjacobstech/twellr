@@ -50,15 +50,14 @@ $toggleCategory = function ($id) {
 
 $readMore = function ($id) {
     $this->postView = BlogPost::where('id', '=', $id)->first();
-    $this->postCategory = BlogCategory::where('id',$this->postView->category_id)->first();
+    $this->postCategory = BlogCategory::where('id', $this->postView->category_id)->first();
     $this->view = true;
 };
 
 $close = function () {
     $this->postView = null;
     $this->view = false;
-        $this->postCategory = null;
-
+    $this->postCategory = null;
 };
 
 ?>
@@ -76,7 +75,7 @@ $close = function () {
                         {{ $category->name }}
                     </button>
                 @empty
-                    No Categories
+                    {{-- Empty State --}}
                 @endforelse
                 <button wire:click="resetFilters"
                     class="@if (url()->current() == route('blog')) bg-white @endif text-gray-600 px-3 py-1 rounded-full text-sm shadow-sm border border-gray-200 hover:bg-gray-50 flex-shrink-0">
@@ -100,41 +99,41 @@ $close = function () {
         </div>
 
         <!-- Blog Posts - Main scrollable content -->
-        <div wire:show='!view' class="space-y-6 sm:space-y-8 pb-24 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
 
-            @forelse ($posts as $post)
-                  <div class="flex flex-col md:flex-row bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100 w-full max-w-2xl mx-auto">
-        <div class="aspect-square bg-amber-100 md:w-1/3">
-            <img src="{{ asset('uploads/blog/' . $post->image) }}" alt="{{ $post->title }}"
-                class="w-full h-full object-cover rounded-none" />
-        </div>
-    <div class="w-full md:w-2/3 p-3 bg-gray-50">
-        <h2 class="text-lg font-medium text-gray-700 mb-2">
-            {{ $post->title }}
-        </h2>
-        <p class="text-gray-500 mb-3 text-sm line-clamp-1">
-            {{ $post->content }}
-        </p>
-        <button wire:click='readMore({{ $post->id }})'
-            class="bg-yellow-400 hover:bg-yellow-500 text-white font-medium px-4 py-2 rounded text-sm transition duration-200">
-            READ MORE
-        </button>
-    </div>
-</div>
-
-
-            @empty
+        @forelse ($posts as $post)
+            <div wire:show='!view'
+                class="space-y-6 sm:space-y-8 pb-24 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 <div
-                    class="flex flex-col md:flex-row bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100">
-                    <div class="w-full md:w-2/3 p-4 sm:p-6 bg-gray-50">
-                        <h2 class="text-xl sm:text-2xl font-medium text-gray-700 mb-2 sm:mb-3">No Post
-                            Available</h2>
+                    class="flex flex-col md:flex-row bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100 w-full max-w-2xl mx-auto">
+                    <div class="aspect-square bg-amber-100 md:w-1/3">
+                        <img src="{{ asset('uploads/blog/' . $post->image) }}" alt="{{ $post->title }}"
+                            class="w-full h-full object-cover rounded-none" />
+                    </div>
+                    <div class="w-full md:w-2/3 p-3 bg-gray-50">
+                        <h2 class="text-lg font-medium text-gray-700 mb-2">
+                            {{ $post->title }}
+                        </h2>
+                        <p class="text-gray-500 mb-3 text-sm line-clamp-1">
+                            {{ $post->content }}
+                        </p>
+                        <button wire:click='readMore({{ $post->id }})'
+                            class="bg-yellow-400 hover:bg-yellow-500 text-white font-medium px-4 py-2 rounded text-sm transition duration-200">
+                            READ MORE
+                        </button>
                     </div>
                 </div>
-            @endforelse
+            </div>
+        @empty
+            <div class="flex flex-col md:flex-row bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100">
+                <div class="w-full text-center p-4 sm:p-6 bg-gray-50">
+                    <h2 class="text-xl sm:text-2xl font-medium text-gray-700 mb-2 sm:mb-3">No Post
+                        Available</h2>
+                </div>
+            </div>
+        @endforelse
 
 
-        </div>
+
 
         <!-- Blog Posts View - Individual Blog Post -->
         @if ($postView)
@@ -149,10 +148,10 @@ $close = function () {
                     </div>
 
                     <!-- Featured Image -->
-                   <div class="flex justify-center">
-                         <img src="{{ asset('uploads/blog/' . $postView->image) }}" alt="{{ $postView->title }}"
+                    <div class="flex justify-center">
+                        <img src="{{ asset('uploads/blog/' . $postView->image) }}" alt="{{ $postView->title }}"
                             class=" object-contain h-64 sm:h-96 overflow-hidden rounded-lg shadow-sm mb-8" />
-                       </div>
+                    </div>
 
                     <!-- Post Title -->
                     <h1 class="text-2xl sm:text-4xl font-bold text-gray-800 mb-4">

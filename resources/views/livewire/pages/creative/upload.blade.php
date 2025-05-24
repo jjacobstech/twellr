@@ -208,7 +208,7 @@ new #[Layout('layouts.app')] class extends Component {
                 <div class="absolute z-10 top-2 sm:top-4 left-2 sm:left-4">
                     <img x-show="backButton" x-transition:enter.duration.500ms x-cloak
                         @click="form = true, uploadModal = false, backButton = false"
-                        class="w-10 h-10 transition cursor-pointer sm:w-12 sm:h-12 md:w-16 md:h-16 hover:scale-110"
+                        class="w-10 h-10 transition cursor-pointer sm:w-12 sm:h-12 md:w-12 md:h-12 hover:scale-110"
                         src="{{ asset('assets/back-arrow.png') }}" alt="Back">
                 </div>
 

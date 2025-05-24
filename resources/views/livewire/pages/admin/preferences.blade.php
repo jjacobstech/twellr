@@ -414,15 +414,19 @@ $uploadBanner = function () {
             <div class="p-6 mb-6 bg-white shadow">
                 <h2 class="mb-4 text-xl font-semibold text-gray-700 ">Banner Image Upload </h2>
 
-                <x-mary-file wire:model="bannerImage" class="mb-4" accept="image/*">
-                    <img src="{{ asset('uploads/banner/banner.png') }}" alt="Banner Image"
-                        class="object-cover w-full rounded-lg h-60 aspect-square">
-                </x-mary-file>
+           <div class="flex justify-center w-full">
+            <x-mary-file wire:model="bannerImage" class="mb-4" accept="image/*">
+                <img src="{{ asset('uploads/banner/banner.png') }}" alt="Banner Image"
+                    class="object-cover w-full rounded-lg h-60 aspect-[4/1]">
+            </x-mary-file>
+           </div>
+<div class="flex justify-center">
+    <button wire:click="uploadBanner"
+    class="px-4 py-2 mt-2 text-sm text-white bg-green-600 rounded hover:bg-blue-700">
+    Upload
+</button>
+</div>
 
-                <button wire:click="uploadBanner"
-                    class="px-4 py-2 mt-2 text-sm text-white bg-blue-600 rounded hover:bg-blue-700">
-                    Upload
-                </button>
 
             </div>
 
@@ -448,7 +452,7 @@ $uploadBanner = function () {
                         @enderror
 
                         <button wire:click="updateCommissionRate"
-                            class="px-4 py-2 mt-2 text-sm text-white bg-blue-600 rounded hover:bg-blue-700">
+                            class="px-4 py-2 mt-2 text-sm text-white bg-green-600 rounded hover:bg-blue-700">
                             Update Commission Rate
                         </button>
                     </div>
@@ -467,7 +471,7 @@ $uploadBanner = function () {
                     @enderror
 
                     <button wire:click="updateCurrency"
-                        class="px-4 py-2 mt-2 text-sm text-white bg-blue-600 rounded hover:bg-blue-700">
+                        class="px-4 py-2 mt-2 text-sm text-white bg-green-600 rounded hover:bg-blue-700">
                         Update System Currency
                     </button>
                 </div>
