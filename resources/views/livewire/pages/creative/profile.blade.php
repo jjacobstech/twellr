@@ -24,6 +24,7 @@ state([
     'designs' => [],
     'isFollowing' => false,
     'statuses' => [
+        '0' => 'Newbie',
         '1' => 'Rookie',
         '2' => 'Notched',
         '3' => 'Dazzler',
