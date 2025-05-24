@@ -1,6 +1,31 @@
 <x-app-layout>
 
-    <div class="h-screen bg-white sm:px-8 lg:px-16">
+    <div class="h-screen bg-white sm:px-8 lg:px-16" x-data="{
+
+ chatLoaded: false,
+
+    support() {
+        if (this.chatLoaded) return;
+
+        window.Tawk_API = window.Tawk_API || {};
+        window.Tawk_LoadStart = new Date();
+
+        const script = document.createElement('script');
+        script.async = true;
+        script.src = 'https://embed.tawk.to/67db0589c029cf190fdd8e20/1imnor8sp';
+        script.charset = 'UTF-8';
+        script.setAttribute('crossorigin', '*');
+
+        script.onload = () => {
+            this.chatLoaded = true;
+        };
+
+        document.head.appendChild(script);
+    }
+
+    }">
+
+    <p class="text-black" wire:loading >Loading . . . </p>
         <div class="w-full max-w-screen-xl px-4 mx-auto sm:px-6 lg:px-8">
             <header class="py-4 sm:py-6 md:py-2">
                 <h2 class="text-2xl font-extrabold text-gray-500 sm:text-3xl">
@@ -22,7 +47,7 @@
                 </div>
 
                 <div class="flex justify-center w-full sm:justify-start">
-                    <x-bladewind.button id="customer_support"
+                    <x-bladewind.button @click="support"
                         class="flex items-center justify-center px-4 py-2 font-bold text-white uppercase transition-colors rounded-lg sm:py-3 sm:px-5 bg-golden hover:bg-golden/90 sm:rounded-xl focus:bg-navy-blue"
                         type="bg-golden">
                         <span class="flex items-center">
@@ -34,6 +59,6 @@
             </div>
 
         </div>
-     
+
     </div>
 </x-app-layout>

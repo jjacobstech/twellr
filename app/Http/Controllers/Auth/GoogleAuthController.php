@@ -26,6 +26,7 @@ class GoogleAuthController extends Controller
         $avatar = $googleUser->avatar;
         $email = $googleUser->email;
         $google_id = $googleUser->id;
+        
 
         $user = User::where('google_id', $google_id)->first();
 

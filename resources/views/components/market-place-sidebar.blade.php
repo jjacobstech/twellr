@@ -2,7 +2,30 @@
 
 <!-- Desktop Sidebar -->
 <div id="sidebar" x-cloak="display: none"
-     class="relative hidden transition-transform duration-300 ease-in-out bg-white shadow-xl sm:hidden lg:block lg:w-[20%] h-full">
+     class="relative hidden transition-transform duration-300 ease-in-out bg-white shadow-xl sm:hidden lg:block lg:w-[20%] h-full" x-data="{
+
+     chatLoaded: false,
+
+        support() {
+            if (this.chatLoaded) return;
+
+            window.Tawk_API = window.Tawk_API || {};
+            window.Tawk_LoadStart = new Date();
+
+            const script = document.createElement('script');
+            script.async = true;
+            script.src = 'https://embed.tawk.to/67db0589c029cf190fdd8e20/1imnor8sp';
+            script.charset = 'UTF-8';
+            script.setAttribute('crossorigin', '*');
+
+            script.onload = () => {
+                this.chatLoaded = true;
+            };
+
+            document.head.appendChild(script);
+        }
+
+        }">
     <div class="px-5 py-3 text-2xl font-bold border-b-2 text-golden">
         All Categories
     </div>
@@ -38,7 +61,7 @@
 
     <!-- Contact Button -->
     <div class="px-5 mt-6">
-        <x-bladewind.button id="customer_support"
+        <x-bladewind.button @click="support"
             color="w-full px-4 py-3 font-bold uppercase transition duration-200 bg-navy-blue text-white hover:bg-golden hover:border-golden">
             Contact Our In-House Designer
         </x-bladewind.button>
@@ -50,7 +73,30 @@
 
 <!-- Mobile Bar -->
 <div id="mobilebar"
-     class="fixed z-10 grid items-center justify-between w-full grid-cols-3 gap-3 px-4 py-1 bg-white shadow-sm lg:hidden">
+     class="fixed z-10 grid items-center justify-between w-full grid-cols-3 gap-3 px-4 py-1 bg-white shadow-sm lg:hidden" x-data="{
+
+     chatLoaded: false,
+
+        support() {
+            if (this.chatLoaded) return;
+
+            window.Tawk_API = window.Tawk_API || {};
+            window.Tawk_LoadStart = new Date();
+
+            const script = document.createElement('script');
+            script.async = true;
+            script.src = 'https://embed.tawk.to/67db0589c029cf190fdd8e20/1imnor8sp';
+            script.charset = 'UTF-8';
+            script.setAttribute('crossorigin', '*');
+
+            script.onload = () => {
+                this.chatLoaded = true;
+            };
+
+            document.head.appendChild(script);
+        }
+
+        }">
     <select @change="$wire.filter($event.target.value)"
             class="px-3 py-2 text-sm text-gray-700 border border-gray-400 rounded-md focus:ring-navy-blue focus:border-navy-blue">
         <option value="">Filter by Category</option>
@@ -67,7 +113,7 @@
         @endforeach
     </select>
 
-    <x-bladewind.button id="customer_support"
+    <x-bladewind.button @click="support"
         color="w-full px-3 py-1  uppercase transition duration-200 bg-navy-blue text-white hover:bg-golden hover:border-golden">
     In-House Designer
     </x-bladewind.button>

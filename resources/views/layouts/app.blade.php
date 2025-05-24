@@ -51,7 +51,7 @@
             <x-footer />
         </div>
     </div>
- <!--Start of Tawk.to Script
+ {{-- <!--Start of Tawk.to Script
     -->
         <script type="text/javascript">
             let customerSupport = document.getElementById('customer_support');
@@ -73,7 +73,7 @@
                 })();
             });
         </script>
-        <!--End of Tawk.to Script-->
+        <!--End of Tawk.to Script--> --}}
     <script src="{{ asset('vendor/bladewind/js/helpers.js') }}"></script>
 </body>
 
