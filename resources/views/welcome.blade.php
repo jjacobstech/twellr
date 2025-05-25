@@ -17,11 +17,11 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="min-h-screen overflow-y-scroll font-sans bg-gray-100 scrollbar-none">
+<body class="min-h-screen font-sans bg-gray-100 scrollbar-track-gray-200 scrollbar-thumb-navy-blue">
 
     <livewire:welcome.navigation />
 
-    <div class="px-4 py-10 pb-20 mt-1 bg-white sm:px-6 lg:px-8 scrollbar-none">
+    <div class="px-4 py-10 pb-20 mt-1 bg-white sm:px-6 lg:px-8 ">
         <!-- Hero Section -->
         <div class="mb-10 text-center">
             <h1 class="mb-3 text-3xl font-bold text-gray-800 sm:text-4xl">Stay Creative. Monetize your designs.</h1>
@@ -55,6 +55,12 @@
         <div class="mt-10">
             <livewire:welcome.explore-section />
         </div>
+
+        <!-- Review Section -->
+        <div >
+            <livewire:welcome.reviews />
+        </div>
+
 
         <!-- Footer -->
         <div class="pt-10 mt-10 border-t border-gray-200">

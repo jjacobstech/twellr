@@ -65,7 +65,7 @@ state([
                     @if (!empty($section->isPhoto))
                         <div class="shadow-md rounded-xl">
                             <img src="{{ asset('uploads/contest/' . $item->photo) }}" alt=""
-                                class="object-cover w-full h-full transition duration-150 ease-in-out rounded-xl aspect-square md:h-20 md:w-28 lg:h-32 lg:w-40 hover:scale-110" />
+                                class="object-cover w-full h-full transition duration-150 ease-in-out rounded-xl aspect-square md:h-20 shadow-md md:w-28 lg:h-32 lg:w-40 hover:scale-110" />
                         </div>
                     @else
                         <x-explore-card wire:navigate :product="$item" />
