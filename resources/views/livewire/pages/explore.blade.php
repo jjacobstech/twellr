@@ -44,7 +44,7 @@ state([
         (object) [
             'title' => 'Featured Designs',
             'path' => 'market.place',
-            'filter' => 'featured-desgns',
+            'filter' => 'featured-designs',
             'items' => Product::inRandomOrder()->take(7)->get(),
         ],
     ],

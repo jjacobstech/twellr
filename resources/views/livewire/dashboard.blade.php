@@ -100,15 +100,11 @@ state(['banner' => fn() => AdminSetting::first()->banner_image]);
 
                         <!-- Secondary Action (Optional) -->
                         <div class="mt-4">
-                            @if (Auth::user()->isCreative())
+
                                 <a href="{{ route('support') }}" class="text-sm text-gray-500 hover:text-gray-700 transition-colors duration-200">
                                     Need help getting started? View our guide →
                                 </a>
-                            @else
-                                <a href="{{ route('categories') }}" class="text-sm text-gray-500 hover:text-gray-700 transition-colors duration-200">
-                                    View all categories →
-                                </a>
-                            @endif
+                        
                         </div>
                     </div>
                 @endif
