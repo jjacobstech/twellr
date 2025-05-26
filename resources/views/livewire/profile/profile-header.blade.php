@@ -202,8 +202,8 @@ copyReferralLink(){
                          lg:w-32 lg:h-32 lg:mt-20
                          xl:w-40 xl:h-40 xl:mt-28
                          rounded-full border-2 sm:border-3 md:border-4 border-white shadow-lg "
-                        id="lozad"
-                        data-src="@if (!empty(Auth::user()->avatar) && str_contains(Auth::user()->avatar, 'https://')) {{ Auth::user()->avatar }}@elseif(!empty(Auth::user()->avatar)){{ asset('uploads/avatar/' . Auth::user()->avatar) }}@else{{ asset('assets/icons-user.png') }} @endif"
+
+                        src="@if (!empty(Auth::user()->avatar) && str_contains(Auth::user()->avatar, 'https://')) {{ Auth::user()->avatar }}@elseif(!empty(Auth::user()->avatar)){{ asset('uploads/avatar/' . Auth::user()->avatar) }}@else{{ asset('assets/icons-user.png') }} @endif"
                         alt="{{ Auth::user()->name }}" />
                 </div>
 
