@@ -158,7 +158,7 @@ $close = function () {
 
             <!-- Desktop: 4 columns, card grid -->
             <div class="hidden lg:block px-6 xl:px-8">
-                <div class="grid grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
+                <div class="grid grid-cols-4 xl:grid-cols-6 2xl:grid-cols-8 gap-6">
                     @foreach($posts as $post)
                         <div class="bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200">
                             <!-- Desktop: Image on top -->
