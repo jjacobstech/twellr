@@ -18,6 +18,14 @@
 
                 </div>
 
+                <div class="flex px-5 pb-4 space-x-2">
+                    <x-bladewind.button wire:click="submit({{ $design->id }})" size="small" radius="medium"
+                        type="bg-navy-blue hover:bg-golden focus:ring-0" button_text_css="text-white" class="flex-1">
+                            Comments
+                    </x-bladewind.button>
+
+                </div>
+
         </div>
 
         <!-- Price tag overlay - always visible -->
@@ -52,6 +60,19 @@
                             type="bg-navy-blue hover:bg-golden focus:ring-0 px-1" button_text_css="text-white"
                             class="md:w-full">
                           {{ $design->inDesignFest() ? "Submitted" : "Submit" }}
+                        </x-bladewind.button>
+                    </div>
+
+            </div>
+            <!-- Comments button -->
+            <div class="flex items-center justify-between gap-1 mt-2 mb-2">
+
+
+                    <div class="flex-shrink-0">
+                        <x-bladewind.button wire:click="submit({{ $design->id }})" size="tiny" radius="small"
+                            type="bg-navy-blue hover:bg-golden focus:ring-0 px-1" button_text_css="text-white"
+                            class="md:w-full">
+                        Comments
                         </x-bladewind.button>
                     </div>
 

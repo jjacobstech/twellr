@@ -105,9 +105,36 @@ new class extends Component {
     }
 };
 ?>
-<div class="w-full overflow-y-scroll mb-20 scrollbar-none
+<div x-data='{
+copyReferralLink(){
+        const copyText = document.getElementById("referral_link");
+        copyText.select();
+        copyText.setSelectionRange(0, 99999); // For mobile devices
+
+        navigator.clipboard.writeText(copyText.value).then(() => {
+            // Visual feedback
+            const copyButton = document.getElementById("copyButton");
+            const originalText = copyButton.innerText;
+            const originalBg = copyButton.classList.contains("bg-golden");
+
+            copyButton.innerText = "Copied!";
+            copyButton.classList.remove("bg-golden");
+            copyButton.classList.add("bg-green-500");
+            copyButton.classList.add("text-white");
+
+            setTimeout(() => {
+                copyButton.innerText = originalText;
+                copyButton.classList.remove("bg-green-500");
+                copyButton.classList.remove("text-white");
+                if (originalBg) copyButton.classList.add("bg-golden");
+            }, 2000);
+        });
+    }
+}'
+    class="w-full overflow-y-scroll mb-20 scrollbar-none
            px-2 sm:px-4 md:px-8 lg:px-12 xl:px-16">
 
+<div class="hidden">
     <!-- Header -->
     <header class="flex items-center justify-between w-full">
         <h2
@@ -169,7 +196,6 @@ new class extends Component {
                                    md:px-3 md:text-sm md:leading-5
                                    lg:px-4 lg:text-base lg:leading-6">
                             @switch($rating)
-                                
                                 @case(1)
                                     {{ $statuses[$rating] }}
                                 @break
@@ -305,7 +331,7 @@ new class extends Component {
                         class="font-bold text-gray-700 transition-all duration-200 rounded-r-lg bg-golden hover:bg-navy-blue hover:text-white focus:outline-none
                                px-4 py-2 sm:px-6 sm:py-3
                                text-xs sm:text-sm md:text-base"
-                        type="button" onclick="copyReferralLink()">
+                        type="button" @click="copyReferralLink()">
                         Copy
                     </button>
                 </div>
@@ -456,29 +482,59 @@ new class extends Component {
         </div>
     @endif
 </div>
-<script>
-    function copyReferralLink() {
-        const copyText = document.getElementById("referral_link");
-        copyText.select();
-        copyText.setSelectionRange(0, 99999); // For mobile devices
 
-        navigator.clipboard.writeText(copyText.value).then(() => {
-            // Visual feedback
-            const copyButton = document.getElementById("copyButton");
-            const originalText = copyButton.innerText;
-            const originalBg = copyButton.classList.contains('bg-golden');
+      <!-- Comment Section (Creative Users Only) -->
+    <section class=" z-50 inset-0 bg-black/40  rounded-lg border-2 border-purple-600 p-4 my-8 mx-auto max-w-xl">
+        <h3 class="font-os text-lg font-bold">Comments</h3>
 
-            copyButton.innerText = "Copied!";
-            copyButton.classList.remove('bg-golden');
-            copyButton.classList.add('bg-green-500');
-            copyButton.classList.add('text-white');
+        <!-- Sample Comment 1 -->
+        <div class="flex mt-4">
+            <div class="w-14 h-14 rounded-full bg-purple-400/50 flex-shrink-0 flex items-center justify-center">
+                <img class="h-12 w-12 rounded-full object-cover" src="https://randomuser.me/api/portraits/men/43.jpg"
+                    alt="">
+            </div>
 
-            setTimeout(() => {
-                copyButton.innerText = originalText;
-                copyButton.classList.remove('bg-green-500');
-                copyButton.classList.remove('text-white');
-                if (originalBg) copyButton.classList.add('bg-golden');
-            }, 2000);
-        });
-    }
-</script>
+            <div class="ml-3">
+                <div class="font-medium text-purple-800">John Doe</div>
+                <div class="text-gray-600">Posted on 2023-10-02 14:30</div>
+                <div class="mt-2 text-purple-800">This is a sample comment. Lorem ipsum dolor sit amet, consectetur
+                    adipiscing elit.
+                </div>
+            </div>
+        </div>
+
+        <!-- Sample Comment 2 -->
+        <div class="flex mt-4">
+            <div class="w-14 h-14 rounded-full bg-purple-400/50 flex-shrink-0 flex items-center justify-center">
+                <img class="h-12 w-12 rounded-full object-cover"
+                    src="https://randomuser.me/api/portraits/women/43.jpg" alt="">
+            </div>
+            <div class="ml-3">
+                <div class="font-medium text-purple-800">Jane Smith</div>
+                <div class="text-gray-600">Posted on 2023-10-02 15:15</div>
+                <div class="mt-2 text-purple-800">Another sample comment. Sed quis velit auctor, bibendum dolor in,
+                    accumsan tellus.
+                </div>
+            </div>
+        </div>
+
+        <!-- Comment Form -->
+        <form class="mt-4">
+            <div class="mb-4">
+                <label for="name" class="block text-purple-800 font-medium">Name</label>
+                <input type="text" id="name" name="name"
+                    class="border-2 border-purple-600 p-2 w-full rounded" required>
+            </div>
+
+            <div class="mb-4">
+                <label for="comment" class="block text-purple-800 font-medium">Comment</label>
+                <textarea id="comment" name="comment" class="border-2 border-purple-600 p-2 w-full rounded" required></textarea>
+            </div>
+
+            <button type="submit"
+                class="bg-purple-700 text-white font-medium py-2 px-4 rounded hover:bg-purple-600">Post
+                Comment
+            </button>
+        </form>
+    </section>
+</div>
