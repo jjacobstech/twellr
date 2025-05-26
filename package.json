@@ -18,6 +18,7 @@
         "vite": "^6.2.0"
     },
     "dependencies": {
+        "lozad": "^1.16.0",
         "tailwind-scrollbar": "^3.0.0"
     }
 }

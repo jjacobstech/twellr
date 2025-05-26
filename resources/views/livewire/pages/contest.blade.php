@@ -434,12 +434,11 @@ $submitEntry = function () {
                                 <!-- Left: Image Section -->
                                 <div
                                     class="w-full h-64 overflow-y-scroll bg-gray-100 sm:h-80 scrollbar-none lg:h-full lg:w-3/4">
-                                    <div
-                                        class="scrollbar-none relative flex items-center justify-center w-full bg-black min-h-full ">
+
+                                    <div class="flex items-center justify-center w-full h-full">
                                         <img loading="lazy"
-                                            src="{{ asset('uploads/products/design-stack/' . $view->side_view) }}"
-                                            alt="{{ $view->name }}"
-                                            class="object-cover max-w-full scrollbar-none max-h-full" />
+                                            src="@if ($view) {{ asset('uploads/products/design-stack/' . $view->front_view) }} @endif"
+                                            alt="front view" class="object-contain max-w-full max-h-full" />
                                     </div>
                                 </div>
 

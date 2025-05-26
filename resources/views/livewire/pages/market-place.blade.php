@@ -600,7 +600,7 @@ $completeCheckout = function () {
                 </div>
 
                 <div x-data="{ isOpen: @entangle('modal').live }" x-show="isOpen" x-cloak='display:none' x-transition.opacity
-                    class="fixed inset-0 z-50 w-screen h-full px-5 py-16 sm:py-12 md:py-12 md:px-20 lg:py-12 bg-black/40 backdrop-blur-sm pb-26">
+                    class="fixed inset-0 z-50 w-screen h-full px-5 py-16 sm:py-12 md:py-12 md:px-20 lg:py-12 bg-black/40 backdrop-blur-sm pb-26 ">
                     <div class="grid h-full lg:flex justify-evenly rounded-xl md:flex-row"
                         @click.away="$wire.modal = false">
                         @if ($order)
@@ -804,13 +804,13 @@ $completeCheckout = function () {
 
                                                         </div>
                                                     </div>
-                                                    <div class="chat-header">
+                                                    <div class="chat-header grid">
                                                         <span
                                                             class="text-gray-500">{{ $comment->user->firstname . ' ' . $comment->user->lastname }}</span>
-                                                        <time class="text-xs opacity-50">
-                                                            {{ Carbon::parse($comment->created_at)->format('D-M-Y') }}</time>
+                                                        <time class="text-xs text-black">
+                                                            {{ Carbon::parse($comment->created_at)->diffForHumans() }}</time>
                                                     </div>
-                                                    <div class="chat-bubble"> {{ $comment->content }}</div>
+                                                    <div class="chat-bubble text-sm mt-1"> {{ $comment->content }}</div>
                                                 </div>
 
                                             </div>

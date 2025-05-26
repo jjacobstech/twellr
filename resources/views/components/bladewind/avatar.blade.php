@@ -99,7 +99,7 @@
             {{ $avatar }}
         </div>
     @else
-        <img class="{{ $image_size }} absolute object-cover object-center rounded-full" src="{{ $avatar }}"
+        <img loading="lazy" class="{{ $image_size }} absolute object-cover object-center rounded-full" src="{{ $avatar }}"
             alt="{{ $avatar }}" />
     @endif
     @if ($dotted && !$show_plus)

@@ -10,21 +10,19 @@
             class="absolute inset-0 items-center justify-center hidden transition-opacity duration-300 bg-black opacity-0 lg:flex bg-opacity-40 group-hover:opacity-100 rounded-t-xl lg:rounded-t-none">
             <!-- Action Buttons for Desktop -->
 
-                <div class="flex px-5 pb-4 space-x-2">
+                <div class="grid px-5 pb-4 space-y-2">
                     <x-bladewind.button wire:click="submit({{ $design->id }})" size="small" radius="medium"
                         type="bg-navy-blue hover:bg-golden focus:ring-0" button_text_css="text-white" class="flex-1">
                             {{ $design->inDesignFest() ? "Submitted" : "Submit" }}
                     </x-bladewind.button>
 
-                </div>
-
-                <div class="flex px-5 pb-4 space-x-2">
-                    <x-bladewind.button wire:click="submit({{ $design->id }})" size="small" radius="medium"
+                    <x-bladewind.button wire:click="loadComments({{ $design->id }})" size="small" radius="medium"
                         type="bg-navy-blue hover:bg-golden focus:ring-0" button_text_css="text-white" class="flex-1">
                             Comments
                     </x-bladewind.button>
-
                 </div>
+
+
 
         </div>
 
@@ -69,7 +67,7 @@
 
 
                     <div class="flex-shrink-0">
-                        <x-bladewind.button wire:click="submit({{ $design->id }})" size="tiny" radius="small"
+                        <x-bladewind.button wire:click="loadComments({{ $design->id }})" size="tiny" radius="small"
                             type="bg-navy-blue hover:bg-golden focus:ring-0 px-1" button_text_css="text-white"
                             class="md:w-full">
                         Comments

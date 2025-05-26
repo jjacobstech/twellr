@@ -48,7 +48,7 @@
 
                 <div class="flex justify-center w-full sm:justify-start">
                     <x-bladewind.button @click="support"
-                        class="flex items-center justify-center px-4 py-2 font-bold text-white uppercase transition-colors rounded-lg sm:py-3 sm:px-5 bg-golden hover:bg-golden/90 sm:rounded-xl focus:bg-navy-blue"
+                        class="flex items-center justify-center px-4 py-2 font-bold text-white uppercase transition-colors rounded-lg sm:py-3 sm:px-5 bg-golden hover:bg-golden/90 sm:rounded-xl focus:bg-navy-blue active:bg-navy-blue "
                         type="bg-golden">
                         <span class="flex items-center">
                             <img class="w-8 h-8 sm:w-10 sm:h-10" src="{{ asset('assets/tawk.png') }}" alt="Chat icon">
