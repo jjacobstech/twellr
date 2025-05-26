@@ -41,9 +41,9 @@ new #[Layout('layouts.app')] class extends Component {
     {
         $product = (object) ($validated = $this->validate([
             'printUpload' => ['required', 'file', 'mimes:' . config('twellr.printable_stack_format')],
-            'sideView' => ['required', 'file', 'mimes:' . config('twellr.design_stack_format')],
-            'backView' => ['required', 'file', 'mimes:' . config('twellr.design_stack_format')],
-            'frontView' => ['required', 'file', 'mimes:' . config('twellr.design_stack_format')],
+            'sideView' => ['required', 'max:1024' , 'file', 'mimes:' . config('twellr.design_stack_format')],
+            'backView' => ['required', 'max:1024' , 'file', 'mimes:' . config('twellr.design_stack_format')],
+            'frontView' => ['required', 'max:1024' , 'file', 'mimes:' . config('twellr.design_stack_format')],
             'description' => 'required|string',
             'category' => 'required|string',
             'price' => 'required|numeric|min:1',
@@ -147,19 +147,19 @@ new #[Layout('layouts.app')] class extends Component {
     @endsession
     <!-- Error notifications -->
     @error('printUpload')
-        {{ $this->error('Print File Upload Error', 'Upload Print File') }}
+        {{ $this->error('Print File Upload Error', $message,timeout:10000) }}
     @enderror
 
     @error('sideView')
-        {{ $this->error('Side View Upload Error', 'Upload Side View') }}
+        {{ $this->error('Side View Upload Error', $message,timeout:10000) }}
     @enderror
 
     @error('backView')
-        {{ $this->error('Back View Upload Error', 'Upload Back View') }}
+        {{ $this->error('Back View Upload Error', $message,timeout:10000) }}
     @enderror
 
     @error('frontView')
-        {{ $this->error('Front View Upload Error', 'Upload Front View') }}
+        {{ $this->error('Front View Upload Error', $message,timeout:10000) }}
     @enderror
 
     @error('description')
@@ -341,7 +341,7 @@ new #[Layout('layouts.app')] class extends Component {
                                 @enderror
                                 <p class="text-sm">
                                     <span>Front View</span>
-                                    <span class="block text-xs text-gray-100">jpeg, png, jpg only</span>
+                                    <span class="block text-xs text-gray-100">jpeg, png, jpg only. (Max 1MB)</span>
                                 </p>
                             </div>
 
@@ -362,7 +362,7 @@ new #[Layout('layouts.app')] class extends Component {
 
                                 <p class="text-sm">
                                     <span>Back View</span>
-                                    <span class="block text-xs text-gray-100">jpeg, png, jpg only</span>
+                                    <span class="block text-xs text-gray-100">jpeg, png, jpg only. (Max 1MB)</span>
                                 </p>
                             </div>
 
@@ -381,7 +381,7 @@ new #[Layout('layouts.app')] class extends Component {
                                 </label>
                                 <p class="text-sm">
                                     <span>Side View</span>
-                                    <span class="block text-xs text-gray-100">jpeg, png, jpg only</span>
+                                    <span class="block text-xs text-gray-100">jpeg, png, jpg only. (Max 1MB)</span>
                                 </p>
                             </div>
 
