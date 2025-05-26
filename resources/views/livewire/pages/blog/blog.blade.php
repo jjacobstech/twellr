@@ -101,28 +101,89 @@ $close = function () {
         <!-- Blog Posts - Main scrollable content -->
 
         @forelse ($posts as $post)
-            <div wire:show='!view'
-                class="space-y-6 sm:space-y-8 pb-24 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div
-                    class="flex flex-col md:flex-row bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100 w-full max-w-2xl mx-auto">
-                    <div class="aspect-square bg-amber-100 md:w-1/3">
-                        <img src="{{ asset('uploads/blog/' . $post->image) }}" alt="{{ $post->title }}"
-                            class="w-full h-full object-cover rounded-none" />
+        <div wire:show='!view' class="pb-24">
+            <!-- Mobile: Single column stack -->
+            <div class="block sm:hidden space-y-4 px-4">
+                @foreach($posts as $post)
+                    <div class="bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100">
+                        <!-- Mobile: Image on top -->
+                        <div class="aspect-[16/9] bg-amber-100">
+                            <img src="{{ asset('uploads/blog/' . $post->image) }}" alt="{{ $post->title }}"
+                                 class="w-full h-full object-cover" />
+                        </div>
+                        <!-- Mobile: Content below -->
+                        <div class="p-4 bg-gray-50">
+                            <h2 class="text-lg font-medium text-gray-700 mb-2 line-clamp-2">
+                                {{ $post->title }}
+                            </h2>
+                            <p class="text-gray-500 mb-3 text-sm line-clamp-2">
+                                {{ $post->content }}
+                            </p>
+                            <button wire:click='readMore({{ $post->id }})'
+                                    class="w-full bg-yellow-400 hover:bg-yellow-500 text-white font-medium px-4 py-2 rounded text-sm transition duration-200">
+                                READ MORE
+                            </button>
+                        </div>
                     </div>
-                    <div class="w-full md:w-2/3 p-3 bg-gray-50">
-                        <h2 class="text-lg font-medium text-gray-700 mb-2">
-                            {{ $post->title }}
-                        </h2>
-                        <p class="text-gray-500 mb-3 text-sm line-clamp-1">
-                            {{ $post->content }}
-                        </p>
-                        <button wire:click='readMore({{ $post->id }})'
-                            class="bg-yellow-400 hover:bg-yellow-500 text-white font-medium px-4 py-2 rounded text-sm transition duration-200">
-                            READ MORE
-                        </button>
-                    </div>
+                @endforeach
+            </div>
+
+            <!-- Tablet: 2 columns, horizontal cards -->
+            <div class="hidden sm:block lg:hidden px-4 sm:px-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    @foreach($posts as $post)
+                        <div class="flex bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100">
+                            <!-- Tablet: Side image -->
+                            <div class="w-32 sm:w-36 flex-shrink-0 bg-amber-100">
+                                <img src="{{ asset('uploads/blog/' . $post->image) }}" alt="{{ $post->title }}"
+                                     class="w-full h-full object-cover" />
+                            </div>
+                            <!-- Tablet: Content beside -->
+                            <div class="flex-1 p-4 bg-gray-50 flex flex-col">
+                                <h2 class="text-base sm:text-lg font-medium text-gray-700 mb-2 line-clamp-2">
+                                    {{ $post->title }}
+                                </h2>
+                                <p class="text-gray-500 mb-3 text-sm line-clamp-2 flex-1">
+                                    {{ $post->content }}
+                                </p>
+                                <button wire:click='readMore({{ $post->id }})'
+                                        class="bg-yellow-400 hover:bg-yellow-500 text-white font-medium px-3 py-2 rounded text-sm transition duration-200 self-start">
+                                    READ MORE
+                                </button>
+                            </div>
+                        </div>
+                    @endforeach
                 </div>
             </div>
+
+            <!-- Desktop: 4 columns, card grid -->
+            <div class="hidden lg:block px-6 xl:px-8">
+                <div class="grid grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
+                    @foreach($posts as $post)
+                        <div class="bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200">
+                            <!-- Desktop: Image on top -->
+                            <div class="aspect-[4/3] bg-amber-100">
+                                <img src="{{ asset('uploads/blog/' . $post->image) }}" alt="{{ $post->title }}"
+                                     class="w-full h-full object-cover hover:scale-105 transition-transform duration-200" />
+                            </div>
+                            <!-- Desktop: Content below -->
+                            <div class="p-4 bg-gray-50 h-40 flex flex-col">
+                                <h2 class="text-base font-medium text-gray-700 mb-2 line-clamp-2">
+                                    {{ $post->title }}
+                                </h2>
+                                <p class="text-gray-500 mb-3 text-sm line-clamp-3 flex-1">
+                                    {{ $post->content }}
+                                </p>
+                                <button wire:click='readMore({{ $post->id }})'
+                                        class="bg-yellow-400 hover:bg-yellow-500 text-white font-medium px-4 py-2 rounded text-sm transition duration-200 self-start">
+                                    READ MORE
+                                </button>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
         @empty
             <div class="flex flex-col md:flex-row bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100">
                 <div class="w-full text-center p-4 sm:p-6 bg-gray-50">
