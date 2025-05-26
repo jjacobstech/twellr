@@ -474,7 +474,10 @@ copyReferralLink(){
 
                 <!-- Responsive Grid -->
                 <div
-                    class="relative bg-white w-full overflow-y-scroll scrollbar-none
+                    class="relative bg-white w-full overflow-y-scroll scrollbar-bar-thin scroll-bar-thumb-navy-blue scroll-bar-track-gray-300
+                      rounded-lg shadow-sm
+                      sm:rounded-xl
+                      sm:shadow-md
                       pb-2 md:pb-0
                       md:w-3/4 lg:w-full
                       md:h-screen lg:py-4">
