@@ -102,7 +102,7 @@ $close = function () {
 
         @forelse ($posts as $post)
             <div wire:show='!view'
-                class="space-y-6 sm:space-y-8 pb-24 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                class="space-y-6 sm:space-y-8 pb-24 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div
                     class="flex flex-col md:flex-row bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100 w-full max-w-2xl mx-auto">
                     <div class="aspect-square bg-amber-100 md:w-1/3">
