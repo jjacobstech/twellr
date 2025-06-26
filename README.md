@@ -1,66 +1,130 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Twellr
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Twellr is a web application built with Laravel and Livewire Volt. Below is a summary of the application's main HTTP routes and their purposes, auto-generated from the route definitions in the `routes/web.php`, `routes/auth.php`, `routes/admin.php`, and `routes/user.php` files.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+![Twellr Logo](public/assets/twellr.png)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Table of Contents
 
-## Learning Laravel
+- [General Routes](#general-routes)
+- [Authentication Routes](#authentication-routes)
+- [Admin Routes](#admin-routes)
+- [User Routes](#user-routes)
+- [Fallback](#fallback)
+- [Middleware Used](#middleware-used)
+- [Screenshots](#screenshots)
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+---
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## General Routes
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+| Method | URI          | Name        | Middleware         | Description                        |
+|--------|--------------|-------------|--------------------|------------------------------------|
+| GET    | /            | home        | -                  | Landing/welcome page.              |
+| GET    | /r/{slug?}   | -           | guest              | User referral landing (guest only).|
 
-## Laravel Sponsors
+---
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Authentication Routes
 
-### Premium Partners
+| Method | URI                         | Name                          | Middleware     | Description                                      |
+|--------|-----------------------------|-------------------------------|----------------|--------------------------------------------------|
+| GET    | /admin/register             | admin.register                | guest, AdminExists | Admin registration page.                      |
+| GET    | /admin/login                | admin.login                   | guest          | Admin login page.                                |
+| GET    | /register                   | register                      | guest          | User registration page.                          |
+| GET    | /login                      | login                         | guest          | User login page.                                 |
+| GET    | /auth/google                | auth.google.login             | guest          | Google login.                                    |
+| GET    | /auth/google/signup         | auth.google.signup            | guest          | Google signup.                                   |
+| GET    | /auth/google/callback       | auth.google.callback          | guest          | Google OAuth callback.                           |
+| GET    | /email/verification         | email.verification            | guest          | Email verification prompt.                       |
+| GET    | /complete/registration      | complete.registration         | guest          | Complete registration page.                      |
+| GET    | /forgot-password            | password.request              | guest          | Password reset request page.                     |
+| GET    | /reset-password/{token}     | password.reset                | guest          | Password reset page with token.                  |
+| GET    | /verify-email               | verification.notice           | auth           | Email verification notice (after login).         |
+| GET    | /verify-email/{id}/{hash}   | verification.verify           | auth, signed, throttle:6,1 | Email verification callback.      |
+| GET    | /confirm-password           | password.confirm              | auth           | Password confirmation page.                      |
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+---
 
-## Contributing
+## Admin Routes
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+> All admin routes require `auth`, `verified`, and `IsAdmin` middleware unless otherwise specified.
 
-## Code of Conduct
+| Method | URI                      | Name                    | Description                     |
+|--------|--------------------------|-------------------------|---------------------------------|
+| GET    | /admin/email/verification| admin.email.verification| Admin email verification prompt |
+| GET    | /admin/dashboard         | admin.dashboard         | Admin dashboard                 |
+| GET    | /admin/profile           | admin.profile           | Admin profile page              |
+| GET    | /admin/settings          | admin.settings          | Admin settings                  |
+| GET    | /admin/system/preferences| admin.preferences       | Admin system preferences        |
+| GET    | /admin/uploaded/designs  | admin.designs           | Uploaded designs management     |
+| GET    | /admin/orders            | admin.orders            | Admin order management          |
+| GET    | /admin/withdrawals       | admin.withdrawal        | Admin withdrawals               |
+| GET    | /admin/blog              | admin.blog.post         | Admin blog post management      |
+| GET    | /admin/blog/upload       | admin.blog.post.upload  | Blog post upload                |
+| GET    | /admin/user/management   | admin.user.management   | User management                 |
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+---
 
-## Security Vulnerabilities
+## User Routes
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+> All user routes require `auth` and `verified` middleware unless otherwise specified.
 
-## License
+| Method | URI                    | Name                        | Middleware            | Description                        |
+|--------|------------------------|-----------------------------|-----------------------|------------------------------------|
+| GET    | /payment/preference    | creative.payment.preference | PaymentPreference     | User payment preferences           |
+| GET    | /upload                | creative.upload             | -                     | Upload page for creatives          |
+| GET    | /marketplace/{slug?}   | market.place                | -                     | Marketplace browsing               |
+| GET    | /explore               | explore                     | -                     | Explore page                       |
+| GET    | /support               | support                     | -                     | Support page                       |
+| GET    | /wallet                | wallet                      | -                     | User wallet page                   |
+| GET    | /blog                  | blog                        | -                     | Blog overview                      |
+| GET    | /settings              | settings                    | -                     | User settings                      |
+| GET    | /cart                  | cart                        | -                     | Shopping cart                      |
+| GET    | /{slug}                | creative.profile            | -                     | Creative profile page              |
+| GET    | /fund/wallet           | fund.wallet                 | -                     | Fund wallet (initiate payment)     |
+| GET    | /payment/confirm       | confirm.payment             | -                     | Confirm payment                    |
+| GET    | /design/contests       | design.contest              | -                     | Design contests                    |
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Additionally, the following user profile and dashboard routes are available (with extra middleware):
+
+| Method | URI          | Name      | Middleware                 | Description           |
+|--------|--------------|-----------|----------------------------|-----------------------|
+| GET    | /dashboard   | dashboard | auth, verified, referred, IsCreative, IsUser | User dashboard        |
+| GET    | /profile     | profile   | auth, verified, IsCreative, IsUser | User profile page     |
+
+---
+
+## Fallback
+
+If no route matches, a 404 error will be returned.
+
+---
+
+## Middleware Used
+
+- **auth**: User must be authenticated.
+- **guest**: Only accessible to non-authenticated users.
+- **verified**: User must have a verified email.
+- **referred**: User must be referred.
+- **IsAdmin**: User must be an admin.
+- **IsCreative**, **IsUser**: Custom checks for user roles.
+- **AdminExists**: Admin registration only if admin exists.
+- **PaymentPreference**: Checks user payment preference.
+- **signed, throttle:6,1**: Signature and rate limiting for email verification.
+
+---
+
+## Screenshots
+
+Below are some example visuals from the project. You can add more screenshots or visual assets from the `public/assets/` folder as needed.
+
+![App Screenshot](public/assets/twellr.png)
+
+---
+
+For more details, see the individual controllers and Livewire Volt pages referenced in the route definitions.
