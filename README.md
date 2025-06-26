@@ -4,7 +4,7 @@ Twellr is a web application built with Laravel and Livewire Volt. Below is a sum
 
 ---
 
-![Twellr Logo](public/assets/twellr.png)
+![Twellr Logo](public/assets/twellr-bg-white.png)
 
 ---
 
@@ -123,7 +123,7 @@ If no route matches, a 404 error will be returned.
 
 Below are some example visuals from the project. You can add more screenshots or visual assets from the `public/assets/` folder as needed.
 
-![App Screenshot](public/assets/twellr.png)
+![App Screenshot](public/assets/twellr-bg-white.png)
 
 ---
 
